@@ -1,0 +1,28 @@
+# Compilation
+bin/
+obj/
+publish/
+*.log
+
+# Rider / JetBrains
+.idea/
+riderModule.iml
+/_ReSharper.Caches/
+*.DotSettings.user
+*.user
+
+# Visual Studio (au cas où)
+.vs/
+
+# Tests
+TestResults/
+*.trx
+
+# Système
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# Packages
+/packages/
+*.nupkg

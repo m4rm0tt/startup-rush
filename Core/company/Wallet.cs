@@ -1,4 +1,4 @@
-namespace Core.Company;
+namespace Core.company;
 
 public class Wallet
 {

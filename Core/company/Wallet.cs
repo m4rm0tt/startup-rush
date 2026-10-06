@@ -3,6 +3,8 @@ namespace Core.company;
 public class Wallet
 {
     public int Balance { get; private set; } = 0;
+    
+    public event Action<int> BalanceChanged;
 
     public Wallet(int startingCapital)
     {
@@ -15,6 +17,7 @@ public class Wallet
             throw new ArgumentOutOfRangeException(nameof(amount));
 
         Balance += amount;
+        BalanceChanged?.Invoke(Balance);
     }
 
     public bool CanAfford(int amount)
@@ -34,6 +37,7 @@ public class Wallet
             return false;
 
         Balance -= amount;
+        BalanceChanged?.Invoke(Balance);
         return true;
     }
 }

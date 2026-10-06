@@ -4,7 +4,7 @@ public class Wallet
 {
     public int Balance { get; private set; } = 0;
     
-    public event Action<int> BalanceChanged;
+    public event Action<int>? BalanceChanged;
 
     public Wallet(int startingCapital)
     {

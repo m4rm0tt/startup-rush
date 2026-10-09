@@ -2,16 +2,16 @@ namespace Core.company;
 
 public class Wallet
 {
-    public int Balance { get; private set; } = 0;
+    public double Balance { get; private set; } = 0;
     
-    public event Action<int>? BalanceChanged;
+    public event Action<double>? BalanceChanged;
 
-    public Wallet(int startingCapital)
+    public Wallet(double startingCapital)
     {
         Balance = startingCapital;
     }
 
-    public void Earn(int amount)
+    public void Earn(double amount)
     {
         if (amount < 0)
             throw new ArgumentOutOfRangeException(nameof(amount));
@@ -20,7 +20,7 @@ public class Wallet
         BalanceChanged?.Invoke(Balance);
     }
 
-    public bool CanAfford(int amount)
+    public bool CanAfford(double amount)
     {
         if (amount < 0)
             throw new ArgumentOutOfRangeException(nameof(amount));
@@ -28,7 +28,7 @@ public class Wallet
         return Balance >= amount;
     }
 
-    public bool TrySpend(int amount)
+    public bool TrySpend(double amount)
     {
         if (amount < 0)
             throw new ArgumentOutOfRangeException(nameof(amount));

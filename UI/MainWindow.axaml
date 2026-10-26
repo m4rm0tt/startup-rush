@@ -5,4 +5,12 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="UI.MainWindow"
         Title="UI">
+        <Grid>
+                <TextBlock
+                        x:Name="BalanceText"
+                        Text="Solde : 0 CHF"
+                        FontSize="28"
+                        FontWeight="Bold"
+                        HorizontalAlignment="Center"/>
+        </Grid>
 </Window>

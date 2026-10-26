@@ -4,13 +4,22 @@ using System.Linq;
 using System.Windows.Input;
 using Avalonia;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Core.businesses;
 using Core.investments;
 using Core.simulation;
 using Core.staff;
 using Core.upgrades;
+using UI.Audio;
+using UI.Pixel;
 
 namespace UI.ViewModels;
+
+/// <summary>Joue le bon son selon que l'achat a réussi ou non.</summary>
+internal static class Purchase
+{
+    public static void Try(Func<bool> buy) => Sfx.Play(buy() ? Sound.Buy : Sound.Error);
+}
 
 /// <summary>Une piste de matériel, de logement ou de locaux à améliorer.</summary>
 public class UpgradeViewModel : ViewModelBase
@@ -25,7 +34,8 @@ public class UpgradeViewModel : ViewModelBase
     private bool _canBuy;
     private bool _isMaxed;
 
-    public string Title => _track.Info.Title;
+    public string Title => _track.Info.Title.ToUpper();
+    public Bitmap Icon { get; }
     public string CurrentName { get => _currentName; private set => SetField(ref _currentName, value); }
     public string LevelText { get => _levelText; private set => SetField(ref _levelText, value); }
     public string NextText { get => _nextText; private set => SetField(ref _nextText, value); }
@@ -39,38 +49,47 @@ public class UpgradeViewModel : ViewModelBase
     {
         _track = track;
         _session = session;
-        BuyCommand = new RelayCommand(() => session.BuyUpgrade(track.Info.Id));
+        Icon = Icons.Get(track.Info.Id switch
+        {
+            UpgradeTrackId.Computer => "computer",
+            UpgradeTrackId.Screens => "screen",
+            UpgradeTrackId.Chair => "chair",
+            UpgradeTrackId.Coffee => "coffee",
+            UpgradeTrackId.Internet => "wifi",
+            UpgradeTrackId.Housing => "home",
+            _ => "building"
+        });
+        BuyCommand = new RelayCommand(() => Purchase.Try(() => session.BuyUpgrade(track.Info.Id)));
     }
 
     public void Refresh()
     {
         var current = _track.Current;
         CurrentName = current.Name;
-        LevelText = $"Niv. {_track.Level + 1}/{_track.Info.Levels.Count}";
+        LevelText = $"NIV {_track.Level + 1}/{_track.Info.Levels.Count}";
         IsMaxed = _track.IsMaxed;
 
         if (_track.Next is not { } next)
         {
             NextText = "Niveau maximum";
             EffectText = "";
-            CostText = "";
+            CostText = "MAX";
             CanBuy = false;
             return;
         }
 
         bool isOffice = _track.Info.Id == UpgradeTrackId.Office;
         string effect = isOffice
-            ? $"{current.Effect:0} → {next.Effect:0} {_track.Info.EffectLabel}"
+            ? $"{current.Effect:0} → {next.Effect:0} places"
             : $"{Display.Multiplier(current.Effect)} → {Display.Multiplier(next.Effect)} {_track.Info.EffectLabel}";
         if (next.MonthlyCost > 0)
-            effect += $" · {Display.Money(next.MonthlyCost)}/mois";
+            effect += $"\n{Display.Money(next.MonthlyCost)}/mois";
 
+        double cost = _session.UpgradeCost(_track);
         NextText = $"→ {next.Name}";
         EffectText = effect;
-        CostText = Display.Money(next.Cost);
-
-        bool allowed = !isOffice || _session.Company.IsFounded;
-        CanBuy = allowed && _session.Company.WalletBalance >= next.Cost;
+        CostText = Display.Money(cost);
+        CanBuy = (!isOffice || _session.Company.IsFounded) && _session.Company.WalletBalance >= cost;
     }
 }
 
@@ -80,12 +99,14 @@ public class EmployeeViewModel : ViewModelBase
     private readonly EmployeeRoleInfo _info;
     private readonly GameSession _session;
     private string _countText = "";
+    private string _costText = "";
     private bool _canHire;
     private bool _canFire;
 
-    public string Title => _info.Title;
+    public string Title => _info.Title.ToUpper();
     public string Description => _info.Description;
-    public string CostText => $"Embauche {Display.Money(_info.HiringCost)} · {Display.Money(_info.MonthlySalary)}/mois";
+    public Bitmap Icon => Icons.Get("people");
+    public string CostText { get => _costText; private set => SetField(ref _costText, value); }
     public string CountText { get => _countText; private set => SetField(ref _countText, value); }
     public bool CanHire { get => _canHire; private set => SetField(ref _canHire, value); }
     public bool CanFire { get => _canFire; private set => SetField(ref _canFire, value); }
@@ -96,22 +117,26 @@ public class EmployeeViewModel : ViewModelBase
     {
         _info = info;
         _session = session;
-        HireCommand = new RelayCommand(() => session.Hire(info.Role));
-        FireCommand = new RelayCommand(() => session.Fire(info.Role));
+        HireCommand = new RelayCommand(() => Purchase.Try(() => session.Hire(info.Role)));
+        FireCommand = new RelayCommand(() => Purchase.Try(() => session.Fire(info.Role)));
     }
 
     public void Refresh(bool hiringOpen)
     {
         int count = _session.Staff.Count(_info.Role);
-        CountText = count.ToString();
+        double cost = _session.HiringCost(_info.Role);
+        CountText = $"×{count}";
+        CostText = $"{Display.Money(cost)} · {Display.Money(_info.MonthlySalary)}/mois";
         CanFire = count > 0;
-        CanHire = hiringOpen && _session.HasFreeSeat && _session.Company.WalletBalance >= _info.HiringCost;
+        CanHire = hiringOpen && _session.HasFreeSeat && _session.Company.WalletBalance >= cost;
     }
 }
 
 /// <summary>Une boîte à créer ou à développer.</summary>
 public class BusinessViewModel : ViewModelBase
 {
+    private static readonly string[] IconKeys = ["link", "computer", "dice", "chart", "money", "rocket"];
+
     private readonly Business _business;
     private readonly GameSession _session;
     private string _levelText = "";
@@ -121,8 +146,9 @@ public class BusinessViewModel : ViewModelBase
     private bool _canBuy;
     private bool _isOwned;
 
-    public string Name => _business.Info.Name;
+    public string Name => _business.Info.Name.ToUpper();
     public string Description => _business.Info.Description;
+    public Bitmap Icon { get; }
     public string LevelText { get => _levelText; private set => SetField(ref _levelText, value); }
     public string IncomeText { get => _incomeText; private set => SetField(ref _incomeText, value); }
     public string CostText { get => _costText; private set => SetField(ref _costText, value); }
@@ -135,21 +161,23 @@ public class BusinessViewModel : ViewModelBase
     {
         _business = business;
         _session = session;
-        BuyCommand = new RelayCommand(() => session.InvestInBusiness(index));
+        Icon = Icons.Get(IconKeys[index % IconKeys.Length]);
+        BuyCommand = new RelayCommand(() => Purchase.Try(() => session.InvestInBusiness(index)));
     }
 
     public void Refresh(bool unlocked)
     {
-        double multiplier = _session.Businesses.HasHolding ? _session.Businesses.HoldingMultiplier : 1;
+        double multiplier = (_session.Businesses.HasHolding ? _session.Businesses.HoldingMultiplier : 1) *
+                            _session.Modifiers.BusinessIncome;
         double nextIncome = _business.Info.BaseIncomePerSecond * multiplier;
 
         IsOwned = _business.IsOwned;
-        LevelText = _business.IsOwned ? $"Niveau {_business.Level}" : "Pas encore créée";
+        LevelText = _business.IsOwned ? $"NIV {_business.Level}" : "À CRÉER";
         IncomeText = _business.IsOwned
-            ? $"{Display.Money(_business.IncomePerSecond * multiplier)}/s (+{Display.Money(nextIncome)}/s au niveau suivant)"
+            ? $"{Display.Money(_business.IncomePerSecond * multiplier)}/s\n+{Display.Money(nextIncome)}/s au niveau suivant"
             : $"Rapporterait {Display.Money(nextIncome)}/s";
         CostText = Display.Money(_business.NextCost);
-        ButtonText = _business.IsOwned ? "Développer" : "Créer";
+        ButtonText = _business.IsOwned ? "DÉVELOPPER" : "CRÉER";
         CanBuy = unlocked && _session.Company.WalletBalance >= _business.NextCost;
     }
 }
@@ -157,8 +185,8 @@ public class BusinessViewModel : ViewModelBase
 /// <summary>Un actif de la bourse, avec son petit graphique de cours.</summary>
 public class AssetViewModel : ViewModelBase
 {
-    public const double ChartWidth = 300;
-    public const double ChartHeight = 44;
+    public const double ChartWidth = 180;
+    public const double ChartHeight = 40;
 
     private readonly MarketAsset _asset;
     private readonly GameSession _session;
@@ -171,7 +199,7 @@ public class AssetViewModel : ViewModelBase
     private bool _canSell;
     private double _chartPrice = double.NaN;
 
-    public string Name => _asset.Info.Name;
+    public string Name => _asset.Info.Name.ToUpper();
     public string Description => _asset.Info.Description;
     public string PriceText { get => _priceText; private set => SetField(ref _priceText, value); }
     public string ChangeText { get => _changeText; private set => SetField(ref _changeText, value); }
@@ -191,22 +219,25 @@ public class AssetViewModel : ViewModelBase
         _session = session;
         BuyTenPercentCommand = new RelayCommand(() => Buy(index, 0.1));
         BuyHalfCommand = new RelayCommand(() => Buy(index, 0.5));
-        SellAllCommand = new RelayCommand(() => session.SellAsset(index));
+        SellAllCommand = new RelayCommand(() =>
+        {
+            if (session.SellAsset(index) > 0)
+                Sfx.Play(Sound.Cash);
+        });
     }
 
     private void Buy(int index, double fraction)
     {
         double amount = Math.Floor(_session.Company.WalletBalance * fraction);
-        if (amount > 0)
-            _session.BuyAsset(index, amount);
+        Purchase.Try(() => amount > 0 && _session.BuyAsset(index, amount));
     }
 
     public void Refresh(bool unlocked)
     {
         PriceText = Display.Money(_asset.Price);
-        ChangeText = $"{_asset.Change:+0.0 %;−0.0 %;0.0 %} sur 2 mois";
+        ChangeText = $"{_asset.Change:+0.0 %;−0.0 %;0.0 %}";
         ChangeBrush = _asset.Change >= 0 ? Display.Good : Display.Danger;
-        HoldingText = _asset.Units > 0 ? $"Tu en détiens pour {Display.Money(_asset.Value)}" : "Tu n'en as pas";
+        HoldingText = _asset.Units > 0 ? $"Détenu : {Display.Money(_asset.Value)}" : "Rien en portefeuille";
         CanBuy = unlocked && _session.Company.WalletBalance >= 1;
         CanSell = _asset.Units > 0;
 

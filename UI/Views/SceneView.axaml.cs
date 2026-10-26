@@ -4,13 +4,13 @@ using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
-using Avalonia.Input;
 using Avalonia.Media;
 using Core.progression;
+using UI.Pixel;
 
 namespace UI.Views;
 
-/// <summary>Tout ce qui change l'apparence de la pièce. La scène n'est redessinée que si ça change.</summary>
+/// <summary>Tout ce qui change le décor. La pièce n'est reconstruite que si ça change.</summary>
 public record SceneLook(
     int Computer,
     int Screens,
@@ -18,39 +18,71 @@ public record SceneLook(
     int Coffee,
     int Housing,
     CareerStage Stage,
-    int Employees);
+    int Employees,
+    bool HasCat);
+
+/// <summary>L'ambiance du moment, animée à chaque image.</summary>
+/// <param name="DayPhase">Moment du mois : 0 = matin, 0.5 = soir, 1 = nuit.</param>
+public record SceneMood(bool Working, double DayPhase, bool Crisis, bool InDebt);
 
 /// <summary>
-/// Le personnage vu de dos à son bureau. Le décor suit le matériel, le logement et le statut ;
-/// les bras tapent au clavier quand il travaille. Un clic sur la scène = charbonner.
+/// Le personnage vu de dos à son bureau, rendu en vrai pixel art : la pièce est dessinée
+/// hors écran en formes simples, puis convertie en basse résolution dans la palette du jeu.
+/// Les textes flottants et les particules sont dessinés par-dessus, nets.
 /// </summary>
 public partial class SceneView : UserControl
 {
     private const double SceneWidth = 560;
-    
+    private const double SceneHeight = 340;
     private const double CenterX = 280;
     private const double DeskY = 200;
 
+    private readonly Canvas _stage = new() { Width = SceneWidth, Height = SceneHeight, Background = Brushes.Black };
+    private readonly PixelRenderer _renderer;
     private readonly Stopwatch _clock = Stopwatch.StartNew();
     private readonly List<Floater> _floaters = new();
+    private readonly List<Particle> _particles = new();
     private readonly List<(Rectangle Line, double BaseWidth, double Phase)> _codeLines = new();
     private readonly List<(Shape Led, double Phase)> _leds = new();
+    private readonly List<Line> _rain = new();
     private readonly Random _random = new();
     private SceneLook? _look;
     private Line? _leftArm;
     private Line? _rightArm;
+    private Rectangle? _nightShade;
+    private Rectangle? _alarmTint;
+    private Ellipse? _alarmLight;
+    private Ellipse? _sweat;
+    private Path? _catTail;
+    private Rect _window;
     private double _lastTime;
+    private bool _renderThisFrame = true;
 
     private sealed record Floater(TextBlock Text, double StartY, double BornAt);
 
-    /// <summary>Le joueur a cliqué sur la scène.</summary>
+    private sealed class Particle
+    {
+        public required Rectangle Shape { get; init; }
+        public double X, Y, VelocityX, VelocityY, BornAt;
+    }
+
+    // Les fonctions de dessin ajoutent leurs formes sur la scène hors écran
+    private Canvas Stage => _stage;
+
+    /// <summary>Le joueur a cliqué sur la scène (position en unités de scène).</summary>
     public event Action<Point>? Clicked;
 
     public SceneView()
     {
         InitializeComponent();
-        PointerPressed += (_, e) => Clicked?.Invoke(e.GetPosition(Stage));
+        RenderOptions.SetEdgeMode(_stage, EdgeMode.Aliased);
+        _renderer = new PixelRenderer(_stage, new Size(SceneWidth, SceneHeight), 2);
+        Screen.Source = _renderer.Output;
+        PointerPressed += (_, e) => Clicked?.Invoke(e.GetPosition(Overlay));
     }
+
+    /// <summary>Remplit toute la zone, quitte à rogner les bords (fond d'écran du menu).</summary>
+    public void FillArea() => Frame.Stretch = Stretch.UniformToFill;
 
     public void Render(SceneLook look)
     {
@@ -58,10 +90,11 @@ public partial class SceneView : UserControl
             return;
 
         _look = look;
-        Stage.Children.Clear();
+        _stage.Children.Clear();
         _codeLines.Clear();
         _leds.Clear();
-        _floaters.Clear();
+        _rain.Clear();
+        _catTail = null;
 
         DrawRoom(look.Housing);
         DrawStageDecor(look.Stage);
@@ -70,46 +103,40 @@ public partial class SceneView : UserControl
         DrawScreens(look.Screens);
         DrawComputer(look.Computer);
         DrawCoffee(look.Coffee);
+        if (look.HasCat)
+            DrawCat();
         DrawCharacter(look.Chair, look.Stage);
+        DrawMoodLayers();
     }
 
-    /// <summary>Anime la frappe au clavier, les écrans, les voyants et les textes flottants.</summary>
-    public void Animate(bool working)
+    /// <summary>Anime la scène, puis la convertit en pixel art (une image sur deux, ça suffit à l'œil).</summary>
+    public void Animate(SceneMood mood)
     {
         double time = _clock.Elapsed.TotalSeconds;
+        double delta = Math.Min(0.1, time - _lastTime);
         _lastTime = time;
 
-        if (_leftArm != null && _rightArm != null)
-        {
-            double speed = working ? 18 : 2;
-            double amplitude = working ? 3 : 0.6;
-            _leftArm.EndPoint = new Point(258 + Math.Sin(time * speed) * amplitude, 196 - Math.Abs(Math.Cos(time * speed)) * amplitude);
-            _rightArm.EndPoint = new Point(302 + Math.Sin(time * speed + 1.7) * amplitude, 196 - Math.Abs(Math.Cos(time * speed + 1.7)) * amplitude);
-        }
+        AnimateCharacter(time, mood.Working);
+        AnimateMood(time, mood);
 
         foreach (var (line, baseWidth, phase) in _codeLines)
-            line.Width = working ? baseWidth * (0.55 + 0.45 * Math.Abs(Math.Sin(time * 1.5 + phase))) : baseWidth * 0.7;
+            line.Width = mood.Working ? baseWidth * (0.55 + 0.45 * Math.Abs(Math.Sin(time * 1.5 + phase))) : baseWidth * 0.7;
 
         foreach (var (led, phase) in _leds)
             led.Opacity = 0.35 + 0.65 * Math.Abs(Math.Sin(time * 3 + phase));
 
-        for (int i = _floaters.Count - 1; i >= 0; i--)
+        _renderThisFrame = !_renderThisFrame;
+        if (_renderThisFrame)
         {
-            var floater = _floaters[i];
-            double age = time - floater.BornAt;
-            if (age > 1.2)
-            {
-                Stage.Children.Remove(floater.Text);
-                _floaters.RemoveAt(i);
-                continue;
-            }
-
-            Canvas.SetTop(floater.Text, floater.StartY - age * 45);
-            floater.Text.Opacity = 1 - age / 1.2;
+            _renderer.Render();
+            Screen.InvalidateVisual();
         }
+
+        AnimateFloaters(time);
+        AnimateParticles(time, delta);
     }
 
-    /// <summary>Affiche un petit texte qui monte et disparaît (gain, travail fourni...).</summary>
+    /// <summary>Affiche un texte qui monte et disparaît (gain, travail fourni...).</summary>
     public void ShowFloater(string text, IBrush brush, Point? at = null, double size = 16)
     {
         var position = at ?? new Point(CenterX - 30 + _random.Next(-40, 40), 150);
@@ -119,12 +146,157 @@ public partial class SceneView : UserControl
             Foreground = brush,
             FontSize = size,
             FontWeight = FontWeight.Bold,
-            IsHitTestVisible = false
+            IsHitTestVisible = false,
         };
         Canvas.SetLeft(block, position.X);
         Canvas.SetTop(block, position.Y);
-        Stage.Children.Add(block);
+        Overlay.Children.Add(block);
         _floaters.Add(new Floater(block, position.Y, _lastTime));
+    }
+
+    /// <summary>Une gerbe de pièces d'or qui jaillit (contrat livré, gros gain).</summary>
+    public void BurstCoins(int count, Point? from = null)
+    {
+        var origin = from ?? new Point(CenterX, 130);
+        for (int i = 0; i < count && _particles.Count < 120; i++)
+        {
+            var shape = new Rectangle
+            {
+                Width = 5,
+                Height = 5,
+                Fill = i % 3 == 0 ? Palette.Lemon : Palette.Gold,
+                IsHitTestVisible = false,
+            };
+            Overlay.Children.Add(shape);
+            _particles.Add(new Particle
+            {
+                Shape = shape,
+                X = origin.X,
+                Y = origin.Y,
+                VelocityX = _random.NextDouble() * 220 - 110,
+                VelocityY = -120 - _random.NextDouble() * 160,
+                BornAt = _lastTime,
+            });
+        }
+    }
+
+    private void AnimateCharacter(double time, bool working)
+    {
+        if (_leftArm == null || _rightArm == null)
+            return;
+
+        double speed = working ? 18 : 2;
+        double amplitude = working ? 3 : 0.6;
+        _leftArm.EndPoint = new Point(258 + Math.Sin(time * speed) * amplitude, 196 - Math.Abs(Math.Cos(time * speed)) * amplitude);
+        _rightArm.EndPoint = new Point(302 + Math.Sin(time * speed + 1.7) * amplitude, 196 - Math.Abs(Math.Cos(time * speed + 1.7)) * amplitude);
+    }
+
+    private void AnimateMood(double time, SceneMood mood)
+    {
+        // Jour, soir, nuit : la fenêtre s'assombrit au fil du mois
+        if (_nightShade != null)
+            _nightShade.Opacity = Math.Clamp((mood.DayPhase - 0.45) * 1.8, 0, 0.75);
+
+        for (int i = 0; i < _rain.Count; i++)
+        {
+            double y = _window.Y + (time * 160 + i * 37) % _window.Height;
+            double x = _window.X + (i * 23 + time * 20) % _window.Width;
+            _rain[i].StartPoint = new Point(x, y);
+            _rain[i].EndPoint = new Point(x - 3, Math.Min(y + 9, _window.Bottom));
+        }
+
+        if (_alarmTint != null && _alarmLight != null)
+        {
+            double pulse = Math.Abs(Math.Sin(time * 4));
+            _alarmTint.Opacity = mood.Crisis ? 0.12 + 0.12 * pulse : 0;
+            _alarmLight.Opacity = mood.Crisis ? 0.4 + 0.6 * pulse : 0;
+        }
+
+        if (_sweat != null)
+        {
+            _sweat.Opacity = mood.InDebt ? 1 : 0;
+            Canvas.SetTop(_sweat, 168 + time * 30 % 20);
+        }
+
+        if (_catTail != null)
+            _catTail.RenderTransform = new RotateTransform(Math.Sin(time * 3) * 12);
+    }
+
+    private void AnimateFloaters(double time)
+    {
+        for (int i = _floaters.Count - 1; i >= 0; i--)
+        {
+            var floater = _floaters[i];
+            double age = time - floater.BornAt;
+            if (age > 1.2)
+            {
+                Overlay.Children.Remove(floater.Text);
+                _floaters.RemoveAt(i);
+                continue;
+            }
+
+            Canvas.SetTop(floater.Text, floater.StartY - age * 45);
+            floater.Text.Opacity = 1 - age / 1.2;
+        }
+    }
+
+    private void AnimateParticles(double time, double delta)
+    {
+        for (int i = _particles.Count - 1; i >= 0; i--)
+        {
+            var p = _particles[i];
+            p.VelocityY += 520 * delta; // gravité
+            p.X += p.VelocityX * delta;
+            p.Y += p.VelocityY * delta;
+
+            if (time - p.BornAt > 1.6 || p.Y > SceneHeight)
+            {
+                Overlay.Children.Remove(p.Shape);
+                _particles.RemoveAt(i);
+                continue;
+            }
+
+            // Positions arrondies à la grille des pixels de la scène
+            Canvas.SetLeft(p.Shape, Math.Round(p.X / 2) * 2);
+            Canvas.SetTop(p.Shape, Math.Round(p.Y / 2) * 2);
+        }
+    }
+
+    // Couches d'ambiance posées au-dessus du décor : alarme de crise, sueur
+    private void DrawMoodLayers()
+    {
+        _alarmTint = Box(0, 0, SceneWidth, SceneHeight, "#e43b44");
+        _alarmTint.Opacity = 0;
+        Box(520, 8, 16, 6, "#3a4466");
+        _alarmLight = Oval(518, 12, 20, 14, "#ff0044");
+        _alarmLight.Opacity = 0;
+        _sweat = Oval(304, 170, 6, 9, "#2ce8f5");
+        _sweat.Opacity = 0;
+    }
+
+    private void DrawCat()
+    {
+        // Un chat orange roulé en boule sur le bureau, la queue qui bat
+        Oval(392, DeskY - 22, 40, 24, "#f77622");
+        Oval(420, DeskY - 32, 20, 18, "#f77622");
+        Stroke($"M 423,{DeskY - 30} L 425,{DeskY - 38} L 429,{DeskY - 31} M 433,{DeskY - 31} L 437,{DeskY - 38} L 438,{DeskY - 29}",
+            "#f77622", 2, "#f77622");
+        Oval(426, DeskY - 25, 3, 3, "#181425");
+        Oval(433, DeskY - 25, 3, 3, "#181425");
+        for (int i = 0; i < 3; i++)
+            Box(398 + i * 9, DeskY - 18, 3, 12, "#d77643");
+
+        _catTail = new Path
+        {
+            Data = Geometry.Parse("M 0,0 Q -14,-6 -18,-18"),
+            Stroke = Palette.Ember,
+            StrokeThickness = 5,
+            StrokeLineCap = PenLineCap.Round,
+            RenderTransformOrigin = RelativePoint.TopLeft,
+        };
+        Canvas.SetLeft(_catTail, 394);
+        Canvas.SetTop(_catTail, DeskY - 8);
+        _stage.Children.Add(_catTail);
     }
 
     // ---------- Pièce ----------
@@ -167,6 +339,18 @@ public partial class SceneView : UserControl
         };
         Place(sky, windowX, 25);
         DrawView(housing, windowX, windowWidth);
+        _window = new Rect(windowX, 25, windowWidth, 115);
+        _nightShade = Box(windowX, 25, windowWidth, 115, "#0b0a1a");
+        _nightShade.Opacity = 0;
+        if (housing <= 1)
+        {
+            for (int i = 0; i < 14; i++)
+            {
+                var drop = new Line { Stroke = Palette.Fog, StrokeThickness = 1.5 };
+                _rain.Add(drop);
+                _stage.Children.Add(drop);
+            }
+        }
         Box(windowX + windowWidth / 2 - 2, 25, 4, 115, "#2B2B2B");
 
         switch (housing)

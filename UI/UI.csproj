@@ -21,4 +21,10 @@
     <ItemGroup>
       <ProjectReference Include="..\Core\Core.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+        <!-- Polices pixel sous licence SIL OFL : la licence est livrée avec le jeu -->
+        <AvaloniaResource Include="Assets\Fonts\*.ttf" />
+        <None Include="Assets\Fonts\*.txt" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
 </Project>

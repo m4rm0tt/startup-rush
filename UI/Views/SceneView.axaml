@@ -2,11 +2,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:px="using:UI.Pixel"
              mc:Ignorable="d" d:DesignWidth="560" d:DesignHeight="340"
              x:Class="UI.Views.SceneView"
              Cursor="Hand">
-    <!-- La pièce est dessinée en code (SceneView.axaml.cs) sur un canevas de 560 × 340, mis à l'échelle -->
-    <Viewbox Stretch="Uniform">
-        <Canvas x:Name="Stage" Width="560" Height="340" ClipToBounds="True"/>
+    <!-- La pièce est rendue hors écran en pixel art (SceneView.axaml.cs), puis agrandie sans lissage.
+         Les textes flottants et les particules passent par-dessus, en pleine résolution. -->
+    <Viewbox x:Name="Frame" Stretch="Uniform">
+        <Grid Width="560" Height="340" ClipToBounds="True">
+            <px:PixelImage x:Name="Screen" Width="560" Height="340" Stretch="Fill"/>
+            <Canvas x:Name="Overlay" Width="560" Height="340" Background="Transparent"/>
+        </Grid>
     </Viewbox>
 </UserControl>

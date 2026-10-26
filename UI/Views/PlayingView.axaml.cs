@@ -1,11 +1,17 @@
+using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
+using Core.roguelike;
 using Core.states;
 using Core.upgrades;
+using UI.Audio;
+using UI.Pixel;
 using UI.ViewModels;
 
 namespace UI.Views;
 
-public partial class PlayingView : UserControl
+public partial class PlayingView : UserControl, IGameScreen
 {
     private readonly PlayingState _state;
     private readonly PlayingViewModel _viewModel;
@@ -14,18 +20,20 @@ public partial class PlayingView : UserControl
     {
         InitializeComponent();
         _state = state;
-        _viewModel = new PlayingViewModel(state.Session);
+        _viewModel = new PlayingViewModel(state);
         DataContext = _viewModel;
 
-        Scene.Clicked += _ => Hustle();
+        Scene.Clicked += point => Hustle(point);
         state.Session.Company.TaskCompleted += task =>
-            Scene.ShowFloater($"+{Display.Money(task.EarnedReward)}", Display.Good, size: 22);
+        {
+            Scene.ShowFloater($"+{Display.Money(task.EarnedReward)}", Palette.Leaf, size: 24);
+            Scene.BurstCoins(12);
+        };
     }
 
-    /// <summary>Appelé à chaque image par la fenêtre, après la mise à jour du jeu.</summary>
-    public void Refresh()
+    public void Tick(double deltaTime)
     {
-        _viewModel.Refresh();
+        _viewModel.Refresh(deltaTime);
 
         var session = _state.Session;
         var upgrades = session.Upgrades;
@@ -36,17 +44,60 @@ public partial class PlayingView : UserControl
             upgrades[UpgradeTrackId.Coffee].Level,
             upgrades[UpgradeTrackId.Housing].Level,
             session.Career.Stage,
-            session.Staff.TotalCount));
-        Scene.Animate(_viewModel.IsWorking);
+            session.Staff.TotalCount,
+            session.Perks.Any(p => p.Id == "cat")));
+        Scene.Animate(new SceneMood(_viewModel.IsWorking, _viewModel.DayPhase, _viewModel.InCrisis, _viewModel.InDebt));
     }
 
-    private void Hustle()
+    public bool HandleKey(Key key)
     {
+        switch (key)
+        {
+            case Key.Escape:
+                _viewModel.TogglePause();
+                return true;
+            case Key.Space:
+                Hustle(null);
+                return true;
+            case Key.Enter:
+                _viewModel.Confirm();
+                return true;
+            case Key.R:
+                _viewModel.Reroll();
+                return true;
+            case >= Key.D1 and <= Key.D4:
+                _viewModel.PickChoice(key - Key.D1);
+                return true;
+            case >= Key.NumPad1 and <= Key.NumPad4:
+                _viewModel.PickChoice(key - Key.NumPad1);
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void Hustle(Point? at)
+    {
+        if (_state.IsPaused || _state.Session.IsPaused)
+            return;
+
         var result = _state.Session.Hustle();
+        var position = at.HasValue ? new Point(at.Value.X - 12, at.Value.Y - 20) : (Point?)null;
+
+        if (result.IsCritical)
+        {
+            Sfx.Play(Sound.Crit);
+            Scene.ShowFloater("COUP DE GÉNIE !", Palette.Ice, position, 20);
+            Juice.Shake(4);
+        }
+        else
+        {
+            Sfx.Play(Sound.Click, 0.7f);
+        }
 
         if (result.Money > 0)
-            Scene.ShowFloater($"+{Display.Money(result.Money)}", Display.Gold);
+            Scene.ShowFloater($"+{Display.Money(result.Money)}", Palette.Gold, position, 16);
         else if (result.Work > 0)
-            Scene.ShowFloater($"+{result.Work:0.#} s", Display.Normal, size: 13);
+            Scene.ShowFloater($"+{result.Work:0.#}s", Palette.Cloud, position, 14);
     }
 }

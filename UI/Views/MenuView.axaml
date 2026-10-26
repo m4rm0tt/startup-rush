@@ -2,24 +2,148 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="650"
-             x:Class="UI.Views.MenuView">
-    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16" Width="420">
-        <TextBlock Text="Startup Rush" FontSize="48" FontWeight="Bold" HorizontalAlignment="Center"
-                   Foreground="#FFCA28"/>
-        <TextBlock Text="De fauché à roi du monde."
-                   FontSize="18" HorizontalAlignment="Center"/>
-        <TextBlock Foreground="#90A4AE" TextWrapping="Wrap" TextAlignment="Center"
-                   Text="Tu commences avec 150 CHF, un portable qui rame et un loyer à payer. Charbonne, prends des contrats, améliore ton matériel, fonde ta boîte, embauche, investis... et deviens milliardaire avant que les factures ne t'enterrent."/>
+             xmlns:vm="using:UI.ViewModels"
+             xmlns:views="using:UI.Views"
+             xmlns:px="using:UI.Pixel"
+             mc:Ignorable="d" d:DesignWidth="1600" d:DesignHeight="900"
+             x:Class="UI.Views.MenuView"
+             x:DataType="vm:MenuViewModel">
+    <Grid>
+        <!-- Fond : la chambre du héros, la nuit, sous la pluie -->
+        <views:SceneView x:Name="Backdrop" IsHitTestVisible="False"/>
+        <Rectangle Fill="#b30b0913"/>
 
-        <StackPanel Spacing="6" Margin="0,16,0,0">
-            <TextBlock Text="Ton prénom"/>
-            <TextBox x:Name="PlayerNameBox" PlaceholderText="Alex" MaxLength="20"/>
+        <!-- Lingots, toujours visibles -->
+        <Border Classes="panel" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="24" Padding="12,6">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <px:PixelImage Source="{Binding GoldIcon}" Width="32" Height="32"/>
+                <TextBlock Text="{Binding LingotsText}" Classes="num" FontSize="34" Foreground="{StaticResource Gold}"
+                           VerticalAlignment="Center"/>
+                <TextBlock Text="LINGOTS" Classes="label" VerticalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- ======================= ÉCRAN TITRE ======================= -->
+        <StackPanel IsVisible="{Binding IsTitle}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+            <Grid HorizontalAlignment="Center">
+                <!-- Ombre dure décalée sous le logo -->
+                <TextBlock Text="STARTUP RUSH" FontSize="128" FontWeight="Bold" Foreground="{StaticResource Wine}"
+                           Margin="8,8,0,0"/>
+                <TextBlock Text="STARTUP RUSH" FontSize="128" FontWeight="Bold" Foreground="{StaticResource Gold}"/>
+            </Grid>
+            <TextBlock Text="DE FAUCHÉ À ROI DU MONDE" FontSize="30" Foreground="{StaticResource Snow}"
+                       HorizontalAlignment="Center" LetterSpacing="6"/>
+            <TextBlock Text="Un roguelike de gestion où chaque run est une nouvelle vie." Classes="muted"
+                       FontSize="18" HorizontalAlignment="Center" Margin="0,0,0,36"/>
+
+            <Button Content="JOUER" Command="{Binding PlayCommand}" Classes="gold big" Width="360"/>
+            <Button Content="HÉRITAGE" Command="{Binding LegacyCommand}" Classes="big" Width="360"/>
+            <Button x:Name="QuitButton" Content="QUITTER" Classes="big" Width="360"/>
+
+            <TextBlock Text="{Binding StatsText}" Classes="label" HorizontalAlignment="Center" Margin="0,30,0,0"/>
         </StackPanel>
 
-        <Button x:Name="NewGameButton" Content="Nouvelle partie" Classes="accent"
-                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="12"/>
-        <Button x:Name="QuitButton" Content="Quitter"
-                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="12"/>
-    </StackPanel>
+        <TextBlock IsVisible="{Binding IsTitle}" Text="v0.2.0 · polices Pixelify Sans et VT323 (SIL OFL) · sons et pixel art faits maison"
+                   Classes="label" FontSize="13" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="24"/>
+
+        <!-- ======================= CHOIX DU PERSONNAGE ======================= -->
+        <DockPanel IsVisible="{Binding IsSelect}" Margin="60,40">
+            <TextBlock DockPanel.Dock="Top" Text="CHOISIS TON FONDATEUR" Classes="h1" HorizontalAlignment="Center"
+                       Foreground="{StaticResource Gold}" Margin="0,0,0,24"/>
+
+            <StackPanel DockPanel.Dock="Bottom" Spacing="14" HorizontalAlignment="Center">
+                <Border Classes="panel" Padding="16,8">
+                    <StackPanel Orientation="Horizontal" Spacing="16">
+                        <Button Content="◀" Command="{Binding PressureDownCommand}"/>
+                        <StackPanel Width="560">
+                            <TextBlock Text="{Binding PressureName}" Classes="h3" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding PressureDescription}" Classes="muted" TextAlignment="Center"/>
+                        </StackPanel>
+                        <Button Content="▶" Command="{Binding PressureUpCommand}"/>
+                    </StackPanel>
+                </Border>
+                <StackPanel Orientation="Horizontal" Spacing="16" HorizontalAlignment="Center">
+                    <Button Content="[ÉCHAP] RETOUR" Command="{Binding BackCommand}" Classes="big"/>
+                    <Button Content="{Binding StartText}" Command="{Binding StartCommand}" IsEnabled="{Binding CanStart}"
+                            Classes="gold big"/>
+                </StackPanel>
+            </StackPanel>
+
+            <ItemsControl ItemsSource="{Binding Characters}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="24"/></ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:CharacterCardViewModel">
+                        <Button Command="{Binding SelectCommand}" Padding="0" Background="Transparent" BorderThickness="0">
+                            <Border Classes="panel lift" Width="300" Height="430" BorderBrush="{Binding FrameBrush}"
+                                    BorderThickness="4" Padding="16">
+                                <Grid>
+                                    <StackPanel Spacing="8">
+                                        <Border Classes="inset" HorizontalAlignment="Center" Padding="6">
+                                            <px:PixelImage Source="{Binding Portrait}" Width="128" Height="128"/>
+                                        </Border>
+                                        <TextBlock Text="{Binding Name}" Classes="h2" HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Title}" Foreground="{StaticResource Gold}" FontSize="18"
+                                                   HorizontalAlignment="Center"/>
+                                        <TextBlock Text="{Binding Description}" FontSize="15" TextWrapping="Wrap"
+                                                   TextAlignment="Center"/>
+                                        <Border Classes="tag">
+                                            <TextBlock Text="{Binding Trait}" FontSize="14" TextWrapping="Wrap"
+                                                       TextAlignment="Center" Foreground="{StaticResource Cloud}"/>
+                                        </Border>
+                                    </StackPanel>
+                                    <Border IsVisible="{Binding IsLocked}" Background="{StaticResource Night}">
+                                        <StackPanel VerticalAlignment="Center" Spacing="12">
+                                            <px:PixelImage Source="{Binding Portrait}" Width="128" Height="128"
+                                                           Opacity="0.15" HorizontalAlignment="Center"/>
+                                            <TextBlock Text="VERROUILLÉ" Classes="h2" HorizontalAlignment="Center"
+                                                       Foreground="{StaticResource Fog}"/>
+                                            <Button Content="{Binding UnlockText}" Command="{Binding UnlockCommand}"
+                                                    IsEnabled="{Binding CanUnlock}" Classes="gold"
+                                                    HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </DockPanel>
+
+        <!-- ======================= HÉRITAGE ======================= -->
+        <DockPanel IsVisible="{Binding IsLegacy}" Margin="120,40">
+            <StackPanel DockPanel.Dock="Top" Margin="0,0,0,24">
+                <TextBlock Text="HÉRITAGE" Classes="h1" HorizontalAlignment="Center" Foreground="{StaticResource Gold}"/>
+                <TextBlock Text="Chaque run te rapporte des lingots. Dépense-les ici en avantages permanents."
+                           Classes="muted" FontSize="18" HorizontalAlignment="Center"/>
+            </StackPanel>
+            <Button DockPanel.Dock="Bottom" Content="[ÉCHAP] RETOUR" Command="{Binding BackCommand}" Classes="big"
+                    HorizontalAlignment="Center" Margin="0,20,0,0"/>
+            <ItemsControl ItemsSource="{Binding LegacyUpgrades}" HorizontalAlignment="Center">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate><WrapPanel Width="1240"/></ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:LegacyUpgradeViewModel">
+                        <Border Classes="panel" Width="390" Height="170" Margin="10" Padding="16">
+                            <DockPanel>
+                                <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="{Binding Pips}" FontSize="22" Foreground="{StaticResource Gold}"
+                                               VerticalAlignment="Center"/>
+                                    <Button Grid.Column="1" Content="{Binding CostText}" Command="{Binding BuyCommand}"
+                                            IsEnabled="{Binding CanBuy}" Classes="gold"/>
+                                </Grid>
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{Binding Name}" Classes="h3"/>
+                                    <TextBlock Text="{Binding Description}" Classes="muted" FontSize="16"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </DockPanel>
+    </Grid>
 </UserControl>

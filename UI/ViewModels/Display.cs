@@ -1,18 +1,19 @@
 using System;
 using Avalonia.Media;
 using Core.requests;
+using UI.Pixel;
 
 namespace UI.ViewModels;
 
-/// <summary>Formats et couleurs partagés par les écrans.</summary>
+/// <summary>Formats et couleurs partagés par les écrans (toutes les couleurs viennent de la palette).</summary>
 public static class Display
 {
-    public static readonly IBrush Normal = new SolidColorBrush(Color.Parse("#CFD8DC"));
-    public static readonly IBrush Muted = new SolidColorBrush(Color.Parse("#90A4AE"));
-    public static readonly IBrush Good = new SolidColorBrush(Color.Parse("#66BB6A"));
-    public static readonly IBrush Warning = new SolidColorBrush(Color.Parse("#FFA726"));
-    public static readonly IBrush Danger = new SolidColorBrush(Color.Parse("#EF5350"));
-    public static readonly IBrush Gold = new SolidColorBrush(Color.Parse("#FFCA28"));
+    public static readonly IBrush Normal = Palette.Cloud;
+    public static readonly IBrush Muted = Palette.Fog;
+    public static readonly IBrush Good = Palette.Leaf;
+    public static readonly IBrush Warning = Palette.Gold;
+    public static readonly IBrush Danger = Palette.Blood;
+    public static readonly IBrush Gold = Palette.Lemon;
 
     /// <summary>Montant lisible d'un coup d'œil : 1 234 CHF, 456 k CHF, 12,3 M CHF, 1,05 Md CHF.</summary>
     public static string Money(double amount)
@@ -33,7 +34,7 @@ public static class Display
 
     public static string Clock(double seconds)
     {
-        var time = TimeSpan.FromSeconds(seconds);
+        var time = TimeSpan.FromSeconds(Math.Max(0, seconds));
         return $"{(int)time.TotalMinutes:00}:{time.Seconds:00}";
     }
 

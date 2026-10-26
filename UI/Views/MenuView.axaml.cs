@@ -1,26 +1,48 @@
 using Avalonia.Controls;
 using Avalonia.Input;
+using Core.progression;
 using Core.states;
+using UI.ViewModels;
 
 namespace UI.Views;
 
-public partial class MenuView : UserControl
+public partial class MenuView : UserControl, IGameScreen
 {
-    private readonly MenuState _state;
+    private readonly MenuViewModel _viewModel;
 
     public MenuView(MenuState state)
     {
         InitializeComponent();
-        _state = state;
+        _viewModel = new MenuViewModel(state);
+        DataContext = _viewModel;
 
-        NewGameButton.Click += (_, _) => StartNewGame();
         QuitButton.Click += (_, _) => (TopLevel.GetTopLevel(this) as Window)?.Close();
-        PlayerNameBox.KeyDown += (_, e) =>
-        {
-            if (e.Key == Key.Enter)
-                StartNewGame();
-        };
+
+        // Le décor du menu : le studio miteux, la nuit, sous la pluie
+        Backdrop.FillArea();
+        Backdrop.Render(new SceneLook(0, 0, 0, 0, 0, CareerStage.Broke, 0, false));
     }
 
-    private void StartNewGame() => _state.StartRun(Core.roguelike.CharacterCatalog.All[0]);
+    public void Tick(double deltaTime)
+    {
+        Backdrop.Animate(new SceneMood(true, 0.9, false, false));
+    }
+
+    public bool HandleKey(Key key)
+    {
+        switch (key)
+        {
+            case Key.Escape when !_viewModel.IsTitle:
+                _viewModel.Show("title");
+                return true;
+            case Key.Enter when _viewModel.IsTitle:
+                _viewModel.Show("select");
+                return true;
+            case Key.Enter when _viewModel.IsSelect:
+                _viewModel.Start();
+                return true;
+            default:
+                return false;
+        }
+    }
 }

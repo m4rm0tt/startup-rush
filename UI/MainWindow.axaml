@@ -2,11 +2,19 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="1360" d:DesignHeight="820"
+        mc:Ignorable="d" d:DesignWidth="1600" d:DesignHeight="900"
         x:Class="UI.MainWindow"
         Title="Startup Rush"
-        Width="1360" Height="820" MinWidth="1200" MinHeight="740"
-        Background="#1C2529">
-        <!-- L'écran affiché suit l'état courant de la machine à états -->
-        <ContentControl x:Name="ScreenHost"/>
+        Width="1440" Height="810" MinWidth="960" MinHeight="540"
+        WindowStartupLocation="CenterScreen"
+        Background="#0b0913"
+        FontFamily="{StaticResource PixelFont}">
+    <!-- Tout le jeu est conçu en 1600 × 900, puis mis à l'échelle de la fenêtre (bandes noires si besoin) -->
+    <Viewbox Stretch="Uniform">
+        <Grid x:Name="Root" Width="1600" Height="900" Background="#181425" ClipToBounds="True">
+            <ContentControl x:Name="ScreenHost"/>
+            <Rectangle x:Name="FlashLayer" Fill="#e43b44" Opacity="0" IsHitTestVisible="False"/>
+            <Rectangle x:Name="FadeLayer" Fill="#000000" Opacity="0" IsHitTestVisible="False"/>
+        </Grid>
+    </Viewbox>
 </Window>

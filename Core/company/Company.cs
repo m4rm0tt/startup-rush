@@ -11,6 +11,7 @@ public class Company
     private readonly List<ClientRequest> _pendingRequests = new();
     private readonly List<WorkTask> _activeTasks = new();
 
+    public string Name { get; }
     public double WalletBalance => _wallet.Balance;
     public bool IsBankrupt => _wallet.Balance < 0;
 
@@ -41,9 +42,10 @@ public class Company
     public event Action<WorkTask>? TaskCompleted;
     public event Action<WorkTask>? TaskFailed;
 
-    public Company(GameConfig config)
+    public Company(GameConfig config, string name = "Ma Startup")
     {
         _config = config;
+        Name = name;
         _wallet = new Wallet(config.StartingCapital);
         OperatingCost = config.BaseOperatingCost;
     }

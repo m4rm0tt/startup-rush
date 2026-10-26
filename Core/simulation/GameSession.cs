@@ -21,11 +21,11 @@ public class GameSession
 
     public event Action<GameResult>? GameOver;
 
-    public GameSession(GameConfig? config = null, Random? random = null)
+    public GameSession(GameConfig? config = null, Random? random = null, string companyName = "Ma Startup")
     {
         Config = config ?? new GameConfig();
         _gameClock = new GameClock(Config.MaxDeltaTime);
-        _company = new Company(Config);
+        _company = new Company(Config, companyName);
         _requestGenerator = new RequestGenerator(random ?? new Random(), Config);
     }
 

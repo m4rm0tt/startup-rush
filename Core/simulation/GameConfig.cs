@@ -28,6 +28,19 @@ public class GameConfig
 
     // Tâches
     public double WorkSecondsPerDifficulty { get; init; } = 6;
+    public int MaxActiveTasks { get; init; } = 2; // capacité du fondateur, remplacée par les employés en P1
+    public LatePenalty LatePenalty { get; init; } = LatePenalty.ReducedReward;
+    public double LateRewardMultiplier { get; init; } = 0.5; // utilisé avec LatePenalty.ReducedReward
 
     public double WorkDurationFor(int difficulty) => difficulty * WorkSecondsPerDifficulty;
+}
+
+/// <summary>Conséquence d'une tâche qui dépasse son échéance.</summary>
+public enum LatePenalty
+{
+    /// <summary>La tâche continue et rapporte une partie de sa valeur.</summary>
+    ReducedReward,
+
+    /// <summary>La tâche échoue dès que l'échéance est dépassée, sans gain.</summary>
+    Fail
 }

@@ -1,18 +1,27 @@
 ﻿using Core.requests;
 using Core.simulation;
+using Core.tasks;
 
 namespace Core.company;
 
 public class Company
 {
+    private readonly GameConfig _config;
     private Wallet _wallet;
     private double _operatingCost;
     private readonly List<ClientRequest> _pendingRequests = new();
+    private readonly List<WorkTask> _activeTasks = new();
 
     public double WalletBalance => _wallet.Balance;
 
     /// <summary>Demandes en attente de décision du joueur.</summary>
     public IReadOnlyList<ClientRequest> PendingRequests => _pendingRequests;
+
+    /// <summary>Tâches en cours de réalisation.</summary>
+    public IReadOnlyList<WorkTask> ActiveTasks => _activeTasks;
+
+    public int MaxActiveTasks => _config.MaxActiveTasks;
+    public bool HasFreeCapacity => _activeTasks.Count < _config.MaxActiveTasks;
 
     public event Action<double> BalanceChanged
     {
@@ -22,9 +31,12 @@ public class Company
 
     public event Action<ClientRequest>? RequestReceived;
     public event Action<ClientRequest>? RequestExpired;
+    public event Action<WorkTask>? TaskCompleted;
+    public event Action<WorkTask>? TaskFailed;
 
     public Company(GameConfig config)
     {
+        _config = config;
         _wallet = new Wallet(config.StartingCapital);
         _operatingCost = config.BaseOperatingCost;
     }
@@ -35,14 +47,18 @@ public class Company
         RequestReceived?.Invoke(request);
     }
 
-    /// <summary>Accepte une demande en attente. Renvoie false si la demande est inconnue.</summary>
+    /// <summary>
+    /// Accepte une demande en attente et lance la tâche correspondante.
+    /// Renvoie false si la demande est inconnue ou si la capacité est atteinte.
+    /// </summary>
     public bool AcceptRequest(int requestId)
     {
         var request = FindPendingRequest(requestId);
-        if (request == null)
+        if (request == null || !HasFreeCapacity)
             return false;
 
         _pendingRequests.Remove(request);
+        _activeTasks.Add(new WorkTask(request, _config));
         return true;
     }
 
@@ -60,6 +76,7 @@ public class Company
     public void Update(double deltaTime)
     {
         UpdateRequests(deltaTime);
+        UpdateTasks(deltaTime);
         PayOperatingCosts(deltaTime);
     }
 
@@ -74,6 +91,29 @@ public class Company
         {
             _pendingRequests.Remove(request);
             RequestExpired?.Invoke(request);
+        }
+    }
+
+    /// <summary>Fait avancer les tâches, encaisse celles qui sont terminées et retire les échouées.</summary>
+    public void UpdateTasks(double deltaTime)
+    {
+        foreach (var task in _activeTasks)
+            task.Update(deltaTime);
+
+        var finished = _activeTasks.Where(t => t.Status != WorkTaskStatus.InProgress).ToList();
+        foreach (var task in finished)
+        {
+            _activeTasks.Remove(task);
+
+            if (task.Status == WorkTaskStatus.Completed)
+            {
+                _wallet.Earn(task.EarnedReward);
+                TaskCompleted?.Invoke(task);
+            }
+            else
+            {
+                TaskFailed?.Invoke(task);
+            }
         }
     }
 

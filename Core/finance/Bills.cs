@@ -4,9 +4,10 @@ namespace Core.finance;
 
 /// <summary>Le détail d'une facture mensuelle.</summary>
 /// <param name="Salaries">Salaires et loyer des locaux de la boîte.</param>
-public record BillBreakdown(double Housing, double Salaries, double Subscriptions)
+/// <param name="Taxes">Impôt sur la fortune.</param>
+public record BillBreakdown(double Housing, double Salaries, double Subscriptions, double Taxes = 0)
 {
-    public double Total => Housing + Salaries + Subscriptions;
+    public double Total => Housing + Salaries + Subscriptions + Taxes;
 }
 
 /// <summary>
@@ -21,11 +22,17 @@ public class Bills
 
     public double TimeUntilDue { get; private set; }
     public int MissedPayments { get; private set; }
+
+    /// <summary>Factures impayées qui seront pardonnées (assurances).</summary>
+    public int Shields { get; set; }
     public int MaxMissedPayments => _maxMissedPayments;
     public bool IsBankrupt => MissedPayments >= _maxMissedPayments;
 
     /// <summary>Facture prélevée, et vrai si elle n'a pas pu être couverte.</summary>
     public event Action<BillBreakdown, bool>? BillPaid;
+
+    /// <summary>Un impayé vient d'être pardonné par un bouclier.</summary>
+    public event Action? Shielded;
 
     public Bills(double monthDuration, int maxMissedPayments)
     {
@@ -44,7 +51,16 @@ public class Bills
         wallet.Pay(currentBill.Total);
 
         bool unpaid = wallet.Balance < 0;
-        MissedPayments = unpaid ? MissedPayments + 1 : 0;
+        if (unpaid && Shields > 0)
+        {
+            Shields--;
+            Shielded?.Invoke();
+        }
+        else
+        {
+            MissedPayments = unpaid ? MissedPayments + 1 : 0;
+        }
+
         BillPaid?.Invoke(currentBill, unpaid);
     }
 }

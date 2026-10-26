@@ -15,14 +15,14 @@ public partial class GameOverView : UserControl
         {
             TitleText.Text = "Roi du monde !";
             TitleText.Foreground = Display.Gold;
-            SubtitleText.Text = $"{state.PlayerName} est parti de 150 CHF et d'un portable qui rame. " +
+            SubtitleText.Text = $"{state.Result.CharacterName} est parti de 150 CHF et d'un portable qui rame. " +
                                 "Aujourd'hui, le monde lui appartient.";
         }
         else
         {
             TitleText.Text = "Faillite !";
             TitleText.Foreground = Display.Danger;
-            SubtitleText.Text = $"Les huissiers ont tout saisi. {state.PlayerName} retourne vivre chez ses parents.";
+            SubtitleText.Text = $"Les huissiers ont tout saisi. {state.Result.CharacterName} retourne vivre chez ses parents.";
         }
 
         StageText.Text = result.StageTitle;

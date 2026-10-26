@@ -48,14 +48,17 @@ public class Staff
 
     public EmployeeRoleInfo Info(EmployeeRole role) => Roles.First(r => r.Role == role);
 
-    public bool Hire(EmployeeRole role, Wallet wallet)
+    public bool Hire(EmployeeRole role, Wallet wallet, double costMultiplier = 1)
     {
-        if (!wallet.TrySpend(Info(role).HiringCost))
+        if (!wallet.TrySpend(Info(role).HiringCost * costMultiplier))
             return false;
 
-        _counts[role] = Count(role) + 1;
+        Add(role);
         return true;
     }
+
+    /// <summary>Ajoute un employé sans frais d'embauche (cadeau d'un événement).</summary>
+    public void Add(EmployeeRole role) => _counts[role] = Count(role) + 1;
 
     public bool Fire(EmployeeRole role)
     {

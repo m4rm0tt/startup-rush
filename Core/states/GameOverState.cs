@@ -1,19 +1,25 @@
+using Core.meta;
+using Core.roguelike;
 using Core.simulation;
 
 namespace Core.states;
 
+/// <summary>Résumé de la run et lingots gagnés.</summary>
 public class GameOverState : IGameState
 {
     private readonly GameStateMachine _machine;
 
     public GameResult Result { get; }
-    public string PlayerName { get; }
+    public RunReward Reward { get; }
+    public RunSetup Setup { get; }
+    public Profile Profile => _machine.Profile;
 
-    public GameOverState(GameStateMachine machine, GameResult result, string playerName)
+    public GameOverState(GameStateMachine machine, GameResult result, RunReward reward, RunSetup setup)
     {
         _machine = machine;
         Result = result;
-        PlayerName = playerName;
+        Reward = reward;
+        Setup = setup;
     }
 
     public void Enter() { }
@@ -22,10 +28,10 @@ public class GameOverState : IGameState
 
     public void Exit() { }
 
-    /// <summary>Relance une partie neuve avec le même joueur.</summary>
+    /// <summary>Relance une run avec le même personnage et la même pression, sur une nouvelle graine.</summary>
     public void Replay()
     {
-        _machine.ChangeState(new PlayingState(_machine, _machine.CreateSession(PlayerName)));
+        new MenuState(_machine).StartRun(Setup.Character, Setup.Pressure);
     }
 
     public void BackToMenu()

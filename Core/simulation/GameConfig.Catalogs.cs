@@ -1,14 +1,19 @@
 using Core.businesses;
 using Core.investments;
 using Core.progression;
+using Core.roguelike;
 using Core.staff;
 using Core.upgrades;
 
 namespace Core.simulation;
 
 /// <summary>Les listes de contenu du jeu, réglables comme le reste de GameConfig.</summary>
-public partial class GameConfig
+public partial record GameConfig
 {
+    public IReadOnlyList<Perk> Perks { get; init; } = PerkCatalog.All;
+    public IReadOnlyList<CrisisInfo> Crises { get; init; } = CrisisCatalog.All;
+    public IReadOnlyList<GameEventInfo> Events { get; init; } = EventCatalog.All;
+
     public IReadOnlyList<CareerStageInfo> CareerStages { get; init; } =
     [
         new(CareerStage.Broke, "Fauché", 0,

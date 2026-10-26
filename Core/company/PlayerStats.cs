@@ -16,6 +16,13 @@ public class PlayerStats
     public int MaxDifficulty { get; set; }
     public double ValueMultiplier { get; set; } = 1;
     public bool AutoAccept { get; set; }
+    public double GigMultiplier { get; set; } = 1;
+    public double ReputationGain { get; set; } = 1;
+    public double OfferDurationMultiplier { get; set; } = 1;
+    public double DeadlineMultiplier { get; set; } = 1;
+
+    /// <summary>Les clics rapportent un petit boulot même quand une tâche est en cours.</summary>
+    public bool ClicksAlwaysPay { get; set; }
 
     public PlayerStats(GameConfig config)
     {

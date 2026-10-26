@@ -5,7 +5,7 @@ namespace Core.simulation;
 /// pour que les tests puissent utiliser leurs propres réglages.
 /// Les catalogues (matériel, employés, boîtes...) sont dans GameConfig.Catalogs.cs.
 /// </summary>
-public partial class GameConfig
+public partial record GameConfig
 {
     // Temps
     public double MaxDeltaTime { get; init; } = 0.25; // secondes, évite les sauts quand la fenêtre est figée
@@ -15,6 +15,8 @@ public partial class GameConfig
     // Économie
     public double StartingCapital { get; init; } = 150;
     public int MaxMissedPayments { get; init; } = 2; // impayés d'affilée avant la faillite
+    public double WealthTaxRate { get; init; } = 0.01; // impôt mensuel sur le patrimoine...
+    public double WealthTaxAllowance { get; init; } = 50_000; // ...au-delà de ce montant
 
     // Demandes
     public double FirstRequestDelay { get; init; } = 2; // secondes avant la première demande
@@ -46,6 +48,20 @@ public partial class GameConfig
     public double BusinessCostGrowth { get; init; } = 1.3; // chaque niveau coûte 30 % de plus
     public double HoldingCost { get; init; } = 50_000_000;
     public double HoldingIncomeMultiplier { get; init; } = 2;
+
+    // Roguelike
+    public bool RoguelikeEnabled { get; init; } = true; // atouts, crises et événements (désactivables pour les tests)
+    public int MonthsPerQuarter { get; init; } = 3; // un choix d'atout à chaque bilan trimestriel
+    public int DraftChoices { get; init; } = 3;
+    public double RerollBaseCost { get; init; } = 0.25; // part de la facture du mois
+    public double RerollCostGrowth { get; init; } = 1.6; // chaque relance coûte 60 % de plus
+    public double SkipRewardFraction { get; init; } = 0.5; // passer un choix rapporte une demi-facture
+    public int FirstCrisisMonth { get; init; } = 6;
+    public int CrisisEvery { get; init; } = 3; // mois entre deux crises
+    public double FirstEventDelay { get; init; } = 90; // secondes
+    public double MinEventInterval { get; init; } = 75;
+    public double MaxEventInterval { get; init; } = 140;
+    public double InterestCapBills { get; init; } = 2; // les intérêts mensuels ne dépassent pas 2 factures
 
     public double WorkDurationFor(int difficulty) => difficulty * WorkSecondsPerDifficulty;
 }

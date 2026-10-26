@@ -22,5 +22,5 @@ public partial class MenuView : UserControl
         };
     }
 
-    private void StartNewGame() => _state.StartNewGame(PlayerNameBox.Text ?? "");
+    private void StartNewGame() => _state.StartRun(Core.roguelike.CharacterCatalog.All[0]);
 }

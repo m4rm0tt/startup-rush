@@ -29,6 +29,12 @@ public class Business
         Level++;
         TotalInvested += paid;
     }
+
+    internal void Reset()
+    {
+        Level = 0;
+        TotalInvested = 0;
+    }
 }
 
 /// <summary>Toutes les boîtes du joueur, et sa holding qui les regroupe.</summary>
@@ -58,13 +64,13 @@ public class BusinessGroup
     }
 
     /// <summary>Crée la boîte si elle n'existe pas encore, sinon la fait grandir d'un niveau.</summary>
-    public bool TryInvest(int index, Wallet wallet)
+    public bool TryInvest(int index, Wallet wallet, double costMultiplier = 1)
     {
         if (index < 0 || index >= Businesses.Count)
             return false;
 
         var business = Businesses[index];
-        double cost = business.NextCost;
+        double cost = business.NextCost * costMultiplier;
         if (!wallet.TrySpend(cost))
             return false;
 
@@ -82,10 +88,13 @@ public class BusinessGroup
         return true;
     }
 
+    /// <summary>La boîte disparaît (vendue) : elle repart de zéro.</summary>
+    public void Sell(Business business) => business.Reset();
+
     /// <summary>Verse le revenu passif du delta dans le portefeuille et renvoie le montant.</summary>
-    public double Update(double deltaTime, Wallet wallet)
+    public double Update(double deltaTime, Wallet wallet, double incomeMultiplier = 1)
     {
-        double income = IncomePerSecond * deltaTime;
+        double income = IncomePerSecond * incomeMultiplier * deltaTime;
         if (income > 0)
             wallet.Earn(income);
 

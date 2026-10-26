@@ -1,4 +1,5 @@
 using Core.progression;
+using Core.roguelike;
 using Core.simulation;
 
 namespace Tests.simulation;
@@ -37,7 +38,30 @@ public class BalanceReportTest
             .Select(b => b.Session.ElapsedTime / 60).OrderBy(t => t).ToList();
 
         Assert.That(victories, Is.GreaterThanOrEqualTo(Games - 1), "un bon joueur doit pouvoir gagner");
-        Assert.That(victoryTimes[victoryTimes.Count / 2], Is.InRange(40, 120), "durée médiane d'une partie gagnée (min)");
+        Assert.That(victoryTimes[victoryTimes.Count / 2], Is.InRange(30, 90), "durée médiane d'une run gagnée (min)");
+    }
+
+    [Test]
+    public void TopPressureIsHarder()
+    {
+        var normal = PlayWithPressure(0);
+        var hard = PlayWithPressure(PressureCatalog.All.Count - 1);
+
+        TestContext.Out.WriteLine($"Pression 0 : {normal.Wins}/{Games} victoires, médiane {normal.MedianMinutes:F1} min");
+        TestContext.Out.WriteLine($"Pression max : {hard.Wins}/{Games} victoires, médiane {hard.MedianMinutes:F1} min");
+
+        Assert.That(hard.Wins < normal.Wins || hard.MedianMinutes > normal.MedianMinutes * 1.1, Is.True);
+    }
+
+    private static (int Wins, double MedianMinutes) PlayWithPressure(int pressure)
+    {
+        var sessions = Enumerable.Range(0, Games)
+            .Select(seed => GameBot.Play(
+                new GameSession(setup: new RunSetup(CharacterCatalog.All[0], pressure, seed, new LegacyBonuses())),
+                BotStrategy.Tycoon))
+            .ToList();
+        var times = sessions.Select(s => s.ElapsedTime / 60).OrderBy(t => t).ToList();
+        return (sessions.Count(s => s.Result?.IsVictory == true), times[times.Count / 2]);
     }
 
     /// <summary>Déroulé minute par minute d'une partie du bot, pour comprendre où l'équilibrage coince.</summary>

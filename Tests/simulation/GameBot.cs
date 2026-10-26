@@ -1,4 +1,5 @@
 using Core.progression;
+using Core.roguelike;
 using Core.simulation;
 using Core.staff;
 using Core.upgrades;
@@ -46,6 +47,8 @@ public class GameBot
 
         while (!session.IsOver && session.ElapsedTime < maxTime)
         {
+            HandleChoices(session);
+
             if (_strategy != BotStrategy.Idle)
             {
                 AcceptRequests(session);
@@ -59,6 +62,35 @@ public class GameBot
         }
 
         return session;
+    }
+
+    /// <summary>
+    /// Atouts : le plus rare (Idle et TasksOnly passent pour ne pas fausser leur rôle de témoin).
+    /// Événements : toujours le dernier choix, le prudent.
+    /// </summary>
+    private void HandleChoices(GameSession session)
+    {
+        while (session.PendingChoice is { } choice)
+        {
+            if (choice is Draft draft)
+            {
+                if (_strategy == BotStrategy.Tycoon)
+                {
+                    var best = draft.Options.Select((perk, i) => (perk, i)).MaxBy(o => o.perk.Rarity);
+                    session.ChoosePerk(best.i);
+                }
+                else
+                {
+                    session.SkipDraft();
+                }
+            }
+            else if (choice is GameEvent gameEvent)
+            {
+                if (!gameEvent.IsResolved)
+                    session.ChooseEventOption(gameEvent.Info.Options.Count - 1);
+                session.ConfirmEvent();
+            }
+        }
     }
 
     private static void AcceptRequests(GameSession session)

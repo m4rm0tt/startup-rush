@@ -83,7 +83,7 @@ public class GameSessionTest
     [Test]
     public void FeaturesAreLockedUntilTheirStage()
     {
-        var session = new GameSession(new GameConfig { StartingCapital = 1_000_000_000 }, new Random(0));
+        var session = new GameSession(new GameConfig { StartingCapital = 1_000_000_000, RoguelikeEnabled = false }, new Random(0));
 
         Assert.That(session.IsUnlocked(Feature.FoundCompany), Is.False);
         Assert.That(session.FoundCompany("Acme"), Is.False);
@@ -95,7 +95,7 @@ public class GameSessionTest
     [Test]
     public void StoryAdvancesWithNetWorthAndFounding()
     {
-        var session = new GameSession(new GameConfig { StartingCapital = 50_000 }, new Random(0));
+        var session = new GameSession(new GameConfig { StartingCapital = 50_000, RoguelikeEnabled = false }, new Random(0));
         var reached = new List<CareerStage>();
         session.Career.StageReached += s => reached.Add(s.Stage);
 
@@ -112,7 +112,7 @@ public class GameSessionTest
     [Test]
     public void HiringNeedsAFoundedCompanyAndAddsCapacity()
     {
-        var session = new GameSession(new GameConfig { StartingCapital = 50_000 }, new Random(0));
+        var session = new GameSession(new GameConfig { StartingCapital = 50_000, RoguelikeEnabled = false }, new Random(0));
         session.Update(0.1);
         Assert.That(session.Hire(EmployeeRole.Intern), Is.False);
 
@@ -128,7 +128,7 @@ public class GameSessionTest
     [Test]
     public void VictoryWhenKingOfTheWorld()
     {
-        var config = new GameConfig { StartingCapital = 2_000_000_000 };
+        var config = new GameConfig { StartingCapital = 2_000_000_000, RoguelikeEnabled = false };
         var session = new GameSession(config, new Random(0));
 
         session.Update(0.1); // Freelance
@@ -150,7 +150,7 @@ public class GameSessionTest
     [Test]
     public void NetWorthCountsCashMarketAndBusinesses()
     {
-        var session = new GameSession(new GameConfig { StartingCapital = 1_000_000_000 }, new Random(0));
+        var session = new GameSession(new GameConfig { StartingCapital = 1_000_000_000, RoguelikeEnabled = false }, new Random(0));
         session.Update(0.1);
         session.FoundCompany("Acme");
         session.Update(0.1);

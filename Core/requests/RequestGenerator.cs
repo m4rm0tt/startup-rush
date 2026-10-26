@@ -63,7 +63,7 @@ public class RequestGenerator
         double? deadline = null;
         if (_random.NextDouble() < _config.DeadlineChance)
         {
-            double margin = RandomBetween(_config.MinDeadlineMargin, _config.MaxDeadlineMargin);
+            double margin = RandomBetween(_config.MinDeadlineMargin, _config.MaxDeadlineMargin) * _stats.DeadlineMultiplier;
             deadline = Math.Round(_config.WorkDurationFor(difficulty) / _stats.WorkSpeed * margin);
         }
 
@@ -74,7 +74,8 @@ public class RequestGenerator
         var types = Enum.GetValues<RequestType>();
         var type = types[_random.Next(types.Length)];
 
-        return new ClientRequest(_nextId++, client, type, value, difficulty, deadline, _config.OfferDuration);
+        return new ClientRequest(_nextId++, client, type, value, difficulty, deadline,
+            _config.OfferDuration * _stats.OfferDurationMultiplier);
     }
 
     // Un intervalle minimum évite une boucle infinie si la config met 0

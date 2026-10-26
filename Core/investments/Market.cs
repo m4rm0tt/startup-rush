@@ -89,6 +89,13 @@ public class Market
         return income;
     }
 
+    /// <summary>Fait chuter (ou monter) tous les cours d'un coup : -0.3 = −30 %.</summary>
+    public void Shock(double change)
+    {
+        foreach (var asset in Assets)
+            asset.SetPrice(asset.Price * (1 + change));
+    }
+
     public bool Buy(int index, double amount, Wallet wallet)
     {
         if (index < 0 || index >= Assets.Count || amount <= 0 || !wallet.TrySpend(amount))

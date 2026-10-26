@@ -1,4 +1,4 @@
-﻿using Core.progression;
+using Core.progression;
 using Core.requests;
 using Core.simulation;
 using Core.tasks;
@@ -6,7 +6,8 @@ using Core.tasks;
 namespace Core.company;
 
 /// <summary>Résultat d'un clic pour charbonner : du travail sur la tâche en cours, ou un petit boulot payé.</summary>
-public record HustleResult(double Work, double Money);
+/// <param name="IsCritical">Coup de génie : le clic a été multiplié.</param>
+public record HustleResult(double Work, double Money, bool IsCritical = false);
 
 /// <summary>
 /// L'activité du joueur : son argent, ses demandes, ses tâches et sa réputation.
@@ -133,20 +134,28 @@ public class Company
     /// Le joueur charbonne : le clic avance la première tâche en cours,
     /// ou rapporte un petit boulot s'il n'y a aucune tâche.
     /// </summary>
-    public HustleResult Hustle()
+    /// <param name="multiplier">Bonus de ce clic précis (coup de génie).</param>
+    public HustleResult Hustle(double multiplier = 1)
     {
+        double power = Stats.ClickPower * multiplier;
+        double work = 0;
+        double money = 0;
+
         var task = _activeTasks.FirstOrDefault(t => t.Status == WorkTaskStatus.InProgress);
         if (task != null)
         {
-            double work = _config.ClickWork * Stats.ClickPower;
+            work = _config.ClickWork * power;
             task.AddWork(work);
-            return new HustleResult(work, 0);
         }
 
-        double money = _config.ClickGigMoney * Stats.ClickPower;
-        _wallet.Earn(money);
-        TotalEarned += money;
-        return new HustleResult(0, money);
+        if (task == null || Stats.ClicksAlwaysPay)
+        {
+            money = _config.ClickGigMoney * power * Stats.GigMultiplier;
+            _wallet.Earn(money);
+            TotalEarned += money;
+        }
+
+        return new HustleResult(work, money);
     }
 
     public void Update(double deltaTime)
@@ -189,7 +198,7 @@ public class Company
                 TotalEarned += task.EarnedReward;
                 CompletedTaskCount++;
                 if (!task.IsLate)
-                    Reputation.Add(task.Request.Difficulty);
+                    Reputation.Add(task.Request.Difficulty * Stats.ReputationGain);
                 TaskCompleted?.Invoke(task);
             }
             else

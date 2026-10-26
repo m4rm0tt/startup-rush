@@ -68,15 +68,22 @@ public class Upgrades
     public int EmployeeSeats => _tracks.TryGetValue(UpgradeTrackId.Office, out var office) ? (int)office.Current.Effect : int.MaxValue;
     public double MonthlyCost => Tracks.Sum(t => t.Current.MonthlyCost);
 
-    public bool TryBuy(UpgradeTrackId id, Wallet wallet)
+    public bool TryBuy(UpgradeTrackId id, Wallet wallet, double costMultiplier = 1)
     {
         var track = _tracks[id];
-        if (track.Next is not { } next || !wallet.TrySpend(next.Cost))
+        if (track.Next is not { } next || !wallet.TrySpend(next.Cost * costMultiplier))
             return false;
 
         track.LevelUp();
         Upgraded?.Invoke(track);
         return true;
+    }
+
+    /// <summary>Donne le niveau suivant gratuitement (matériel de départ d'un personnage).</summary>
+    public void Grant(UpgradeTrackId id)
+    {
+        if (_tracks.TryGetValue(id, out var track) && !track.IsMaxed)
+            track.LevelUp();
     }
 
     private double Effect(UpgradeTrackId id) => _tracks.TryGetValue(id, out var track) ? track.Current.Effect : 1;

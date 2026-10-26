@@ -101,10 +101,12 @@ public static class Sfx
             _output = new WaveOutEvent { DesiredLatency = 90 };
             _output.Init(new SoftClipProvider(_mixer));
             _output.Play();
+            Console.Error.WriteLine($"Audio prêt : {Sounds.Count} sons, {Tracks.Count} musiques");
         }
-        catch (Exception)
+        catch (Exception e)
         {
-            // Pas de son disponible : le jeu reste jouable en silence
+            // Pas de son disponible : le jeu reste jouable en silence, mais on dit pourquoi
+            Console.Error.WriteLine($"Audio indisponible : {e.GetType().Name} {e.Message}");
             _output = null;
             _mixer = null;
             _music = null;

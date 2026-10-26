@@ -40,4 +40,16 @@ public class Wallet
         BalanceChanged?.Invoke(Balance);
         return true;
     }
+
+    /// <summary>
+    /// Dépense obligatoire (charges) : elle est toujours payée, même si le solde devient négatif.
+    /// </summary>
+    public void Pay(double amount)
+    {
+        if (amount < 0)
+            throw new ArgumentOutOfRangeException(nameof(amount));
+
+        Balance -= amount;
+        BalanceChanged?.Invoke(Balance);
+    }
 }

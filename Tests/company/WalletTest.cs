@@ -71,4 +71,33 @@ public class WalletTest
         var result = wallet.CanAfford(100);
         Assert.That(result, Is.True);
     }
+
+    [Test]
+    public void PayCanMakeBalanceNegative()
+    {
+        var wallet = new Wallet(100);
+        wallet.Pay(150);
+        Assert.That(wallet.Balance, Is.EqualTo(-50));
+    }
+
+    [Test]
+    public void NegativeAmountsAreRejected()
+    {
+        var wallet = new Wallet(100);
+        Assert.Throws<ArgumentOutOfRangeException>(() => wallet.Earn(-1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => wallet.TrySpend(-1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => wallet.Pay(-1));
+    }
+
+    [Test]
+    public void BalanceChangedIsRaisedWithNewBalance()
+    {
+        var wallet = new Wallet(100);
+        double? received = null;
+        wallet.BalanceChanged += balance => received = balance;
+
+        wallet.Earn(20);
+
+        Assert.That(received, Is.EqualTo(120));
+    }
 }

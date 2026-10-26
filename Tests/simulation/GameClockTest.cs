@@ -51,10 +51,31 @@ public class GameClockTest
     [Test]
     public void TickTooBigTest()
     {
-        GameClock clock = new GameClock();
-        
-        clock.Tick(1000);
+        GameClock clock = new GameClock(0.25);
 
-        Assert.That(clock.Time, Is.EqualTo(0));
+        double applied = clock.Tick(1000);
+
+        Assert.That(applied, Is.EqualTo(0.25));
+        Assert.That(clock.Time, Is.EqualTo(0.25));
+    }
+
+    [Test]
+    public void TickNegativeReturnsZeroTest()
+    {
+        GameClock clock = new GameClock();
+
+        double applied = clock.Tick(-5);
+
+        Assert.That(applied, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void TickOnePointFiveTest()
+    {
+        GameClock clock = new GameClock(2);
+
+        clock.Tick(1.5);
+
+        Assert.That(clock.Time, Is.EqualTo(1.5));
     }
 }

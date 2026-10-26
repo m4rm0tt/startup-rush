@@ -19,7 +19,8 @@ public class ClientRequest
     public double OfferTimeLeft { get; private set; }
 
     public bool HasDeadline => DeadlineTimeLeft.HasValue;
-    public bool IsExpired => OfferTimeLeft <= 0;
+    /// <summary>L'offre disparaît à la fin de son délai, ou plus tôt si son échéance est déjà passée.</summary>
+    public bool IsExpired => OfferTimeLeft <= 0 || DeadlineTimeLeft <= 0;
 
     public ClientRequest(int id, string clientName, RequestType type, double value, int difficulty,
         double? deadlineTimeLeft, double offerTimeLeft)

@@ -36,4 +36,14 @@ public class ClientRequestTest
 
         Assert.That(request.IsExpired, Is.True);
     }
+
+    [Test]
+    public void RequestIsExpiredWhenItsDeadlinePassedBeforeAnyoneAcceptedIt()
+    {
+        var request = new ClientRequest(1, "Client", RequestType.Logo, 100, 1, deadlineTimeLeft: 6, offerTimeLeft: 20);
+
+        request.Update(6);
+
+        Assert.That(request.IsExpired, Is.True);
+    }
 }

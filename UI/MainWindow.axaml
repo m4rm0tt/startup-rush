@@ -2,15 +2,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="680"
         x:Class="UI.MainWindow"
-        Title="UI">
-        <Grid>
-                <TextBlock
-                        x:Name="BalanceText"
-                        Text="Solde : 0 CHF"
-                        FontSize="28"
-                        FontWeight="Bold"
-                        HorizontalAlignment="Center"/>
-        </Grid>
+        Title="Startup Rush"
+        Width="1100" Height="680" MinWidth="900" MinHeight="560"
+        Background="#1C2529">
+        <!-- L'écran affiché suit l'état courant de la machine à états -->
+        <ContentControl x:Name="ScreenHost"/>
 </Window>

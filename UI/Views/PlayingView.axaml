@@ -1,0 +1,129 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:UI.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="1100" d:DesignHeight="650"
+             x:Class="UI.Views.PlayingView"
+             x:DataType="vm:PlayingViewModel">
+    <UserControl.Styles>
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="#263238"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+        <Style Selector="TextBlock.header">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,*" Margin="16">
+        <!-- Bandeau du haut : argent et temps -->
+        <Border Grid.Row="0" Classes="card" Margin="0,0,0,16">
+            <Grid ColumnDefinitions="*,Auto,Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="16" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding CompanyName}" FontSize="18" Foreground="#90A4AE"
+                               VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding BalanceText}" Foreground="{Binding BalanceBrush}"
+                               FontSize="30" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding FlashText}" Foreground="#66BB6A"
+                               FontSize="22" FontWeight="Bold" VerticalAlignment="Center"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="{Binding OperatingCostText}" Foreground="#EF5350"
+                           FontSize="16" VerticalAlignment="Center" Margin="0,0,32,0"/>
+                <TextBlock Grid.Column="2" Text="{Binding ElapsedText}"
+                           FontSize="26" FontWeight="Bold" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,16,*,16,320">
+            <!-- Demandes en attente -->
+            <DockPanel Grid.Column="0">
+                <TextBlock DockPanel.Dock="Top" Classes="header" Text="{Binding RequestsHeader}"/>
+                <ScrollViewer>
+                    <ItemsControl ItemsSource="{Binding Requests}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:RequestViewModel">
+                                <Border Classes="card">
+                                    <StackPanel Spacing="4">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Text="{Binding ClientName}" FontWeight="SemiBold"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding ValueText}"
+                                                       FontWeight="Bold" Foreground="#66BB6A"/>
+                                        </Grid>
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Text="{Binding TypeText}" Foreground="#90A4AE"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding DifficultyText}"
+                                                       Foreground="#FFCA28" ToolTip.Tip="Difficulté"/>
+                                        </Grid>
+                                        <TextBlock Text="{Binding WorkText}" Foreground="#90A4AE"/>
+                                        <TextBlock Text="{Binding DeadlineText}" Foreground="{Binding DeadlineBrush}"/>
+                                        <ProgressBar Value="{Binding OfferPercent}" Minimum="0" Maximum="100"
+                                                     Foreground="{Binding OfferBrush}" Height="4" MinHeight="4"/>
+                                        <Grid ColumnDefinitions="*,Auto,8,Auto" Margin="0,4,0,0">
+                                            <TextBlock Text="{Binding OfferText}" Foreground="{Binding OfferBrush}"
+                                                       VerticalAlignment="Center"/>
+                                            <Button Grid.Column="1" Content="Accepter" Classes="accent"
+                                                    Command="{Binding AcceptCommand}"
+                                                    IsEnabled="{Binding CanAccept}"/>
+                                            <Button Grid.Column="3" Content="Refuser"
+                                                    Command="{Binding RejectCommand}"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </DockPanel>
+
+            <!-- Tâches actives -->
+            <DockPanel Grid.Column="2">
+                <TextBlock DockPanel.Dock="Top" Classes="header" Text="{Binding CapacityText}"/>
+                <ScrollViewer>
+                    <ItemsControl ItemsSource="{Binding Tasks}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:TaskViewModel">
+                                <Border Classes="card">
+                                    <StackPanel Spacing="4">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Text="{Binding ClientName}" FontWeight="SemiBold"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding ValueText}"
+                                                       FontWeight="Bold" Foreground="#66BB6A"/>
+                                        </Grid>
+                                        <TextBlock Text="{Binding TypeText}" Foreground="#90A4AE"/>
+                                        <ProgressBar Value="{Binding ProgressPercent}" Minimum="0" Maximum="100"
+                                                     Foreground="{Binding DeadlineBrush}" Height="10" MinHeight="10"/>
+                                        <TextBlock Text="{Binding ProgressText}"/>
+                                        <TextBlock Text="{Binding DeadlineText}" Foreground="{Binding DeadlineBrush}"
+                                                   FontWeight="SemiBold"/>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </DockPanel>
+
+            <!-- Journal des événements -->
+            <DockPanel Grid.Column="4">
+                <TextBlock DockPanel.Dock="Top" Classes="header" Text="Journal"/>
+                <Border Classes="card">
+                    <ItemsControl ItemsSource="{Binding Log}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:LogEntry">
+                                <TextBlock Text="{Binding Text}" Foreground="{Binding Brush}"
+                                           TextWrapping="Wrap" Margin="0,0,0,6"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </Border>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</UserControl>

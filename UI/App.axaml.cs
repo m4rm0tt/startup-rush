@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Core.simulation;
+using Core.states;
 
 namespace UI;
 
@@ -16,8 +16,8 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            GameSession session = new GameSession();
-            desktop.MainWindow = new MainWindow(session);
+            var machine = new GameStateMachine();
+            desktop.MainWindow = new MainWindow(machine);
         }
 
         base.OnFrameworkInitializationCompleted();

@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="650"
+             x:Class="UI.Views.GameOverView">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="12" Width="380">
+        <TextBlock Text="Faillite !" FontSize="44" FontWeight="Bold" Foreground="#EF5350"
+                   HorizontalAlignment="Center"/>
+        <TextBlock x:Name="CompanyText" Foreground="#90A4AE" HorizontalAlignment="Center"/>
+
+        <TextBlock x:Name="ScoreText" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center"
+                   Margin="0,12,0,4"/>
+
+        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto,Auto" Margin="0,0,0,16">
+            <TextBlock Grid.Row="0" Text="Temps survécu"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" x:Name="SurvivedText"/>
+            <TextBlock Grid.Row="1" Text="Argent gagné"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" x:Name="EarnedText"/>
+            <TextBlock Grid.Row="2" Text="Tâches terminées"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" x:Name="CompletedText"/>
+            <TextBlock Grid.Row="3" Text="Tâches échouées"/>
+            <TextBlock Grid.Row="3" Grid.Column="1" x:Name="FailedText"/>
+        </Grid>
+
+        <Button x:Name="ReplayButton" Content="Rejouer" Classes="accent"
+                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="12"/>
+        <Button x:Name="MenuButton" Content="Retour au menu"
+                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="12"/>
+    </StackPanel>
+</UserControl>

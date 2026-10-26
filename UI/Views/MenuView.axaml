@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="650"
+             x:Class="UI.Views.MenuView">
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="16" Width="360">
+        <TextBlock Text="Startup Rush" FontSize="44" FontWeight="Bold" HorizontalAlignment="Center"/>
+        <TextBlock Text="Accepte les bons contrats, livre à temps, ne fais pas faillite."
+                   Foreground="#90A4AE" TextWrapping="Wrap" TextAlignment="Center"/>
+
+        <StackPanel Spacing="6" Margin="0,16,0,0">
+            <TextBlock Text="Nom de ton entreprise"/>
+            <TextBox x:Name="CompanyNameBox" PlaceholderText="Ma Startup" MaxLength="30"/>
+        </StackPanel>
+
+        <Button x:Name="NewGameButton" Content="Nouvelle partie" Classes="accent"
+                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="12"/>
+        <Button x:Name="QuitButton" Content="Quitter"
+                HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Padding="12"/>
+    </StackPanel>
+</UserControl>

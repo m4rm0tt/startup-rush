@@ -2,52 +2,58 @@ using System;
 using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Core.company;
-using Core.simulation;
+using Core.states;
+using UI.Views;
 
 namespace UI;
 
 public partial class MainWindow : Window
 {
-    private GameSession _session;
-    private DispatcherTimer _timer;
-    private Stopwatch _stopWatch;
-    
-    public MainWindow(GameSession session)
+    private readonly GameStateMachine _machine;
+    private readonly DispatcherTimer _timer;
+    private readonly Stopwatch _stopWatch;
+
+    public MainWindow(GameStateMachine machine)
     {
         InitializeComponent();
-        
-        _session = session;
-        
-        _session.Company.BalanceChanged += OnBalanceChanged;
-        
+
+        _machine = machine;
+        _machine.StateChanged += OnStateChanged;
+        _machine.ChangeState(new MenuState(_machine));
+
+        // Environ 60 mises à jour par seconde ; le vrai temps écoulé est mesuré par le Stopwatch
         _timer = new DispatcherTimer
         {
-            Interval = TimeSpan.FromMilliseconds(100)
+            Interval = TimeSpan.FromMilliseconds(16)
         };
         _stopWatch = new Stopwatch();
-        
-        _timer.Tick += OnTimerTick;
-        
-        _stopWatch.Start();
-        
-        _timer.Start();
 
-        BalanceText.Text = $"Solde : {_session.Company.WalletBalance} CHF";
+        _timer.Tick += OnTimerTick;
+        Closed += (_, _) => _timer.Stop();
+
+        _stopWatch.Start();
+        _timer.Start();
     }
 
     private void OnTimerTick(object? sender, EventArgs e)
     {
-        Console.WriteLine("Tick !");
-        
         double deltaTime = _stopWatch.Elapsed.TotalSeconds;
         _stopWatch.Restart();
-        
-        _session.Update(deltaTime);
+
+        _machine.Update(deltaTime);
+
+        if (ScreenHost.Content is PlayingView playingView)
+            playingView.Refresh();
     }
 
-    private void OnBalanceChanged(double balance)
+    private void OnStateChanged(IGameState state)
     {
-        BalanceText.Text = $"Solde : {balance:F2} CHF";
+        ScreenHost.Content = state switch
+        {
+            MenuState menu => new MenuView(menu),
+            PlayingState playing => new PlayingView(playing),
+            GameOverState gameOver => new GameOverView(gameOver),
+            _ => null
+        };
     }
 }

@@ -11,9 +11,23 @@ public partial class GameOverView : UserControl
         InitializeComponent();
 
         var result = state.Result;
-        CompanyText.Text = state.PlayerName;
-        ScoreText.Text = $"Patrimoine : {Display.Money(result.PeakNetWorth)}";
+        if (result.IsVictory)
+        {
+            TitleText.Text = "Roi du monde !";
+            TitleText.Foreground = Display.Gold;
+            SubtitleText.Text = $"{state.PlayerName} est parti de 150 CHF et d'un portable qui rame. " +
+                                "Aujourd'hui, le monde lui appartient.";
+        }
+        else
+        {
+            TitleText.Text = "Faillite !";
+            TitleText.Foreground = Display.Danger;
+            SubtitleText.Text = $"Les huissiers ont tout saisi. {state.PlayerName} retourne vivre chez ses parents.";
+        }
+
+        StageText.Text = result.StageTitle;
         SurvivedText.Text = Display.Clock(result.SurvivedTime);
+        PeakText.Text = Display.Money(result.PeakNetWorth);
         EarnedText.Text = Display.Money(result.TotalEarned);
         CompletedText.Text = result.CompletedTasks.ToString();
         FailedText.Text = result.FailedTasks.ToString();

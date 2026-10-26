@@ -15,12 +15,12 @@ public partial class MenuView : UserControl
 
         NewGameButton.Click += (_, _) => StartNewGame();
         QuitButton.Click += (_, _) => (TopLevel.GetTopLevel(this) as Window)?.Close();
-        CompanyNameBox.KeyDown += (_, e) =>
+        PlayerNameBox.KeyDown += (_, e) =>
         {
             if (e.Key == Key.Enter)
                 StartNewGame();
         };
     }
 
-    private void StartNewGame() => _state.StartNewGame(CompanyNameBox.Text ?? "");
+    private void StartNewGame() => _state.StartNewGame(PlayerNameBox.Text ?? "");
 }

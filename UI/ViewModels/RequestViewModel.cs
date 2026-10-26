@@ -23,7 +23,8 @@ public class RequestViewModel : ViewModelBase
     public string TypeText => Display.TypeName(_request.Type);
     public string ValueText => Display.Money(_request.Value);
     public string DifficultyText => Display.Stars(_request.Difficulty);
-    public string WorkText => $"Travail : {Display.Seconds(_workDuration)}";
+    private string _workText = "";
+    public string WorkText { get => _workText; private set => SetField(ref _workText, value); }
 
     public string DeadlineText { get => _deadlineText; private set => SetField(ref _deadlineText, value); }
     public IBrush DeadlineBrush { get => _deadlineBrush; private set => SetField(ref _deadlineBrush, value); }
@@ -44,9 +45,11 @@ public class RequestViewModel : ViewModelBase
         RejectCommand = new RelayCommand(() => company.RejectRequest(request.Id));
     }
 
-    public void Refresh(bool hasFreeCapacity)
+    public void Refresh(bool hasFreeCapacity, double workSpeed)
     {
         CanAccept = hasFreeCapacity;
+        double workDuration = _workDuration / workSpeed;
+        WorkText = $"Travail : {Display.Seconds(workDuration)}";
 
         OfferText = $"Expire dans {Display.Seconds(_request.OfferTimeLeft)}";
         OfferPercent = 100 * _request.OfferTimeLeft / _offerDuration;
@@ -57,7 +60,7 @@ public class RequestViewModel : ViewModelBase
             DeadlineText = "Sans échéance";
             DeadlineBrush = Display.Muted;
         }
-        else if (deadline < _workDuration)
+        else if (deadline < workDuration)
         {
             DeadlineText = $"Échéance : {Display.Seconds(deadline)} — déjà trop tard";
             DeadlineBrush = Display.Danger;
@@ -65,7 +68,7 @@ public class RequestViewModel : ViewModelBase
         else
         {
             DeadlineText = $"Échéance : {Display.Seconds(deadline)}";
-            DeadlineBrush = deadline - _workDuration < 5 ? Display.Warning : Display.Normal;
+            DeadlineBrush = deadline - workDuration < 5 ? Display.Warning : Display.Normal;
         }
     }
 }

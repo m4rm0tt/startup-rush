@@ -27,10 +27,11 @@ public class TaskViewModel : ViewModelBase
         _task = task;
     }
 
-    public void Refresh()
+    public void Refresh(double workSpeed)
     {
+        double remaining = _task.TimeRemainingAt(workSpeed);
         ProgressPercent = _task.Progress * 100;
-        ProgressText = $"{_task.Progress:P0} — reste {Display.Seconds(_task.TimeRemaining)}";
+        ProgressText = $"{_task.Progress:P0} — reste {Display.Seconds(remaining)}";
 
         if (_task.DeadlineTimeLeft is not { } deadline)
         {
@@ -42,15 +43,15 @@ public class TaskViewModel : ViewModelBase
             DeadlineText = "En retard ! Gain réduit";
             DeadlineBrush = Display.Danger;
         }
-        else if (_task.WillBeLate())
+        else if (_task.WillBeLate(workSpeed))
         {
-            DeadlineText = $"Échéance dans {Display.Seconds(deadline)} — sera en retard";
+            DeadlineText = $"Échéance {Display.Seconds(deadline)} — clique pour accélérer !";
             DeadlineBrush = Display.Danger;
         }
         else
         {
             DeadlineText = $"Échéance dans {Display.Seconds(deadline)}";
-            DeadlineBrush = deadline - _task.TimeRemaining < 5 ? Display.Warning : Display.Good;
+            DeadlineBrush = deadline - remaining < 5 ? Display.Warning : Display.Good;
         }
     }
 }

@@ -12,8 +12,22 @@ public static class Display
     public static readonly IBrush Good = new SolidColorBrush(Color.Parse("#66BB6A"));
     public static readonly IBrush Warning = new SolidColorBrush(Color.Parse("#FFA726"));
     public static readonly IBrush Danger = new SolidColorBrush(Color.Parse("#EF5350"));
+    public static readonly IBrush Gold = new SolidColorBrush(Color.Parse("#FFCA28"));
 
-    public static string Money(double amount) => $"{amount:N0} CHF";
+    /// <summary>Montant lisible d'un coup d'œil : 1 234 CHF, 456 k CHF, 12,3 M CHF, 1,05 Md CHF.</summary>
+    public static string Money(double amount)
+    {
+        double abs = Math.Abs(amount);
+        string sign = amount < 0 ? "−" : "";
+
+        if (abs < 100_000)
+            return $"{sign}{abs:N0} CHF";
+        if (abs < 1_000_000)
+            return $"{sign}{abs / 1_000:0.#} k CHF";
+        if (abs < 1_000_000_000)
+            return $"{sign}{abs / 1_000_000:0.##} M CHF";
+        return $"{sign}{abs / 1_000_000_000:0.##} Md CHF";
+    }
 
     public static string Seconds(double seconds) => $"{Math.Max(0, Math.Ceiling(seconds)):0} s";
 
@@ -24,6 +38,8 @@ public static class Display
     }
 
     public static string Stars(int difficulty) => new string('★', difficulty);
+
+    public static string Multiplier(double value) => $"×{value:0.##}";
 
     public static string TypeName(RequestType type) => type switch
     {

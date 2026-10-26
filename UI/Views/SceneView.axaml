@@ -1,0 +1,12 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="560" d:DesignHeight="340"
+             x:Class="UI.Views.SceneView"
+             Cursor="Hand">
+    <!-- La pièce est dessinée en code (SceneView.axaml.cs) sur un canevas de 560 × 340, mis à l'échelle -->
+    <Viewbox Stretch="Uniform">
+        <Canvas x:Name="Stage" Width="560" Height="340" ClipToBounds="True"/>
+    </Viewbox>
+</UserControl>

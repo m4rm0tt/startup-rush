@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using Core.meta;
 using Core.states;
 using UI.Audio;
+using UI.ViewModels;
 
 namespace UI;
 
@@ -23,6 +24,7 @@ public partial class App : Application
             var machine = new GameStateMachine(profile: store.Load(), saveProfile: store.Save);
 
             Sfx.Init();
+            Settings.Init(machine.Profile.Settings, machine.SaveProfile);
             desktop.Exit += (_, _) => Sfx.Shutdown();
             desktop.MainWindow = new MainWindow(machine);
         }

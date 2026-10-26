@@ -19,19 +19,19 @@ public class PerkCardViewModel
     public string RarityText => Palette.RarityName(Perk.Rarity);
     public IBrush RarityBrush => Palette.Rarity(Perk.Rarity);
     public Bitmap Icon => Icons.Get(Perk.Icon);
-    public string KeyHint { get; }
+    public IImage? KeyIcon { get; }
     public string Tooltip => $"{Perk.Name} ({RarityText.ToLower()})\n{Perk.Description}";
     public ICommand? ChooseCommand { get; }
 
     public PerkCardViewModel(Perk perk, int index = -1, GameSession? session = null)
     {
         Perk = perk;
-        KeyHint = index >= 0 ? $"[{index + 1}]" : "";
+        KeyIcon = index >= 0 ? Keys.Number(index) : null;
         if (session != null)
             ChooseCommand = new RelayCommand(() =>
             {
                 if (session.ChoosePerk(index))
-                    Sfx.Play(Sound.Select);
+                    Sfx.Play(Sound.CardPlace);
             });
     }
 }
@@ -73,7 +73,7 @@ public class DraftViewModel : ViewModelBase
     {
         if (_session.RerollDraft())
         {
-            Sfx.Play(Sound.Card);
+            Sfx.Play(Sound.Shuffle);
             RefreshCards();
         }
         else
@@ -101,7 +101,7 @@ public class EventOptionViewModel
 {
     public string Label { get; }
     public string Hint { get; }
-    public string KeyHint { get; }
+    public IImage KeyIcon { get; }
     public bool IsEnabled { get; }
     public ICommand ChooseCommand { get; }
 
@@ -109,7 +109,7 @@ public class EventOptionViewModel
     {
         Label = option.Label;
         Hint = enabled ? option.Hint : $"{option.Hint} (pas assez d'argent)";
-        KeyHint = $"[{index + 1}]";
+        KeyIcon = Keys.Number(index);
         IsEnabled = enabled;
         ChooseCommand = new RelayCommand(() =>
         {

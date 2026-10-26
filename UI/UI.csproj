@@ -16,6 +16,7 @@
             <PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
         </PackageReference>
         <PackageReference Include="NAudio.WinMM" Version="2.2.1" />
+        <PackageReference Include="NAudio.Vorbis" Version="1.5.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,5 +27,10 @@
         <!-- Polices pixel sous licence SIL OFL : la licence est livrée avec le jeu -->
         <AvaloniaResource Include="Assets\Fonts\*.ttf" />
         <None Include="Assets\Fonts\*.txt" CopyToOutputDirectory="PreserveNewest" />
+        <!-- Images, sons et musiques tirés des packs de assets/ par tools/build_assets.py (voir ASSET_USAGE.md) -->
+        <AvaloniaResource Include="Assets\Sprites\*.png" />
+        <AvaloniaResource Include="Assets\Ui\**\*.png" />
+        <AvaloniaResource Include="Assets\Audio\**\*.wav;Assets\Audio\**\*.ogg" />
+        <None Include="..\THIRD_PARTY_NOTICES.md" Link="THIRD_PARTY_NOTICES.md" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
 </Project>

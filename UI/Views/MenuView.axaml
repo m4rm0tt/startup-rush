@@ -14,22 +14,22 @@
         <Rectangle Fill="#b30b0913"/>
 
         <!-- Lingots, toujours visibles -->
-        <Border Classes="panel" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="24" Padding="12,6">
+        <px:PixelPanel Classes="panel" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="24" Padding="12,6">
             <StackPanel Orientation="Horizontal" Spacing="8">
                 <px:PixelImage Source="{Binding GoldIcon}" Width="32" Height="32"/>
                 <TextBlock Text="{Binding LingotsText}" Classes="num" FontSize="34" Foreground="{StaticResource Gold}"
                            VerticalAlignment="Center"/>
                 <TextBlock Text="LINGOTS" Classes="label" VerticalAlignment="Center"/>
             </StackPanel>
-        </Border>
+        </px:PixelPanel>
 
         <!-- ======================= ÉCRAN TITRE ======================= -->
         <StackPanel IsVisible="{Binding IsTitle}" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
             <Grid HorizontalAlignment="Center">
                 <!-- Ombre dure décalée sous le logo -->
-                <TextBlock Text="STARTUP RUSH" FontSize="128" FontWeight="Bold" Foreground="{StaticResource Wine}"
+                <TextBlock Text="STARTUP RUSH" Classes="title" FontSize="88" Foreground="{StaticResource Wine}"
                            Margin="8,8,0,0"/>
-                <TextBlock Text="STARTUP RUSH" FontSize="128" FontWeight="Bold" Foreground="{StaticResource Gold}"/>
+                <TextBlock Text="STARTUP RUSH" Classes="title" FontSize="88" Foreground="{StaticResource Gold}"/>
             </Grid>
             <TextBlock Text="DE FAUCHÉ À ROI DU MONDE" FontSize="30" Foreground="{StaticResource Snow}"
                        HorizontalAlignment="Center" LetterSpacing="6"/>
@@ -43,16 +43,16 @@
             <TextBlock Text="{Binding StatsText}" Classes="label" HorizontalAlignment="Center" Margin="0,30,0,0"/>
         </StackPanel>
 
-        <TextBlock IsVisible="{Binding IsTitle}" Text="v0.2.0 · polices Pixelify Sans et VT323 (SIL OFL) · sons et pixel art faits maison"
+        <TextBlock IsVisible="{Binding IsTitle}" Text="v0.3.0 · sprites 2dPig et Kenney · sons et musiques Juhani Junkala et Kenney (CC0) · polices SIL OFL · crédits : THIRD_PARTY_NOTICES.md"
                    Classes="label" FontSize="13" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="24"/>
 
         <!-- ======================= CHOIX DU PERSONNAGE ======================= -->
         <DockPanel IsVisible="{Binding IsSelect}" Margin="60,40">
-            <TextBlock DockPanel.Dock="Top" Text="CHOISIS TON FONDATEUR" Classes="h1" HorizontalAlignment="Center"
+            <TextBlock DockPanel.Dock="Top" Text="CHOISIS TON FONDATEUR" Classes="h1 title" HorizontalAlignment="Center"
                        Foreground="{StaticResource Gold}" Margin="0,0,0,24"/>
 
             <StackPanel DockPanel.Dock="Bottom" Spacing="14" HorizontalAlignment="Center">
-                <Border Classes="panel" Padding="16,8">
+                <px:PixelPanel Classes="panel" Padding="16,8">
                     <StackPanel Orientation="Horizontal" Spacing="16">
                         <Button Content="◀" Command="{Binding PressureDownCommand}"/>
                         <StackPanel Width="560">
@@ -61,9 +61,14 @@
                         </StackPanel>
                         <Button Content="▶" Command="{Binding PressureUpCommand}"/>
                     </StackPanel>
-                </Border>
+                </px:PixelPanel>
                 <StackPanel Orientation="Horizontal" Spacing="16" HorizontalAlignment="Center">
-                    <Button Content="[ÉCHAP] RETOUR" Command="{Binding BackCommand}" Classes="big"/>
+                    <Button Command="{Binding BackCommand}" Classes="big">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <px:PixelImage Source="{x:Static px:Keys.Escape}" Width="32" Height="32"/>
+                            <TextBlock Text="RETOUR" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                     <Button Content="{Binding StartText}" Command="{Binding StartCommand}" IsEnabled="{Binding CanStart}"
                             Classes="gold big"/>
                 </StackPanel>
@@ -75,14 +80,14 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="vm:CharacterCardViewModel">
-                        <Button Command="{Binding SelectCommand}" Padding="0" Background="Transparent" BorderThickness="0">
-                            <Border Classes="panel lift" Width="300" Height="430" BorderBrush="{Binding FrameBrush}"
+                        <Button Command="{Binding SelectCommand}" Padding="0" Classes="plain">
+                            <px:PixelPanel Classes="panel lift" Width="300" Height="430" BorderBrush="{Binding FrameBrush}"
                                     BorderThickness="4" Padding="16">
                                 <Grid>
                                     <StackPanel Spacing="8">
-                                        <Border Classes="inset" HorizontalAlignment="Center" Padding="6">
+                                        <px:PixelPanel Classes="inset" HorizontalAlignment="Center" Padding="6">
                                             <px:PixelImage Source="{Binding Portrait}" Width="128" Height="128"/>
-                                        </Border>
+                                        </px:PixelPanel>
                                         <TextBlock Text="{Binding Name}" Classes="h2" HorizontalAlignment="Center"/>
                                         <TextBlock Text="{Binding Title}" Foreground="{StaticResource Gold}" FontSize="18"
                                                    HorizontalAlignment="Center"/>
@@ -105,7 +110,7 @@
                                         </StackPanel>
                                     </Border>
                                 </Grid>
-                            </Border>
+                            </px:PixelPanel>
                         </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
@@ -119,15 +124,20 @@
                 <TextBlock Text="Chaque run te rapporte des lingots. Dépense-les ici en avantages permanents."
                            Classes="muted" FontSize="18" HorizontalAlignment="Center"/>
             </StackPanel>
-            <Button DockPanel.Dock="Bottom" Content="[ÉCHAP] RETOUR" Command="{Binding BackCommand}" Classes="big"
-                    HorizontalAlignment="Center" Margin="0,20,0,0"/>
+            <Button DockPanel.Dock="Bottom" Command="{Binding BackCommand}" Classes="big"
+                    HorizontalAlignment="Center" Margin="0,20,0,0">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <px:PixelImage Source="{x:Static px:Keys.Escape}" Width="32" Height="32"/>
+                    <TextBlock Text="RETOUR" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
             <ItemsControl ItemsSource="{Binding LegacyUpgrades}" HorizontalAlignment="Center">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate><WrapPanel Width="1240"/></ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="vm:LegacyUpgradeViewModel">
-                        <Border Classes="panel" Width="390" Height="170" Margin="10" Padding="16">
+                        <px:PixelPanel Classes="panel" Width="390" Height="170" Margin="10" Padding="16">
                             <DockPanel>
                                 <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto">
                                     <TextBlock Text="{Binding Pips}" FontSize="22" Foreground="{StaticResource Gold}"
@@ -140,7 +150,7 @@
                                     <TextBlock Text="{Binding Description}" Classes="muted" FontSize="16"/>
                                 </StackPanel>
                             </DockPanel>
-                        </Border>
+                        </px:PixelPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

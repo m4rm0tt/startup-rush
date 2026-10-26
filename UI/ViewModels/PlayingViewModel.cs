@@ -135,11 +135,13 @@ public class PlayingViewModel : ViewModelBase
     public string RunInfo { get; }
     public string MusicText { get => Get<string>(); private set => Set(value); }
     public string SoundText { get => Get<string>(); private set => Set(value); }
+    public string EffectsText { get => Get<string>(); private set => Set(value); }
     public ICommand StartCommand { get; }
     public ICommand ResumeCommand { get; }
     public ICommand AbandonCommand { get; }
     public ICommand ToggleMusicCommand { get; }
     public ICommand ToggleSoundCommand { get; }
+    public ICommand ToggleEffectsCommand { get; }
 
     // --- Pour la scène ---
     public bool IsWorking => _session.Company.ActiveTasks.Count > 0;
@@ -171,8 +173,9 @@ public class PlayingViewModel : ViewModelBase
         StartCommand = new RelayCommand(StartRun);
         ResumeCommand = new RelayCommand(TogglePause);
         AbandonCommand = new RelayCommand(() => _state.Abandon());
-        ToggleMusicCommand = new RelayCommand(() => Sfx.MusicOn = !Sfx.MusicOn);
-        ToggleSoundCommand = new RelayCommand(() => Sfx.SoundOn = !Sfx.SoundOn);
+        ToggleMusicCommand = new RelayCommand(Settings.CycleMusic);
+        ToggleSoundCommand = new RelayCommand(Settings.CycleSound);
+        ToggleEffectsCommand = new RelayCommand(Settings.ToggleEffects);
 
         foreach (var track in _session.Upgrades.Tracks)
         {
@@ -207,7 +210,7 @@ public class PlayingViewModel : ViewModelBase
             return;
 
         _state.TogglePause();
-        Sfx.Play(Sound.Select);
+        Sfx.Play(_state.IsPaused ? Sound.PauseIn : Sound.PauseOut);
     }
 
     /// <summary>Touches 1 à 4 : carte d'atout ou choix d'événement.</summary>
@@ -262,8 +265,10 @@ public class PlayingViewModel : ViewModelBase
         RefreshChoices();
 
         PauseVisible = _state.IsPaused && !IntroVisible;
-        MusicText = Sfx.MusicOn ? "MUSIQUE : OUI" : "MUSIQUE : NON";
-        SoundText = Sfx.SoundOn ? "BRUITAGES : OUI" : "BRUITAGES : NON";
+        MusicText = Settings.MusicText;
+        SoundText = Settings.SoundText;
+        EffectsText = Settings.EffectsText;
+        Sfx.PlayMusic(_session.ActiveCrisis != null ? Music.Crisis : Music.Run);
     }
 
     private void RefreshTopBar(double deltaTime)
@@ -447,6 +452,7 @@ public class PlayingViewModel : ViewModelBase
     {
         var company = _session.Company;
         company.RequestExpired += r => AddLog($"Offre perdue : {r.ClientName}", Palette.Fog);
+        company.RequestReceived += _ => Sfx.Play(Sound.Offer);
         company.TaskCompleted += OnTaskCompleted;
         company.TaskFailed += t =>
         {
@@ -464,7 +470,11 @@ public class PlayingViewModel : ViewModelBase
         _session.Upgrades.Upgraded += t => AddLog($"Nouveau : {t.Current.Name}", Palette.Leaf);
         _session.Businesses.BusinessGrew += b =>
             AddLog(b.Level == 1 ? $"Nouvelle boîte : {b.Info.Name}" : $"{b.Info.Name} niveau {b.Level}", Palette.Gold);
-        _session.Career.StageReached += s => AddLog($"NOUVEAU STATUT : {s.Title.ToUpper()}", Palette.Lemon);
+        _session.Career.StageReached += s =>
+        {
+            AddLog($"NOUVEAU STATUT : {s.Title.ToUpper()}", Palette.Lemon);
+            Sfx.Play(Sound.LevelUp);
+        };
         _session.PerkAdded += p => AddLog($"Atout : {p.Name}", Palette.Rarity(p.Rarity));
         _session.InterestPaid += i => AddLog($"Intérêts : +{Display.Money(i)}", Palette.Leaf);
         _session.CrisisStarted += c =>
@@ -474,7 +484,7 @@ public class PlayingViewModel : ViewModelBase
             Juice.Shake(10);
             Juice.Flash(Color.Parse("#e43b44"));
         };
-        _session.ChoiceQueued += choice => Sfx.Play(choice is Draft ? Sound.LevelUp : Sound.Event);
+        _session.ChoiceQueued += choice => Sfx.Play(choice is Draft ? Sound.Card : Sound.Event);
     }
 
     private void OnBillPaid(BillBreakdown bill, bool unpaid)
@@ -489,6 +499,7 @@ public class PlayingViewModel : ViewModelBase
         else
         {
             AddLog($"Factures payées : −{Display.Money(bill.Total)}", Palette.Fog);
+            Sfx.Play(Sound.Bill);
         }
     }
 

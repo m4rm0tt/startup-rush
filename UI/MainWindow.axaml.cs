@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Core.states;
+using UI.Audio;
 using UI.ViewModels;
 using UI.Views;
 
@@ -21,6 +24,7 @@ public partial class MainWindow : Window
     private readonly Stopwatch _stopWatch = new();
     private readonly Random _random = new();
     private readonly TranslateTransform _shake = new();
+    private readonly HashSet<Key> _heldKeys = new();
     private double _shakeStrength;
 
     public MainWindow(GameStateMachine machine)
@@ -34,7 +38,7 @@ public partial class MainWindow : Window
         Juice.FlashRequested += color =>
         {
             FlashLayer.Fill = new SolidColorBrush(color);
-            FlashLayer.Opacity = 0.45;
+            FlashLayer.Opacity = Settings.ReduceEffects ? 0.12 : 0.35;
         };
 
         _machine.ChangeState(new MenuState(_machine));
@@ -42,7 +46,9 @@ public partial class MainWindow : Window
         _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
         _timer.Tick += OnTimerTick;
         Closed += (_, _) => _timer.Stop();
-        KeyDown += OnKeyDown;
+        // En tunnel : le jeu voit les touches avant les boutons, Espace ne « clique » jamais un bouton
+        AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Tunnel);
+        AddHandler(KeyUpEvent, OnKeyUp, RoutingStrategies.Tunnel);
 
         _stopWatch.Start();
         _timer.Start();
@@ -71,6 +77,8 @@ public partial class MainWindow : Window
 
     private void OnStateChanged(IGameState state)
     {
+        Sfx.PlayMusic(state is PlayingState ? Music.Run : Music.Menu);
+        _heldKeys.Clear();
         ScreenHost.Content = state switch
         {
             MenuState menu => new MenuView(menu),
@@ -81,8 +89,17 @@ public partial class MainWindow : Window
         FadeLayer.Opacity = 1;
     }
 
+    private void OnKeyUp(object? sender, KeyEventArgs e) => _heldKeys.Remove(e.Key);
+
     private void OnKeyDown(object? sender, KeyEventArgs e)
     {
+        // Une touche maintenue ne compte qu'une fois : le rythme ne dépend pas de la répétition du clavier
+        if (!_heldKeys.Add(e.Key))
+        {
+            e.Handled = e.Source is not TextBox;
+            return;
+        }
+
         if (e.Key == Key.F11)
         {
             WindowState = WindowState == WindowState.FullScreen ? WindowState.Normal : WindowState.FullScreen;

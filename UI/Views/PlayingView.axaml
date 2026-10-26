@@ -22,7 +22,7 @@
     <UserControl.DataTemplates>
         <!-- Carte de boutique : matériel, logement, locaux -->
         <DataTemplate DataType="vm:UpgradeViewModel">
-            <Border Classes="panel" Width="176" Height="210" Margin="0,0,12,0" Padding="9">
+            <px:PixelPanel Classes="panel" Width="176" Height="210" Margin="0,0,12,0" Padding="9">
                 <DockPanel>
                     <Button DockPanel.Dock="Bottom" Content="{Binding CostText}" Command="{Binding BuyCommand}"
                             IsEnabled="{Binding CanBuy}" Classes="gold" HorizontalAlignment="Stretch" FontSize="16"/>
@@ -40,7 +40,7 @@
                         <TextBlock Text="{Binding EffectText}" Classes="muted" FontSize="12"/>
                     </StackPanel>
                 </DockPanel>
-            </Border>
+            </px:PixelPanel>
         </DataTemplate>
     </UserControl.DataTemplates>
 
@@ -49,12 +49,12 @@
         <Grid RowDefinitions="96,*" Margin="16">
 
             <!-- Bandeau du haut -->
-            <Border Grid.Row="0" Classes="panel" Padding="12,8" Margin="0,0,0,14">
+            <px:PixelPanel Grid.Row="0" Classes="panel" Padding="12,8" Margin="0,0,0,14">
                 <Grid ColumnDefinitions="470,*,430">
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <Border Classes="inset" Padding="2">
+                        <px:PixelPanel Classes="inset" Padding="2">
                             <px:PixelImage Source="{Binding Portrait}" Width="64" Height="64"/>
-                        </Border>
+                        </px:PixelPanel>
                         <StackPanel VerticalAlignment="Center" Spacing="3">
                             <StackPanel Orientation="Horizontal" Spacing="10">
                                 <TextBlock Text="{Binding PlayerName}" FontSize="22" FontWeight="Bold"/>
@@ -112,12 +112,12 @@
                         </StackPanel>
                     </Grid>
                 </Grid>
-            </Border>
+            </px:PixelPanel>
 
             <Grid Grid.Row="1" ColumnDefinitions="300,14,*,14,300">
 
                 <!-- Contrats -->
-                <Border Grid.Column="0" Classes="panel" Padding="10">
+                <px:PixelPanel Grid.Column="0" Classes="panel" Padding="10">
                     <DockPanel>
                         <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,8">
                             <TextBlock Text="{Binding RequestsHeader}" Classes="h3"/>
@@ -131,7 +131,7 @@
                             <ItemsControl ItemsSource="{Binding Requests}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="vm:RequestViewModel">
-                                        <Border Classes="inset" Margin="0,0,0,8" Padding="8">
+                                        <px:PixelPanel Classes="inset" Margin="0,0,0,8" Padding="8">
                                             <StackPanel Spacing="2">
                                                 <Grid ColumnDefinitions="*,Auto">
                                                     <TextBlock Text="{Binding ClientName}" FontSize="15" FontWeight="Bold"
@@ -158,17 +158,17 @@
                                                             ToolTip.Tip="Refuser"/>
                                                 </Grid>
                                             </StackPanel>
-                                        </Border>
+                                        </px:PixelPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </ScrollViewer>
                     </DockPanel>
-                </Border>
+                </px:PixelPanel>
 
                 <!-- Centre : la scène et la boutique -->
                 <Grid Grid.Column="2" RowDefinitions="460,12,*">
-                    <Border Grid.Row="0" Classes="panel" Padding="0" Background="#0b0913">
+                    <px:PixelPanel Grid.Row="0" Classes="panel" Padding="0" Background="#0b0913">
                         <Grid>
                             <views:SceneView x:Name="Scene"/>
                             <Border IsVisible="{Binding CrisisVisible}" Background="{Binding CrisisBrush}"
@@ -178,11 +178,17 @@
                             </Border>
                             <Border Background="#b3181425" Padding="10,3" VerticalAlignment="Bottom"
                                     HorizontalAlignment="Center" Margin="0,0,0,8" IsHitTestVisible="False">
-                                <TextBlock Text="CLIQUE OU [ESPACE] POUR CHARBONNER" FontSize="13"
-                                           Foreground="{StaticResource Cloud}"/>
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <px:PixelImage Source="{x:Static px:Keys.Click}" Width="16" Height="16"/>
+                                    <TextBlock Text="CLIQUE OU" FontSize="13" VerticalAlignment="Center"
+                                               Foreground="{StaticResource Cloud}"/>
+                                    <px:PixelImage Source="{x:Static px:Keys.Space}" Width="16" Height="16"/>
+                                    <TextBlock Text="POUR CHARBONNER" FontSize="13" VerticalAlignment="Center"
+                                               Foreground="{StaticResource Cloud}"/>
+                                </StackPanel>
                             </Border>
                         </Grid>
-                    </Border>
+                    </px:PixelPanel>
 
                     <DockPanel Grid.Row="2">
                         <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="6" Margin="0,0,0,10">
@@ -220,7 +226,7 @@
                             <ScrollViewer IsVisible="{Binding IsTeamTab}" HorizontalScrollBarVisibility="Auto"
                                           VerticalScrollBarVisibility="Disabled">
                                 <StackPanel Orientation="Horizontal" Spacing="14">
-                                    <Border Classes="panel" Width="230" Height="210" Padding="9">
+                                    <px:PixelPanel Classes="panel" Width="230" Height="210" Padding="9">
                                         <StackPanel Spacing="6">
                                             <TextBlock Text="TA BOÎTE" Classes="label"/>
                                             <TextBlock Text="{Binding CompanyText}" Foreground="{StaticResource Gold}"
@@ -237,7 +243,7 @@
                                                        FontSize="13" TextWrapping="Wrap"
                                                        IsVisible="{Binding !HiringUnlocked}"/>
                                         </StackPanel>
-                                    </Border>
+                                    </px:PixelPanel>
                                     <ItemsControl ItemsSource="{Binding Office}"/>
                                     <ItemsControl ItemsSource="{Binding Employees}">
                                         <ItemsControl.ItemsPanel>
@@ -245,7 +251,7 @@
                                         </ItemsControl.ItemsPanel>
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="vm:EmployeeViewModel">
-                                                <Border Classes="panel" Width="200" Height="210" Margin="0,0,12,0" Padding="9">
+                                                <px:PixelPanel Classes="panel" Width="200" Height="210" Margin="0,0,12,0" Padding="9">
                                                     <DockPanel>
                                                         <Grid DockPanel.Dock="Bottom" ColumnDefinitions="Auto,*,Auto">
                                                             <Button Content="−" Command="{Binding FireCommand}"
@@ -269,7 +275,7 @@
                                                                        TextWrapping="Wrap"/>
                                                         </StackPanel>
                                                     </DockPanel>
-                                                </Border>
+                                                </px:PixelPanel>
                                             </DataTemplate>
                                         </ItemsControl.ItemTemplate>
                                     </ItemsControl>
@@ -286,7 +292,7 @@
                                 <ScrollViewer IsVisible="{Binding BusinessesUnlocked}" HorizontalScrollBarVisibility="Auto"
                                               VerticalScrollBarVisibility="Disabled">
                                     <StackPanel Orientation="Horizontal">
-                                        <Border Classes="panel" Width="220" Height="210" Margin="0,0,12,0" Padding="9"
+                                        <px:PixelPanel Classes="panel" Width="220" Height="210" Margin="0,0,12,0" Padding="9"
                                                 BorderBrush="{StaticResource Gold}" IsVisible="{Binding HoldingVisible}">
                                             <DockPanel>
                                                 <Button DockPanel.Dock="Bottom" Content="CRÉER LA HOLDING"
@@ -301,14 +307,14 @@
                                                     <TextBlock Text="{Binding HoldingText}" Classes="muted" FontSize="14"/>
                                                 </StackPanel>
                                             </DockPanel>
-                                        </Border>
+                                        </px:PixelPanel>
                                         <ItemsControl ItemsSource="{Binding Businesses}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:DataType="vm:BusinessViewModel">
-                                                    <Border Classes="panel" Width="210" Height="210" Margin="0,0,12,0" Padding="9">
+                                                    <px:PixelPanel Classes="panel" Width="210" Height="210" Margin="0,0,12,0" Padding="9">
                                                         <DockPanel>
                                                             <StackPanel DockPanel.Dock="Bottom" Spacing="2">
                                                                 <TextBlock Text="{Binding CostText}" Classes="num" FontSize="20"
@@ -332,7 +338,7 @@
                                                                            FontSize="12" TextWrapping="Wrap"/>
                                                             </StackPanel>
                                                         </DockPanel>
-                                                    </Border>
+                                                    </px:PixelPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
@@ -356,7 +362,7 @@
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:DataType="vm:AssetViewModel">
-                                                    <Border Classes="panel" Width="210" Height="190" Margin="0,0,12,0" Padding="9">
+                                                    <px:PixelPanel Classes="panel" Width="210" Height="190" Margin="0,0,12,0" Padding="9">
                                                         <StackPanel Spacing="2">
                                                             <Grid ColumnDefinitions="*,Auto">
                                                                 <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="Bold"
@@ -366,10 +372,10 @@
                                                                            FontSize="18"/>
                                                             </Grid>
                                                             <TextBlock Text="{Binding PriceText}" Classes="num" FontSize="20"/>
-                                                            <Border Classes="inset" Padding="4">
+                                                            <px:PixelPanel Classes="inset" Padding="4">
                                                                 <Polyline Points="{Binding Chart}" Stroke="{Binding ChangeBrush}"
                                                                           StrokeThickness="2" Height="40" Width="180"/>
-                                                            </Border>
+                                                            </px:PixelPanel>
                                                             <TextBlock Text="{Binding HoldingText}" Classes="label" FontSize="12"/>
                                                             <StackPanel Orientation="Horizontal" Spacing="4">
                                                                 <Button Content="10%" Command="{Binding BuyTenPercentCommand}"
@@ -381,7 +387,7 @@
                                                                         Padding="6,2"/>
                                                             </StackPanel>
                                                         </StackPanel>
-                                                    </Border>
+                                                    </px:PixelPanel>
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
@@ -393,7 +399,7 @@
                 </Grid>
 
                 <!-- Colonne de droite : travail en cours, atouts, effets, journal -->
-                <Border Grid.Column="4" Classes="panel" Padding="10">
+                <px:PixelPanel Grid.Column="4" Classes="panel" Padding="10">
                     <DockPanel>
                         <StackPanel DockPanel.Dock="Top" Spacing="4">
                             <Grid ColumnDefinitions="*,Auto">
@@ -403,7 +409,7 @@
                             <ItemsControl ItemsSource="{Binding Tasks}" MaxHeight="230" ClipToBounds="True">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="vm:TaskViewModel">
-                                        <Border Classes="inset" Margin="0,4,0,0" Padding="6">
+                                        <px:PixelPanel Classes="inset" Margin="0,4,0,0" Padding="6">
                                             <StackPanel Spacing="2">
                                                 <Grid ColumnDefinitions="*,Auto">
                                                     <TextBlock Text="{Binding ClientName}" FontSize="13" FontWeight="Bold"
@@ -416,7 +422,7 @@
                                                 <TextBlock Text="{Binding DeadlineText}" Foreground="{Binding DeadlineBrush}"
                                                            FontSize="12" TextTrimming="CharacterEllipsis"/>
                                             </StackPanel>
-                                        </Border>
+                                        </px:PixelPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -428,10 +434,10 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate x:DataType="vm:PerkCardViewModel">
-                                        <Border Classes="inset" BorderBrush="{Binding RarityBrush}" Padding="4"
+                                        <px:PixelPanel Classes="inset" BorderBrush="{Binding RarityBrush}" Padding="4"
                                                 Margin="0,4,4,0" ToolTip.Tip="{Binding Tooltip}">
                                             <px:PixelImage Source="{Binding Icon}" Width="30" Height="30"/>
-                                        </Border>
+                                        </px:PixelPanel>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -464,19 +470,19 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </DockPanel>
-                </Border>
+                </px:PixelPanel>
             </Grid>
         </Grid>
 
         <!-- ======================= INTRO DE LA RUN ======================= -->
         <Border Classes="overlay" IsVisible="{Binding IntroVisible}">
-            <Border Classes="panel" Width="780" Padding="28" HorizontalAlignment="Center" VerticalAlignment="Center"
+            <px:PixelPanel Classes="panel" Width="780" Padding="28" HorizontalAlignment="Center" VerticalAlignment="Center"
                     BorderBrush="{StaticResource Gold}">
                 <StackPanel Spacing="14">
                     <StackPanel Orientation="Horizontal" Spacing="20">
-                        <Border Classes="inset" Padding="4">
+                        <px:PixelPanel Classes="inset" Padding="4">
                             <px:PixelImage Source="{Binding Portrait}" Width="128" Height="128"/>
-                        </Border>
+                        </px:PixelPanel>
                         <StackPanel VerticalAlignment="Center" Spacing="8" Width="560">
                             <TextBlock Text="{Binding IntroTitle}" Classes="h2" Foreground="{StaticResource Gold}"
                                        TextWrapping="Wrap"/>
@@ -489,10 +495,14 @@
                     <TextBlock Text="{Binding IntroText}" FontSize="18" TextWrapping="Wrap" LineHeight="26"/>
                     <TextBlock Classes="muted" FontSize="15"
                                Text="Paie tes factures chaque mois. Deux impayés d'affilée, et c'est la fin de la run. Un mois sur trois, une crise frappe."/>
-                    <Button Content="[ENTRÉE]  AU BOULOT !" Command="{Binding StartCommand}" Classes="gold big"
-                            HorizontalAlignment="Center"/>
+                    <Button Command="{Binding StartCommand}" Classes="gold big" HorizontalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <px:PixelImage Source="{x:Static px:Keys.Enter}" Width="32" Height="32"/>
+                            <TextBlock Text="AU BOULOT !" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
-            </Border>
+            </px:PixelPanel>
         </Border>
 
         <!-- ======================= CHOIX D'ATOUT ======================= -->
@@ -509,35 +519,39 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="vm:PerkCardViewModel">
-                            <Button Command="{Binding ChooseCommand}" Padding="0" Background="Transparent"
-                                    BorderThickness="0">
-                                <Border Classes="panel lift" Width="250" Height="340" BorderBrush="{Binding RarityBrush}"
+                            <Button Command="{Binding ChooseCommand}" Padding="0" Classes="plain">
+                                <px:PixelPanel Classes="panel lift" Width="250" Height="340" BorderBrush="{Binding RarityBrush}"
                                         BorderThickness="4" Padding="16">
                                     <DockPanel>
-                                        <TextBlock DockPanel.Dock="Bottom" Text="{Binding KeyHint}" Classes="key"
-                                                   HorizontalAlignment="Center"/>
+                                        <px:PixelImage DockPanel.Dock="Bottom" Source="{Binding KeyIcon}" Width="32" Height="32"
+                                                       HorizontalAlignment="Center"/>
                                         <StackPanel Spacing="10">
                                             <Border Classes="tag" Background="{Binding RarityBrush}" HorizontalAlignment="Center">
                                                 <TextBlock Text="{Binding RarityText}" Foreground="{StaticResource Ink}"
                                                            FontSize="14" FontWeight="Bold"/>
                                             </Border>
-                                            <Border Classes="inset" HorizontalAlignment="Center" Padding="10">
+                                            <px:PixelPanel Classes="inset" HorizontalAlignment="Center" Padding="10">
                                                 <px:PixelImage Source="{Binding Icon}" Width="96" Height="96"/>
-                                            </Border>
+                                            </px:PixelPanel>
                                             <TextBlock Text="{Binding Name}" FontSize="22" FontWeight="Bold"
                                                        TextAlignment="Center" TextWrapping="Wrap"/>
                                             <TextBlock Text="{Binding Description}" FontSize="17" TextAlignment="Center"
                                                        TextWrapping="Wrap" Foreground="{StaticResource Cloud}"/>
                                         </StackPanel>
                                     </DockPanel>
-                                </Border>
+                                </px:PixelPanel>
                             </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
                 <StackPanel Orientation="Horizontal" Spacing="16" HorizontalAlignment="Center">
-                    <Button Content="{Binding RerollText}" Command="{Binding RerollCommand}" IsEnabled="{Binding CanReroll}"
-                            ToolTip.Tip="[R] Tirer trois nouvelles cartes"/>
+                    <Button Command="{Binding RerollCommand}" IsEnabled="{Binding CanReroll}"
+                            ToolTip.Tip="Tirer trois nouvelles cartes">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <px:PixelImage Source="{x:Static px:Keys.R}" Width="32" Height="32"/>
+                            <TextBlock Text="{Binding RerollText}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                     <Button Content="{Binding SkipText}" Command="{Binding SkipCommand}"/>
                 </StackPanel>
             </StackPanel>
@@ -545,13 +559,13 @@
 
         <!-- ======================= ÉVÉNEMENT ======================= -->
         <Border Classes="overlay" IsVisible="{Binding EventVisible}">
-            <Border Classes="panel" Width="760" Padding="26" HorizontalAlignment="Center" VerticalAlignment="Center"
+            <px:PixelPanel Classes="panel" Width="760" Padding="26" HorizontalAlignment="Center" VerticalAlignment="Center"
                     BorderBrush="{StaticResource Ice}" DataContext="{Binding Event}" x:DataType="vm:EventViewModel">
                 <StackPanel Spacing="14">
                     <StackPanel Orientation="Horizontal" Spacing="16">
-                        <Border Classes="inset" Padding="8">
+                        <px:PixelPanel Classes="inset" Padding="8">
                             <px:PixelImage Source="{Binding Icon}" Width="72" Height="72"/>
-                        </Border>
+                        </px:PixelPanel>
                         <TextBlock Text="{Binding Title}" Classes="h2" Foreground="{StaticResource Ice}"
                                    VerticalAlignment="Center" TextWrapping="Wrap" Width="580"/>
                     </StackPanel>
@@ -564,8 +578,8 @@
                                         HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"
                                         Margin="0,0,0,8" Padding="14,8">
                                     <Grid ColumnDefinitions="Auto,*">
-                                        <TextBlock Text="{Binding KeyHint}" Classes="key" Margin="0,0,12,0"
-                                                   VerticalAlignment="Center"/>
+                                        <px:PixelImage Source="{Binding KeyIcon}" Width="32" Height="32" Margin="0,0,12,0"
+                                                       VerticalAlignment="Center"/>
                                         <StackPanel Grid.Column="1">
                                             <TextBlock Text="{Binding Label}" FontSize="19" FontWeight="Bold"/>
                                             <TextBlock Text="{Binding Hint}" FontSize="14" Foreground="{StaticResource Fog}"
@@ -578,35 +592,68 @@
                     </ItemsControl>
 
                     <StackPanel Spacing="14" IsVisible="{Binding IsResolved}">
-                        <Border Classes="inset" Padding="14">
+                        <px:PixelPanel Classes="inset" Padding="14">
                             <TextBlock Text="{Binding Outcome}" FontSize="19" TextWrapping="Wrap"
                                        Foreground="{StaticResource Lemon}"/>
-                        </Border>
-                        <Button Content="[ENTRÉE]  CONTINUER" Command="{Binding ContinueCommand}" Classes="gold"
-                                HorizontalAlignment="Right"/>
+                        </px:PixelPanel>
+                        <Button Command="{Binding ContinueCommand}" Classes="gold" HorizontalAlignment="Right">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <px:PixelImage Source="{x:Static px:Keys.Enter}" Width="32" Height="32"/>
+                            <TextBlock Text="CONTINUER" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                     </StackPanel>
                 </StackPanel>
-            </Border>
+            </px:PixelPanel>
         </Border>
 
         <!-- ======================= PAUSE ======================= -->
         <Border Classes="overlay" IsVisible="{Binding PauseVisible}">
-            <Border Classes="panel" Width="560" Padding="28" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <px:PixelPanel Classes="panel" Width="560" Padding="28" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel Spacing="12">
-                    <TextBlock Text="PAUSE" Classes="h1" HorizontalAlignment="Center"/>
+                    <TextBlock Text="PAUSE" Classes="h1 title" HorizontalAlignment="Center"/>
                     <TextBlock Text="{Binding RunInfo}" Classes="label" HorizontalAlignment="Center"/>
-                    <Button Content="[ÉCHAP]  REPRENDRE" Command="{Binding ResumeCommand}" Classes="gold big"
-                            HorizontalAlignment="Stretch"/>
+                    <Button Command="{Binding ResumeCommand}" Classes="gold big" HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <px:PixelImage Source="{x:Static px:Keys.Escape}" Width="32" Height="32"/>
+                            <TextBlock Text="REPRENDRE" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                     <Button Content="{Binding MusicText}" Command="{Binding ToggleMusicCommand}" HorizontalAlignment="Stretch"/>
                     <Button Content="{Binding SoundText}" Command="{Binding ToggleSoundCommand}" HorizontalAlignment="Stretch"/>
+                    <Button Content="{Binding EffectsText}" Command="{Binding ToggleEffectsCommand}" HorizontalAlignment="Stretch"/>
                     <Button Content="ABANDONNER LA RUN" Command="{Binding AbandonCommand}" Classes="red"
                             HorizontalAlignment="Stretch"/>
-                    <Border Classes="inset" Margin="0,8,0,0">
-                        <TextBlock Classes="key" TextWrapping="Wrap"
-                                   Text="ESPACE charbonner · 1-4 choisir · R relancer · ENTRÉE continuer · ÉCHAP pause · F11 plein écran"/>
-                    </Border>
+                    <px:PixelPanel Classes="inset" Margin="0,8,0,0">
+                        <UniformGrid Columns="3">
+                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,3">
+                                <px:PixelImage Source="{x:Static px:Keys.Space}" Width="32" Height="32"/>
+                                <TextBlock Text="charbonner" FontSize="15" Foreground="{StaticResource Cloud}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,3">
+                                <px:PixelImage Source="{x:Static px:Keys.One}" Width="32" Height="32"/>
+                                <TextBlock Text="choisir (1 à 4)" FontSize="15" Foreground="{StaticResource Cloud}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,3">
+                                <px:PixelImage Source="{x:Static px:Keys.R}" Width="32" Height="32"/>
+                                <TextBlock Text="relancer" FontSize="15" Foreground="{StaticResource Cloud}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,3">
+                                <px:PixelImage Source="{x:Static px:Keys.Enter}" Width="32" Height="32"/>
+                                <TextBlock Text="continuer" FontSize="15" Foreground="{StaticResource Cloud}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,3">
+                                <px:PixelImage Source="{x:Static px:Keys.Escape}" Width="32" Height="32"/>
+                                <TextBlock Text="pause" FontSize="15" Foreground="{StaticResource Cloud}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,3">
+                                <px:PixelImage Source="{x:Static px:Keys.F11}" Width="32" Height="32"/>
+                                <TextBlock Text="plein écran" FontSize="15" Foreground="{StaticResource Cloud}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </UniformGrid>
+                    </px:PixelPanel>
                 </StackPanel>
-            </Border>
+            </px:PixelPanel>
         </Border>
     </Grid>
 </UserControl>

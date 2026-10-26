@@ -28,6 +28,12 @@ public partial class PlayingView : UserControl, IGameScreen
         {
             Scene.ShowFloater($"+{Display.Money(task.EarnedReward)}", Palette.Leaf, size: 24);
             Scene.BurstCoins(12);
+            Scene.React(Reaction.Cheer);
+        };
+        state.Session.Bills.BillPaid += (_, unpaid) =>
+        {
+            if (!unpaid)
+                Scene.React(Reaction.Cheer);
         };
     }
 
@@ -45,7 +51,9 @@ public partial class PlayingView : UserControl, IGameScreen
             upgrades[UpgradeTrackId.Housing].Level,
             session.Career.Stage,
             session.Staff.TotalCount,
-            session.Perks.Any(p => p.Id == "cat")));
+            session.Perks.Any(p => p.Id == "cat"),
+            upgrades[UpgradeTrackId.Internet].Level,
+            upgrades[UpgradeTrackId.Office].Level));
         Scene.Animate(new SceneMood(_viewModel.IsWorking, _viewModel.DayPhase, _viewModel.InCrisis, _viewModel.InDebt));
     }
 
@@ -87,6 +95,7 @@ public partial class PlayingView : UserControl, IGameScreen
         if (result.IsCritical)
         {
             Sfx.Play(Sound.Crit);
+            Scene.React(Reaction.Crit);
             Scene.ShowFloater("COUP DE GÉNIE !", Palette.Ice, position, 20);
             Juice.Shake(4);
         }

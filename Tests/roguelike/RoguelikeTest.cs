@@ -356,6 +356,34 @@ public class RoguelikeTest
     }
 
     [Test]
+    public void SettingsAreSavedAndOldProfilesGetDefaults()
+    {
+        string path = Path.Combine(Path.GetTempPath(), $"startuprush-test-{Guid.NewGuid()}.json");
+        try
+        {
+            // Un profil écrit avant l'ajout des réglages
+            File.WriteAllText(path, """{ "Lingots": 12, "Runs": 3 }""");
+            var store = new ProfileStore(path);
+            var old = store.Load();
+            Assert.That(old.Lingots, Is.EqualTo(12));
+            Assert.That(old.Settings.MusicVolume, Is.EqualTo(new GameSettings().MusicVolume));
+
+            old.Settings.MusicVolume = 0.2;
+            old.Settings.ReduceEffects = true;
+            store.Save(old);
+            var loaded = store.Load();
+
+            Assert.That(loaded.Settings.MusicVolume, Is.EqualTo(0.2));
+            Assert.That(loaded.Settings.ReduceEffects, Is.True);
+            Assert.That(File.Exists(path + ".tmp"), Is.False);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Test]
     public void LegacyUpgradeCostsLingotsAndHasMaxLevel()
     {
         var profile = new Profile { Lingots = 1_000 };

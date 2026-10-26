@@ -19,7 +19,12 @@ public record SceneLook(
     int Housing,
     CareerStage Stage,
     int Employees,
-    bool HasCat);
+    bool HasCat,
+    int Internet = 0,
+    int Office = 0);
+
+/// <summary>Une réaction brève du héros.</summary>
+public enum Reaction { Cheer, Crit }
 
 /// <summary>L'ambiance du moment, animée à chaque image.</summary>
 /// <param name="DayPhase">Moment du mois : 0 = matin, 0.5 = soir, 1 = nuit.</param>
@@ -27,8 +32,9 @@ public record SceneMood(bool Working, double DayPhase, bool Crisis, bool InDebt)
 
 /// <summary>
 /// Le personnage vu de dos à son bureau, rendu en vrai pixel art : la pièce est dessinée
-/// hors écran en formes simples, puis convertie en basse résolution dans la palette du jeu.
-/// Les textes flottants et les particules sont dessinés par-dessus, nets.
+/// hors écran (formes simples et sprites du pack Pixel Office), puis convertie en basse résolution
+/// dans la palette du jeu. Les textes flottants et les particules sont dessinés par-dessus, nets.
+/// Un pixel de sprite vaut deux unités de scène, soit exactement un pixel de l'image rendue.
 /// </summary>
 public partial class SceneView : UserControl
 {
@@ -36,6 +42,8 @@ public partial class SceneView : UserControl
     private const double SceneHeight = 340;
     private const double CenterX = 280;
     private const double DeskY = 200;
+    private const double SpritePixel = 2;
+    private const int DrawnEmployees = 6;
 
     private readonly Canvas _stage = new() { Width = SceneWidth, Height = SceneHeight, Background = Brushes.Black };
     private readonly PixelRenderer _renderer;
@@ -53,7 +61,10 @@ public partial class SceneView : UserControl
     private Rectangle? _alarmTint;
     private Ellipse? _alarmLight;
     private Ellipse? _sweat;
-    private Path? _catTail;
+    private Image? _cat;
+    private readonly List<(Shape Led, double Phase)> _routerLeds = new();
+    private double _cheerUntil;
+    private double _cheerStrength;
     private Rect _window;
     private double _lastTime;
     private bool _renderThisFrame = true;
@@ -94,18 +105,24 @@ public partial class SceneView : UserControl
         _codeLines.Clear();
         _leds.Clear();
         _rain.Clear();
-        _catTail = null;
+        _routerLeds.Clear();
+        _cat = null;
 
         DrawRoom(look.Housing);
         DrawStageDecor(look.Stage);
-        DrawEmployees(look.Employees);
+        DrawOffice(look.Office, look.Stage);
+        DrawBackFurniture(look.Housing, look.Stage, look.Coffee);
         DrawDesk(look.Computer);
         DrawScreens(look.Screens);
         DrawComputer(look.Computer);
         DrawCoffee(look.Coffee);
+        DrawRouter(look.Internet);
         if (look.HasCat)
             DrawCat();
         DrawCharacter(look.Chair, look.Stage);
+        DrawEmployees(look.Employees);
+        if (look.Housing >= 3)
+            Sprite("dog", 326, 302);
         DrawMoodLayers();
     }
 
@@ -125,6 +142,13 @@ public partial class SceneView : UserControl
         foreach (var (led, phase) in _leds)
             led.Opacity = 0.35 + 0.65 * Math.Abs(Math.Sin(time * 3 + phase));
 
+        // Les voyants du routeur clignotent vite quand on travaille
+        foreach (var (led, phase) in _routerLeds)
+            led.Opacity = Math.Sin(time * (mood.Working ? 14 : 3) + phase) > 0 ? 1 : 0.25;
+
+        if (_cat != null)
+            _cat.Source = Sprites.Get(time % 2.4 < 0.5 ? "cat1" : "cat0");
+
         _renderThisFrame = !_renderThisFrame;
         if (_renderThisFrame)
         {
@@ -134,6 +158,13 @@ public partial class SceneView : UserControl
 
         AnimateFloaters(time);
         AnimateParticles(time, delta);
+    }
+
+    /// <summary>Le héros lève les bras un instant : contrat livré, facture payée, coup critique.</summary>
+    public void React(Reaction reaction)
+    {
+        _cheerUntil = _lastTime + (reaction == Reaction.Cheer ? 0.7 : 0.3);
+        _cheerStrength = reaction == Reaction.Cheer ? 1 : 0.6;
     }
 
     /// <summary>Affiche un texte qui monte et disparaît (gain, travail fourni...).</summary>
@@ -185,6 +216,16 @@ public partial class SceneView : UserControl
         if (_leftArm == null || _rightArm == null)
             return;
 
+        if (time < _cheerUntil)
+        {
+            // Bras levés, qui s'agitent un peu
+            double wave = Math.Sin(time * 20) * 4;
+            double lift = 70 * _cheerStrength;
+            _leftArm.EndPoint = new Point(244 + wave, 196 - lift);
+            _rightArm.EndPoint = new Point(316 - wave, 196 - lift);
+            return;
+        }
+
         double speed = working ? 18 : 2;
         double amplitude = working ? 3 : 0.6;
         _leftArm.EndPoint = new Point(258 + Math.Sin(time * speed) * amplitude, 196 - Math.Abs(Math.Cos(time * speed)) * amplitude);
@@ -214,12 +255,11 @@ public partial class SceneView : UserControl
 
         if (_sweat != null)
         {
-            _sweat.Opacity = mood.InDebt ? 1 : 0;
+            // Inquiet quand l'argent manque ou qu'une crise frappe
+            _sweat.Opacity = mood.InDebt || mood.Crisis ? 1 : 0;
             Canvas.SetTop(_sweat, 168 + time * 30 % 20);
         }
 
-        if (_catTail != null)
-            _catTail.RenderTransform = new RotateTransform(Math.Sin(time * 3) * 12);
     }
 
     private void AnimateFloaters(double time)
@@ -276,27 +316,8 @@ public partial class SceneView : UserControl
 
     private void DrawCat()
     {
-        // Un chat orange roulé en boule sur le bureau, la queue qui bat
-        Oval(392, DeskY - 22, 40, 24, "#f77622");
-        Oval(420, DeskY - 32, 20, 18, "#f77622");
-        Stroke($"M 423,{DeskY - 30} L 425,{DeskY - 38} L 429,{DeskY - 31} M 433,{DeskY - 31} L 437,{DeskY - 38} L 438,{DeskY - 29}",
-            "#f77622", 2, "#f77622");
-        Oval(426, DeskY - 25, 3, 3, "#181425");
-        Oval(433, DeskY - 25, 3, 3, "#181425");
-        for (int i = 0; i < 3; i++)
-            Box(398 + i * 9, DeskY - 18, 3, 12, "#d77643");
-
-        _catTail = new Path
-        {
-            Data = Geometry.Parse("M 0,0 Q -14,-6 -18,-18"),
-            Stroke = Palette.Ember,
-            StrokeThickness = 5,
-            StrokeLineCap = PenLineCap.Round,
-            RenderTransformOrigin = RelativePoint.TopLeft,
-        };
-        Canvas.SetLeft(_catTail, 394);
-        Canvas.SetTop(_catTail, DeskY - 8);
-        _stage.Children.Add(_catTail);
+        // Le chat de bureau (Pixel Office) dort sur le bureau et remue la queue
+        _cat = Sprite("cat0", 400, DeskY - 26);
     }
 
     // ---------- Pièce ----------
@@ -352,6 +373,8 @@ public partial class SceneView : UserControl
             }
         }
         Box(windowX + windowWidth / 2 - 2, 25, 4, 115, "#2B2B2B");
+        if (housing >= 1)
+            Sprite("clock", 440, 10);
 
         switch (housing)
         {
@@ -391,6 +414,13 @@ public partial class SceneView : UserControl
 
     private void DrawView(int housing, double x, double width)
     {
+        // Nuages du pack Pixel Office devant le ciel, sauf face au mur d'en face
+        if (housing >= 1)
+        {
+            var clouds = Sprite("clouds", x, 25);
+            clouds.Clip = new RectangleGeometry(new Rect(0, 0, width, 50));
+        }
+
         switch (housing)
         {
             case 0:
@@ -435,9 +465,8 @@ public partial class SceneView : UserControl
 
     private void DrawPlant(double x, double y)
     {
-        Box(x, y + 25, 30, 25, "#8D6E63", 3);
-        Oval(x - 8, y - 10, 26, 34, "#43A047");
-        Oval(x + 12, y - 18, 26, 40, "#2E7D32");
+        // Plante en pot du pack, posée au même endroit que l'ancienne
+        Sprite("plant", x, y + 12);
     }
 
     // ---------- Statut ----------
@@ -464,33 +493,54 @@ public partial class SceneView : UserControl
         }
     }
 
+    // ---------- Locaux et mobilier du fond ----------
+
+    /// <summary>Ce que les locaux de la boîte ajoutent à la pièce : tableau, imprimante, fontaine.</summary>
+    private void DrawOffice(int office, CareerStage stage)
+    {
+        if (stage >= CareerStage.Founder)
+            Sprite("calendar", 30, 158);
+        if (office >= 1)
+            Sprite("whiteboard", 396, 112);
+        if (office >= 2)
+            Sprite("printer", 400, 212);
+        if (office >= 3)
+            Sprite("cooler", 178, 216);
+    }
+
+    private void DrawBackFurniture(int housing, CareerStage stage, int coffee)
+    {
+        // Le canapé change avec le logement
+        if (housing >= 2)
+            Sprite($"sofa{Math.Min(housing - 2, 3)}", 4, 218);
+        if (stage >= CareerStage.Boss)
+            Sprite("vending", 72, 182);
+        if (coffee >= 3)
+            Sprite("drinks", 124, 188);
+    }
+
     // ---------- Employés ----------
 
     private void DrawEmployees(int count)
     {
-        // Les employés travaillent dans les coins, vus de dos eux aussi
-        var spots = new List<Point>();
-        for (int row = 0; row < 2; row++)
-        for (int i = 0; i < 3; i++)
-        {
-            spots.Add(new Point(12 + i * 58, 262 + row * 40));
-            spots.Add(new Point(392 + i * 58, 262 + row * 40));
-        }
-
-        int drawn = Math.Min(count, spots.Count);
-        string[] shirts = ["#1E88E5", "#43A047", "#F4511E", "#8E24AA", "#00897B", "#6D4C41"];
+        // Les employés ont leur petit bureau au premier plan, de chaque côté, face à nous
+        double[] spots = [4, 60, 116, 386, 442, 498];
+        int drawn = Math.Min(count, DrawnEmployees);
         for (int i = 0; i < drawn; i++)
         {
-            var p = spots[i];
-            Box(p.X, p.Y + 10, 46, 5, "#795548");
-            Box(p.X + 10, p.Y - 8, 26, 17, "#263238", 2);
-            Box(p.X + 12, p.Y - 6, 22, 13, "#4FC3F7", 1);
-            Box(p.X + 12, p.Y + 18, 22, 18, shirts[i % shirts.Length], 6);
-            Oval(p.X + 15, p.Y + 6, 16, 16, i % 3 == 0 ? "#4E342E" : i % 3 == 1 ? "#212121" : "#F9A825");
+            double x = spots[i];
+            string look = $"employee{i % Sprites.EmployeeLooks}";
+            var size = Sprites.Size(look);
+            Sprite(look, x + 18 - size.Width, 318 - size.Height * SpritePixel);
+
+            // Dos de son écran à côté de lui, puis la table du pack par-dessus
+            Box(x + 34, 280, 16, 14, "#181425", 2);
+            Box(x + 40, 294, 4, 4, "#3a4466");
+            Sprite("table", x, 298);
         }
 
         if (count > drawn)
-            Label($"+{count - drawn}", 500, 225, "#FFFFFF", 14);
+            Label($"+{count - drawn}", 500, 250, "#FFFFFF", 16);
     }
 
     // ---------- Bureau et matériel ----------
@@ -634,28 +684,42 @@ public partial class SceneView : UserControl
 
     private void DrawCoffee(int coffee)
     {
-        switch (coffee)
+        if (coffee == 0)
         {
-            case 0:
-                // Verre d'eau du robinet
-                Box(150, DeskY - 18, 12, 18, "#80B3E5F7", 2);
-                break;
-            case 1:
-                Box(146, DeskY - 18, 16, 18, "#ECEFF1", 3);
-                Stroke($"M 162,{DeskY - 14} Q 170,{DeskY - 10} 162,{DeskY - 5}", "#ECEFF1", 2);
-                break;
-            case 2:
-                Box(118, DeskY - 42, 40, 42, "#B0BEC5", 4);
-                Box(124, DeskY - 36, 28, 10, "#263238", 2);
-                Box(132, DeskY - 14, 12, 12, "#FFFFFF", 2);
-                break;
-            default:
-                // Machine dorée de barista
-                Box(114, DeskY - 50, 48, 50, "#FFC107", 5);
-                Box(120, DeskY - 44, 36, 12, "#4E342E", 2);
-                Box(131, DeskY - 16, 14, 14, "#FFFFFF", 3);
-                Stroke("M 124,140 Q 128,130 124,120 M 140,140 Q 144,130 140,120", "#B0FFFFFF", 2);
-                break;
+            // Verre d'eau du robinet
+            Box(150, DeskY - 18, 12, 18, "#80B3E5F7", 2);
+            return;
+        }
+
+        // Machine à café (à partir de l'expresso) et tasse du pack ; le barista ajoute le frigo à boissons au fond
+        if (coffee >= 2)
+            Sprite("coffeeMachine", 120, DeskY - 22);
+        Sprite("mug", 140, DeskY - 14);
+        if (coffee >= 2)
+            Stroke($"M 146,{DeskY - 18} Q 150,{DeskY - 26} 146,{DeskY - 34}", "#80FFFFFF", 2); // vapeur
+    }
+
+    /// <summary>La box Internet sur le bureau : plus de voyants et d'antennes à chaque niveau.</summary>
+    private void DrawRouter(int internet)
+    {
+        if (internet == 0)
+            return; // le wifi du voisin : rien chez soi
+
+        string body = internet == 1 ? "#ead4aa" : "#262b44";
+        for (int i = 0; i < Math.Min(internet, 3) - 1; i++)
+            Box(184 + i * 18, DeskY - 24, 2, 12, "#5a6988");
+        Box(178, DeskY - 12, 30, 12, body, 2);
+        for (int i = 0; i < internet + 1; i++)
+        {
+            var led = Box(182 + i * 5, DeskY - 7, 2, 2, i % 2 == 0 ? "#63c74d" : "#2ce8f5");
+            _routerLeds.Add((led, i * 1.3));
+        }
+
+        if (internet >= 4)
+        {
+            // Parabole du satellite privé au bord de la fenêtre
+            Oval(20, 120, 22, 22, "#c0cbdc");
+            Box(29, 130, 4, 18, "#5a6988");
         }
     }
 
@@ -807,6 +871,22 @@ public partial class SceneView : UserControl
             Fill = fill == null ? null : Brush(fill)
         };
         Stage.Children.Add(path);
+    }
+
+    /// <summary>Un sprite du pack à sa taille d'origine : un pixel du sprite = un pixel de la scène rendue.</summary>
+    private Image Sprite(string name, double x, double y)
+    {
+        var size = Sprites.Size(name);
+        var image = new Image
+        {
+            Source = Sprites.Get(name),
+            Width = size.Width * SpritePixel,
+            Height = size.Height * SpritePixel,
+            Stretch = Stretch.Fill,
+        };
+        RenderOptions.SetBitmapInterpolationMode(image, Avalonia.Media.Imaging.BitmapInterpolationMode.None);
+        Place(image, Math.Round(x / SpritePixel) * SpritePixel, Math.Round(y / SpritePixel) * SpritePixel);
+        return image;
     }
 
     private void Label(string text, double x, double y, string color, double size)

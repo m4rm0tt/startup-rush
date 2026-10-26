@@ -12,7 +12,7 @@ public class CompanyRequestsTest
     [SetUp]
     public void SetUp()
     {
-        _company = new Company(new GameConfig { BaseOperatingCost = 0 });
+        _company = new Company(new GameConfig());
     }
 
     private static ClientRequest MakeRequest(int id, double offerTimeLeft = 10) =>
@@ -74,7 +74,7 @@ public class CompanyRequestsTest
     [Test]
     public void SessionReceivesAndExpiresRequestsOverTime()
     {
-        var config = new GameConfig { BaseOperatingCost = 0, OfferDuration = 10 };
+        var config = new GameConfig { OfferDuration = 10 };
         var session = new GameSession(config, new Random(3));
         int received = 0, expired = 0;
         session.Company.RequestReceived += _ => received++;

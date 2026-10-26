@@ -11,8 +11,8 @@ public partial class GameOverView : UserControl
         InitializeComponent();
 
         var result = state.Result;
-        CompanyText.Text = state.CompanyName;
-        ScoreText.Text = $"Score : {result.Score:N0}";
+        CompanyText.Text = state.PlayerName;
+        ScoreText.Text = $"Patrimoine : {Display.Money(result.PeakNetWorth)}";
         SurvivedText.Text = Display.Clock(result.SurvivedTime);
         EarnedText.Text = Display.Money(result.TotalEarned);
         CompletedText.Text = result.CompletedTasks.ToString();

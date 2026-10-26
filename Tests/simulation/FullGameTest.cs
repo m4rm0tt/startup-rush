@@ -1,3 +1,4 @@
+using Core.progression;
 using Core.simulation;
 
 namespace Tests.simulation;
@@ -14,9 +15,8 @@ public class FullGameTest
         var session = GameBot.Play(NewSession(1), BotStrategy.Idle);
 
         Assert.That(session.IsOver, Is.True);
-        Assert.That(session.Company.WalletBalance, Is.LessThan(0));
-        Assert.That(session.Result, Is.Not.Null);
-        Assert.That(session.Result!.SurvivedTime, Is.EqualTo(session.ElapsedTime));
+        Assert.That(session.Result!.IsVictory, Is.False);
+        Assert.That(session.Result.SurvivedTime, Is.LessThanOrEqualTo(3 * session.Config.MonthDuration));
         Assert.That(session.Result.CompletedTasks, Is.EqualTo(0));
     }
 
@@ -38,19 +38,31 @@ public class FullGameTest
     [TestCase(1)]
     [TestCase(2)]
     [TestCase(3)]
-    public void AcceptingGoodRequestsSurvivesLongerThanDoingNothing(int seed)
+    public void HardWorkPaysTheRentAtStart(int seed)
     {
-        var idle = GameBot.Play(NewSession(seed), BotStrategy.Idle);
-        var player = GameBot.Play(NewSession(seed), BotStrategy.AcceptOnTime);
+        var session = GameBot.Play(NewSession(seed), BotStrategy.TasksOnly, maxTime: 10 * 60);
 
-        Assert.That(player.ElapsedTime, Is.GreaterThan(idle.ElapsedTime));
-        Assert.That(player.Company.CompletedTaskCount, Is.GreaterThan(0));
+        Assert.That(session.IsOver, Is.False);
+        Assert.That(session.Company.CompletedTaskCount, Is.GreaterThan(20));
     }
 
-    [Test]
-    public void ScoreCombinesSurvivedTimeAndEarnings()
+    [TestCase(1)]
+    [TestCase(2)]
+    public void WithoutInvestingYouNeverBecomeKing(int seed)
     {
-        var result = new GameResult(SurvivedTime: 120, FinalBalance: -1, TotalEarned: 500, CompletedTasks: 3, FailedTasks: 0);
-        Assert.That(result.Score, Is.EqualTo(170));
+        var session = GameBot.Play(NewSession(seed), BotStrategy.TasksOnly, maxTime: 2 * 3600);
+
+        Assert.That(session.Career.Stage, Is.LessThan(CareerStage.Boss));
+    }
+
+    [TestCase(1)]
+    [TestCase(2)]
+    [TestCase(3)]
+    public void GoodPlayerBecomesKingOfTheWorld(int seed)
+    {
+        var session = GameBot.Play(NewSession(seed), BotStrategy.Tycoon);
+
+        Assert.That(session.IsOver, Is.True);
+        Assert.That(session.Result!.IsVictory, Is.True);
     }
 }

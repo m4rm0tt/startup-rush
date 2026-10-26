@@ -16,7 +16,6 @@ public class CompanyTasksTest
         var config = new GameConfig
         {
             StartingCapital = 1000,
-            BaseOperatingCost = 0,
             WorkSecondsPerDifficulty = 10,
             MaxActiveTasks = 2
         };
@@ -101,7 +100,7 @@ public class CompanyTasksTest
     {
         var company = new Company(new GameConfig
         {
-            StartingCapital = 1000, BaseOperatingCost = 0, WorkSecondsPerDifficulty = 10, LatePenalty = LatePenalty.Fail
+            StartingCapital = 1000, WorkSecondsPerDifficulty = 10, LatePenalty = LatePenalty.Fail
         });
         company.AddRequest(MakeRequest(1, deadline: 2));
         company.AcceptRequest(1);

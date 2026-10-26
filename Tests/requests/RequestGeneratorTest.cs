@@ -1,3 +1,4 @@
+using Core.company;
 using Core.requests;
 using Core.simulation;
 
@@ -40,14 +41,15 @@ public class RequestGeneratorTest
     public void GeneratedValuesStayWithinConfig()
     {
         var config = new GameConfig();
-        var generator = new RequestGenerator(new Random(7), config);
+        var stats = new PlayerStats(config) { MaxDifficulty = 6, ValueMultiplier = 2 };
+        var generator = new RequestGenerator(new Random(7), config, stats);
 
         for (int i = 0; i < 200; i++)
         {
             var request = generator.CreateRequest();
-            double maxValue = request.Difficulty * config.ValuePerDifficulty * (1 + config.ValueVariation);
+            double maxValue = request.Difficulty * config.ValuePerDifficulty * 2 * (1 + config.ValueVariation);
 
-            Assert.That(request.Difficulty, Is.InRange(config.MinDifficulty, config.MaxDifficulty));
+            Assert.That(request.Difficulty, Is.InRange(6 - config.DifficultySpread, 6));
             Assert.That(request.Value, Is.InRange(0, maxValue + 5));
             Assert.That(request.OfferTimeLeft, Is.EqualTo(config.OfferDuration));
             if (request.HasDeadline)

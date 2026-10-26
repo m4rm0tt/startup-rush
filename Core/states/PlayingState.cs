@@ -16,13 +16,13 @@ public class PlayingState : IGameState
 
     public void Enter() { }
 
-    /// <summary>Fait avancer la partie et passe à la fin de partie en cas de faillite.</summary>
+    /// <summary>Fait avancer la partie et passe à la fin de partie en cas de faillite ou à la victoire.</summary>
     public void Update(double deltaTime)
     {
         Session.Update(deltaTime);
 
         if (Session.Result != null)
-            _machine.ChangeState(new GameOverState(_machine, Session.Result, Session.Company.Name));
+            _machine.ChangeState(new GameOverState(_machine, Session.Result, Session.PlayerName));
     }
 
     public void Exit() { }

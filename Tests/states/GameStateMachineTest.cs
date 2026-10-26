@@ -13,10 +13,10 @@ public class GameStateMachineTest
         public void Exit() => log.Add($"{name}.Exit");
     }
 
-    // Partie courte : sans action, la faillite arrive en 10 secondes
+    // Partie courte : sans action, deux factures impayées et la faillite arrive en 10 secondes
     private static GameStateMachine NewMachine() =>
         new(name => new GameSession(
-            new GameConfig { StartingCapital = 100, BaseOperatingCost = 10, OperatingCostGrowthPerMinute = 0 },
+            new GameConfig { StartingCapital = 0, MonthDuration = 5 },
             new Random(0),
             name));
 
@@ -74,11 +74,11 @@ public class GameStateMachineTest
 
         var playing = machine.CurrentState as PlayingState;
         Assert.That(playing, Is.Not.Null);
-        Assert.That(playing!.Session.Company.Name, Is.EqualTo("Acme"));
+        Assert.That(playing!.Session.PlayerName, Is.EqualTo("Acme"));
     }
 
     [Test]
-    public void EmptyCompanyNameGetsDefaultName()
+    public void EmptyPlayerNameGetsDefaultName()
     {
         var machine = NewMachine();
         var menu = new MenuState(machine);
@@ -86,7 +86,7 @@ public class GameStateMachineTest
 
         menu.StartNewGame("   ");
 
-        Assert.That(((PlayingState)machine.CurrentState!).Session.Company.Name, Is.EqualTo("Ma Startup"));
+        Assert.That(((PlayingState)machine.CurrentState!).Session.PlayerName, Is.EqualTo("Alex"));
     }
 
     [Test]
@@ -112,7 +112,7 @@ public class GameStateMachineTest
         var gameOver = machine.CurrentState as GameOverState;
         Assert.That(gameOver, Is.Not.Null);
         Assert.That(gameOver!.Result.SurvivedTime, Is.EqualTo(10).Within(0.2));
-        Assert.That(gameOver.CompanyName, Is.EqualTo("Acme"));
+        Assert.That(gameOver.PlayerName, Is.EqualTo("Acme"));
     }
 
     [Test]
@@ -128,9 +128,9 @@ public class GameStateMachineTest
         var playing = machine.CurrentState as PlayingState;
         Assert.That(playing, Is.Not.Null);
         Assert.That(playing!.Session.ElapsedTime, Is.EqualTo(0));
-        Assert.That(playing.Session.Company.WalletBalance, Is.EqualTo(100));
+        Assert.That(playing.Session.Company.WalletBalance, Is.EqualTo(0));
         Assert.That(playing.Session.IsOver, Is.False);
-        Assert.That(playing.Session.Company.Name, Is.EqualTo("Acme"));
+        Assert.That(playing.Session.PlayerName, Is.EqualTo("Acme"));
     }
 
     [Test]

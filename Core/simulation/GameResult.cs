@@ -1,16 +1,12 @@
 namespace Core.simulation;
 
-/// <summary>Bilan d'une partie terminée, affiché sur l'écran de fin.</summary>
+/// <summary>Bilan d'une partie terminée, par la faillite ou par la victoire.</summary>
 public record GameResult(
+    bool IsVictory,
     double SurvivedTime,
-    double FinalBalance,
+    double FinalNetWorth,
+    double PeakNetWorth,
+    string StageTitle,
     double TotalEarned,
     int CompletedTasks,
-    int FailedTasks)
-{
-    /// <summary>
-    /// 1 point par seconde survécue + 1 point par 10 CHF gagnés.
-    /// Le solde final n'entre pas dans le score : à la faillite il est toujours proche de zéro.
-    /// </summary>
-    public int Score => (int)(SurvivedTime + TotalEarned / 10);
-}
+    int FailedTasks);

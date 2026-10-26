@@ -1,22 +1,30 @@
-﻿using Core.requests;
+﻿using Core.progression;
+using Core.requests;
 using Core.simulation;
 using Core.tasks;
 
 namespace Core.company;
 
+/// <summary>Résultat d'un clic pour charbonner : du travail sur la tâche en cours, ou un petit boulot payé.</summary>
+public record HustleResult(double Work, double Money);
+
+/// <summary>
+/// L'activité du joueur : son argent, ses demandes, ses tâches et sa réputation.
+/// D'abord un freelance, puis une vraie boîte une fois fondée.
+/// </summary>
 public class Company
 {
     private readonly GameConfig _config;
-    private Wallet _wallet;
+    private readonly Wallet _wallet;
     private readonly List<ClientRequest> _pendingRequests = new();
     private readonly List<WorkTask> _activeTasks = new();
 
-    public string Name { get; }
+    public string Name { get; private set; }
+    public bool IsFounded { get; private set; }
+    public Wallet Wallet => _wallet;
     public double WalletBalance => _wallet.Balance;
-    public bool IsBankrupt => _wallet.Balance < 0;
-
-    /// <summary>Charges de fonctionnement actuelles, par seconde.</summary>
-    public double OperatingCost { get; private set; }
+    public PlayerStats Stats { get; }
+    public Reputation Reputation { get; }
 
     public double TotalEarned { get; private set; }
     public int CompletedTaskCount { get; private set; }
@@ -28,8 +36,8 @@ public class Company
     /// <summary>Tâches en cours de réalisation.</summary>
     public IReadOnlyList<WorkTask> ActiveTasks => _activeTasks;
 
-    public int MaxActiveTasks => _config.MaxActiveTasks;
-    public bool HasFreeCapacity => _activeTasks.Count < _config.MaxActiveTasks;
+    public int MaxActiveTasks => Stats.TaskCapacity;
+    public bool HasFreeCapacity => _activeTasks.Count < Stats.TaskCapacity;
 
     public event Action<double> BalanceChanged
     {
@@ -42,12 +50,24 @@ public class Company
     public event Action<WorkTask>? TaskCompleted;
     public event Action<WorkTask>? TaskFailed;
 
-    public Company(GameConfig config, string name = "Ma Startup")
+    public Company(GameConfig config, string name = "Freelance", PlayerStats? stats = null)
     {
         _config = config;
         Name = name;
+        Stats = stats ?? new PlayerStats(config);
+        Reputation = new Reputation(config.ReputationLevels);
         _wallet = new Wallet(config.StartingCapital);
-        OperatingCost = config.BaseOperatingCost;
+    }
+
+    /// <summary>Transforme le freelance en vraie entreprise. Renvoie false si déjà fondée ou trop cher.</summary>
+    public bool Found(string name)
+    {
+        if (IsFounded || !_wallet.TrySpend(_config.CompanyFoundingCost))
+            return false;
+
+        IsFounded = true;
+        Name = string.IsNullOrWhiteSpace(name) ? "Ma Startup" : name.Trim();
+        return true;
     }
 
     public void AddRequest(ClientRequest request)
@@ -82,11 +102,57 @@ public class Company
         return true;
     }
 
+    /// <summary>Vrai si la demande, acceptée maintenant, peut être livrée avant son échéance.</summary>
+    public bool CanFinishOnTime(ClientRequest request) =>
+        !request.DeadlineTimeLeft.HasValue ||
+        _config.WorkDurationFor(request.Difficulty) / Stats.WorkSpeed <= request.DeadlineTimeLeft.Value;
+
+    /// <summary>
+    /// Ce que fait un commercial : accepte les demandes faisables à temps,
+    /// les plus rentables d'abord, tant qu'il reste de la place.
+    /// </summary>
+    public void AutoAcceptRequests()
+    {
+        if (!Stats.AutoAccept)
+            return;
+
+        var candidates = _pendingRequests
+            .Where(CanFinishOnTime)
+            .OrderByDescending(r => r.Value / r.Difficulty)
+            .ToList();
+
+        foreach (var request in candidates)
+        {
+            if (!HasFreeCapacity)
+                break;
+            AcceptRequest(request.Id);
+        }
+    }
+
+    /// <summary>
+    /// Le joueur charbonne : le clic avance la première tâche en cours,
+    /// ou rapporte un petit boulot s'il n'y a aucune tâche.
+    /// </summary>
+    public HustleResult Hustle()
+    {
+        var task = _activeTasks.FirstOrDefault(t => t.Status == WorkTaskStatus.InProgress);
+        if (task != null)
+        {
+            double work = _config.ClickWork * Stats.ClickPower;
+            task.AddWork(work);
+            return new HustleResult(work, 0);
+        }
+
+        double money = _config.ClickGigMoney * Stats.ClickPower;
+        _wallet.Earn(money);
+        TotalEarned += money;
+        return new HustleResult(0, money);
+    }
+
     public void Update(double deltaTime)
     {
         UpdateRequests(deltaTime);
         UpdateTasks(deltaTime);
-        PayOperatingCosts(deltaTime);
     }
 
     /// <summary>Fait vieillir les offres et retire celles qui ont expiré.</summary>
@@ -103,11 +169,14 @@ public class Company
         }
     }
 
-    /// <summary>Fait avancer les tâches, encaisse celles qui sont terminées et retire les échouées.</summary>
+    /// <summary>
+    /// Fait avancer les tâches à la vitesse actuelle, encaisse celles qui sont terminées
+    /// et met à jour la réputation : livrer à temps la fait monter, échouer la fait baisser.
+    /// </summary>
     public void UpdateTasks(double deltaTime)
     {
         foreach (var task in _activeTasks)
-            task.Update(deltaTime);
+            task.Update(deltaTime, Stats.WorkSpeed);
 
         var finished = _activeTasks.Where(t => t.Status != WorkTaskStatus.InProgress).ToList();
         foreach (var task in finished)
@@ -119,22 +188,17 @@ public class Company
                 _wallet.Earn(task.EarnedReward);
                 TotalEarned += task.EarnedReward;
                 CompletedTaskCount++;
+                if (!task.IsLate)
+                    Reputation.Add(task.Request.Difficulty);
                 TaskCompleted?.Invoke(task);
             }
             else
             {
                 FailedTaskCount++;
+                Reputation.Add(-task.Request.Difficulty * _config.FailedReputationPenalty);
                 TaskFailed?.Invoke(task);
             }
         }
-    }
-
-    /// <summary>Retire les charges du delta, puis les fait augmenter avec le temps.</summary>
-    public void PayOperatingCosts(double deltaTime)
-    {
-        var cost = OperatingCost * deltaTime;
-        _wallet.Pay(cost);
-        OperatingCost += _config.OperatingCostGrowthPerMinute * deltaTime / 60;
     }
 
     private ClientRequest? FindPendingRequest(int requestId) =>

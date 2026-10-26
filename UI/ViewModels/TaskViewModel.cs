@@ -42,7 +42,7 @@ public class TaskViewModel : ViewModelBase
             DeadlineText = "En retard ! Gain réduit";
             DeadlineBrush = Display.Danger;
         }
-        else if (_task.WillBeLate)
+        else if (_task.WillBeLate())
         {
             DeadlineText = $"Échéance dans {Display.Seconds(deadline)} — sera en retard";
             DeadlineBrush = Display.Danger;

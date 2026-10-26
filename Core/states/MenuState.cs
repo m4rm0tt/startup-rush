@@ -15,11 +15,11 @@ public class MenuState : IGameState
 
     public void Exit() { }
 
-    public void StartNewGame(string companyName)
+    public void StartNewGame(string playerName)
     {
-        if (string.IsNullOrWhiteSpace(companyName))
-            companyName = "Ma Startup";
+        if (string.IsNullOrWhiteSpace(playerName))
+            playerName = "Alex";
 
-        _machine.ChangeState(new PlayingState(_machine, _machine.CreateSession(companyName.Trim())));
+        _machine.ChangeState(new PlayingState(_machine, _machine.CreateSession(playerName.Trim())));
     }
 }

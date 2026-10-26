@@ -81,9 +81,9 @@ public class WorkTaskTest
     [Test]
     public void WillBeLateWhenRemainingWorkExceedsDeadline()
     {
-        Assert.That(MakeTask(difficulty: 1, deadline: 8).WillBeLate, Is.True);
-        Assert.That(MakeTask(difficulty: 1, deadline: 12).WillBeLate, Is.False);
-        Assert.That(MakeTask(difficulty: 1, deadline: null).WillBeLate, Is.False);
+        Assert.That(MakeTask(difficulty: 1, deadline: 8).WillBeLate(), Is.True);
+        Assert.That(MakeTask(difficulty: 1, deadline: 12).WillBeLate(), Is.False);
+        Assert.That(MakeTask(difficulty: 1, deadline: null).WillBeLate(), Is.False);
     }
 
     [Test]

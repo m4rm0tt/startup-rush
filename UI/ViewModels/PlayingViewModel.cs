@@ -65,7 +65,7 @@ public class PlayingViewModel : ViewModelBase
 
         BalanceText = Display.Money(company.WalletBalance);
         BalanceBrush = company.WalletBalance < 200 ? Display.Danger : Display.Normal;
-        OperatingCostText = $"Charges : −{company.OperatingCost:N1} CHF/s";
+        OperatingCostText = $"Factures : {Display.Money(_session.CurrentBill.Total)}/mois";
         ElapsedText = Display.Clock(_session.ElapsedTime);
         CapacityText = $"Tâches actives ({company.ActiveTasks.Count}/{company.MaxActiveTasks})";
         RequestsHeader = $"Demandes en attente ({company.PendingRequests.Count})";

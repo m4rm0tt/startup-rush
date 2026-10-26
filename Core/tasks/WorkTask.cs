@@ -25,8 +25,9 @@ public class WorkTask
     public double TimeRemaining => Math.Max(0, Duration - WorkDone);
     public bool IsLate => DeadlineTimeLeft is < 0;
 
-    /// <summary>Vrai si, au rythme actuel, la tâche finira après son échéance.</summary>
-    public bool WillBeLate => DeadlineTimeLeft.HasValue && TimeRemaining > DeadlineTimeLeft.Value;
+    /// <summary>Vrai si, au rythme donné, la tâche finira après son échéance.</summary>
+    public bool WillBeLate(double workSpeed = 1) =>
+        DeadlineTimeLeft.HasValue && TimeRemainingAt(workSpeed) > DeadlineTimeLeft.Value;
 
     public WorkTask(ClientRequest request, GameConfig config)
     {
@@ -37,12 +38,13 @@ public class WorkTask
         _lateRewardMultiplier = config.LateRewardMultiplier;
     }
 
-    public void Update(double deltaTime)
+    /// <param name="workSpeed">Multiplie le travail fait pendant le delta ; l'échéance, elle, avance au temps réel.</param>
+    public void Update(double deltaTime, double workSpeed = 1)
     {
         if (Status != WorkTaskStatus.InProgress)
             return;
 
-        WorkDone += deltaTime;
+        WorkDone += deltaTime * workSpeed;
         if (DeadlineTimeLeft.HasValue)
             DeadlineTimeLeft -= deltaTime;
 
@@ -52,10 +54,28 @@ public class WorkTask
             return;
         }
 
-        if (WorkDone >= Duration)
-        {
-            Status = WorkTaskStatus.Completed;
-            EarnedReward = IsLate ? Request.Value * _lateRewardMultiplier : Request.Value;
-        }
+        CheckCompleted();
+    }
+
+    /// <summary>Ajoute du travail d'un coup (quand le joueur charbonne en cliquant).</summary>
+    public void AddWork(double work)
+    {
+        if (Status != WorkTaskStatus.InProgress || work <= 0)
+            return;
+
+        WorkDone += work;
+        CheckCompleted();
+    }
+
+    /// <summary>Temps réel restant au rythme donné.</summary>
+    public double TimeRemainingAt(double workSpeed) => TimeRemaining / workSpeed;
+
+    private void CheckCompleted()
+    {
+        if (WorkDone < Duration)
+            return;
+
+        Status = WorkTaskStatus.Completed;
+        EarnedReward = IsLate ? Request.Value * _lateRewardMultiplier : Request.Value;
     }
 }

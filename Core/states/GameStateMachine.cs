@@ -14,15 +14,15 @@ public class GameStateMachine
     public event Action<IGameState>? StateChanged;
 
     /// <param name="sessionFactory">
-    /// Crée une nouvelle partie à partir du nom de l'entreprise.
+    /// Crée une nouvelle partie à partir du prénom du joueur.
     /// Les tests en passent une avec une graine et une config fixes.
     /// </param>
     public GameStateMachine(Func<string, GameSession>? sessionFactory = null)
     {
-        _sessionFactory = sessionFactory ?? (name => new GameSession(companyName: name));
+        _sessionFactory = sessionFactory ?? (name => new GameSession(playerName: name));
     }
 
-    public GameSession CreateSession(string companyName) => _sessionFactory(companyName);
+    public GameSession CreateSession(string playerName) => _sessionFactory(playerName);
 
     /// <summary>Appelle Exit sur l'ancien état, puis Enter sur le nouveau.</summary>
     public void ChangeState(IGameState newState)

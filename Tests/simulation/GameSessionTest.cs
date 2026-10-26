@@ -19,7 +19,10 @@ public class GameSessionTest
     [Test]
     public void BalanceDropsWithOperatingCosts()
     {
-        var session = new GameSession(new GameConfig { StartingCapital = 1000, BaseOperatingCost = 10 });
+        var session = new GameSession(new GameConfig
+        {
+            StartingCapital = 1000, BaseOperatingCost = 10, OperatingCostGrowthPerMinute = 0
+        });
 
         for (int i = 0; i < 100; i++)
             session.Update(0.1);

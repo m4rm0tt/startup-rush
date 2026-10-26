@@ -11,7 +11,8 @@ public class GameConfig
 
     // Économie
     public double StartingCapital { get; init; } = 1000;
-    public double BaseOperatingCost { get; init; } = 100; // par seconde
+    public double BaseOperatingCost { get; init; } = 5; // par seconde
+    public double OperatingCostGrowthPerMinute { get; init; } = 2; // les charges augmentent avec le temps
 
     // Demandes
     public double FirstRequestDelay { get; init; } = 2; // secondes avant la première demande

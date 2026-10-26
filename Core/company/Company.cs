@@ -8,11 +8,18 @@ public class Company
 {
     private readonly GameConfig _config;
     private Wallet _wallet;
-    private double _operatingCost;
     private readonly List<ClientRequest> _pendingRequests = new();
     private readonly List<WorkTask> _activeTasks = new();
 
     public double WalletBalance => _wallet.Balance;
+    public bool IsBankrupt => _wallet.Balance < 0;
+
+    /// <summary>Charges de fonctionnement actuelles, par seconde.</summary>
+    public double OperatingCost { get; private set; }
+
+    public double TotalEarned { get; private set; }
+    public int CompletedTaskCount { get; private set; }
+    public int FailedTaskCount { get; private set; }
 
     /// <summary>Demandes en attente de décision du joueur.</summary>
     public IReadOnlyList<ClientRequest> PendingRequests => _pendingRequests;
@@ -38,7 +45,7 @@ public class Company
     {
         _config = config;
         _wallet = new Wallet(config.StartingCapital);
-        _operatingCost = config.BaseOperatingCost;
+        OperatingCost = config.BaseOperatingCost;
     }
 
     public void AddRequest(ClientRequest request)
@@ -108,19 +115,24 @@ public class Company
             if (task.Status == WorkTaskStatus.Completed)
             {
                 _wallet.Earn(task.EarnedReward);
+                TotalEarned += task.EarnedReward;
+                CompletedTaskCount++;
                 TaskCompleted?.Invoke(task);
             }
             else
             {
+                FailedTaskCount++;
                 TaskFailed?.Invoke(task);
             }
         }
     }
 
+    /// <summary>Retire les charges du delta, puis les fait augmenter avec le temps.</summary>
     public void PayOperatingCosts(double deltaTime)
     {
-        var cost = _operatingCost * deltaTime;
+        var cost = OperatingCost * deltaTime;
         _wallet.Pay(cost);
+        OperatingCost += _config.OperatingCostGrowthPerMinute * deltaTime / 60;
     }
 
     private ClientRequest? FindPendingRequest(int requestId) =>

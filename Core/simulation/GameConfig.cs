@@ -50,6 +50,12 @@ public partial record GameConfig
     public double HoldingCost { get; init; } = 50_000_000;
     public double HoldingIncomeMultiplier { get; init; } = 2;
 
+    /// <summary>
+    /// Charges mensuelles d'une boîte, en part de son revenu nominal. Elles tombent même pendant une récession :
+    /// grandir trop vite sans réserve devient risqué.
+    /// </summary>
+    public double BusinessUpkeepRate { get; init; } = 0.35;
+
     // Roguelike
     public bool RoguelikeEnabled { get; init; } = true; // atouts, crises et événements (désactivables pour les tests)
     public int MonthsPerQuarter { get; init; } = 3; // un choix d'atout à chaque bilan trimestriel

@@ -68,7 +68,8 @@ public class BalanceReportTest
     [Test, Explicit("Outil d'équilibrage, à lancer à la main")]
     public void TraceOneGame()
     {
-        var session = new GameSession(new GameConfig(), new Random(0));
+        int pressure = int.TryParse(Environment.GetEnvironmentVariable("TRACE_PRESSURE"), out int p) ? p : 0;
+        var session = new GameSession(setup: new RunSetup(CharacterCatalog.All[0], pressure, 0, new LegacyBonuses()));
         var bot = new GameBot(BotStrategy.Tycoon);
 
         for (int minute = 5; minute <= 180 && !session.IsOver; minute += 5)
@@ -78,7 +79,8 @@ public class BalanceReportTest
             TestContext.Out.WriteLine(
                 $"{minute,3} min | patrimoine {session.NetWorth,15:N0} | {session.Career.Current.Title,-12} | " +
                 $"réputation {company.Reputation.Current.Title,-20} | vitesse ×{session.Stats.WorkSpeed,6:F1} | " +
-                $"employés {session.Staff.TotalCount,3} | factures {session.CurrentBill.Total,11:N0}/mois | " +
+                $"employés {session.Staff.TotalCount,3} | factures {session.CurrentBill.Total,11:N0}/mois " +
+                $"(charges {session.CurrentBill.Operations,11:N0}, impôt {session.CurrentBill.Taxes,11:N0}) | cash {company.WalletBalance,13:N0} | " +
                 $"boîtes {session.Businesses.IncomePerSecond,11:N0}/s [{string.Join(",", session.Businesses.Businesses.Select(b => b.Level))}] | " +
                 $"matériel [{string.Join(",", session.Upgrades.Tracks.Select(t => t.Level))}]");
         }

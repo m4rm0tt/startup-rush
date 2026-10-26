@@ -5,9 +5,10 @@ namespace Core.finance;
 /// <summary>Le détail d'une facture mensuelle.</summary>
 /// <param name="Salaries">Salaires et loyer des locaux de la boîte.</param>
 /// <param name="Taxes">Impôt sur la fortune.</param>
-public record BillBreakdown(double Housing, double Salaries, double Subscriptions, double Taxes = 0)
+/// <param name="Operations">Charges de fonctionnement des boîtes de l'empire.</param>
+public record BillBreakdown(double Housing, double Salaries, double Subscriptions, double Taxes = 0, double Operations = 0)
 {
-    public double Total => Housing + Salaries + Subscriptions + Taxes;
+    public double Total => Housing + Salaries + Subscriptions + Taxes + Operations;
 }
 
 /// <summary>

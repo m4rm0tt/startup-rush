@@ -38,6 +38,11 @@ public class GameSession
     public string PlayerName { get; }
     public int Seed { get; }
     public int Pressure => _setup?.Pressure ?? 0;
+
+    private PressureLevel PressureLevel => PressureCatalog.All[Math.Clamp(Pressure, 0, PressureCatalog.All.Count - 1)];
+
+    /// <summary>Mois entre deux crises : plus serré aux pressions élevées.</summary>
+    private int CrisisEvery => PressureLevel.CrisisEvery ?? Config.CrisisEvery;
     public Character? Character => _setup?.Character;
 
     public Company Company { get; }
@@ -82,10 +87,13 @@ public class GameSession
             double housing = Upgrades[UpgradeTrackId.Housing].Current.MonthlyCost;
             double subscriptions = Upgrades.MonthlyCost - housing - office;
             double salaries = Staff.MonthlySalaries + (Company.IsFounded ? office : 0);
+            double operations = Businesses.BaseIncomePerSecond * Config.MonthDuration * Config.BusinessUpkeepRate;
             double bills = Modifiers.Bills;
+            double living = bills * Math.Pow(1 + Modifiers.CostInflation, _monthsCompleted);
             double taxRate = Config.WealthTaxRate + Modifiers.ExtraWealthTax;
             double taxes = Math.Max(0, NetWorth - Config.WealthTaxAllowance) * taxRate;
-            return new BillBreakdown(housing * Modifiers.Rent * bills, salaries * bills, subscriptions * bills, taxes * bills);
+            return new BillBreakdown(housing * Modifiers.Rent * living, salaries * living, subscriptions * living,
+                taxes * bills, operations * living);
         }
     }
 
@@ -451,7 +459,7 @@ public class GameSession
         crisis.OnStart?.Invoke(this);
         CrisisStarted?.Invoke(crisis);
 
-        NextCrisisMonth += Config.CrisisEvery;
+        NextCrisisMonth += CrisisEvery;
         NextCrisis = PickCrisis();
     }
 

@@ -51,6 +51,9 @@ public class BusinessGroup
     public double IncomePerSecond =>
         Businesses.Sum(b => b.IncomePerSecond) * (HasHolding ? _holdingMultiplier : 1);
 
+    /// <summary>Revenu nominal des boîtes, sans holding ni crise : sert de base aux charges mensuelles.</summary>
+    public double BaseIncomePerSecond => Businesses.Sum(b => b.IncomePerSecond);
+
     /// <summary>Valeur des boîtes pour le patrimoine : ce qui y a été investi.</summary>
     public double Valuation => Businesses.Sum(b => b.TotalInvested) + (HasHolding ? _holdingCost : 0);
 

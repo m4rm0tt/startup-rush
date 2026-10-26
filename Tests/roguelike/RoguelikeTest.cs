@@ -1,3 +1,4 @@
+using Core.finance;
 using Core.meta;
 using Core.progression;
 using Core.roguelike;
@@ -353,6 +354,58 @@ public class RoguelikeTest
         {
             File.Delete(path);
         }
+    }
+
+    [Test]
+    public void BusinessesChargeMonthlyUpkeepEvenDuringARecession()
+    {
+        var session = new GameSession(new GameConfig { RoguelikeEnabled = false }, new Random(1));
+        session.Company.Wallet.Earn(1_000_000);
+        session.Businesses.TryInvest(0, session.Company.Wallet);
+
+        double nominal = session.Businesses.BaseIncomePerSecond * session.Config.MonthDuration;
+        Assert.That(session.CurrentBill.Operations, Is.EqualTo(nominal * session.Config.BusinessUpkeepRate).Within(0.01));
+        Assert.That(new BillBreakdown(1, 2, 3, 4, 5).Total, Is.EqualTo(15));
+    }
+
+    [Test]
+    public void CostOfLivingRisesEachMonthOnlyUnderPressure()
+    {
+        double RentAfterMonths(int pressure, int months)
+        {
+            var setup = new RunSetup(CharacterCatalog.All[0], pressure, 1, new LegacyBonuses());
+            var session = new GameSession(new GameConfig { RoguelikeEnabled = false }, new Random(1), setup: setup);
+            session.Company.Wallet.Earn(10_000_000);
+            for (int i = 0; i < months * session.Config.MonthDuration * 10; i++)
+                session.Update(0.1);
+            return session.CurrentBill.Housing;
+        }
+
+        Assert.That(RentAfterMonths(0, 4), Is.EqualTo(RentAfterMonths(0, 0)).Within(0.01));
+        Assert.That(RentAfterMonths(3, 4), Is.EqualTo(RentAfterMonths(3, 0) * Math.Pow(1.03, 4)).Within(0.5));
+    }
+
+    [Test]
+    public void TopPressureBringsACrisisEveryTwoMonths()
+    {
+        var setup = new RunSetup(CharacterCatalog.All[0], PressureCatalog.All.Count - 1, 3, new LegacyBonuses());
+        var session = new GameSession(setup: setup);
+        session.Company.Wallet.Earn(10_000_000);
+        int first = session.NextCrisisMonth;
+
+        while (session.NextCrisisMonth == first && !session.IsOver)
+        {
+            while (session.PendingChoice is Draft)
+                session.SkipDraft();
+            if (session.PendingChoice is GameEvent gameEvent)
+            {
+                session.ChooseEventOption(gameEvent.Info.Options.Count - 1);
+                session.ConfirmEvent();
+            }
+            session.Update(0.1);
+        }
+
+        Assert.That(session.NextCrisisMonth - first, Is.EqualTo(2));
     }
 
     [Test]

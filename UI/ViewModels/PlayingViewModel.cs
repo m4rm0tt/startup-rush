@@ -301,7 +301,8 @@ public class PlayingViewModel : ViewModelBase
         MonthProgress = (1 - _session.Bills.TimeUntilDue / _session.Config.MonthDuration) * 100;
         BillBrush = company.WalletBalance < bill.Total ? Palette.Blood : Palette.Gold;
         BillDetail = $"Logement {Display.Money(bill.Housing)}\nÉquipe et locaux {Display.Money(bill.Salaries)}\n" +
-                     $"Abonnements {Display.Money(bill.Subscriptions)}\nImpôt sur la fortune {Display.Money(bill.Taxes)}";
+                     $"Abonnements {Display.Money(bill.Subscriptions)}\nCharges des boîtes {Display.Money(bill.Operations)}\n" +
+                     $"Impôt sur la fortune {Display.Money(bill.Taxes)}";
         ShieldVisible = _session.Bills.Shields > 0;
         ShieldText = $"×{_session.Bills.Shields}";
         MissedVisible = _session.Bills.MissedPayments > 0;

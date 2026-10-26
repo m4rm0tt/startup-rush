@@ -33,6 +33,9 @@ public class Modifiers
     /// <summary>Part du portefeuille boursier versée en bonus à chaque fin de mois.</summary>
     public double MarketMonthlyBonus { get; set; }
 
+    /// <summary>Hausse du coût de la vie à chaque mois écoulé (loyers, salaires, abonnements, charges).</summary>
+    public double CostInflation { get; set; }
+
     /// <summary>Impôt mensuel sur la fortune, en plus du taux de base de GameConfig.</summary>
     public double ExtraWealthTax { get; set; }
 

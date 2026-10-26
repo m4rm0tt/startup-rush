@@ -17,7 +17,9 @@ public record Character(
     double StartingReputation = 0);
 
 /// <summary>Un niveau de difficulté. Chaque victoire débloque le suivant.</summary>
-public record PressureLevel(int Level, string Name, string Description, Action<Modifiers> Apply, bool StartsCursed = false);
+/// <param name="CrisisEvery">Mois entre deux crises, si différent de la règle normale.</param>
+public record PressureLevel(int Level, string Name, string Description, Action<Modifiers> Apply, bool StartsCursed = false,
+    int? CrisisEvery = null);
 
 /// <summary>Les bonus permanents achetés dans l'Héritage, appliqués au début de chaque run.</summary>
 public record LegacyBonuses(
@@ -61,12 +63,12 @@ public static class PressureCatalog
     public static IReadOnlyList<PressureLevel> All { get; } =
     [
         new(0, "Stagiaire", "La run normale.", _ => { }),
-        new(1, "Junior", "Factures +25 %, impôt sur la fortune ×2.",
-            m => { m.Bills *= 1.25; m.ExtraWealthTax += 0.01; }),
-        new(2, "Senior", "Comme Junior, impôt ×3, offres et échéances −20 %.",
-            m => { m.Bills *= 1.25; m.ExtraWealthTax += 0.02; m.OfferDuration *= 0.8; m.DeadlineMargin *= 0.8; }),
-        new(3, "CTO", "Comme Senior, impôt ×4, et tu commences maudit.",
-            m => { m.Bills *= 1.25; m.ExtraWealthTax += 0.03; m.OfferDuration *= 0.8; m.DeadlineMargin *= 0.8; },
-            StartsCursed: true),
+        new(1, "Junior", "Factures +25 %, impôt sur la fortune ×2, coût de la vie +1 % par mois.",
+            m => { m.Bills *= 1.25; m.ExtraWealthTax += 0.01; m.CostInflation += 0.01; }),
+        new(2, "Senior", "Comme Junior, impôt ×3, vie +2 % par mois, offres et échéances −20 %.",
+            m => { m.Bills *= 1.25; m.ExtraWealthTax += 0.02; m.CostInflation += 0.02; m.OfferDuration *= 0.8; m.DeadlineMargin *= 0.8; }),
+        new(3, "CTO", "Comme Senior, impôt ×4, vie +3 % par mois, une crise tous les deux mois, et tu commences maudit.",
+            m => { m.Bills *= 1.25; m.ExtraWealthTax += 0.03; m.CostInflation += 0.03; m.OfferDuration *= 0.8; m.DeadlineMargin *= 0.8; },
+            StartsCursed: true, CrisisEvery: 2),
     ];
 }

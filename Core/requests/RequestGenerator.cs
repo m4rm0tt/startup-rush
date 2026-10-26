@@ -64,7 +64,8 @@ public class RequestGenerator
         if (_random.NextDouble() < _config.DeadlineChance)
         {
             double margin = RandomBetween(_config.MinDeadlineMargin, _config.MaxDeadlineMargin) * _stats.DeadlineMultiplier;
-            deadline = Math.Round(_config.WorkDurationFor(difficulty) / _stats.WorkSpeed * margin);
+            deadline = Math.Ceiling(_config.WorkDurationFor(difficulty) / _stats.WorkSpeed * margin +
+                                    _config.DeadlineReactionTime);
         }
 
         // Les plus gros clients n'arrivent qu'avec la réputation

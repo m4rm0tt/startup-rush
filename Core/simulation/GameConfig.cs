@@ -29,6 +29,7 @@ public partial record GameConfig
     public double DeadlineChance { get; init; } = 0.6; // probabilité qu'une demande ait une échéance
     public double MinDeadlineMargin { get; init; } = 1.3; // échéance = durée de travail × marge
     public double MaxDeadlineMargin { get; init; } = 2.0;
+    public double DeadlineReactionTime { get; init; } = 6; // secondes ajoutées pour laisser le temps d'accepter
     public double RequestRatePerExtraTask { get; init; } = 0.5; // +50 % de demandes par place de tâche en plus
 
     // Tâches

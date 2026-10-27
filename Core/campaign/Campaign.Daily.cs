@@ -16,6 +16,7 @@ public partial class Campaign
         long yesterday = Day - 1;
         var date = GameTime.ToDate(Minute);
 
+        RunInfrastructure();
         RunProducts(yesterday, date.DayOfWeek == DayOfWeek.Monday);
         AutoLaunch();
 
@@ -79,7 +80,7 @@ public partial class Campaign
                 }
             }
 
-            decimal hosting = product.Hosting.MonthlyCost / 30;
+            decimal hosting = product.ExternalMonthlyCost / 30;
             decimal marketing = product.MarketingBudget / 30;
             Ledger.Accrue(Category.Hosting, hosting);
             Ledger.Accrue(Category.Marketing, marketing);
@@ -136,14 +137,20 @@ public partial class Campaign
         long due5 = Minute + 4L * GameTime.MinutesPerDay;
         long due10 = Minute + 9L * GameTime.MinutesPerDay;
 
-        if (Premises.Rent > 0 && Processed.Add($"rent:{month}"))
-            AddBill($"Loyer {Premises.Name}", Category.Rent, Premises.Rent, due5);
+        foreach (var site in Sites.Where(s => s.Rent > 0))
+            if (Processed.Add($"rent:{month}:{site.Id}"))
+                AddBill($"Loyer {site.Name}", Category.Rent, site.Rent, due5);
         if (Processed.Add($"utilities:{month}"))
-            AddBill("Internet, électricité, assurances", Category.Utilities, Tuning.Finance.Utilities + Premises.Rent * 0.04m, due10);
+            AddBill("Internet, électricité, assurances", Category.Utilities, Tuning.Finance.Utilities + Sites.Sum(s => s.Rent) * 0.04m, due10);
 
         foreach (var (category, amount) in Ledger.Accrued.Where(a => a.Value > 0.5m).ToList())
             if (Processed.Add($"accrued:{category}:{previousMonth}"))
-                AddBill(category == Category.Hosting ? $"Hébergement {previousMonth}" : $"Marketing {previousMonth}", category, amount, due10);
+                AddBill(category switch
+                {
+                    Category.Hosting => $"Hébergement {previousMonth}",
+                    Category.Energy => $"Électricité et réseau des sites {previousMonth}",
+                    _ => $"Marketing {previousMonth}"
+                }, category, amount, due10);
         Ledger.Accrued.Clear();
 
         if (Ledger.Cash < 0 && Processed.Add($"interest:{month}"))
@@ -264,29 +271,27 @@ public partial class Campaign
     private void UpdateTeam()
     {
         bool weekend = !GameTime.IsWorkday(Minute);
-        var comfort = SiteComfort();
-        double shared = comfort.Morale;
-        // Les pauses se font sur place : boissons, collations et sièges rendent un peu d'énergie chaque jour
-        double breakBonus = comfort.Break - space.Layout.BaseBreak;
         var overdueSalaries = Ledger.Overdue(Minute).Where(b => b.Category == Category.Salaries).Select(b => b.PersonId).ToHashSet();
 
         foreach (var person in People.ToList())
         {
             person.Activity = person.TrainingDiscipline != null ? Activity.Training : Activity.Away;
             person.Path.Clear();
-            person.Position = Premises.Outside;
-            double recovery = weekend ? Tuning.Work.EnergyWeekendRecovery : Tuning.Work.EnergyNightRecovery + breakBonus;
-            // Ton lit, dans ta chambre : tu récupères un peu mieux la nuit
+            var (site, post) = PostOf(person);
+            var comfort = SiteComfort(site);
+            person.Position = site.Outside;
+            // Les pauses se font sur place : boissons, collations et sièges rendent un peu d'énergie chaque jour
+            double recovery = weekend ? Tuning.Work.EnergyWeekendRecovery : Tuning.Work.EnergyNightRecovery + comfort.Break - space.Layout.BaseBreak;
+            // Ton lit, dans ta chambre : tu récupères un peu mieux la nuit (si la chambre est encore l'un de tes sites)
             if (person.IsFounder)
-                recovery += space.Layout.NightRecovery(Premises);
+                recovery += Sites.Max(space.Layout.NightRecovery);
             person.Energy = OnVacation(person) ? 100 : Math.Min(100, person.Energy + recovery * (person.Energy < 30 ? 0.8 : 1));
 
             if (overdueSalaries.Contains(person.Id))
                 person.UnpaidDays++;
 
-            var post = Premises.SeatOf(person.Id);
-            bool hasPost = post != null && space.Layout.Check(Premises, post) == space.WorkstationIssue.None;
-            double target = 58 + shared + (post == null ? 0 : space.Layout.PostMorale(Premises, post));
+            bool hasPost = post != null && space.Layout.Check(site, post) == space.WorkstationIssue.None;
+            double target = 58 + comfort.Morale + (post == null ? 0 : space.Layout.PostMorale(site, post));
             if (!person.IsFounder)
             {
                 target += Math.Clamp((double)((person.Salary - MarketSalary(person)) / MarketSalary(person)) * 40, -12, 12);
@@ -343,7 +348,7 @@ public partial class Campaign
     private void RemovePerson(Person person, string message)
     {
         People.Remove(person);
-        foreach (var seat in Premises.Items.Where(i => i.AssignedPersonId == person.Id))
+        foreach (var seat in Sites.SelectMany(s => s.Items).Where(i => i.AssignedPersonId == person.Id))
             seat.AssignedPersonId = null;
         foreach (var notice in Notices.Where(n => n.Key.EndsWith($":{person.Id}") && n.Target == $"person:{person.Id}"))
             notice.Resolved = true;
@@ -384,14 +389,14 @@ public partial class Campaign
 
     /// <summary>Charges fixes mensuelles : salaires, rémunération, loyer, services, hébergement, marketing, prêts.</summary>
     public decimal MonthlyFixedCosts =>
-        Tuning.Finance.FounderDraw + Tuning.Finance.Utilities + Premises.Rent * 1.04m
+        Tuning.Finance.FounderDraw + Tuning.Finance.Utilities + Sites.Sum(s => s.Rent) * 1.04m
         + Staff.Sum(p => p.Salary)
-        + Products.Sum(p => (p.IsLive ? p.Hosting.MonthlyCost : 0) + p.MarketingBudget)
+        + Products.Sum(p => p.ExternalMonthlyCost + p.MarketingBudget) + Infra().MonthlyEnergy
         + Ledger.Loans.Sum(l => Math.Min(l.MonthlyPayment, l.Remaining));
 
     /// <summary>Revenus des projets sur les 30 derniers jours.</summary>
     public decimal RecurringRevenue30 =>
-        Products.Sum(p => p.History.Skip(Math.Max(0, p.History.Count - 30)).Sum(d => d.Revenue));
+        Products.Sum(p => p.History.Skip(Math.Max(0, p.History.Count - 30)).Sum(d => d.Revenue)) + CloudRevenue30;
 
     /// <summary>
     /// Jours d'autonomie : argent disponible (avec le découvert, moins ce qui est dû, plus 85 % des factures attendues
@@ -498,7 +503,7 @@ public partial class Campaign
         if (Reach("first_launch", Products.Any(p => p.IsLive), 0))
             GiveReward("trophy_project");
         Reach("first_hire", Staff.Any(), 1);
-        Reach("office", Premises.ListingId != space.RealEstate.Apartment, 1);
+        Reach("office", Sites.Any(s => s.ListingId != space.RealEstate.Apartment), 1);
         Reach("users1k", Products.Any(p => p.Users >= 1_000), 1);
         if (Reach("mrr10k", RecurringRevenue30 >= 10_000, 2))
             GiveReward("award_plaque");

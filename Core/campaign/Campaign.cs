@@ -46,7 +46,51 @@ public partial class Campaign
     public int NextId { get; set; } = 1;
 
     public List<Company> Companies { get; set; } = new();
-    public Premises Premises { get; set; } = new();
+
+    /// <summary>Les sites de l'entreprise (le premier est le siège). Une seule entreprise, plusieurs lieux.</summary>
+    public List<Premises> Sites { get; set; } = new();
+
+    /// <summary>Le site affiché et aménagé : un choix de vue, sans effet sur la simulation.</summary>
+    public int SiteId { get; set; }
+
+    /// <summary>
+    /// Le site affiché (celui que les commandes d'aménagement modifient). L'affecter remplace ce site dans la liste
+    /// (déménagement), ou l'ajoute s'il n'y a encore aucun site.
+    /// </summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public Premises Premises
+    {
+        get => Sites.FirstOrDefault(s => s.Id == SiteId) ?? (Sites.Count > 0 ? Sites[0] : NoSite);
+        set
+        {
+            int index = Sites.FindIndex(s => s.Id == SiteId);
+            if (index >= 0)
+                Sites[index] = value;
+            else
+                Sites.Add(value);
+            SiteId = value.Id;
+            InvalidateLayout();
+        }
+    }
+
+    private static readonly Premises NoSite = new();
+
+    /// <summary>Le siège : le premier site.</summary>
+    [System.Text.Json.Serialization.JsonIgnore]
+    public Premises Headquarters => Sites.Count > 0 ? Sites[0] : NoSite;
+
+    public Premises? FindSite(int id) => Sites.FirstOrDefault(s => s.Id == id);
+
+    /// <summary>Le site où la personne a son poste et ce poste ; sans poste, le siège.</summary>
+    public (Premises Site, Workstation? Post) PostOf(Person person)
+    {
+        foreach (var site in Sites)
+            if (site.SeatOf(person.Id) is { } post)
+                return (site, post);
+        return (Headquarters, null);
+    }
+
+    public Premises SiteOf(Person person) => PostOf(person).Site;
     public List<StoredItem> Storage { get; set; } = new();
     public List<Person> People { get; set; } = new();
     public List<Candidate> Candidates { get; set; } = new();

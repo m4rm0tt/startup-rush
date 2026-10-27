@@ -220,6 +220,47 @@ public static class Capture
         await Shot(window, folder, "22_pause", report);
         later.HandleKey(Avalonia.Input.Key.Escape, Avalonia.Input.KeyModifiers.None);
 
+        // Lot 4 : une salle serveur en plus, deux baies équipées, le projet principal sur ses serveurs, une offre cloud
+        advanced.Ledger.Cash += 150_000;
+        advanced.Unlocked.UnionWith(["multisite", "server_room", "high_density", "cloud_offers"]);
+        var rented = advanced.RentSite("server_room");
+        string[][] racks =
+        [
+            ["module_patch_panel_1u", "module_network_switch_1u", "module_cable_manager_1u", "module_server_1u", "module_server_1u", "module_server_1u",
+             "module_compute_2u", "module_storage_2u", "module_storage_jbod_4u", "module_ups_2u", "module_blank_1u", "module_blank_1u"],
+            ["module_patch_panel_1u", "module_network_switch_1u", "module_gpu_4u", "module_server_1u", "module_server_1u", "module_blank_1u"],
+        ];
+        foreach (var modules in racks)
+            if (advanced.FindSpot(FurnitureCatalog.Get("rack_standard")) is var (rx, ry, rf) && advanced.BuyAndPlace("rack_standard", rx, ry, rf).Ok)
+            {
+                var rack = advanced.Premises.Items.Last();
+                foreach (string module in modules)
+                    advanced.BuyAndAttach(module, rack.Id);
+            }
+        if (advanced.FindSpot(FurnitureCatalog.Get("ups_floor")) is var (ux, uy, uf))
+            advanced.BuyAndPlace("ups_floor", ux, uy, uf);
+        var main = advanced.Products.Where(p => p.IsLive).OrderBy(p => p.Priority).First();
+        advanced.AdvanceDays(1);
+        var hosted = advanced.SetInternalHosting(main.Id, true);
+        advanced.OpenCloudOffer(CloudKind.Storage);
+        advanced.AdvanceDays(20);
+        var infra = advanced.SiteInfra(advanced.Premises);
+        report.Add($"Salle serveur : {rented.Ok} ; hébergement {infra.Hosting:0.#}, calcul {infra.Compute:0.#}, GPU {infra.Gpu:0.#}, stockage {infra.Storage:0} To, " +
+                   $"{infra.PowerDraw:0.#}/{infra.PowerSupply:0.#} kW, chaleur {infra.Heat:0.#}/{infra.Cooling:0.#} kW, problèmes : {infra.Issues.Count}. " +
+                   $"{main.Name} en interne : {hosted.Ok} ({main.InternalCapacity:0.#} unités). Stockage vendu : {advanced.CloudOffers.FirstOrDefault()?.Revenue30:N0} CHF sur 30 j.");
+        later.Scene.ResetCamera();
+        await Wait(0.5);
+        await Shot(window, folder, "26_salle_serveur", report);
+        later.OpenRoot(new BuildPanel());
+        await Shot(window, folder, "26b_infrastructure", report);
+        later.PushPanel(new SitesPanel());
+        await Shot(window, folder, "27_sites", report);
+        later.ClosePanels();
+        later.OpenRoot(new ProjectsPanel());
+        later.PushPanel(new CloudPanel());
+        await Shot(window, folder, "28_cloud", report);
+        later.ClosePanels();
+
         // Faillite : trois embauches sans revenus
         var doomed = Campaign.New("Capture faillite", "Alex", "Studio Perdu", FounderProfile.Designer, 3);
         var reckless = new Autopilot(Strategies.All.First(s => s.Name == "recrutement_precoce"));

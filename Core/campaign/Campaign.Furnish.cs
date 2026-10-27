@@ -87,7 +87,7 @@ public partial class Campaign
     /// <summary>Assoit une personne à ce poste (elle quitte son ancien poste).</summary>
     public void Seat(Person person, Workstation post)
     {
-        foreach (var other in Premises.Items.Where(i => i.AssignedPersonId == person.Id))
+        foreach (var other in Sites.SelectMany(s => s.Items).Where(i => i.AssignedPersonId == person.Id))
             other.AssignedPersonId = null;
         if (Premises.ChairOf(post) is { } chair)
             chair.AssignedPersonId = person.Id;
@@ -98,7 +98,7 @@ public partial class Campaign
     {
         foreach (var person in People.OrderByDescending(p => p.IsFounder).ToList())
         {
-            if (Premises.SeatOf(person.Id) is { } current && Layout.Check(Premises, current) == WorkstationIssue.None)
+            if (PostOf(person) is (var site, { } current) && Layout.Check(site, current) == WorkstationIssue.None)
                 continue;
             if (InstallWorkstation(buy) is not { } post)
                 return;

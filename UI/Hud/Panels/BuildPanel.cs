@@ -25,6 +25,8 @@ public class BuildPanel : GamePanel
         FurnitureKind.Storage or FurnitureKind.Sanitary => "Confort de base",
         FurnitureKind.Partition => "Cloisons",
         FurnitureKind.Personal => "Objets personnels",
+        FurnitureKind.Rack or FurnitureKind.RackModule or FurnitureKind.Server => "Serveurs et baies",
+        FurnitureKind.Utility or FurnitureKind.Backup or FurnitureKind.Cabling or FurnitureKind.Supervision => "Énergie et réseau",
         _ => "Ambiance"
     };
     public override string Title => "Aménagement";
@@ -41,7 +43,8 @@ public class BuildPanel : GamePanel
             string what = tool.MovingItemId != null ? $"Déplacer : {def.Name}" : tool.StoredId != null ? $"Poser depuis les cartons : {def.Name}" : $"Poser : {def.Name} ({def.Price:N0} CHF)";
             column.Children.Add(Ui.Card(Ui.Column(4,
                 Ui.Text(what, 16, Palette.Gold, bold: true),
-                Ui.Muted(def.Attached ? "Clique sur un bureau ou un meuble qui peut le recevoir : il prend le premier emplacement libre."
+                Ui.Muted(def.Pack.RackModule ? "Clique sur une baie : le module prend les premiers emplacements libres (en U)."
+                    : def.Attached ? "Clique sur un bureau ou un meuble qui peut le recevoir : il prend le premier emplacement libre."
                     : def.OnWall ? "Clique une case le long d'un mur du fond (dans le coin, R choisit le mur)."
                     : def.Kind == FurnitureKind.Desk
                         ? "Clique sur une case libre : la case en pointillés, devant, reste libre pour s'asseoir."
@@ -72,7 +75,11 @@ public class BuildPanel : GamePanel
         column.Children.Add(Ui.Section($"Postes : {complete} complet(s) pour {people} personne(s)", stations,
             Ui.Muted("Un poste = un bureau, une chaise, un ordinateur (un portable, ou une tour avec écran et clavier) et une case libre devant. Clique un bureau pour l'attribuer.")));
 
-        column.Children.Add(ComfortSection());
+        var infra = Campaign.SiteInfra(premises);
+        if (infra.Any || RealEstate.Get(premises.ListingId).Technical)
+            column.Children.Add(InfraSection(infra));
+        if (!RealEstate.Get(premises.ListingId).Technical)
+            column.Children.Add(ComfortSection());
 
         // Catalogue, une rubrique à la fois
         var groups = FurnitureCatalog.Buyable.GroupBy(GroupOf).ToList();
@@ -109,10 +116,32 @@ public class BuildPanel : GamePanel
             column.Children.Add(Ui.Section($"Cartons ({Campaign.Storage.Count})", stored));
         }
 
-        column.Children.Add(Ui.Section("Locaux",
-            Ui.Muted($"{premises.Name} : {premises.Width} × {premises.Height} cases, {premises.Workstations.Count()} poste(s) installé(s), loyer {(premises.Rent > 0 ? Ui.Chf(premises.Rent) : "compris dans ta rémunération")}."),
-            Ui.Button("Voir les locaux à louer", () => Open(new PremisesPanel()))));
+        column.Children.Add(Ui.Section("Sites",
+            Ui.Muted($"{premises.Name} : {premises.Width} × {premises.Height} cases, {premises.Workstations.Count()} poste(s) installé(s), loyer {(premises.Rent > 0 ? Ui.Chf(premises.Rent) : "compris dans ta rémunération")}." +
+                     (Campaign.Sites.Count > 1 ? $" {Campaign.Sites.Count} sites en tout." : "")),
+            Ui.Button(Campaign.Sites.Count > 1 ? "Tous les sites, locations" : "Locaux à louer", () => Open(new SitesPanel()))));
         return column;
+    }
+
+    /// <summary>L'infrastructure du site affiché : ce qu'elle fournit, ce qui la limite (électricité, froid, réseau), ses risques.</summary>
+    private Control InfraSection(InfraSummary infra)
+    {
+        var column = Ui.Column(3,
+            Ui.Pair("Hébergement", $"{infra.Hosting:0.#} unité(s)"),
+            Ui.Pair("Calcul · GPU", $"{infra.Compute:0.#} · {infra.Gpu:0.#}"),
+            Ui.Pair("Stockage", $"{infra.Storage:0.#} To"),
+            Ui.Pair("Électricité", $"{infra.PowerDraw:0.#} kW utilisés sur {infra.PowerSupply:0.#}", infra.PowerDraw > infra.PowerSupply ? Palette.Ember : null),
+            Ui.Pair("Froid", $"{infra.Heat:0.#} kW de chaleur, {infra.Cooling:0.#} évacués", infra.Heat > infra.Cooling ? Palette.Ember : null),
+            Ui.Pair("Réseau", $"{infra.NetworkNeeded:0} demandés sur {infra.Network:0}", infra.NetworkNeeded > infra.Network ? Palette.Ember : null),
+            Ui.Pair("Câblage", $"{infra.Organization:P0} organisé"),
+            Ui.Pair("Onduleurs", $"{infra.BackupCoverage:P0} de la consommation couverte"),
+            Ui.Pair("Risque d'incident", $"{infra.IncidentChance:P1} par jour"),
+            Ui.Pair("Électricité et réseau", $"≈ {(decimal)infra.KwhPerDay * 30 * Infrastructure.KwhPrice + infra.MonthlyCost:N0} CHF / mois"));
+        column.Margin = new Thickness(0, 0, 14, 0);
+        foreach (string issue in infra.Issues)
+            column.Children.Add(Ui.Text(issue, 13, Palette.Ember));
+        column.Children.Add(Ui.Muted("Une baie a besoin d'un switch ; les modules se posent en cliquant la baie. Le froid et l'armoire électrique limitent ce qu'un site fournit.", 12));
+        return Ui.Section("Infrastructure du site", column);
     }
 
     /// <summary>
@@ -180,7 +209,10 @@ public class BuildPanel : GamePanel
         foreach (var child in content.Children)
             child.HorizontalAlignment = HorizontalAlignment.Center;
         bool selected = Session.Tool is { MovingItemId: null, StoredId: null } t && t.DefId == def.Id;
-        var button = new Button { Content = content, Margin = new Thickness(0, 0, 4, 4), Padding = new Thickness(4, 4, 4, 8) };
+        bool locked = def.UnlockNode is { } node && !Campaign.IsUnlocked(node);
+        var button = new Button { Content = content, Margin = new Thickness(0, 0, 4, 4), Padding = new Thickness(4, 4, 4, 8), IsEnabled = !locked };
+        if (locked)
+            content.Opacity = 0.5;
         button.Classes.Add("tab");
         if (selected)
             button.Classes.Add("selected");
@@ -189,45 +221,13 @@ public class BuildPanel : GamePanel
             : def.OnWall ? $"{def.Name} — {def.Effect} Se fixe sur un mur du fond."
             : def.Pack.Ceiling ? $"{def.Name} — {def.Effect} Au plafond."
             : $"{def.Name} — {def.Effect} Emprise : {cells} case(s).");
+        if (locked)
+            ToolTip.SetTip(button, $"{def.Name} — à débloquer dans Développement : {Core.progress.DevTree.Node(def.UnlockNode!).Name}.");
         button.Click += (_, _) =>
         {
             Session.SetTool(selected ? null : new BuildTool(def.Id));
             Refresh();
         };
         return button;
-    }
-}
-
-/// <summary>Les locaux à louer, et ce que coûte un déménagement.</summary>
-public class PremisesPanel : GamePanel
-{
-    public override string Title => "Locaux à louer";
-
-    public override Control Build()
-    {
-        var column = Ui.Column(10, Ui.Muted("En déménageant, tout ton matériel part dans les cartons : rien n'est perdu ni à racheter. Ce qui est livré " +
-                                            "avec un local (cuisine, rangements) y reste. La garantie du local actuel est rendue, celle du nouveau est bloquée."));
-        foreach (var listing in RealEstate.Listings)
-        {
-            bool current = listing.Id == Campaign.Premises.ListingId;
-            var (upfront, refund) = Campaign.MoveCost(listing);
-            var card = Ui.Column(4,
-                Ui.Row(Ui.Text(listing.Name, 17, Palette.Snow, bold: true), current ? Ui.Tag("ICI", Palette.Leaf) : null),
-                Ui.Muted(listing.Description),
-                Ui.Pair("Surface", $"{listing.Plan.Width} × {listing.Plan.Depth} cases"),
-                Ui.Pair("Loyer mensuel", listing.Rent > 0 ? Ui.Chf(listing.Rent) : "compris"),
-                Ui.Pair("Garantie", Ui.Chf(listing.Deposit)),
-                current ? null : Ui.Pair("À payer pour emménager", Ui.Chf(upfront - refund), Campaign.Ledger.CanSpend(upfront - refund) ? Palette.Lemon : Palette.Blood),
-                current ? null : Ui.Button("Emménager", () => Screen.Confirm($"Emménager : {listing.Name} ?",
-                    $"Coût immédiat : {upfront - refund:N0} CHF (garantie {listing.Deposit:N0}, déménageurs, transport des meubles, moins la garantie rendue). " +
-                    $"Loyer : {listing.Rent:N0} CHF par mois. Les postes devront être réinstallés depuis les cartons.",
-                    "Emménager", () =>
-                    {
-                        Run(Campaign.MoveTo(listing.Id));
-                        Screen.OpenRoot(new BuildPanel());
-                    }, danger: false), "gold"));
-            column.Children.Add(Ui.Card(card, current ? Palette.Leaf : null));
-        }
-        return column;
     }
 }

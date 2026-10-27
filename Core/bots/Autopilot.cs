@@ -27,6 +27,12 @@ public record Strategy(string Name, string Description)
 
     /// <summary>Délègue dès que l'arbre le permet : lancements par un employé, petites mises à jour préparées par l'équipe.</summary>
     public bool Delegate { get; init; }
+
+    /// <summary>
+    /// Héberge soi-même au-delà de cette trésorerie (0 : jamais) : loue une salle serveur, l'équipe d'une baie, y passe ses
+    /// projets et vend en offre cloud ce qui reste.
+    /// </summary>
+    public decimal SelfHostAbove { get; init; }
     public decimal PreLaunchMarketing { get; init; }
     public int MaxStaff { get; init; }
     public decimal HireAbove { get; init; } = 30_000;
@@ -81,6 +87,7 @@ public class Autopilot(Strategy strategy)
         foreach (var product in campaign.Products.ToList())
             RunProject(campaign, product);
         Tree(campaign);
+        Infrastructure(campaign);
         Hiring(campaign);
         if (Strategy.Recover)
             Recovery(campaign);
@@ -200,6 +207,51 @@ public class Autopilot(Strategy strategy)
             }
     }
 
+    private static readonly string[] RackModules =
+        ["module_network_switch_1u", "module_patch_panel_1u", "module_cable_manager_1u", "module_server_1u", "module_server_1u", "module_storage_2u", "module_ups_2u"];
+
+    private void Infrastructure(Campaign campaign)
+    {
+        if (Strategy.SelfHostAbove <= 0 || !campaign.IsUnlocked("server_room") || !campaign.IsUnlocked("multisite"))
+            return;
+        var room = campaign.Sites.FirstOrDefault(s => s.ListingId == "server_room");
+        if (room == null)
+        {
+            if (campaign.Ledger.Cash < Strategy.SelfHostAbove || campaign.Solvency.State != SolvencyState.Healthy)
+                return;
+            var home = campaign.SiteId;
+            Act(campaign.RentSite("server_room"));
+            room = campaign.Premises;
+            if (room.ListingId == "server_room" && campaign.FindSpot(FurnitureCatalog.Get("rack_standard")) is var (x, y, f) && campaign.BuyAndPlace("rack_standard", x, y, f).Ok)
+            {
+                var rack = room.Items.Last();
+                foreach (string module in RackModules)
+                    Act(campaign.BuyAndAttach(module, rack.Id));
+            }
+            campaign.ViewSite(home);
+        }
+        foreach (var product in campaign.Products.Where(p => p.IsLive && !p.HostingInternal))
+            Act(campaign.SetInternalHosting(product.Id, true));
+        // Toute la capacité libre est mise en vente
+        foreach (var offer in campaign.CloudOffers.Where(o => !o.Paused && campaign.CloudAvailable(o) > o.Reserved + 1))
+            Act(campaign.SetCloudOffer(offer.Id, offer.Price, campaign.CloudAvailable(offer)));
+        // Une offre saturée : un module de plus, s'il reste de la place dans la baie et de l'argent
+        var full = campaign.CloudOffers.FirstOrDefault(o => o.Demand > o.Served * 1.1 && o.Kind is CloudKind.Storage or CloudKind.Hosting);
+        if (full != null && campaign.Ledger.Cash > Strategy.SelfHostAbove * 0.75m && campaign.Solvency.State == SolvencyState.Healthy
+            && room.Items.FirstOrDefault(i => i.DefId == "rack_standard") is { } rackHost)
+        {
+            var home = campaign.SiteId;
+            campaign.ViewSite(room.Id);
+            if (campaign.BuyAndAttach(full.Kind == CloudKind.Storage ? "module_storage_jbod_4u" : "module_server_1u", rackHost.Id).Ok)
+                Actions++;
+            campaign.ViewSite(home);
+            Act(campaign.SetCloudOffer(full.Id, full.Price, double.MaxValue));
+        }
+        foreach (var kind in new[] { CloudKind.Storage, CloudKind.Hosting })
+            if (campaign.CloudOffers.All(o => o.Kind != kind) && campaign.IsUnlocked("cloud_offers"))
+                Act(campaign.OpenCloudOffer(kind));
+    }
+
     private void Hiring(Campaign campaign)
     {
         if (campaign.Staff.Count() >= Strategy.MaxStaff || campaign.Ledger.Cash < Strategy.HireAbove || campaign.Solvency.State != SolvencyState.Healthy)
@@ -221,7 +273,8 @@ public class Autopilot(Strategy strategy)
         {
             if (campaign.InstallWorkstation(buy: true) != null)
                 return true;
-            var next = RealEstate.Listings.SkipWhile(l => l.Id != campaign.Premises.ListingId).Skip(1).FirstOrDefault();
+            var offices = RealEstate.Listings.Where(l => !l.Technical && l.UnlockNode == null).ToList();
+            var next = offices.SkipWhile(l => l.Id != campaign.Premises.ListingId).Skip(1).FirstOrDefault();
             if (next == null || !campaign.MoveTo(next.Id).Ok)
                 return false;
             Reinstall(campaign);

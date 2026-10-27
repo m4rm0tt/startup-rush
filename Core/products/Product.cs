@@ -122,6 +122,21 @@ public class Product
 
     public decimal HostingCap { get; set; } = 400m;
 
+    /// <summary>Hébergé sur tes propres serveurs (Campaign.Infra.cs) ; le débordement va à l'offre externe, sous le plafond.</summary>
+    public bool HostingInternal { get; set; }
+
+    /// <summary>Capacité interne attribuée aujourd'hui (répartie chaque nuit).</summary>
+    public double InternalCapacity { get; set; }
+
+    /// <summary>Hébergé en interne, avec en plus l'offre externe pour ce qui ne tient pas.</summary>
+    public bool OverflowActive { get; set; }
+
+    /// <summary>Capacité d'hébergement réelle : l'offre externe, ou la part interne plus le débordement.</summary>
+    public double Capacity => HostingInternal ? InternalCapacity + (OverflowActive ? Hosting.Capacity : 0) : Hosting.Capacity;
+
+    /// <summary>Ce que coûte l'hébergement externe par mois (rien en interne sans débordement : l'électricité est payée par site).</summary>
+    public decimal ExternalMonthlyCost => !IsLive || HostingInternal && !OverflowActive ? 0 : Hosting.MonthlyCost;
+
     public decimal MarketingBudget { get; set; }
     public string MarketingChannelId { get; set; } = "social";
     public double SellerMarketingShare { get; set; } = 0.3;

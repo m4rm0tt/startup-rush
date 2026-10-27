@@ -23,14 +23,20 @@ public static class DevTree
         new("leads", "Organisation", "Responsables", "crown", "On peut nommer des responsables : une équipe de 6 travaille sans perte.", 1),
         new("academy", "Organisation", "Formation interne", "calendar", "Formations à moitié prix et 30 % plus efficaces.", 2, "hiring"),
         new("bigteam", "Organisation", "Grandes équipes", "building", "+2 personnes par projet sans perte de coordination.", 2, "leads"),
+        new("multisite", "Organisation", "Plusieurs sites", "home", "Louer d'autres locaux sans quitter les tiens (et le siège) ; tout se gère depuis la vue Sites.", 1),
 
         new("cloud_m", "Infrastructure", "Cloud M", "wifi", "Offre d'hébergement Cloud M (capacité ×4).", 1),
         new("optimization", "Infrastructure", "Optimisation", "bolt", "−15 % de charge serveur sur tous les projets.", 1),
         new("cloud_l", "Infrastructure", "Cloud L et cluster", "wifi", "Les deux plus grosses offres d'hébergement.", 2, "cloud_m"),
+        new("server_room", "Infrastructure", "Salle serveur", "computer", "Louer une salle serveur, acheter baies et modules : héberger tes projets toi-même.", 1),
+        new("high_density", "Infrastructure", "Haute densité", "bolt", "Baies haute densité, refroidissement de rangée, nœuds de calcul et serveurs GPU.", 2, "server_room"),
+        new("datacenter", "Infrastructure", "Datacenter", "building", "Louer un datacenter : des dizaines de baies, deux climatiseurs, une cage de sécurité.", 3, "high_density"),
 
         new("search_ads", "Commercial", "Moteurs de recherche", "link", "Nouveau canal marketing : publicité sur les moteurs de recherche.", 1),
         new("launches", "Commercial", "Lancements événementiels", "rocket", "Avant sa sortie, un jeu attire 50 % d'intérêt en plus.", 1),
         new("press", "Commercial", "Salons et presse", "megaphone", "Nouveau canal marketing : salons et presse.", 2, "search_ads"),
+        new("cloud_offers", "Commercial", "Offres cloud", "wifi", "Vendre de l'hébergement et du stockage à d'autres entreprises, avec ta propre capacité.", 2, "server_room"),
+        new("compute_offers", "Commercial", "Calcul à la demande", "computer", "Vendre du calcul CPU et GPU, à l'unité et au mois.", 2, "cloud_offers"),
         new("loyalty", "Commercial", "Fidélisation", "heart", "Les utilisateurs partent 15 % moins vite.", 2),
 
         new("quality_lab", "Innovation", "Laboratoire qualité", "check", "+0,05 de qualité sur tout le travail.", 2),

@@ -76,7 +76,8 @@ public class FinancePanel : GamePanel
             ("Ta rémunération", Tuning.Finance.FounderDraw),
             ("Salaires", Campaign.Staff.Sum(p => p.Salary)),
             ("Loyer et charges", Campaign.Premises.Rent * 1.04m + Tuning.Finance.Utilities),
-            ("Serveurs", Campaign.Products.Where(p => p.IsLive).Sum(p => p.Hosting.MonthlyCost)),
+            ("Serveurs", Campaign.Products.Sum(p => p.ExternalMonthlyCost)),
+            ("Électricité et réseau", Campaign.Infra().MonthlyEnergy),
             ("Marketing", Campaign.Products.Sum(p => p.MarketingBudget)),
             ("Remboursements", Campaign.Ledger.Loans.Sum(l => Math.Min(l.MonthlyPayment, l.Remaining))),
         };
@@ -179,6 +180,8 @@ public class FinancePanel : GamePanel
         Category.Moving => "Déménagement",
         Category.Fees => "Frais",
         Category.Refund => "Remboursements clients",
+        Category.Cloud => "Services cloud",
+        Category.Energy => "Électricité et réseau",
         _ => "Registre du commerce"
     };
 

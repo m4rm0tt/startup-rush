@@ -67,8 +67,8 @@ public partial class Campaign
         int hour = GameTime.Hour(Minute);
         if (hour < Tuning.Terminal.FirstHour || hour >= Tuning.Terminal.LastHour)
             return (false, $"Il est tard : le terminal rouvre à {Tuning.Terminal.FirstHour} h.");
-        var post = Premises.SeatOf(founder.Id);
-        if (!remote && (post == null || space.Layout.Check(Premises, post) != space.WorkstationIssue.None))
+        var (site, post) = PostOf(founder);
+        if (!remote && (post == null || space.Layout.Check(site, post) != space.WorkstationIssue.None))
             return (false, "Il te faut un poste complet (bureau, chaise, ordinateur).");
         var product = FindProduct(productId);
         if (product == null)

@@ -14,7 +14,7 @@ namespace Core.campaign;
 /// </summary>
 public partial class Campaign
 {
-    private bool[,]? _blocked;
+    private readonly Dictionary<int, bool[,]> _blocked = new();
 
     /// <summary>Quelqu'un est-il au local en ce moment ? (L'interface accélère les nuits quand personne n'est là.)</summary>
     [JsonIgnore]
@@ -41,24 +41,30 @@ public partial class Campaign
     /// <summary>À appeler après tout changement d'aménagement.</summary>
     public void InvalidateLayout()
     {
-        _blocked = null;
-        _comfort = null;
+        _blocked.Clear();
+        _comfort.Clear();
+        _infra.Clear();
     }
 
-    private bool[,] Blocked => _blocked ??= Premises.Occupancy();
+    private bool[,] Blocked(Premises site) => _blocked.TryGetValue(site.Id, out var grid) && grid.GetLength(0) == site.Width && grid.GetLength(1) == site.Height
+        ? grid : _blocked[site.Id] = site.Occupancy();
 
-    private (Premises Premises, int Items, int People, ComfortSummary Summary)? _comfort;
+    private readonly Dictionary<int, (Premises Premises, int Items, int People, ComfortSummary Summary)> _comfort = new();
+
+    /// <summary>Le confort du site affiché, pour les personnes qui y ont leur poste.</summary>
+    public ComfortSummary SiteComfort() => SiteComfort(Premises);
 
     /// <summary>
-    /// Le confort du local pour toute l'équipe (Layout.Comfort), gardé en mémoire tant que le local, ses objets et l'effectif
-    /// ne changent pas : la simulation le lit à chaque minute de travail.
+    /// Le confort d'un site pour les personnes qui y travaillent (Layout.Comfort), gardé en mémoire tant que le site, ses
+    /// objets et son effectif ne changent pas : la simulation le lit à chaque minute de travail.
     /// </summary>
-    public ComfortSummary SiteComfort()
+    public ComfortSummary SiteComfort(Premises site)
     {
-        if (_comfort is { } c && c.Premises == Premises && c.Items == Premises.Items.Count && c.People == People.Count)
+        int people = Math.Max(1, People.Count(p => SiteOf(p) == site));
+        if (_comfort.TryGetValue(site.Id, out var c) && c.Premises == site && c.Items == site.Items.Count && c.People == people)
             return c.Summary;
-        var summary = Layout.Comfort(Premises, People.Count);
-        _comfort = (Premises, Premises.Items.Count, People.Count, summary);
+        var summary = Layout.Comfort(site, people);
+        _comfort[site.Id] = (site, site.Items.Count, people, summary);
         return summary;
     }
 
@@ -127,27 +133,27 @@ public partial class Campaign
     /// <summary>S'installe à son poste s'il est complet, sinon attend près de l'entrée (personnages assis, pas de déplacements).</summary>
     private void TakePlace(Person person)
     {
-        var post = Premises.SeatOf(person.Id);
-        if (post != null && Layout.Check(Premises, post) == WorkstationIssue.None)
+        var (site, post) = PostOf(person);
+        if (post != null && Layout.Check(site, post) == WorkstationIssue.None)
         {
-            person.Position = Premises.SeatCell(post);
+            person.Position = site.SeatCell(post);
             person.Activity = Activity.Working;
             return;
         }
-        person.Position = NearbyFreeCell(Premises.Entrance, person.Id) ?? Premises.Entrance;
+        person.Position = NearbyFreeCell(site, site.Entrance, person.Id) ?? site.Entrance;
         person.Activity = Activity.Idle;
-        person.Status = post == null ? "Pas de poste de travail" : Layout.Describe(Layout.Check(Premises, post));
+        person.Status = post == null ? "Pas de poste de travail" : Layout.Describe(Layout.Check(site, post));
     }
 
-    private Cell? NearbyFreeCell(Cell around, int salt)
+    private Cell? NearbyFreeCell(Premises site, Cell around, int salt)
     {
-        var reach = Pathfinder.Reachable(Premises, Blocked);
+        var reach = Pathfinder.Reachable(site, Blocked(site));
         var candidates = new List<Cell>();
         for (int dy = -3; dy <= 3; dy++)
         for (int dx = -3; dx <= 3; dx++)
         {
             var cell = around.Offset(dx, dy);
-            if (Premises.InBounds(cell) && reach[cell.X, cell.Y] && cell != Premises.Entrance)
+            if (site.InBounds(cell) && reach[cell.X, cell.Y] && cell != site.Entrance)
                 candidates.Add(cell);
         }
         if (candidates.Count == 0)
@@ -163,10 +169,10 @@ public partial class Campaign
     /// <summary>Production du poste de la personne (0 sans ordinateur), écrans en plus et concentration du local compris.</summary>
     public double StationOutput(Person person)
     {
-        var post = Premises.SeatOf(person.Id);
-        if (post == null || Premises.ComputerOf(post)?.Def is not { } computer)
+        var (site, post) = PostOf(person);
+        if (post == null || site.ComputerOf(post)?.Def is not { } computer)
             return 0;
-        return computer.Output * (1 + Layout.ScreenBonus(Premises, post)) * (1 + SiteComfort().Focus);
+        return computer.Output * (1 + Layout.ScreenBonus(site, post)) * (1 + SiteComfort(site).Focus);
     }
 
     public double WorkRate(Person person, Discipline discipline, int teamSize = 1, bool lead = false)
@@ -175,7 +181,7 @@ public partial class Campaign
         double energy = person.Energy >= 40 ? 1 : 0.6 + person.Energy / 100;
         double morale = 0.85 + person.Morale / 100 * 0.3;
         double overtime = GameTime.Hour(Minute) >= Tuning.Work.DayEndHour ? 0.9 : 1;
-        int free = (lead ? Tuning.Work.CoordinationFreeTeamWithLead : Tuning.Work.CoordinationFreeTeam) + (int)Math.Floor(SiteComfort().Coordination)
+        int free = (lead ? Tuning.Work.CoordinationFreeTeamWithLead : Tuning.Work.CoordinationFreeTeam) + (int)Math.Floor(SiteComfort(SiteOf(person)).Coordination)
                    + (IsUnlocked("bigteam") ? 2 : 0);
         double coordination = teamSize <= free ? 1 : 1 / (1 + Tuning.Work.CoordinationLossPerExtraPerson * (teamSize - free));
         double tools = IsUnlocked("ai_tools") ? 1.1 : 1;
@@ -184,8 +190,8 @@ public partial class Campaign
 
     public double WorkQuality(Person person, Discipline discipline)
     {
-        var post = Premises.SeatOf(person.Id);
-        var computer = post == null ? null : Premises.ComputerOf(post)?.Def;
+        var (site, post) = PostOf(person);
+        var computer = post == null ? null : site.ComputerOf(post)?.Def;
         double quality = 0.3 + person.Skill(discipline) * 0.006 + (computer?.Quality ?? 0) + (person.Morale - 50) / 1000
                          + (IsUnlocked("quality_lab") ? 0.05 : 0);
         if (person.Energy < 40)
@@ -197,8 +203,8 @@ public partial class Campaign
 
     private void DoWork(Person person, int teamSize, bool lead)
     {
-        var post = Premises.SeatOf(person.Id)!;
-        var chair = Premises.ChairOf(post)?.Def;
+        var (site, post) = PostOf(person);
+        var chair = post == null ? null : site.ChairOf(post)?.Def;
         double drain = GameTime.Hour(Minute) >= Tuning.Work.DayEndHour ? Tuning.Work.EnergyPerOvertimeHour : Tuning.Work.EnergyPerHour;
         person.Energy = Math.Max(0, person.Energy - drain * (chair?.EnergyDrain ?? 1) / 60);
 
@@ -317,7 +323,7 @@ public partial class Campaign
     {
         var discipline = person.TrainingDiscipline!.Value;
         double level = person.Skill(discipline);
-        double gain = 7 * (1 + SiteComfort().Training) * (IsUnlocked("academy") ? 1.3 : 1) * Math.Max(0.15, 1 - level / 110);
+        double gain = 7 * (1 + SiteComfort(SiteOf(person)).Training) * (IsUnlocked("academy") ? 1.3 : 1) * Math.Max(0.15, 1 - level / 110);
         person.Skills[discipline] = Math.Round(Math.Min(95, level + gain), 1);
         person.TrainingDiscipline = null;
         person.Activity = Activity.Away;

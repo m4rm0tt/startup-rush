@@ -7,7 +7,10 @@ public enum Category
 
     // Dépenses
     Salaries, FounderDraw, Rent, Utilities, Equipment, Hosting, Marketing, Training, Severance,
-    Interest, LoanRepayment, Deposit, Moving, Fees, Refund, Registration
+    Interest, LoanRepayment, Deposit, Moving, Fees, Refund, Registration,
+
+    // Lot 4 : services cloud vendus (recette), électricité et réseau des sites (dépense)
+    Cloud, Energy
 }
 
 /// <summary>Un mouvement de trésorerie (argent réellement entré ou sorti).</summary>

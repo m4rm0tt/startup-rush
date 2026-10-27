@@ -21,7 +21,10 @@ public partial class Campaign
         Candidates.Remove(candidate);
         People.Add(person);
 
-        var freeChair = space.Layout.CompleteWorkstations(Premises).Select(Premises.ChairOf).FirstOrDefault(c => c is { AssignedPersonId: null });
+        // Un poste libre, d'abord sur le site affiché, puis sur les autres
+        var freeChair = Sites.OrderBy(s => s == Premises ? 0 : 1)
+            .SelectMany(s => space.Layout.CompleteWorkstations(s).Select(s.ChairOf))
+            .FirstOrDefault(c => c is { AssignedPersonId: null });
         if (freeChair != null)
             freeChair.AssignedPersonId = person.Id;
         string start = candidate.NoticeWorkdays == 0 ? "dès aujourd'hui" : $"le {GameTime.FormatDate(person.StartsAt)}";

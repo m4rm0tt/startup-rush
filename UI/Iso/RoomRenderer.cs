@@ -236,6 +236,22 @@ public sealed class RoomRenderer
 
     private void Attach(Premises premises, Node node, JsonElement o, PlacedItem child, IReadOnlyDictionary<int, Seated> seated)
     {
+        // Module de baie : ancre à la position de son premier emplacement, même orientation que la baie, du bas vers le haut
+        if (child.Socket is { } slot && slot.StartsWith("slot:"))
+        {
+            if (!o.TryGetProperty("slots", out var slots) || !PackLibrary.Has(child.DefId) || !int.TryParse(slot[5..], out int index))
+                return;
+            var position = slots.GetProperty("positions").EnumerateArray().FirstOrDefault(p => p.GetProperty("index").GetInt32() == index);
+            if (position.ValueKind != JsonValueKind.Object || !PackLibrary.Asset(child.DefId).GetProperty("orientations").TryGetProperty(node.Facing, out _))
+                return;
+            var at = position.GetProperty("offset_px");
+            node.After.Add(new Node
+            {
+                Aid = child.DefId, Facing = node.Facing, Sx = node.Sx + at[0].GetInt32(), Sy = node.Sy + at[1].GetInt32(),
+                Depth = -index, Swatches = child.Swatches, ItemId = child.Id,
+            });
+            return;
+        }
         if (!o.TryGetProperty("sockets", out var sockets) || !sockets.TryGetProperty(child.Socket!, out var s) || !PackLibrary.Has(child.DefId))
             return;
         string cf = s.GetProperty("child_facing").GetString()!;

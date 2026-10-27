@@ -233,7 +233,7 @@ public partial class Campaign
         if (product == null)
             return CommandResult.Fail("Projet inconnu.");
         product.HostingAuto = auto;
-        product.HostingCap = Math.Max(15, cap);
+        product.HostingCap = product.HostingInternal && cap == 0 ? 0 : Math.Max(15, cap);
         if (planId != null)
         {
             var plan = ProductCatalog.Plan(planId);
@@ -253,6 +253,21 @@ public partial class Campaign
             return;
         double load = Market.Load(product, IsUnlocked("optimization"));
         var fitting = ProductCatalog.Hosting.Where(PlanAvailable).Where(h => h.MonthlyCost <= product.HostingCap).ToList();
+        if (product.HostingInternal)
+        {
+            // Sur tes serveurs : l'offre externe ne prend que ce qui dépasse, et seulement sous le plafond
+            double missing = load - product.InternalCapacity * 0.75;
+            var overflow = missing <= 0 ? null : fitting.FirstOrDefault(h => missing < h.Capacity * 0.75) ?? fitting.LastOrDefault();
+            product.OverflowActive = overflow != null;
+            if (overflow != null)
+                product.HostingId = overflow.Id;
+            if (product.IsLive && load > product.Capacity * 0.85)
+                Notify(Severity.Warning, "projet", $"{product.Name} manque de serveurs", "Tes serveurs sont pleins et le débordement externe ne suffit pas : ajoute des serveurs, ou relève le plafond.",
+                    $"product:{product.Id}", key: $"hosting:{product.Id}");
+            else
+                Resolve($"hosting:{product.Id}");
+            return;
+        }
         var plan = fitting.FirstOrDefault(h => load < h.Capacity * 0.75) ?? fitting.LastOrDefault();
         if (plan != null)
             product.HostingId = plan.Id;

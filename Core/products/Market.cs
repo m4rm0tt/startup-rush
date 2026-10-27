@@ -93,7 +93,7 @@ public static class Market
         // Attrait : composants × bugs × performances
         double baseAppeal = Design.Appeal(product);
         double bugPenalty = Math.Min(0.45, product.Bugs * 0.012);
-        double utilization = Load(product, inputs.Optimization) / product.Hosting.Capacity;
+        double utilization = Load(product, inputs.Optimization) / Math.Max(0.01, product.Capacity);
         double performance = Performance(utilization);
         double downtime = utilization > 1 ? Math.Min(24, (utilization - 1) * 20) : 0;
         double appeal = baseAppeal * (1 - bugPenalty) * performance;

@@ -330,12 +330,18 @@ public class ProjectPanel(int productId) : GamePanel
         column.Children.Add(upkeep);
 
         double load = Market.Load(product, Campaign.IsUnlocked("optimization"));
-        decimal[] caps = [15, 100, 400, 1_500, 5_000];
+        decimal[] caps = [0, 15, 100, 400, 1_500, 5_000];
+        bool ownServers = product.HostingInternal || Campaign.Sites.Any(s => Campaign.SiteInfra(s).Hosting > 0);
+        string where = product.HostingInternal
+            ? $"Tes serveurs : {product.InternalCapacity:0.#} unité(s)" + (product.OverflowActive ? $" + {product.Hosting.Name} ({product.Hosting.MonthlyCost:N0} CHF/mois)" : "")
+            : $"{product.Hosting.Name} · {product.Hosting.MonthlyCost:N0} CHF/mois";
         column.Children.Add(highlightBox("hosting", Ui.Section("Serveurs",
-            Ui.Row(8, Ui.Text(product.Hosting.Name, 15, Palette.Snow, bold: true), Ui.Muted($"{product.Hosting.MonthlyCost:N0} CHF/mois", 13), Ui.Bar(load / product.Hosting.Capacity, load > product.Hosting.Capacity * 0.8 ? Palette.Ember : Palette.Leaf, 8, 120)),
+            Ui.Row(8, Ui.Text(where, 15, Palette.Snow, bold: true), Ui.Bar(load / System.Math.Max(0.01, product.Capacity), load > product.Capacity * 0.8 ? Palette.Ember : Palette.Leaf, 8, 120)),
+            ownServers ? Ui.Choice([(false, "Chez un hébergeur"), (true, "Sur tes serveurs")], product.HostingInternal, v => Run(Campaign.SetInternalHosting(product.Id, v))) : null,
+            product.HostingInternal ? Ui.Muted("Ce qui ne tient pas sur tes serveurs déborde chez l'hébergeur, sans dépasser le plafond (0 : jamais).", 12) : null,
             Ui.Choice([(true, "Automatique"), (false, "Manuel")], product.HostingAuto, a => Run(Campaign.SetHosting(product.Id, a, product.HostingCap))),
             product.HostingAuto
-                ? Ui.Column(4, Ui.Text("Plafond mensuel", 13, Palette.Fog), Ui.Choice(caps.Select(c => (c, $"{c:N0} CHF")), product.HostingCap, c => Run(Campaign.SetHosting(product.Id, true, c))))
+                ? Ui.Column(4, Ui.Text("Plafond mensuel", 13, Palette.Fog), Ui.Choice(caps.Where(c => c > 0 || product.HostingInternal).Select(c => (c, c == 0 ? "Jamais" : $"{c:N0} CHF")), product.HostingCap, c => Run(Campaign.SetHosting(product.Id, true, c))))
                 : Ui.Choice(ProductCatalog.Hosting.Where(Campaign.PlanAvailable).Select(h => (h.Id, $"{h.Name} ({h.MonthlyCost:N0})")), product.HostingId, id => Run(Campaign.SetHosting(product.Id, false, product.HostingCap, id))))));
 
         var swatches = new WrapPanel();

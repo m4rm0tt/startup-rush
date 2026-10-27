@@ -13,7 +13,7 @@ public partial class Campaign
         decimal total = 0;
         foreach (var month in months)
             if (Ledger.Months.TryGetValue(month, out var totals))
-                total += totals.Where(t => t.Key is Category.Contracts or Category.Subscriptions or Category.Ads or Category.Commissions or Category.Sales).Sum(t => t.Value);
+                total += totals.Where(t => t.Key is Category.Contracts or Category.Subscriptions or Category.Ads or Category.Commissions or Category.Sales or Category.Cloud).Sum(t => t.Value);
         return total / 3;
     }
 
@@ -147,7 +147,7 @@ public partial class Campaign
     /// </summary>
     public decimal Valuation()
     {
-        decimal equipment = Premises.Items.Where(i => !i.Included).Sum(i => ResaleValue(i.PaidPrice)) + Storage.Sum(s => ResaleValue(s.PaidPrice));
+        decimal equipment = Sites.SelectMany(s => s.Items).Where(i => !i.Included).Sum(i => ResaleValue(i.PaidPrice)) + Storage.Sum(s => ResaleValue(s.PaidPrice));
         decimal net = Ledger.Cash + Ledger.OpenReceivables * 0.9m + equipment + Ledger.DepositHeld - Ledger.OpenBills - Ledger.LoanDebt;
         decimal productProfit = Products.Sum(p => p.History.Skip(Math.Max(0, p.History.Count - 30)).Sum(d => d.Revenue - d.Costs));
         return Math.Round(net + Math.Max(0, productProfit) * 36);

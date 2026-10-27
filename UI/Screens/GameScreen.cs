@@ -50,7 +50,7 @@ public class GameScreen : UserControl, IScreen
     private bool _pauseMenu;
     private double _refreshTimer;
     private double _hudTimer;
-    private string _lastPremises;
+    private int _lastPremises;
     private bool _lostShown;
 
     public GameScreen(MainWindow window, GameSession session)
@@ -70,7 +70,7 @@ public class GameScreen : UserControl, IScreen
             if (_stack.LastOrDefault() is BuildPanel)
                 RefreshPanel();
         };
-        _lastPremises = session.Campaign.Premises.ListingId;
+        _lastPremises = session.Campaign.Premises.Id;
 
         var root = new Grid();
         root.Children.Add(Scene);
@@ -154,9 +154,9 @@ public class GameScreen : UserControl, IScreen
         }
         UpdateToasts(deltaTime);
 
-        if (Session.Campaign.Premises.ListingId != _lastPremises)
+        if (Session.Campaign.Premises.Id != _lastPremises)
         {
-            _lastPremises = Session.Campaign.Premises.ListingId;
+            _lastPremises = Session.Campaign.Premises.Id;
             Scene.ResetCamera();
         }
 
@@ -583,6 +583,14 @@ public class GameScreen : UserControl, IScreen
                 break;
             case "build":
                 OpenRoot(new BuildPanel());
+                break;
+            case "sites":
+                OpenRoot(new BuildPanel());
+                PushPanel(new SitesPanel());
+                break;
+            case "cloud":
+                OpenRoot(new ProjectsPanel());
+                PushPanel(new CloudPanel());
                 break;
             case "tree" or "company":
                 OpenRoot(new TreePanel());

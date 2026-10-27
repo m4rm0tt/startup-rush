@@ -8,7 +8,11 @@ public record PackFacing(
     string Name,
     IReadOnlyList<Cell> Collision,
     IReadOnlyList<Cell> Access,
-    IReadOnlyDictionary<string, string[]> Sockets);
+    IReadOnlyDictionary<string, string[]> Sockets)
+{
+    /// <summary>Emplacements d'une baie (en U), 0 pour un autre objet.</summary>
+    public int Slots { get; init; }
+}
 
 /// <summary>
 /// Ce que le moteur sait d'un asset du pack (assets/StartupRushOriginalAssets/manifest.json) : emprise, accès et
@@ -26,6 +30,17 @@ public record PackAsset(
     IReadOnlyDictionary<string, PackFacing> Facings,
     int Span = 1)
 {
+    /// <summary>Hauteur d'un module de baie, en U.</summary>
+    public int Units { get; init; }
+
+    /// <summary>Les baies qui acceptent ce module.</summary>
+    public string[] Fits { get; init; } = [];
+
+    /// <summary>On marche dessous ou dessus (chemin de câbles, passe-câble) : il ne prend la case de personne.</summary>
+    public bool Walkable { get; init; }
+
+    public bool RackModule => Kind == "rack_module";
+
     public PackFacing Facing(string facing) => Facings.TryGetValue(facing, out var f) ? f : Facings.Values.First();
 
     public string DefaultFacing => Facings.ContainsKey("se") ? "se" : Facings.Keys.First();
@@ -110,7 +125,8 @@ public static class Pack
                     if (o.Value.TryGetProperty("sockets", out var s) && s.ValueKind == JsonValueKind.Object)
                         foreach (var sock in s.EnumerateObject())
                             sockets[sock.Name] = sock.Value.GetProperty("accepts").EnumerateArray().Select(x => x.GetString()!).ToArray();
-                    facings[o.Name] = new PackFacing(o.Name, collision, access, sockets);
+                    int slots = o.Value.TryGetProperty("slots", out var sl) && sl.ValueKind == JsonValueKind.Object && sl.TryGetProperty("count", out var n) ? n.GetInt32() : 0;
+                    facings[o.Name] = new PackFacing(o.Name, collision, access, sockets) { Slots = slots };
                 }
             bool centered = a.TryGetProperty("footprint_tiles", out var fp) && fp.ValueKind == JsonValueKind.Null
                             && a.TryGetProperty("size_su", out var su) && su.ValueKind != JsonValueKind.Null;
@@ -120,7 +136,12 @@ public static class Pack
             int span = a.TryGetProperty("footprint_tiles", out var ft) && ft.ValueKind == JsonValueKind.Array
                 ? ft.EnumerateArray().Max(x => x.GetInt32()) : 1;
             result[Str("id")] = new PackAsset(Str("id"), Str("category"), Str("subcategory"), Str("name_fr"), Str("kind"),
-                Str("render_layer"), centered, provides, facings, span);
+                Str("render_layer"), centered, provides, facings, span)
+            {
+                Units = a.TryGetProperty("units", out var u) && u.ValueKind == JsonValueKind.Number ? u.GetInt32() : 0,
+                Fits = a.TryGetProperty("fits", out var fi) && fi.ValueKind == JsonValueKind.Array ? fi.EnumerateArray().Select(x => x.GetString()!).ToArray() : [],
+                Walkable = a.TryGetProperty("walkable", out var w) && w.ValueKind == JsonValueKind.True,
+            };
         }
         return result;
     }

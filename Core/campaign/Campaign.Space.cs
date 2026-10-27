@@ -16,6 +16,8 @@ public partial class Campaign
         var def = FurnitureCatalog.Get(defId);
         if (!def.Buyable)
             return CommandResult.Fail("Cet objet ne s'achète pas.");
+        if (def.UnlockNode is { } node && !IsUnlocked(node))
+            return CommandResult.Fail($"À débloquer dans Développement : {progress.DevTree.Node(node).Name}.");
         string f = facing ?? def.Pack.DefaultFacing;
         var check = Layout.CanPlace(Premises, def, x, y, f);
         if (!check.Ok)
@@ -46,6 +48,8 @@ public partial class Campaign
         var def = FurnitureCatalog.Get(defId);
         if (!def.Buyable)
             return CommandResult.Fail("Cet objet ne s'achète pas.");
+        if (def.UnlockNode is { } node && !IsUnlocked(node))
+            return CommandResult.Fail($"À débloquer dans Développement : {progress.DevTree.Node(node).Name}.");
         var (check, host, s) = AttachCheck(def, hostId, socket, null);
         if (!check.Ok)
             return CommandResult.Fail(check.Reason);
@@ -224,7 +228,7 @@ public partial class Campaign
         var chair = chairs.FirstOrDefault(c => c.AssignedPersonId == id) ?? chairs.FirstOrDefault(c => c.AssignedPersonId == null);
         if (chair == null)
             return CommandResult.Fail(chairs.Count == 0 ? "Il faut d'abord une chaise à ce bureau." : "Tous les postes de ce bureau sont pris.");
-        foreach (var other in Premises.Items.Where(i => i.AssignedPersonId == id))
+        foreach (var other in Sites.SelectMany(s => s.Items).Where(i => i.AssignedPersonId == id))
             other.AssignedPersonId = null;
         chair.AssignedPersonId = id;
         if (person.Activity is Activity.Working or Activity.Idle)
@@ -243,50 +247,9 @@ public partial class Campaign
     {
         if (WallItemsImported)
             return;
-        if (!Premises.WallItems.Any() && Premises.PlanId != "")
-            Premises.Items.AddRange(RealEstate.WallItems(Pack.Plan(Premises.PlanId), NewId));
+        foreach (var site in Sites.Where(s => !s.WallItems.Any() && s.PlanId != ""))
+            site.Items.AddRange(RealEstate.WallItems(Pack.Plan(site.PlanId), NewId));
         WallItemsImported = true;
         InvalidateLayout();
-    }
-
-    /// <summary>Coût total d'un déménagement : garantie, forfait et transport des meubles, moins la garantie actuelle rendue.</summary>
-    public (decimal Upfront, decimal Refund) MoveCost(Listing listing)
-    {
-        int items = Premises.Items.Count(i => !i.Included) + Storage.Count;
-        decimal upfront = listing.Deposit + listing.MovingCost + items * RealEstate.MovingCostPerItem;
-        return (upfront, Ledger.DepositHeld);
-    }
-
-    public CommandResult MoveTo(string listingId)
-    {
-        var listing = RealEstate.Get(listingId);
-        if (listing.Id == Premises.ListingId)
-            return CommandResult.Fail("Tu es déjà ici.");
-        var (upfront, refund) = MoveCost(listing);
-        if (!Ledger.CanSpend(upfront - refund))
-            return CommandResult.Fail($"Il faut {upfront - refund:N0} CHF (garantie, déménageurs) pour emménager.");
-
-        if (refund > 0)
-            Post(refund, Category.DepositRefund, $"Garantie rendue : {Premises.Name}");
-        if (listing.Deposit > 0)
-            Post(-listing.Deposit, Category.Deposit, $"Garantie de loyer : {listing.Name}");
-        Post(-(upfront - listing.Deposit), Category.Moving, $"Déménagement vers {listing.Name}");
-        Ledger.DepositHeld = listing.Deposit;
-
-        // Tout ce qui t'appartient part dans les cartons, rien n'est perdu ni à racheter ; ce qui était livré reste au local
-        foreach (var item in Premises.Items.Where(i => !i.Included))
-            Storage.Add(new StoredItem { Id = item.Id, DefId = item.DefId, PaidPrice = item.PaidPrice });
-        Premises = RealEstate.Create(listing, NewId);
-        InvalidateLayout();
-        foreach (var person in People)
-        {
-            person.Activity = person.TrainingDiscipline != null ? Activity.Training : Activity.Away;
-            person.Path.Clear();
-            person.Position = Premises.Outside;
-            person.LastArrivalDay = -1;
-        }
-        Notify(Severity.Good, "local", $"Emménagement : {listing.Name}",
-            $"{Storage.Count} objets sont dans les cartons. Ouvre Aménagement pour les installer. Nouveau loyer : {listing.Rent:N0} CHF par mois.", "build");
-        return CommandResult.Success();
     }
 }

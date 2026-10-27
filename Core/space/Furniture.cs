@@ -28,6 +28,27 @@ public enum FurnitureKind
     /// <summary>Banque d'accueil : on reçoit mieux les candidats.</summary>
     Reception,
 
+    /// <summary>Baie : des emplacements en U pour les modules (Core/space/Infrastructure.cs).</summary>
+    Rack,
+
+    /// <summary>Module de baie (serveur, calcul, GPU, stockage, réseau, onduleur, obturateur...).</summary>
+    RackModule,
+
+    /// <summary>Serveur ou stockage hors baie (serveur tour, NAS de bureau, station GPU).</summary>
+    Server,
+
+    /// <summary>Énergie, froid et réseau du site (armoire électrique, climatiseur, routeur, fibre).</summary>
+    Utility,
+
+    /// <summary>Onduleur : marge de continuité électrique.</summary>
+    Backup,
+
+    /// <summary>Câblage et sécurité (chemins de câbles, cage) : organisation et confiance des services.</summary>
+    Cabling,
+
+    /// <summary>Console de supervision (NOC).</summary>
+    Supervision,
+
     /// <summary>Objet du pack sans effet de jeu pour l'instant : il se dessine, rien de plus (voir docs/asset_usage.csv).</summary>
     Decor
 }
@@ -76,6 +97,47 @@ public record FurnitureDef(string Id, string Name, FurnitureKind Kind, decimal P
     /// <summary>Récompense d'un jalon (trophée, plaque) : elle ne s'achète pas, elle arrive dans les cartons.</summary>
     public bool Reward { get; init; }
 
+    // Infrastructure (Core/space/Infrastructure.cs) : capacités fournies, énergie consommée, services du site
+
+    /// <summary>Unités d'hébergement d'applications (même unité que la charge des projets).</summary>
+    public double Hosting { get; init; }
+
+    /// <summary>Unités de calcul CPU (travaux par lots, offres de calcul).</summary>
+    public double Compute { get; init; }
+
+    /// <summary>Unités de calcul GPU.</summary>
+    public double Gpu { get; init; }
+
+    /// <summary>Stockage, en To.</summary>
+    public double Storage { get; init; }
+
+    /// <summary>Débit réseau apporté au site (unités de trafic).</summary>
+    public double Network { get; init; }
+
+    /// <summary>Puissance consommée, en kW (elle devient aussi de la chaleur).</summary>
+    public double Power { get; init; }
+
+    /// <summary>Puissance électrique distribuable apportée au site, en kW.</summary>
+    public double PowerSupply { get; init; }
+
+    /// <summary>Chaleur évacuée, en kW.</summary>
+    public double Cooling { get; init; }
+
+    /// <summary>Puissance couverte par un onduleur, en kW.</summary>
+    public double Backup { get; init; }
+
+    /// <summary>Points d'organisation du câblage (brassage, passe-câbles, chemins de câbles).</summary>
+    public double Organization { get; init; }
+
+    /// <summary>Points de sécurité d'une zone technique (cage).</summary>
+    public double Security { get; init; }
+
+    /// <summary>Abonnement mensuel lié à l'objet (fibre), en CHF.</summary>
+    public decimal MonthlyCost { get; init; }
+
+    /// <summary>Nœud de l'arbre qu'il faut pour l'acheter.</summary>
+    public string? UnlockNode { get; init; }
+
     public PackAsset Pack => space.Pack.Asset(Id);
 
     public bool Buyable => Price > 0;
@@ -84,7 +146,7 @@ public record FurnitureDef(string Id, string Name, FurnitureKind Kind, decimal P
     /// Accroché à un socket d'un autre objet (écran, clavier, chaise, objet de bureau) plutôt que posé au sol. Un objet centré
     /// dont aucun meuble du pack n'accepte le type (le caisson « sous le bureau ») se pose au sol.
     /// </summary>
-    public bool Attached => Pack.Centered && Pack.Provides.Any(space.Pack.Accepted);
+    public bool Attached => Pack.RackModule || Pack.Centered && Pack.Provides.Any(space.Pack.Accepted);
 
     /// <summary>Se fixe sur un mur du fond (affiche, horloge, stores, planning).</summary>
     public bool OnWall => Pack.WallMount;
@@ -199,6 +261,41 @@ public static class FurnitureCatalog
         new("poster_schematic", "Schéma technique", FurnitureKind.Bookshelf, 50m, "Au mur : formations +5 % (40 % au plus pour le local).") { TrainingBonus = 0.05 },
         new("reception_desk", "Banque d'accueil", FurnitureKind.Reception, 1_500m, "On reçoit les candidats : 1 candidat de plus chaque semaine.") { Recruits = 1 },
         new("bed_single", "Lit", FurnitureKind.Bed, 0m, "Ton lit : tu récupères +10 d'énergie de plus chaque nuit.") { NightRecovery = 10 },
+
+        // Infrastructure : baies et modules (en U), serveurs, énergie, froid, réseau, câblage, sécurité (Core/space/Infrastructure.cs)
+        new("rack_compact", "Baie compacte (8U)", FurnitureKind.Rack, 900m, "8 emplacements pour des modules. Il faut un switch dans la baie.") { UnlockNode = "server_room" },
+        new("rack_standard", "Baie standard (20U)", FurnitureKind.Rack, 1_800m, "20 emplacements pour des modules. Il faut un switch dans la baie.") { UnlockNode = "server_room" },
+        new("rack_high_density", "Baie haute densité (20U)", FurnitureKind.Rack, 3_200m, "20 emplacements ; porte arrière refroidie : ses modules chauffent 20 % moins.") { UnlockNode = "high_density" },
+        new("module_server_1u", "Serveur 1U", FurnitureKind.RackModule, 2_400m, "Hébergement : 16 unités. 0,3 kW.") { Hosting = 16, Power = 0.3, UnlockNode = "server_room" },
+        new("module_compute_2u", "Serveur de calcul 2U", FurnitureKind.RackModule, 3_800m, "Calcul : 40 unités, et 8 d'hébergement. 0,6 kW.") { Compute = 40, Hosting = 8, Power = 0.6, UnlockNode = "server_room" },
+        new("module_compute_node_2u", "Nœuds de calcul 2U", FurnitureKind.RackModule, 6_500m, "Calcul parallèle : 64 unités (aucun hébergement). 0,9 kW.") { Compute = 64, Power = 0.9, UnlockNode = "high_density" },
+        new("module_gpu_4u", "Serveur GPU 4U", FurnitureKind.RackModule, 14_000m, "GPU : 10 unités. 1,6 kW.") { Gpu = 10, Power = 1.6, UnlockNode = "high_density" },
+        new("module_storage_2u", "Stockage 2U (12 baies)", FurnitureKind.RackModule, 4_800m, "Stockage : 48 To ; contrôle les tiroirs de disques de la baie. 0,25 kW.") { Storage = 48, Power = 0.25, UnlockNode = "server_room" },
+        new("module_storage_jbod_4u", "Tiroir de disques 4U", FurnitureKind.RackModule, 6_000m, "Stockage : +96 To, avec un stockage 2U dans la même baie. 0,3 kW.") { Storage = 96, Power = 0.3, UnlockNode = "server_room" },
+        new("module_network_switch_1u", "Switch réseau 1U", FurnitureKind.RackModule, 900m, "Relie les modules de sa baie au réseau du site. 0,1 kW.") { Power = 0.1, UnlockNode = "server_room" },
+        new("module_patch_panel_1u", "Panneau de brassage 1U", FurnitureKind.RackModule, 300m, "Organisation du câblage : +1.") { Organization = 1, UnlockNode = "server_room" },
+        new("module_cable_manager_1u", "Passe-câbles 1U", FurnitureKind.RackModule, 150m, "Organisation du câblage : +1.") { Organization = 1, UnlockNode = "server_room" },
+        new("module_ups_2u", "Onduleur de baie 2U", FurnitureKind.RackModule, 2_200m, "Couvre 2 kW en cas de coupure.") { Backup = 2, UnlockNode = "server_room" },
+        new("module_blank_1u", "Obturateur 1U", FurnitureKind.RackModule, 30m, "Canalise l'air : la baie chauffe 3 % moins (9 % au plus).") { UnlockNode = "server_room" },
+        new("server_tower_classic", "Serveur tour", FurnitureKind.Server, 2_900m, "Hébergement : 8 unités, stockage 8 To. 0,35 kW. Sans baie.") { Hosting = 8, Storage = 8, Power = 0.35 },
+        new("nas_desktop", "NAS de bureau", FurnitureKind.Server, 900m, "Sur un meuble : stockage 16 To. 0,05 kW.") { Storage = 16, Power = 0.05 },
+        new("power_distribution_cabinet", "Armoire électrique", FurnitureKind.Utility, 2_500m, "+30 kW de puissance distribuable sur le site.") { PowerSupply = 30, UnlockNode = "server_room" },
+        new("crac_unit", "Climatiseur de salle", FurnitureKind.Utility, 8_500m, "Évacue 24 kW de chaleur ; consomme 4 kW.") { Cooling = 24, Power = 4, UnlockNode = "server_room" },
+        new("rack_cooler_inrow", "Refroidissement de rangée", FurnitureKind.Utility, 4_800m, "Évacue 12 kW de chaleur ; consomme 1,5 kW.") { Cooling = 12, Power = 1.5, UnlockNode = "high_density" },
+        new("router", "Routeur", FurnitureKind.Utility, 250m, "Sur un meuble : +100 de débit réseau pour le site.") { Network = 100 },
+        new("fiber_box", "Boîtier fibre", FurnitureKind.Utility, 600m, "Au mur : +1 000 de débit réseau ; abonnement 120 CHF par mois.") { Network = 1_000, MonthlyCost = 120 },
+        new("network_switch_desk", "Switch de bureau", FurnitureKind.Utility, 120m, "Sur un meuble : +50 de débit réseau local.") { Network = 50 },
+        new("access_point", "Point d'accès Wi-Fi", FurnitureKind.Utility, 180m, "Au mur : +50 de débit réseau pour les appareils sans fil.") { Network = 50 },
+        new("network_cabinet", "Baie de rangement réseau", FurnitureKind.Cabling, 700m, "Organisation du câblage : +2.") { Organization = 2 },
+        new("cable_tray_straight", "Chemin de câbles", FurnitureKind.Cabling, 80m, "En hauteur, sans gêner : organisation du câblage +0,5.") { Organization = 0.5, UnlockNode = "server_room" },
+        new("cable_tray_corner", "Chemin de câbles (angle)", FurnitureKind.Cabling, 80m, "En hauteur, sans gêner : organisation du câblage +0,5.") { Organization = 0.5, UnlockNode = "server_room" },
+        new("cable_conduit", "Passe-câble au sol", FurnitureKind.Cabling, 40m, "Au sol, on marche dessus : organisation du câblage +0,5.") { Organization = 0.5, UnlockNode = "server_room" },
+        new("security_cage_panel", "Grille de sécurité", FurnitureKind.Cabling, 450m, "Cage de la zone technique : sécurité +1 (les offres cloud inspirent confiance).") { Security = 1, UnlockNode = "server_room" },
+        new("security_cage_door", "Porte de cage", FurnitureKind.Cabling, 900m, "Accès à la cage : sécurité +2.") { Security = 2, UnlockNode = "server_room" },
+        new("ups_floor", "Onduleur au sol", FurnitureKind.Backup, 6_000m, "Couvre 10 kW en cas de coupure.") { Backup = 10, UnlockNode = "server_room" },
+        new("supervision_console", "Console de supervision", FurnitureKind.Supervision, 3_500m, "Surveille le site : incidents deux fois moins fréquents, organisation +1.") { Organization = 1, UnlockNode = "server_room" },
+        new("workstation_gpu", "Station GPU", FurnitureKind.Tower, 4_800m, "Production ×1,05 ; apporte 2 unités GPU au site. 0,5 kW. Demande un écran et un clavier.") { Output = 1.05, Gpu = 2, Power = 0.5 },
+        new("workstation_compute", "Poste de calcul avancé", FurnitureKind.Tower, 3_900m, "Production ×1,05 ; apporte 12 unités de calcul au site. 0,4 kW. Demande un écran et un clavier.") { Output = 1.05, Compute = 12, Power = 0.4 },
     ];
 
     private static readonly Dictionary<string, FurnitureDef> ById = All.ToDictionary(d => d.Id);

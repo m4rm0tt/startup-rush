@@ -37,6 +37,12 @@ public class ProjectsPanel : GamePanel
         column.Children.Add(wrap);
         if (Campaign.Products.Count > 1)
             column.Children.Add(Ui.Muted("Les personnes en automatique travaillent sur le premier projet qui a du travail en file. Change l'ordre avec ◀ ▶.", 13));
+        // Les services cloud apparaissent avec leur déblocage
+        if (Campaign.IsUnlocked("cloud_offers"))
+            column.Children.Add(Ui.Section("Services cloud", Ui.Row(10,
+                Ui.Muted(Campaign.CloudOffers.Count == 0 ? "Vends ta capacité libre : hébergement, stockage, calcul."
+                    : $"{Campaign.CloudOffers.Count} offre(s), {Campaign.CloudRevenue30:N0} CHF sur 30 jours.", 14),
+                Ui.Button("Ouvrir", () => Open(new CloudPanel()), "gold"))));
         return column;
     }
 

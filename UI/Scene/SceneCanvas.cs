@@ -249,7 +249,8 @@ public class SceneCanvas : Control
         int waiting = 0;
         foreach (var person in Campaign.People)
         {
-            if (person.Activity is Activity.Away or Activity.Training)
+            // Chaque site montre les siens : les autres travaillent ailleurs, la simulation ne dépend pas de la vue
+            if (person.Activity is Activity.Away or Activity.Training || Campaign.SiteOf(person) != Premises)
                 continue;
             double x, y;
             if (person.Activity == Activity.Working && _room!.Heads.TryGetValue(person.Id, out var head))

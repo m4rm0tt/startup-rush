@@ -28,6 +28,12 @@ public static class Strategies
             StopTypingWithStaff = 1, Delegate = true,
             TreeOrder = ["advanced", "delegation", "hiring", "procedures", "cloud_m", "automation", "optimization", "loyalty"],
         },
+        new("hebergement_maison", "Comme plusieurs_petits, puis une salle serveur dès 40 000 CHF : les projets passent sur ses serveurs, le stockage et l'hébergement libres sont vendus.")
+        {
+            Projects = [("freelances", null), ("casual", null), ("smb", null)], ProjectInterval = 75, Marketing = 200, MaxStaff = 1,
+            SelfHostAbove = 40_000,
+            TreeOrder = ["advanced", "multisite", "server_room", "cloud_m", "cloud_offers", "search_ads", "optimization", "hiring", "loyalty"],
+        },
         new("marketing_excessif", "Erreur : 6 000 CHF de marketing par mois dès la sortie d'une petite application.")
         {
             Projects = [("freelances", null)], Marketing = 6_000, MaxStaff = 0, Recover = false, Borrow = false,

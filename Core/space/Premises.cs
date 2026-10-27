@@ -61,7 +61,13 @@ public record Workstation(PlacedItem Desk, string ChairSocket)
 /// </summary>
 public class Premises
 {
+    /// <summary>Identifiant du site dans la campagne.</summary>
+    public int Id { get; set; }
+
     public string ListingId { get; set; } = "";
+
+    /// <summary>Adresse de l'offre louée (« Flon ») : deux sites du même type ont deux adresses.</summary>
+    public string Place { get; set; } = "";
 
     /// <summary>Plan du pack (rooms/*.json) : sols, murs et objets livrés se lisent là.</summary>
     public string PlanId { get; set; } = "";

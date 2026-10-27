@@ -115,7 +115,9 @@ public static class Layout
         if (cells.Any(c => occupied[c.X, c.Y]))
             return PlacementCheck.Invalid("La place est déjà prise.");
         // Deux objets ne partagent pas une case, même s'ils ne bloquent pas le passage (tapis mis à part)
-        if (!def.Pack.FloorDecor && premises.Floor.Any(i => i.Id != ignoreId && !i.Def.Pack.FloorDecor && !i.Def.Pack.Ceiling && premises.Cells(i).Any(cells.Contains)))
+        // Les chemins de câbles passent au-dessus (ou au ras du sol) : ils partagent la case
+        bool shares(FurnitureDef d) => d.Pack.FloorDecor || d.Pack.Ceiling || d.Pack.Walkable;
+        if (!shares(def) && premises.Floor.Any(i => i.Id != ignoreId && !shares(i.Def) && premises.Cells(i).Any(cells.Contains)))
             return PlacementCheck.Invalid("La place est déjà prise.");
         if (cells.Contains(premises.Entrance))
             return PlacementCheck.Invalid("L'entrée doit rester libre.");
@@ -162,11 +164,32 @@ public static class Layout
         return result;
     }
 
+    /// <summary>
+    /// Un module de baie occupe « units » emplacements consécutifs à partir de « slot:i », dans une baie qui l'accepte (fiche
+    /// « fits » du pack), sans chevaucher un autre module.
+    /// </summary>
+    public static PlacementCheck CanSlot(Premises premises, FurnitureDef def, PlacedItem rack, int index, int? ignoreId = null)
+    {
+        if (!def.Pack.Fits.Contains(rack.DefId))
+            return PlacementCheck.Invalid($"{def.Name} se monte dans une baie.");
+        int count = rack.Def.Pack.Facing(rack.Facing).Slots;
+        int units = Math.Max(1, def.Pack.Units);
+        if (index < 0 || index + units > count)
+            return PlacementCheck.Invalid($"Plus assez de place dans la baie ({units}U).");
+        foreach (var (module, slot) in Infrastructure.Modules(premises, rack))
+            if (module.Id != ignoreId && index < slot + Math.Max(1, module.Def.Pack.Units) && slot < index + units)
+                return PlacementCheck.Invalid("Ces emplacements sont pris.");
+        return PlacementCheck.Valid;
+    }
+
     /// <summary>Peut-on accrocher cet objet à ce socket de l'hôte ? (Un portable remplace l'écran et le clavier, et inversement.)</summary>
     public static PlacementCheck CanAttach(Premises premises, FurnitureDef def, PlacedItem host, string socket, int? ignoreId = null)
     {
         if (!def.Attached)
             return PlacementCheck.Invalid("Cet objet se pose au sol.");
+        if (def.Pack.RackModule)
+            return socket.StartsWith("slot:") && int.TryParse(socket[5..], out int index)
+                ? CanSlot(premises, def, host, index, ignoreId) : PlacementCheck.Invalid($"{def.Name} se monte dans une baie.");
         if (!host.Def.Pack.Facing(host.Facing).Sockets.TryGetValue(socket, out var accepts))
             return PlacementCheck.Invalid("Pas d'emplacement ici.");
         if (!accepts.Intersect(def.Pack.Provides).Any())
@@ -185,7 +208,9 @@ public static class Layout
 
     /// <summary>Le premier socket de l'hôte où cet objet peut aller, dans l'ordre du pack, ou null.</summary>
     public static string? FreeSocket(Premises premises, FurnitureDef def, PlacedItem host, int? ignoreId = null) =>
-        host.Def.Pack.Facing(host.Facing).Sockets.Keys.FirstOrDefault(s => CanAttach(premises, def, host, s, ignoreId).Ok);
+        def.Pack.RackModule
+            ? Enumerable.Range(0, host.Def.Pack.Facing(host.Facing).Slots).Select(i => $"slot:{i}").FirstOrDefault(s => CanAttach(premises, def, host, s, ignoreId).Ok)
+            : host.Def.Pack.Facing(host.Facing).Sockets.Keys.FirstOrDefault(s => CanAttach(premises, def, host, s, ignoreId).Ok);
 
     public static WorkstationIssue Check(Premises premises, Workstation post)
     {

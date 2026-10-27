@@ -27,23 +27,23 @@ Ce fichier sert à reprendre le travail : il dit ce qui existe vraiment dans le 
 | Design → développement → tests automatiques par les employés | fait | `Core/campaign/Campaign.Time.cs` (`PickWork`, `DoWork`) | Étendre aux tâches de recherche, fabrication, IA |
 | Le fondateur ne produit plus en passif | **fait (lot 2)** | `Campaign.Time.cs` (`FounderTime`) : support seulement, hors terminal | — |
 | Terminal de saisie mot par mot | **fait (lot 2)** | `Core/campaign/Campaign.Terminal.cs`, `UI/Hud/TerminalView.cs`, `UI/Screens/GameScreen.cs` | Améliorations du terminal dans l'arbre (lot 3), saisie simplifiée d'accessibilité |
-| Mini-jeux de grosses actions et délégation | absent | — | Lot 3 |
+| Mini-jeux de grosses actions et délégation | **fait (lot 3)** pour le logiciel | `Core/campaign/Campaign.Launch.cs`, `UI/Hud/LaunchView.cs` | Mini-jeux matériel, IA, quantique (lots 5 et 6) |
 | Avis causaux avec lien vers le levier | partiel | `Core/products/Reviews.cs` | Causes matériel (rupture, défauts, délai), cloud, IA |
 | Prix, marketing, souhaits, entretien, hébergement plafonné | fait | `Campaign.Products.cs` (`SetPrice`, `SetMarketing`, `AdjustHosting`), `Core/products/Market.cs` | Relier à l'infrastructure interne |
 | Équipe : recrutement, horaires, congés, formation, augmentation | fait | `Core/campaign/Campaign.Team.cs`, `Core/team/` | Métiers nouveaux (opérateur, chercheur), apparences du pack |
-| Arbre de développement sur vrais jalons | partiel | `Core/progress/DevTree.cs` (17 nœuds, 5 branches), `Campaign.Daily.cs` (`AwardUsers`, `CheckMilestones`) | Sous-branches, Outils du boss, matériel, industrie, IA, cloud, recherche |
+| Arbre de développement sur vrais jalons | partiel | `Core/progress/DevTree.cs` (25 nœuds, 6 branches dont « Outils du boss »), `Campaign.Daily.cs` (`AwardUsers`, `CheckMilestones`) | Sous-branches matériel, industrie, IA, cloud, recherche |
 | Finances et faillite progressive | fait | `Core/finance/Ledger.cs`, `Core/finance/Solvency.cs`, `Campaign.Daily.cs` (`UpdateSolvency`) | Charges énergie, matières, calcul externe ; détail par site |
 | Sauvegardes nommées, automatiques, atomiques, migration | **format 3 (lot 2)** | `SaveStore.cs` (format 3), `Migration.cs` (1 → 2), `MigrationV2.cs` (2 → 3), copie `.v<format>.json` | Sites multiples et nouvelles activités (format 4, lot 4) |
-| Mobilier utile et plafonné | partiel | `Core/space/Furniture.cs` (38 IDs du pack jouables), `Core/space/Layout.cs` (ambiance plafonnée, objets personnels, écrans, lit) | Le reste du mobilier et de la décoration, indicateurs regroupés par site |
+| Mobilier utile et plafonné | **fait (lot 3)** pour le bureau | `Core/space/Furniture.cs` (89 IDs du pack jouables), `Core/space/Layout.cs` (`Comfort` : 8 indicateurs plafonnés avec couverture), synthèse dans `UI/Hud/Panels/BuildPanel.cs` | `moving_box` ; mobilier des ateliers, labos et salles techniques (lots 4 à 6) ; synthèse multisite (lot 4) |
 | Plusieurs sites visitables, vue commune | absent | Un seul `Premises` dans `Campaign`, sur un plan du pack (chambre, petit bureau, bureau moyen, open space) | Lot 4 |
-| Rendu isométrique, ancres, tri topologique, ombres, couches | **fait (lot 2)** | `UI/Iso/PackImages.cs`, `UI/Iso/RoomRenderer.cs` (portage du compositeur), `UI/Scene/SceneCanvas.cs` | Objets muraux posés par le joueur, estompage des objets hauts |
+| Rendu isométrique, ancres, tri topologique, ombres, couches | **fait (lots 2 et 3)** | `UI/Iso/PackImages.cs`, `UI/Iso/RoomRenderer.cs` (portage du compositeur ; objets muraux et plafond depuis le local réel), `UI/Scene/SceneCanvas.cs` | Estompage des objets hauts |
 | HUD Papier, polices du pack, curseurs | partiel (lot 2) | `UI/Pixel/PixelPanel.cs` (9-slice du pack), `UI/Pixel/Palette.cs`, `UI/App.axaml`, `UI/Pixel/Icons.cs` | Curseurs, onglets, cartes, listes, cases à cocher du pack ; police à régler (taille non multiple de 12) |
 | Personnages en couches, coiffures, peaux | **fait (lot 2)** | `Core/team/Person.cs` (`Appearance`), `UI/Iso/Portraits.cs`, choix à la nouvelle campagne | Recoloration des tenues |
 | Matériel, usine, stocks, approvisionnement, canaux de vente | absent | — | Lot 5 |
 | Infrastructure interne, racks, énergie, refroidissement, offres cloud | absent | — | Lot 4 |
 | IA simulée | absent | — | Lot 6 |
 | Recherche, laboratoires, studio, XR, quantique | absent | — | Lots 5 et 6 |
-| Bots d'équilibrage et rapport | partiel | `Core/bots/`, `Tests/balance/` | Stratégies avec terminal et délégation, nouvelles branches |
+| Bots d'équilibrage et rapport | partiel | `Core/bots/`, `Tests/balance/` (terminal, délégation, mots tapés mesurés) | Nouvelles branches (lots 4 à 6) |
 | Captures du vrai jeu | fait | `UI/Capture.cs` (`--capture`) | Refaire après chaque lot visuel |
 
 Le pack fournit un compositeur C# de référence (`assets/StartupRushOriginalAssets/tools/csharp/StartupRushReference/Program.cs`, 612 lignes, sans dépendance). Il n'a pas encore été lu en détail ni exécuté ici ; c'est la base prévue pour le rendu isométrique du lot 2.
@@ -54,7 +54,7 @@ Le pack fournit un compositeur C# de référence (`assets/StartupRushOriginalAss
 |---|---|---|
 | 1 | Audit, protection des sauvegardes, registre de couverture | **fait** : pack et spécification versionnés, registre de 586 lignes (570 IDs, 10 plans, 6 modules), contrôle statique, cette matrice. Les sauvegardes actuelles sont déjà atomiques avec copie `.bak` ; la migration vers le format 3 arrive avec le lot 2. |
 | 2 | Chambre avec les nouveaux assets, HUD, création de projet, terminal du boss, premier lancement, avis, sauvegarde et reprise | **fait**, voir ci-dessous |
-| 3 | Employés automatiques, délégation, mini-jeux sans spam, arbre et confort utiles | **en partie**, voir « Lot 3 » |
+| 3 | Employés automatiques, délégation, mini-jeux sans spam, arbre et confort utiles | **fait**, voir « Lot 3 » (mini-jeux matériel, IA et quantique avec les lots 5 et 6) |
 | 4 | Multisite, réseau, racks, hébergement interne et externe, offres cloud | à faire |
 | 5 | Recherche, prototypage, gamme matérielle, flux d'usine, stocks, approvisionnement, canaux de vente | à faire |
 | 6 | IA simulées, studio, XR, calcul avancé et quantique | à faire |
@@ -111,14 +111,33 @@ Fait (testé par `Tests/campaign/LaunchAndBossTest.cs`, vu sur les captures `07b
 - Délégation : un employé présent lance à ta place (sans bonus, ou la moitié du meilleur avec les procédures) ; mode
   « déléguer par défaut » (`Campaign.DelegateLaunches`) qui sort chaque matin les projets prêts.
 
-Reste à faire :
-- Mini-jeux matériel, IA et quantique (familles prévues par la spécification, avec les lots 5 et 6).
-- Préférence « me proposer les grosses actions » et regroupement des sollicitations.
-- Supervision à distance et automatisation avancée dans les Outils du boss ; saisie simplifiée d'accessibilité.
-- Confort : les meubles de confort restants du pack (fauteuils, distributeurs, sanitaires, modules) et la synthèse par site.
-- Les bots n'utilisent pas encore ces nœuds ni la délégation : à ajouter aux stratégies, puis refaire le bilan.
+Fait ensuite (testé par `Tests/space/ComfortTest.cs` et `Tests/campaign/LaunchAndBossTest.cs`, vu sur les captures 07, 15, 18) :
+- **Grosses actions** : « Me les proposer » (par défaut), « Ne pas me déranger » ou « Déléguer par défaut », dans l'aperçu d'un
+  projet. Plusieurs projets prêts font **une seule** annonce (clé `ready`), mise à jour au lieu de s'empiler, qui ouvre le
+  lancement ; rien n'est proposé quand un employé lancera demain matin ; une proposition attend la fin de la saisie au terminal.
+- **Outils du boss** : Supervision à distance (terminal sans poste complet ou pendant une formation, rendement ×0,85) et
+  Automatisation avancée (chaque lundi, l'équipe met en file la petite amélioration demandée par les avis d'un projet en ligne ;
+  il faut un employé ; réglable « Préparées par l'équipe / Je les choisis »).
+- **Saisie simplifiée** (Réglages, accessibilité, désactivée par défaut) : le mot s'écrit tout seul à 3 lettres/s, Entrée le
+  valide, rendement de la frappe lente (×0,85) quel que soit le rythme.
+- **Confort** : `Layout.Comfort` regroupe le mobilier en 8 indicateurs plafonnés : ambiance (6), détente (4), confort de base
+  (3 : moitié rangement, moitié sanitaires, selon les personnes couvertes), pause (3 à 15 d'énergie, chacun prend la meilleure
+  boisson ou collation et la meilleure place assise encore libres), concentration (+4 % au plus, cloisons), coordination
+  (+3 personnes au plus ; tables de réunion avec leurs chaises ; petits supports 1 au plus), formation (+40 % au plus), accueil
+  (+1 candidat par semaine). Un manque prive seulement d'un bonus. Gardé en cache tant que le local et l'effectif ne changent pas.
+- **Objets muraux** posés par le joueur sur les murs du fond (plein ; stores sur une fenêtre ; jamais sur la porte ; planning
+  sur deux segments) ; le décor mural des plans devient de vrais objets livrés avec le local, ajoutés une fois aux sauvegardes
+  plus anciennes (`Campaign.ImportWallItems`, marqueur `WallItemsImported`, toujours le format 3). Luminaire au plafond.
+- **Récompenses** : trophée au premier lancement, plaque à 10 000 CHF par mois, livrés dans les cartons, sans revente.
+- **Bots** : stratégie « delegation » (le fondateur arrête de taper à la première embauche) : 0 faillite sur 5, 6 166 mots
+  tapés contre 11 503 pour « plusieurs_petits » ; colonne « Mots tapés » dans `BALANCE_REPORT.md`.
+
+Reste (reporté aux lots suivants, avec leur contexte) :
+- Mini-jeux matériel (calibration), IA (échantillons) et quantique (signaux) : lots 5 et 6.
+- `moving_box` : montrer les cartons dans la scène et ouvrir leur contenu (décor sans fonction pour l'instant).
+- Mobilier des ateliers, laboratoires et salles techniques, synthèse multisite : lots 4 à 6.
 
 ## Couverture du registre
 
-586 lignes : **36 validées**, 96 partielles (branchées sans test d'effet, ou vérifiées seulement en capture), 454 non
-implémentées (dont les décors des plans, affichés mais sans fonction pour l'instant). Une ligne passe à « validé » seulement quand elle nomme un consommateur réel dans le jeu, son fichier de définition et un scénario de test qui vérifie une conséquence (avant/après pour un objet de gameplay, action et état pour un contrôle d'interface). Le contrôle `AssetRegistryTest` est statique : il vérifie les IDs et les fichiers cités, pas les effets.
+586 lignes : **59 validées**, 124 partielles (branchées sans test d'effet, ou vérifiées seulement en capture), 403 non
+implémentées (dont les décors des plans, affichés mais sans fonction pour l'instant). Lot 3 : `tools/registry_lot3.py`. Une ligne passe à « validé » seulement quand elle nomme un consommateur réel dans le jeu, son fichier de définition et un scénario de test qui vérifie une conséquence (avant/après pour un objet de gameplay, action et état pour un contrôle d'interface). Le contrôle `AssetRegistryTest` est statique : il vérifie les IDs et les fichiers cités, pas les effets.

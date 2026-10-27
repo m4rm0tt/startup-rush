@@ -81,7 +81,36 @@ fait au résultat de base. Les mises à jour ne demandent jamais de mini-jeu.
 Branche « Outils du boss » de l'arbre ⚙️ : Raccourcis clavier (1 pt, +15 % par mot), Clavier confortable (1 pt, −40 %
 d'énergie par mot), Tests assistés (2 pts, mots de tests +30 %), Macros (2 pts, sessions de 32 mots), Délégation des
 lancements (2 pts : un employé présent lance à ta place ; mode « déléguer par défaut »), Procédures de publication (2 pts :
-un lancement délégué obtient la moitié du meilleur bonus).
+un lancement délégué obtient la moitié du meilleur bonus), Supervision à distance (2 pts : le terminal s'ouvre sans poste
+complet ou pendant une formation, au rendement d'un vieux portable ×0,85), Automatisation avancée (3 pts : chaque lundi,
+l'équipe met en file la petite amélioration que demandent les avis d'un projet en ligne ; il faut au moins un employé).
+
+✅ Les grosses actions ne s'imposent pas : un projet prêt est **proposé** par une seule annonce regroupée (« 2 projets prêts à
+sortir »), qui ouvre le lancement ; « Ne pas me déranger » la laisse au journal ; rien n'est proposé quand un employé lancera
+le projet le lendemain ; aucune proposition n'interrompt la saisie au terminal.
+
+✅ Saisie simplifiée (accessibilité, désactivée par défaut) : le mot s'écrit tout seul (⚙️ 3 lettres par seconde), Entrée le
+valide ; chaque mot rapporte comme une frappe lente (×0,85), quel que soit le rythme.
+
+## 4 bis. Confort du local
+
+✅ Chaque meuble sert, sans corvée : il agit sur **un** indicateur, plafonné, et souvent pour un nombre de personnes donné.
+Rien n'est obligatoire : un manque prive seulement d'un bonus. La synthèse est dans Aménagement (« Confort du local »).
+
+| Indicateur | Objets | Effet ⚙️ (`Core/space/Layout.cs`) |
+|---|---|---|
+| Ambiance | plantes, lampes, luminaire, tapis, affiches, photo, horloge, stores, présentoir, trophées | moral commun, 6 au plus |
+| Détente | canapé (+2), fauteuil (+1) | moral commun, 4 au plus |
+| Confort de base | rangements et propreté (chacun pour 1 à 8 personnes) ; WC pour 10, lavabo, cabine | moral commun, 3 au plus : 1,5 × part de l'équipe rangée + 1,5 × sanitaires (WC 70 %, +20 % lavabo, +10 % cabine ; ta chambre compte comme équipée) |
+| Pause | café (+9, 8 pers.), distributeurs (+6 / +3, 15 pers.), fontaine (+4, 10), frigo, micro-ondes, bol de snacks, bouteille ; canapé (+5, 3 pers.), fauteuil (+2, 1) ; évier et table basse complètent (+1) | énergie par pause de 3 à 15 : chacun prend la meilleure boisson ou collation et la meilleure place encore libres |
+| Concentration | cloisons acoustiques (+2 %), basses et vitrées (+1 %), 4 personnes chacune | production, 4 % au plus |
+| Coordination | tableau blanc, planning (+1), petite table de réunion avec 2 chaises (+1), grande avec 4 (+2), table collective (+1), écran de présentation (+0,5), notes, croquis, carnets, papiers (+0,25, 1 au plus) | personnes de plus par équipe sans perte, 3 au plus |
+| Formation | bibliothèques (+15 %, 2 utiles), livres, schéma (+5 %), écran de présentation (+10 %), tables de réunion (+5 %) | efficacité des formations, 40 % au plus |
+| Accueil | banque d'accueil | 1 candidat de plus chaque semaine |
+
+Les objets muraux se posent sur les murs du fond (un mur plein ; les stores sur une fenêtre ; jamais sur la porte), le
+luminaire au plafond ; ni l'un ni l'autre ne prend de case au sol. Le trophée (premier lancement) et la plaque (10 000 CHF par
+mois) arrivent dans les cartons et ne se revendent pas.
 
 ## 5. Automatismes
 

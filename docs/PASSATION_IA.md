@@ -41,7 +41,7 @@
 
 ```
 dotnet build StartupRush.sln
-dotnet test Tests/Tests.csproj                                   # 81 tests à la fin du lot 2
+dotnet test Tests/Tests.csproj                                   # 102 tests à la fin du lot 3
 dotnet test Tests/Tests.csproj --filter Name=WriteBalanceReport  # réécrit BALANCE_REPORT.md (bots, ~1 min)
 UI.exe --capture <dossier>                                       # parcours scripté dans le vrai jeu, 28 captures + rapport
 ```
@@ -99,7 +99,8 @@ Pièges connus :
 - `tools/build_asset_registry.py` ajoute les nouveaux IDs sans écraser ; `tools/registry_lot2.py` montre comment marquer
   ce qui a été branché. `Tests/space/AssetRegistryTest.cs` vérifie les IDs et que chaque ligne validée cite des fichiers
   existants (contrôle **statique**, à présenter comme tel).
-- À la fin du lot 2 : 36 validées, 96 partielles, 454 non implémentées.
+- À la fin du lot 2 : 36 validées, 96 partielles, 454 non implémentées. À la fin du lot 3 : 59 validées, 124 partielles,
+  403 non implémentées (`tools/registry_lot3.py`).
 
 ## 7. Où on en est
 
@@ -107,12 +108,20 @@ Voir le tableau des lots de `docs/V1_ETAT.md` et la section « Lot 3 » ci-desso
 
 ## 8. Lot 3 et la suite
 
-- Lot 3 en partie fait : voir « Lot 3 : ce qui a été fait, ce qui reste » dans `docs/V1_ETAT.md`. Fichiers clés :
-  `Core/campaign/Campaign.Launch.cs`, `UI/Hud/LaunchView.cs`, branche « Outils du boss » de `Core/progress/DevTree.cs`,
-  tests `Tests/campaign/LaunchAndBossTest.cs`. 86 tests passent à cette passation.
-- Ordre conseillé ensuite : finir le lot 3 (préférence des grosses actions, bots qui délèguent, confort du pack), puis lot 4
-  (plusieurs sites : `Campaign.Premises` devient une liste de sites, format de sauvegarde 4 + migration), lots 5 à 7.
-- Points à vérifier signalés au lot 2 : personnages assis moins nombreux que les postes sur la capture de la campagne
-  avancée ; police pixel floue à certaines tailles ; « marketing excessif » trop peu puni (2/5 faillites).
+- Lot 3 fait : voir « Lot 3 » dans `docs/V1_ETAT.md`. Fichiers clés : `Core/campaign/Campaign.Launch.cs` (lancement,
+  délégation, annonce regroupée `ReadyKey`, `AutoImproveProjects`), `UI/Hud/LaunchView.cs`, branche « Outils du boss » de
+  `Core/progress/DevTree.cs`, `Core/space/Layout.cs` (`Comfort`, `CanHang`), `Core/space/Furniture.cs` (89 meubles jouables),
+  `Campaign.SiteComfort()` (cache, à lire au lieu de recalculer), tests `Tests/space/ComfortTest.cs` et
+  `Tests/campaign/LaunchAndBossTest.cs`. 102 tests passent à cette passation.
+- Objets muraux : `PlacedItem.Wall` (« left »/« right ») ; `Premises.Floor` les exclut, `Premises.WallItems` les liste ; la case
+  (0, v) vise le mur de gauche, (u, 0) celui de droite, le coin se départage par l'orientation. Le décor mural des plans vient
+  maintenant du local (plus du JSON du plan) ; les anciennes sauvegardes le reçoivent une fois au chargement.
+- Ordre conseillé ensuite : lot 4 (plusieurs sites : `Campaign.Premises` devient une liste de sites, `SiteComfort` par site,
+  format de sauvegarde 4 + migration ; salle serveur, racks, réseau, hébergement interne et offres cloud), puis lots 5 à 7.
+  Reste du lot 3 reporté : mini-jeux matériel/IA/quantique (lots 5-6), fonction de `moving_box`.
+- Points à vérifier signalés au lot 2 (toujours ouverts) : personnages assis moins nombreux que les postes sur la capture de
+  la campagne avancée ; police pixel floue à certaines tailles ; « marketing excessif » trop peu puni (2/5 faillites).
+- Piège d'outillage : certains heredocs bash avec des apostrophes françaises échouent (« unexpected EOF ») ; écrire les scripts
+  de modification dans un fichier .py du dossier temporaire (remplacements exacts, une occurrence) plutôt qu'en ligne.
 - Avant chaque commit : `dotnet test Tests/Tests.csproj`, le parcours `--capture` pour tout changement visible, mise à jour
   de `docs/V1_ETAT.md`, du registre si des assets gagnent une fonction, et de cette passation.

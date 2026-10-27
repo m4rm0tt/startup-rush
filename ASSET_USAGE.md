@@ -1,166 +1,75 @@
 # Utilisation des assets
 
-Ce document dit ce que le jeu utilise vraiment dans le dossier `assets/` (les packs originaux, jamais modifiés), comment ces fichiers arrivent dans le jeu, et ce qui reste dessiné à la main.
+Ce document dit ce que le jeu utilise vraiment dans le dossier `assets/` (les packs originaux, jamais modifiés), comment ces fichiers arrivent dans le jeu, et ce qui est dessiné à la main. Le placement de chaque meuble (emprise, ancrage, interactions) est dans `FURNITURE_MANIFEST.md`.
 
-- **Originaux** : `assets/` à la racine. Le dossier n'est pas versionné dans git (176 Mo). Les licences et `SOURCE.json` de chaque pack y restent.
-- **Dérivés** : `UI/Assets/`. Ils sont produits par `python tools/build_assets.py`, qui donne toujours les mêmes fichiers. Le jeu ne lit que ce dossier, embarqué dans `UI.dll` comme ressource Avalonia : aucun chemin absolu, rien à copier à côté de l'exécutable.
-- **Chargement** : chaque planche, chaque son et chaque musique est décodé une seule fois. Les sprites découpés sont gardés en cache (`UI/Pixel/Sprites.cs`, `UI/Audio/Sfx.cs`).
+- **Originaux** : `assets/` à la racine, non versionné dans git (176 Mo). Les licences et `SOURCE.json` de chaque pack y restent.
+- **Dérivés** : `UI/Assets/`, produits par `python tools/build_assets.py` (toujours les mêmes fichiers). Le jeu ne lit que ce dossier, embarqué dans l'exécutable : aucun chemin absolu, rien à copier à côté.
+- **Chargement** : chaque image, son et musique est décodé une seule fois ; les sprites découpés sont gardés en cache (`UI/Pixel/Atlas.cs`, `UI/Audio/Sfx.cs`). Affichage au plus proche voisin, zoom entier, translation arrondie au pixel physique.
 
-## Grilles et échelles
+## Changement de projection
 
-| Élément | Grille | Échelle à l'écran |
+L'ancien jeu montrait une pièce de face. La refonte passe à une **vue 3/4 de dessus unique** (décision du cahier des charges, qui remplace la recommandation du catalogue précédent). Les packs vus de dessus mis de côté jusqu'ici deviennent la base du mobilier :
+
+| Pack | Licence | Usage dans la refonte |
 |---|---|---|
-| Scène centrale | Dessin logique de 560 × 340, rendu en 280 × 170 pixels réels, puis recoloré en Endesga 32 avec un tramage de Bayer | Agrandie au plus proche voisin |
-| Sprites Pixel Office dans la scène | 1 pixel de sprite = 1 pixel de la scène rendue (2 unités logiques), positions arrondies à la grille | Même densité que le reste de la pièce |
-| Cadres 9-slice | Images de 48 × 48, bords de 6 px | 1 pixel du cadre = 2 unités d'interface (référence 1600 × 900) |
-| Glyphes de touches | Tuiles de 16 px (Entrée : 32 × 32) | 32 unités par touche (Entrée : 32 unités, soit 1 unité par pixel) |
+| Kenney Roguelike Indoors | CC0 | Bureaux, chaises (simple, ergonomique), plante, bibliothèque, tapis, lit, cuisine, frigo, table, kitchenette. Tuiles de 16 px découpées d'après `tilesheetInfo.txt` (marge 1 px). |
+| 2dPig Pixel Office | CC0 | Les 5 personnages, écran d'ordinateur, unité centrale, canapés, tableau blanc, machine à café, fenêtres. Mêmes 16 px par case, vus de 3/4. |
 
-L'interface est conçue en 1600 × 900 et mise à l'échelle dans un `Viewbox`. Les images sont affichées sans lissage (`BitmapInterpolationMode.None`).
+Les deux packs sont recolorés vers la palette **Endesga 32** (couleur la plus proche, pondérée ; 4 teintes de Pixel Office fixées à la main : peau, ombre de peau, deux verts).
 
-## Manifeste
+## Fichiers produits
 
-### Sprites : 2dPig Pixel Office (CC0)
-
-- **Source** : `assets/2dpig/pixel-office/PixelOfficeAssets.png`.
-- **Dérivé** : `UI/Assets/Sprites/office.png`, avec trois modifications :
-  - **Recoloration** du Sweetie 16 d'origine vers la couleur Endesga la plus proche.
-  - **Teintes corrigées à la main** : peau, ombre de peau et deux verts, qui partaient vers le jaune.
-  - **Ciel des nuages** rendu transparent, et **2e frame du chat** dessinée dans une zone vide de la planche.
-
-Rectangles : x, y, largeur, hauteur en pixels de la planche.
-
-| Identifiant | Rectangle | Rôle dans le jeu |
-|---|---|---|
-| `clouds` | 0, 0, 256, 36 | Nuages devant le ciel de la fenêtre (logement ≥ 1) |
-| `table` | 85, 47, 26, 16 | Table de chaque employé |
-| `plant` | 170, 65, 14, 19 | Plantes en pot (appartement et plus) |
-| `sofa0` à `sofa3` | 119/120, 66–121, 33, 15–16 | Canapé du loft (gris), de la maison (bleu), de la villa (vert), du penthouse et de l'île (orange) |
-| `whiteboard` | 84, 70, 26, 20 | Tableau blanc, locaux niveau 1 et plus |
-| `calendar` | 234, 81, 17, 11 | Calendrier, dès le statut Fondateur |
-| `coffeeMachine` | 159, 91, 7, 11 | Machine à expresso (café niveau 2 et plus) |
-| `mug` | 169, 95, 8, 7 | Tasse (café niveau 1 et plus) |
-| `clock` | 159, 108, 19, 6 | Horloge murale (logement ≥ 1) |
-| `printer` | 233, 106, 15, 19 | Imprimante, locaux niveau 2 et plus |
-| `vending` | 159, 123, 24, 34 | Distributeur, dès le statut Patron |
-| `drinks` | 184, 126, 24, 31 | Frigo à boissons du « Barista personnel » |
-| `cat0`, `cat1` | 65, 129, 16, 13 et 82, 129, 16, 13 | Atout « Chat de bureau » : 2 frames, queue relevée 0,5 s toutes les 2,4 s |
-| `dog` | 59, 146, 24, 11 | Chien couché, maison avec jardin et plus |
-| `cooler` | 147, 140, 9, 17 | Fontaine à eau, locaux niveau 3 et plus |
-| `employee0` à `employee4` | personnages de la planche | Employés : un par employé recruté, jusqu'à 6 dessinés, puis « +N » |
-| `bin`, `binderRed/Blue/Green` | | Déclarés, non placés pour l'instant |
-
-Ancrage : les objets posés au sol ont leur bas sur la ligne du sol (y = 250). Les employés ont leur bas à y = 318, derrière leur table.
-
-### Cadres d'interface : Kenney Pixel UI Pack (CC0)
-
-- **Source** : `assets/kenney/pixel-ui-pack/9-Slice/Colored/{grey, grey_pressed, yellow, yellow_pressed, green, green_pressed, red, red_pressed}.png`.
-- **Dérivés** : `UI/Assets/Ui/skins/*.png`. Le dessin est gardé (contour, biseau, ombre du bouton) et ses 4 teintes sont remplacées par la palette du jeu.
-- **Une seule famille** de cadres, « Colored », sert pour tout le HUD.
-
-| Cadre | Origine | Usage |
-|---|---|---|
-| `panel` | grey | Tous les panneaux (classe `panel`) |
-| `inset` | grey_pressed | Zones en creux (classe `inset`) |
-| `button`, `button_hover`, `button_pressed`, `button_disabled` | grey / grey_pressed | Boutons normaux et leurs états |
-| `gold*` | yellow | Bouton principal, onglet choisi |
-| `green*`, `red*` | green / red | Accepter / refuser, abandonner |
-
-### Glyphes de touches : Kenney Input Prompts Pixel (CC0)
-
-- **Fichier** : `assets/kenney/input-prompts-pixel/Tilemap/tilemap_packed.png`, copié tel quel dans `UI/Assets/Ui/input_prompts.png`.
-- **Tuiles** de 16 px, 34 par rangée.
-
-| Touche | Tuile | Où |
-|---|---|---|
-| Échap | 17 | Pause, retours, menu de fin |
-| F11 | 28 | Légende de la pause |
-| 1 à 4 | 51–54 | Cartes d'atout, choix d'événement |
-| R | 88 | Relancer le tirage |
-| Espace | 153 | Indice de la scène, légende |
-| Entrée | 100 (2 × 2 tuiles) | Intro, événement, fin de run |
-| Main (clic) | 578 | Indice de la scène |
-
-### Bruitages
-
-**Source principale** : *The Essential Retro Video Game Sound Effects Collection* de Juhani Junkala (CC0), dans `assets/opengameart/512-sound-effects-8-bit-style/…`. Tous ces fichiers sont en mono, 44,1 kHz, 16 bits.
-
-**Cartes** : Kenney Casino Audio (CC0).
-
-Je ne les ai pas écoutés. Je les ai choisis par catégorie et par nom, puis mesurés : durée, crête et niveau moyen. Le jeu ramène chaque son à un niveau moyen commun sans dépasser la crête, puis applique un volume relatif (voir `Sfx.cs`).
-
-| Fichier du jeu | Original | Durée | Moment |
-|---|---|---|---|
-| `work.wav` | Menu Sounds/sfx_menu_move1 | 0,04 s | Chaque clic de travail (très discret) |
-| `hover.wav` | Menu Sounds/sfx_menu_move2 | 0,06 s | Décompte des lingots |
-| `select.wav` | Menu Sounds/sfx_menu_select1 | 0,35 s | Choix dans les menus |
-| `offer.wav` | Simple Bleeps/sfx_sounds_Blip7 | 0,05 s | Nouvelle offre de contrat |
-| `coin.wav` | Coins/sfx_coin_single1 | 0,42 s | Contrat livré |
-| `cash.wav` | Coins/sfx_coin_cluster3 | 0,47 s | Gros gain, achat d'Héritage |
-| `buy.wav` | Coins/sfx_coin_double4 | 0,26 s | Achat en boutique |
-| `bill.wav` | Coins/sfx_coin_double6 | 0,27 s | Facture payée |
-| `error.wav` | Negative Sounds/sfx_sounds_error3 | 0,21 s | Achat impossible, contrat raté |
-| `crit.wav` | Positive Sounds/sfx_sounds_powerup15 | 0,19 s | Coup de génie |
-| `levelup.wav` | Fanfares/sfx_sounds_fanfare1 | 0,52 s | Nouveau statut, début de run |
-| `victory.wav` | Fanfares/sfx_sounds_fanfare3 | 0,29 s | Victoire |
-| `alarm.wav` | Alarms/sfx_alarm_loop1 (joué une fois) | 0,79 s | Début de crise |
-| `unpaid.wav` | Negative Sounds/sfx_sounds_negative2 | 0,76 s | Facture impayée |
-| `defeat.wav` | Falling Sounds/sfx_sounds_falling2 | 0,90 s | Faillite |
-| `event.wav` | Neutral Sounds/sfx_sound_neutral6 | 0,38 s | Événement à choix |
-| `pause_in.wav`, `pause_out.wav` | Pause Sounds/sfx_sounds_pause1_in/out | | Entrée et sortie de pause |
-| `card_fan.ogg` | Casino Audio/card-fan-1 | | Tirage d'atouts qui s'ouvre |
-| `card_place.ogg` | Casino Audio/card-place-1 | | Atout choisi |
-| `card_shuffle.ogg` | Casino Audio/card-shuffle | | Relance du tirage |
-
-**Garde-fous** :
-- 10 sons au plus en même temps.
-- Un même son ne se relance pas à moins de 45 ms d'intervalle.
-- Saturation douce (tanh) au lieu d'un écrêtage sec.
-
-### Musiques : Juhani Junkala, 4 Chiptunes Adventure (CC0)
-
-Ce sont les versions OGG. Les WAV du même pack ont servi à mesurer chaque morceau : ce sont des boucles courtes qui commencent et finissent en pleine note, donc faites pour boucler.
-
-| Fichier du jeu | Original | Durée | Moment |
-|---|---|---|---|
-| `menu.ogg` | 4. Stage Select | 21 s | Menus et écran de fin |
-| `run1.ogg`, `run2.ogg` | 1. Stage 1, 2. Stage 2 | 41 s, 56 s | Pendant la run |
-| `crisis.ogg` | 3. Boss Fight | 72 s | Pendant une crise |
-
-**Lecture** :
-- Les deux thèmes de run alternent toutes les deux boucles, pour qu'une run de 35 minutes ne répète pas un seul morceau de 41 s.
-- Chaque changement se fait en fondu enchaîné de 1,5 s.
-- Les niveaux sont alignés sur une même valeur moyenne sans dépasser la crête.
-
-### Polices (SIL OFL 1.1)
-
-| Police | Usage |
+| Fichier | Contenu |
 |---|---|
-| Press Start 2P (`assets/fonts/pressstart2p`) | Logo, « PAUSE », « CHOISIS TON FONDATEUR » (classe `title`). Elle dessine ses majuscules accentuées en petit (« HéRITAGE »), donc elle ne sert pas aux titres qui en contiennent |
-| Pixelify Sans | Textes de l'interface (déjà dans le jeu, même famille que la version fournie) |
-| VT323 | Chiffres et journal |
+| `UI/Assets/Sprites/furniture.png` + `furniture.json` | Atlas de la scène : 19 meubles, 5 personnages, 1 fenêtre. Le JSON donne pour chacun le rectangle, la taille, l'emprise au sol et la source. |
+| `UI/Assets/Sprites/office.png` | Planche Pixel Office recolorée (source de l'atlas, gardée pour référence). |
+| `UI/Assets/Ui/skins/*.png` | Cadres 9-slice Kenney Pixel UI Pack, recolorés (panneaux, boutons, onglets). |
+| `UI/Assets/Ui/input_prompts.png` | Kenney Input Prompts Pixel, copié tel quel. |
+| `UI/Assets/Audio/Sfx/*.wav` | 16 bruitages de Juhani Junkala (512 Sound Effects, CC0). |
+| `UI/Assets/Audio/Music/*.ogg` | 4 musiques de Juhani Junkala (4 Chiptunes Adventure, CC0). |
+| `UI/Assets/Fonts/*.ttf` | Press Start 2P, Pixelify Sans, VT323 (OFL 1.1, licences livrées). |
 
-Les accents français s'affichent bien dans le jeu : vérifié sur les captures. Les fichiers OFL sont livrés dans `Assets/Fonts/`.
+## Sons : quand ils partent
 
-## Fait à la main (aucun pack ne le fournit)
+| Son du jeu | Fichier | Moment |
+|---|---|---|
+| Click | work.wav | Sélection d'un objet ou d'une personne dans la scène |
+| Select | select.wav | Bouton de menu |
+| Notify | offer.wav | Notification ordinaire (nouvelle demande, etc.) |
+| Coin | coin.wav | Contrat livré |
+| Cash | cash.wav | Encaissement de 500 CHF ou plus dans la même image |
+| Place | buy.wav | Meuble posé |
+| Bill | bill.wav | Paiement de 500 CHF ou plus |
+| Error | error.wav | Action refusée, placement impossible |
+| Milestone | levelup.wav | Jalon atteint |
+| Launch | victory.wav | Produit mis en ligne ou version publiée |
+| Alarm | alarm.wav | Notification critique |
+| Unpaid | unpaid.wav | Impayé |
+| Event | event.wav | Avertissement (retard, panne, rumeur de concurrent) |
+| PauseIn / PauseOut | pause_in.wav / pause_out.wav | Pause |
+| Defeat | defeat.wav | Liquidation |
 
-- **Le héros vu de dos et la pièce de face** : ses bras qui tapent, qui se lèvent quand un contrat est livré ou une facture payée, et la goutte de sueur en crise ou dans le rouge.
-- **Le matériel** : ordinateurs, écrans et mur d'écrans, baies de serveurs, ordinateur quantique, chaises, fenêtres et vues de chaque logement (dont l'île privée), pluie, lumière d'alarme, couronne et trône du Roi du monde. Tout est dessiné en formes simples dans `SceneView.axaml.cs`, puis passé en pixel art par le rendu.
-- **La box Internet** : plus de voyants et d'antennes à chaque niveau, et une parabole pour le satellite.
-- **Les portraits** des quatre fondateurs et les 46 icônes en pixel art (`Portraits.cs`, `Icons.cs`).
-- **Les particules** de pièces et les textes flottants.
+Musiques : `menu.ogg` dans les menus, `work1.ogg` et `work2.ogg` en alternance pendant la partie, `crisis.ogg` en impayés ou mise en demeure. Garde-fous : 10 sons au plus en même temps, un même son pas plus d'une fois par 45 ms, saturation douce.
 
-## Non utilisés (gardés en réserve dans `assets/`)
+Le mode capture (`--capture`) vérifie au lancement du build que les 16 sons et 4 musiques sont chargés depuis les ressources embarquées, et liste les sons déclenchés. **Les sons n'ont pas été écoutés** : le choix et les volumes restent à valider à l'oreille.
+
+## Fait à la main
+
+- Sols (parquet, carrelage, moquette), murs, porte, éclairage de nuit : dessinés par le code de la scène.
+- L'ordinateur portable (aucun pack n'en a vu de 3/4).
+- Les icônes 12 × 12 (`UI/Pixel/Icons.cs`) : barre d'outils, bulles d'activité au-dessus des personnes.
+- Les aperçus de pages de produits (modules simulés : formulaires, grilles, offres...).
+
+## Non utilisés (gardés dans `assets/`)
 
 | Pack | Pourquoi |
 |---|---|
-| Kenney Roguelike Indoors / Modern City / Tiny City / Tiny Town | Vus de dessus : ils changeraient la caméra frontale de la scène |
-| Kenney Roguelike Characters, RPG portraits | Style fantasy ou vue de dessus ; les employés viennent de Pixel Office |
-| Office objects, Office Stuff, Old Computer Hardware | Doublons de Pixel Office, ou objets avec de vraies marques |
-| Kenney Game Icons (+ Expansion), CC0 Document Icons | Vectoriels ou de grande taille : ils jureraient avec les icônes pixel du jeu |
-| Kenney Particle Pack | Pas du pixel art ; les particules restent des pixels dessinés |
-| Kenney UI Audio, Interface Sounds, Digital Audio, UI Sounds (HaelDB) | Une seule famille de bruitages (rétro 8 bits) pour rester cohérent |
-| 5 Chiptunes Action | En WAV uniquement (≈ 50 Mo) et plus énergiques ; le pack Adventure couvre menu, run et crise |
-| Input Prompts (générique et 1-Bit), Kenney Fonts, Silkscreen | Alternatives à ce qui est déjà utilisé |
-| Pixel Office : chaises de face, drapeaux, posters, fenêtres, vitre bleue | Pas cohérents avec la scène (chaise vue de dos, drapeaux nationaux) |
-
-Les scènes d'exemple et les images d'aperçu des packs (`Preview.png`, `PixelOffice.png`, logos Kenney, fichiers `.url`) ne sont pas dans le jeu.
+| Kenney Roguelike Characters | Personnages fantasy ; ceux de Pixel Office collent au thème |
+| Kenney Roguelike Modern City, Tiny City, Tiny Town | Extérieurs : la refonte ne simule pas la ville |
+| Kenney Game Icons (+ Expansion), CC0 Document Icons | Vectoriels ou grands : ils jureraient avec les icônes pixel |
+| Kenney Particle Pack | Pas du pixel art |
+| Kenney Casino Audio | Les cartes du roguelike ont disparu |
+| Kenney UI Audio, Interface Sounds, Digital Audio, UI Sounds | Une seule famille de bruitages (rétro 8 bits) |
+| 5 Chiptunes Action | WAV lourds, plus énergiques que le ton d'un jeu de gestion |
+| Input Prompts génériques et 1-Bit, Kenney Fonts, Silkscreen | Alternatives à ce qui est déjà utilisé |
+| Pixel Office : nuages, drapeaux, distributeurs, chat, chien | Pas d'usage dans la nouvelle scène pour l'instant |

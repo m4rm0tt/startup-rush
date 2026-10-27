@@ -1,38 +1,51 @@
 # Startup Rush
 
-**De fauché à roi du monde.** Un roguelike de gestion en pixel art pour Windows.
+**Simulation d'entreprise tech en pixel art, pour Windows.** Tu démarres dans ton appartement de Prilly avec 7 000 CHF et un vieux portable. Tu signes des prestations pour vivre, tu construis tes propres produits page par page, tu recrutes, tu aménages, tu déménages dans de vrais locaux. La campagne est longue, sauvegardée, et elle continue tant que l'entreprise paie ses factures. Si elle ne les paie plus, elle finit liquidée.
 
-Tu commences dans une chambre miteuse, avec 150 CHF et un vieux portable. Tu charbonnes, tu acceptes des contrats et tu paies le loyer chaque mois. Peu à peu, tu améliores ton matériel, tu déménages, tu fondes des boîtes, tu embauches et tu investis, jusqu'à 1 milliard de CHF et une holding. Deux factures impayées d'affilée, et la run est perdue.
+![Le bureau en pleine journée](docs/captures/07_campagne_avancee.png)
 
 ## Jouer
 
-1. Décompresse l'archive `StartupRush-<version>-win-x64.zip` où tu veux.
-2. Lance `StartupRush.exe`.
+1. Décompresse `StartupRush-<version>-win-x64.zip`.
+2. Lance `StartupRush.exe` (Windows 10 ou 11, 64 bits ; rien d'autre à installer).
 
-Rien d'autre à installer : .NET est inclus dans l'exécutable (Windows 10 ou 11, 64 bits).
+Au lancement : **Continuer** (la dernière sauvegarde), **Charger**, **Nouvelle partie**, **Réglages**, **Quitter**.
+
+## Ce qu'on fait
+
+- **Aménagement** : acheter et poser bureaux, chaises, ordinateurs, coins pause, plantes. Un poste ne compte que s'il est complet et accessible. L'appartement prend 3 postes ; ensuite, il faut louer.
+- **Projets** : étudier les demandes de clients, négocier le délai (sûr, standard, rapide), livrer à temps et à la qualité attendue, puis attendre que la facture soit payée.
+- **Produits** : créer un outil SaaS, une app communautaire ou une place de marché ; construire ses pages et ses modules dans l'éditeur, lancer le développement, publier, puis piloter prix, serveurs, marketing et support. Le menu Résultats explique pourquoi les chiffres bougent.
+- **Équipe** : recruter, affecter chaque personne à une seule chose, former, nommer des responsables, surveiller énergie et moral.
+- **Marché** : publics, concurrents (qui annoncent leurs nouvelles versions), budgets marketing.
+- **Finances** : trésorerie, créances, dettes, autonomie, résultat mensuel, prêt, investisseur, plan de redressement.
+- **Entreprise** : réputation, entreprises du groupe, jalons.
+
+Les règles complètes sont dans [DESIGN_SIMULATION.md](DESIGN_SIMULATION.md).
 
 ## Contrôles
 
-| Touche | Action |
+| Touche ou geste | Action |
 |---|---|
-| Espace, ou clic sur la scène | Charbonner (travail en plus et petit gain). Une touche maintenue ne compte qu'une fois |
-| 1 à 4 | Choisir une carte d'atout ou une option d'événement |
-| R | Relancer le tirage d'atouts |
-| Entrée | Continuer, lancer la run |
-| Échap | Pause, retour |
+| Clic gauche | Sélectionner une personne ou un objet ; poser un meuble en mode aménagement |
+| Clic droit | Annuler l'outil de pose ; maintenu : déplacer la vue |
+| Molette | Zoom |
+| Flèches ou WASD | Déplacer la vue (Origine : recentrer) |
+| + / − | Zoom |
+| Espace | Pause |
+| 1, 2, 3, 4 | Vitesse |
+| B, E, P, C, T, M, F | Aménagement, Entreprise, Produits, Projets, Équipe, Marché, Finances |
+| N | Journal des notifications |
+| Échap | Ferme la fenêtre ou le menu ouvert, puis ouvre la pause (jamais ne quitte la partie) |
 | F11 | Plein écran |
 
-Tout se joue aussi à la souris.
+## Sauvegardes
 
-## Réglages et sauvegarde
-
-- **Réglages** : depuis la pause, tu changes le volume de la musique et celui des bruitages (de 0 à 100 % par pas de 20 %), et tu peux réduire les secousses et les flashs.
-- **Sauvegarde** : le profil (lingots, Héritage, personnages débloqués, records, réglages) est dans `%AppData%\StartupRush\profile.json`. Il est réécrit sans risque de fichier à moitié écrit. Le supprimer remet tout à zéro.
-- **Runs** : une run n'est pas sauvegardée en cours de partie. Quitter le jeu l'abandonne.
+Dans `%AppData%\StartupRush\campaigns\` : un dossier par campagne, sauvegardes nommées, 3 sauvegardes automatiques tournantes (chaque lundi de jeu), et une sauvegarde de sortie écrite en quittant. Écriture atomique, copie précédente gardée, fichiers abîmés signalés et jamais effacés. L'ancien profil du roguelike n'est pas touché. Détails : [SAVES.md](SAVES.md).
 
 ## Construire le jeu
 
-Il faut le SDK .NET 9.
+Il faut le SDK .NET 9 (et Python avec Pillow seulement pour regénérer les ressources).
 
 ```
 dotnet build StartupRush.sln
@@ -40,32 +53,37 @@ dotnet test Tests/Tests.csproj
 dotnet run --project UI
 ```
 
-Pour l'archive Windows autonome :
+Archive Windows autonome :
 
 ```
 dotnet publish UI/UI.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=none -o publish/StartupRush
 ```
 
-Sons, sprites et polices sont embarqués dans l'exécutable. À côté, il ne reste que les licences des polices et `THIRD_PARTY_NOTICES.md`.
+Autres commandes :
+
+- `python tools/build_assets.py` : regénère `UI/Assets` (atlas, sons, cadres) depuis les packs de `assets/`.
+- `dotnet test Tests/Tests.csproj --filter Name=WriteBalanceReport` : rejoue la campagne d'équilibrage et réécrit `BALANCE_REPORT.md` (environ 1 min 30).
+- `StartupRush.exe --capture <dossier>` : parcours scripté dans le vrai jeu, qui enregistre des captures et un rapport de contrôle (`docs/captures/`). Les sauvegardes de ce parcours vont dans un dossier temporaire à part.
 
 ## Projet
 
 | Dossier | Contenu |
 |---|---|
-| `Core` | Toute la logique du jeu, sans interface (simulation, roguelike, méta-progression) |
-| `UI` | L'interface Avalonia : rendu pixel, HUD, sons |
-| `Tests` | Tests NUnit, bot de jeu et campagne d'équilibrage |
-| `assets` | Les packs originaux téléchargés (non versionnés) |
-| `tools/build_assets.py` | Copie et adapte les ressources utilisées dans `UI/Assets` |
+| `Core` | Toute la simulation, sans interface |
+| `UI` | Interface Avalonia : scène, menus, sons |
+| `Tests` | Tests NUnit, scénarios, campagne d'équilibrage |
+| `tools` | Fabrication des ressources |
+| `assets` | Packs originaux (non versionnés) |
 
-Documents :
-- `ASSET_USAGE.md` : ressources utilisées, adaptées et laissées de côté.
-- `THIRD_PARTY_NOTICES.md` : licences et crédits.
-- `BALANCE_REPORT.md` : protocole et résultats de l'équilibrage.
+Documents : [DESIGN_SIMULATION.md](DESIGN_SIMULATION.md) (règles et réglages), [SAVES.md](SAVES.md) (format de sauvegarde), [BALANCE_REPORT.md](BALANCE_REPORT.md) (mesures), [VALIDATION.md](VALIDATION.md) (vérifications et limites), [ASSET_USAGE.md](ASSET_USAGE.md), [FURNITURE_MANIFEST.md](FURNITURE_MANIFEST.md), [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+L'ancien roguelike est archivé dans git sous le tag `archive/roguelike-v1`.
 
 ## Limites connues
 
 - **Testé seulement sur Windows 11 x64.**
-- **Audio non écouté** : sons et musiques se chargent sans erreur, mais je ne les ai pas écoutés. Volumes et choix sont à valider à l'oreille.
-- **Équilibrage par bot** : il a été mesuré avec un bot. Un humain joue plus lentement, seules de vraies parties confirmeront la difficulté.
-- **Pression 3** : les styles de jeu prudents y gagnent encore toujours ; seul le joueur qui dépense sans réserve y perd.
+- **Équilibrage mesuré par des bots**, pas par des humains (voir VALIDATION.md). Sur 18 mois, une agence bien gérée rapporte encore plus qu'un produit ; les produits paient plus tard.
+- **Sons non écoutés** : chargés et déclenchés (vérifié), mais pas validés à l'oreille.
+- **Pas de rotation des meubles** : les sprites n'existent que de face.
+- **Archétypes** studio de jeux et infrastructure : pas développés.
+- Sur une page, les modules s'ajoutent à la fin puis se réordonnent avec ↑ ↓ (pas de glisser-déposer).

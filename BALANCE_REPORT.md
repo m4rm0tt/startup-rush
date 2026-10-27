@@ -1,94 +1,80 @@
-# Rapport d'équilibrage
+# Bilan d'équilibrage mesuré
 
-## Protocole
+Généré par `Tests/balance/BalanceReportTest.cs` (`dotnet test Tests/Tests.csproj --filter Name=WriteBalanceReport`).
+Protocole : 9 stratégies × 5 graines (11, 23, 37, 41, 59), 18 mois de jeu chacune, fondateur polyvalent, valeurs de `Core/campaign/Tuning.cs`. Les stratégies sont jouées par `Core/bots/Autopilot.cs`, une décision par jour ouvré, avec les mêmes commandes que l'interface.
 
-- **Outil** : `Tests/simulation/BalanceCampaignTest.cs`, un test `[Explicit]` à lancer à la main.
+## Résumé par stratégie
 
-  ```
-  dotnet test Tests/Tests.csproj --filter "FullyQualifiedName~PlaystylesAcrossPressures"
-  ```
+| Stratégie | Liquidations | Trésorerie finale (médiane) | Pire creux | Mois en impayés (moy.) | Recettes 18 mois (méd.) | Revenus récurrents finaux (méd.) | Équipe max | Contrats livrés / rompus |
+|---|---|---|---|---|---|---|---|---|
+| freelance | 0/5 | 112 967 | 4 800 | 0.0 | 148 287 | 0 | 0 | 79 / 0 |
+| agence | 1/5 | 92 268 | -1 580 | 1.0 | 528 577 | 0 | 5 | 170 / 25 |
+| produit_tot | 0/5 | 2 143 | -788 | 0.0 | 41 777 | 3 027 | 0 | 7 / 0 |
+| produit_soigne | 3/5 | -1 363 | -1 975 | 2.4 | 140 663 | 2 263 | 3 | 71 / 0 |
+| croissance | 5/5 | -553 | -1 568 | 3.0 | 49 260 | 409 | 3 | 45 / 0 |
+| embauche_rapide | 2/5 | 18 281 | -1 951 | 2.2 | 824 327 | 0 | 6 | 172 / 42 |
+| marketing | 5/5 | -1 058 | -1 996 | 2.8 | 84 041 | 596 | 3 | 56 / 0 |
+| sous_qualite | 5/5 | 3 801 | -1 983 | 4.2 | 88 590 | 941 | 2 | 60 / 1 |
+| mixte | 1/5 | 1 | -1 988 | 1.8 | 300 346 | 7 318 | 4 | 89 / 0 |
 
-  Le tableau sort dans la console et dans le fichier `BALANCE_OUT`, ou à défaut dans le dossier temporaire.
-- **Runs** : personnage Alex, graines 0 à 19 (20 runs par ligne), 2 h de jeu au plus par run.
-- **Héritage** : aucun pour le joueur débutant, tout acheté pour le joueur avancé (+1 000 CHF, réputation, carte en plus, 2 relances, une assurance, atouts légendaires).
-- **Le bot** (`GameBot.cs`) n'a aucun avantage caché :
-  - Il clique à un rythme humain fixe : 4 clics par seconde, 7 pour le style « clic ».
-  - Il accepte les contrats qu'il peut finir à temps.
-  - Il choisit l'atout le plus rare et prend toujours l'option sûre des événements.
-- **Styles comparés**. Chacun garde une réserve de mois de factures avant d'acheter, puis donne la priorité à une famille d'achats :
+## Stratégies jouées
 
-| Style | Réserve | Priorité d'achat |
-|---|---|---|
-| prudent | 5 mois | le moins cher, loyer à part |
-| matériel | 2 mois | matériel |
-| équipe | 2 mois | embauches et locaux |
-| empire | 2 mois | boîtes |
-| clic | 2 mois | matériel, 7 clics/s |
-| mixte | 2 mois | le moins cher, toutes familles |
-| dépensier | 0,5 mois | le moins cher (joueur impatient) |
+- **freelance** : Freelance prudent : seulement des prestations, délai sûr, personne d'embauché.
+- **agence** : Agence : prestations en continu, code capitalisé, embauches dès que la trésorerie le permet.
+- **produit_tot** : Produit lancé tôt : un SaaS minimal dès la 2e semaine, le fondateur dessus, quelques prestations pour survivre.
+- **produit_soigne** : Produit très soigné : prestations d'abord, puis un SaaS complet avec support et correctifs.
+- **croissance** : Croissance financée : embauches rapides et marketing agressif sur un produit communautaire.
+- **embauche_rapide** : Embauche rapide sans produit : beaucoup de salaires, des prestations pour les payer.
+- **marketing** : Marketing agressif sur une place de marché, sans gros soin du produit.
+- **sous_qualite** : Sous-investissement dans la qualité : SaaS sans tests de support ni correctifs, promesses rapides.
+- **mixte** : Stratégie mixte : prestations pour financer, SaaS PME bien construit, croissance mesurée.
 
-- **Avant / après** : la ligne « avant » rejoue le même bot sur le commit `6bc4f7c` (équilibrage d'origine), dans une copie isolée du dépôt (`git worktree`).
+## Détail des parties
 
-## Constat de départ
-
-Le PDF disait vrai, et c'était même plus net : **tous les styles raisonnables gagnaient 20 fois sur 20, en pression 0 comme en pression 3**. Les durées allaient de 34 à 40 minutes. La pression 3 n'ajoutait que 3 à 5 minutes, et les styles se valaient presque tous.
-
-Les causes mesurées (trace minute par minute de `TraceOneGame`) :
-
-1. **Des dépenses trop faibles** : en milieu de partie, les factures ne pesaient que 10 à 20 % des revenus. Après les premières minutes, on ne risquait plus rien.
-2. **L'inflation des revenus passifs** : une boîte se remboursait en 3 à 4,5 mois de jeu sans aucun coût de fonctionnement, et ses revenus étaient multipliés par 9 entre la 25e et la 35e minute.
-3. **Une pression maximale presque sans effet** : factures +25 % et impôt ×4 ne changeaient presque rien face à des revenus exponentiels.
-
-## Changements de règles
-
-Tous les réglages sont dans `GameConfig`, `RunSetup.cs` (pressions) et `Crisis.cs`.
-
-| Règle | Avant | Après | Pourquoi |
-|---|---|---|---|
-| Charges des boîtes (`BusinessUpkeepRate`) | aucune | 35 % du revenu nominal, chaque mois, sur la facture | Grandir vite crée des coûts fixes qui tombent même en récession |
-| Inflation du coût de la vie (loyer, salaires, abonnements, charges) | aucune | +1 % par mois en pression 1, +2 % en pression 2, +3 % en pression 3, rien en pression 0 | Les pressions hautes serrent la trésorerie au fil de la run |
-| Fréquence des crises en pression 3 | tous les 3 mois | tous les 2 mois | La pression maximale demande de garder de la réserve |
-| Crise « Récession » | revenus des boîtes −40 % | −50 % | Avec les charges, c'est le vrai test des coûts fixes |
-| Crise « Contrôle fiscal » | factures ×1,6 | factures ×2 | Même raison |
-| Offre de contrat dont l'échéance est passée (correctif, commit séparé) | restait acceptable | expire | On ne peut plus prendre un contrat forcément raté |
-
-La pression 0 n'a pas d'inflation et ne change que par les charges des boîtes : elle reste accueillante.
-
-## Résultats (20 runs par ligne)
-
-| Style | Pression | Héritage | Victoires avant | Victoires après | Durée médiane avant (min) | Durée médiane après (min) | Défaites après |
-|---|---|---|---|---|---|---|---|
-| prudent | 0 | aucun | 20/20 | 20/20 | 37 | 37 | – |
-| prudent | 3 | aucun | 20/20 | 20/20 | 40 | 49 | – |
-| matériel | 0 | aucun | 20/20 | 20/20 | 34 | 35 | – |
-| matériel | 3 | aucun | 20/20 | 20/20 | 39 | 46 | – |
-| équipe | 0 | aucun | 20/20 | 20/20 | 34 | 35 | – |
-| équipe | 3 | aucun | 20/20 | 20/20 | 38 | 44 | – |
-| empire | 0 | aucun | 20/20 | 20/20 | 34 | 35 | – |
-| empire | 3 | aucun | 20/20 | 20/20 | 38 | 45 | – |
-| clic | 0 | aucun | 20/20 | 20/20 | 34 | 35 | – |
-| clic | 3 | aucun | 20/20 | 20/20 | 37 | 45 | – |
-| mixte | 0 | aucun | 20/20 | 20/20 | 34 | 35 | – |
-| mixte | 3 | aucun | 20/20 | 20/20 | 39 | 45 | – |
-| dépensier | 0 | aucun | 19/20 | 15/20 | 33 | 35 | 4 faillites (deux impayés d'affilée), 1 achevé par une crise |
-| dépensier | 3 | aucun | 5/20 | 0/20 | 36 | – | 17 faillites (deux impayés d'affilée), 3 achevés par une crise |
-| mixte | 0 | complet | 20/20 | 20/20 | 33 | 32 | – |
-| mixte | 3 | complet | 20/20 | 20/20 | 35 | 42 | – |
-| contrats seuls (témoin, n'achète rien) | 0 | aucun | 0/20 | 0/20 | – | – | 20 bloqués à Freelance au bout de 2 h |
-
-Mois des seuils, défaites détaillées et écarts min–max : voir la sortie complète du test.
-
-## Lecture
-
-- **Pression 0** : le jeu reste accueillant. Les styles raisonnables gagnent toujours, en environ 35 minutes comme avant. Le joueur impatient qui dépense tout perd maintenant 5 runs sur 20, contre 1 avant : garder une réserve devient une vraie leçon.
-- **Pression 3** :
-  - Les runs passent de 37 à 40 minutes à 44 à 49 minutes, et l'écart entre les styles se creuse : le prudent est le plus lent, le clic et l'équipe les plus rapides.
-  - Dépenser sans réserve ne passe plus du tout (0/20). La moitié de ces runs meurent avant même le statut Freelance, comme avant les changements.
-- **Méta-progression** : elle n'est pas nécessaire pour gagner une première fois, puisque tous les styles raisonnables gagnent sans Héritage. Avec l'Héritage complet, on gagne environ 3 minutes.
-- **Hasard** : aucune défaite ne vient d'un tirage caché. Les crises sont annoncées à l'avance, et les défaites viennent toutes de la trésorerie.
-
-## Limites
-
-- **Le bot reste plus fort qu'un humain** : il accepte chaque contrat faisable à l'instant où il arrive et clique sans pause pendant 45 minutes. Un humain mettra plus longtemps et prendra plus de risques. Seules de vraies parties diront si la pression 3 est assez dure ou trop longue.
-- **Aucun taux de victoire cible n'a été fixé**. Ce choix revient au concepteur du jeu.
-- **Les styles raisonnables gagnent encore toujours en pression 3**. Pour qu'eux aussi perdent parfois, les pistes suivantes sont à essayer : des crises plus longues, un contrôle fiscal qui se cumule, ou une limite de temps pour la pression 3.
+| Stratégie | Graine | Issue | Jours | Trésorerie par trimestre | Produit : utilisateurs / payants / bugs | Local final | Équipe finale | Matériel acheté |
+|---|---|---|---|---|---|---|---|---|
+| freelance | 11 | en activité | 540 | 15 285 → 37 396 → 54 276 → 73 129 → 104 392 → 122 225 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 0 |
+| freelance | 23 | en activité | 540 | 19 194 → 35 981 → 53 014 → 77 199 → 103 460 → 133 309 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 0 |
+| freelance | 37 | en activité | 540 | 16 582 → 45 337 → 53 343 → 73 323 → 94 249 → 111 604 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 0 |
+| freelance | 41 | en activité | 540 | 19 878 → 28 730 → 49 326 → 65 969 → 76 337 → 112 967 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 0 |
+| freelance | 59 | en activité | 540 | 18 275 → 34 735 → 56 314 → 81 217 → 106 375 → 107 005 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 0 |
+| agence | 11 | liquidée | 376 | 17 141 → 19 946 → 25 951 → -1 576 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 4 230 |
+| agence | 23 | en activité | 540 | 18 279 → 33 156 → 108 769 → 71 675 → -1 580 → 4 821 | 0 / 0 / 0 | Petit bureau, Flon | 5 | 9 950 |
+| agence | 37 | en activité | 540 | 17 197 → 34 524 → 33 915 → 39 643 → 96 391 → 92 268 | 0 / 0 / 0 | Petit bureau, Flon | 5 | 9 950 |
+| agence | 41 | en activité | 540 | 17 042 → 29 975 → 68 234 → 73 736 → 141 637 → 180 135 | 0 / 0 / 0 | Petit bureau, Flon | 5 | 9 950 |
+| agence | 59 | en activité | 540 | 17 895 → 35 823 → 14 475 → 55 043 → 151 820 → 124 435 | 0 / 0 / 0 | Petit bureau, Flon | 5 | 9 950 |
+| produit_tot | 11 | en activité | 540 | 6 360 → 1 795 → 5 803 → 4 405 → 3 336 → 2 143 | 333 / 148 / 0 | Ton appartement, Prilly | 0 | 0 |
+| produit_tot | 23 | en activité | 540 | 7 035 → 2 018 → 3 555 → 2 282 → 1 880 → 1 414 | 357 / 158 / 0 | Ton appartement, Prilly | 0 | 0 |
+| produit_tot | 37 | en activité | 540 | 4 522 → 692 → 3 174 → 2 991 → 3 061 → 2 808 | 363 / 161 / 0 | Ton appartement, Prilly | 0 | 0 |
+| produit_tot | 41 | en activité | 540 | 5 311 → 1 432 → 938 → 1 813 → 2 829 → 3 673 | 365 / 162 / 0 | Ton appartement, Prilly | 0 | 0 |
+| produit_tot | 59 | en activité | 540 | 4 885 → 434 → 1 566 → 1 298 → 1 341 → 1 111 | 350 / 155 / 0 | Ton appartement, Prilly | 0 | 0 |
+| produit_soigne | 11 | liquidée | 406 | 16 931 → 40 811 → 36 186 → -1 249 | 248 / 122 / 12 | Petit bureau, Flon | 0 | 4 470 |
+| produit_soigne | 23 | liquidée | 497 | 21 373 → 32 458 → 24 065 → 23 176 → -1 266 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 2 980 |
+| produit_soigne | 37 | en activité | 540 | 18 439 → 25 751 → 21 713 → 15 511 → 36 149 → -1 088 | 242 / 108 / 73 | Ton appartement, Prilly | 0 | 2 980 |
+| produit_soigne | 41 | en activité | 540 | 22 096 → 26 383 → 17 325 → 19 295 → 518 → -1 512 | 337 / 173 / 59 | Ton appartement, Prilly | 0 | 2 980 |
+| produit_soigne | 59 | liquidée | 468 | 20 271 → 32 000 → 40 314 → 5 614 → -564 | 310 / 148 / 23 | Ton appartement, Prilly | 0 | 2 980 |
+| croissance | 11 | liquidée | 162 | 3 380 → -774 | 750 / 0 / 16 | Petit bureau, Flon | 0 | 4 470 |
+| croissance | 23 | liquidée | 162 | 12 211 → 2 470 | 673 / 0 / 12 | Petit bureau, Flon | 0 | 4 470 |
+| croissance | 37 | liquidée | 162 | 10 994 → 318 | 847 / 0 / 7 | Petit bureau, Flon | 0 | 4 470 |
+| croissance | 41 | liquidée | 162 | 7 997 → -1 546 | 709 / 0 / 6 | Petit bureau, Flon | 0 | 4 470 |
+| croissance | 59 | liquidée | 162 | 7 849 → -553 | 629 / 0 / 18 | Petit bureau, Flon | 0 | 4 470 |
+| embauche_rapide | 11 | en activité | 540 | 5 709 → 50 478 → 145 518 → 256 885 → 330 440 → 386 796 | 0 / 0 / 0 | Petit bureau, Flon | 6 | 9 180 |
+| embauche_rapide | 23 | en activité | 540 | 783 → 69 614 → 58 496 → 4 621 → 36 274 → 18 281 | 0 / 0 / 0 | Petit bureau, Flon | 6 | 8 940 |
+| embauche_rapide | 37 | liquidée | 192 | -1 264 → -1 863 | 0 / 0 / 0 | Petit bureau, Flon | 0 | 4 710 |
+| embauche_rapide | 41 | en activité | 540 | -1 317 → 12 722 → 50 762 → 71 526 → 111 490 → 156 912 | 0 / 0 / 0 | Petit bureau, Flon | 6 | 8 940 |
+| embauche_rapide | 59 | liquidée | 131 | 1 669 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 2 980 |
+| marketing | 11 | liquidée | 253 | 16 931 → 5 860 → -1 768 | 450 / 5 / 7 | Petit bureau, Flon | 0 | 4 470 |
+| marketing | 23 | liquidée | 253 | 19 883 → 2 234 → 446 | 327 / 3 / 18 | Petit bureau, Flon | 0 | 4 470 |
+| marketing | 37 | liquidée | 223 | 16 949 → -1 433 | 333 / 3 / 15 | Petit bureau, Flon | 0 | 4 470 |
+| marketing | 41 | liquidée | 237 | 20 606 → 199 | 369 / 4 / 6 | Petit bureau, Flon | 0 | 4 470 |
+| marketing | 59 | liquidée | 207 | 18 781 → -360 | 269 / 3 / 8 | Petit bureau, Flon | 0 | 4 470 |
+| sous_qualite | 11 | liquidée | 310 | 18 762 → 15 130 → -307 | 171 / 72 / 35 | Ton appartement, Prilly | 0 | 2 980 |
+| sous_qualite | 23 | liquidée | 343 | 24 608 → 21 469 → -785 → 845 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 2 980 |
+| sous_qualite | 37 | liquidée | 253 | 21 169 → 1 753 → 4 790 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 2 980 |
+| sous_qualite | 41 | liquidée | 253 | 22 910 → -1 714 → 5 944 | 184 / 79 / 17 | Ton appartement, Prilly | 0 | 2 980 |
+| sous_qualite | 59 | liquidée | 310 | 25 171 → 6 335 → -1 229 | 128 / 50 / 34 | Ton appartement, Prilly | 0 | 2 980 |
+| mixte | 11 | en activité | 540 | 17 141 → 40 084 → 20 358 → 34 253 → 968 → 9 871 | 274 / 120 / 47 | Petit bureau, Flon | 0 | 8 460 |
+| mixte | 23 | en activité | 540 | 18 279 → 25 142 → 49 069 → 27 713 → 741 → -1 614 | 623 / 340 / 0 | Petit bureau, Flon | 3 | 8 460 |
+| mixte | 37 | en activité | 540 | 17 197 → 26 661 → 10 137 → 24 574 → 2 849 → 1 | 261 / 118 / 0 | Ton appartement, Prilly | 1 | 4 230 |
+| mixte | 41 | liquidée | 468 | 17 042 → 33 611 → 13 586 → 11 963 → -1 582 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 4 230 |
+| mixte | 59 | en activité | 540 | 17 895 → 27 209 → 8 041 → 8 644 → 46 261 → 7 803 | 425 / 223 / 0 | Petit bureau, Flon | 4 | 8 460 |

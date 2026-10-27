@@ -35,6 +35,9 @@ public class Premises
     /// <summary>Colonnes 0 à LivingWidth-1 : partie privée du logement, où l'on ne place pas de matériel d'entreprise.</summary>
     public int LivingWidth { get; set; }
 
+    /// <summary>Nombre maximal de bureaux (0 = seulement limité par la place). L'appartement reste un appartement.</summary>
+    public int MaxDesks { get; set; }
+
     public decimal Rent { get; set; }
     public decimal Deposit { get; set; }
     public List<PlacedItem> Items { get; set; } = new();
@@ -93,5 +96,5 @@ public class Premises
     }
 
     /// <summary>Nombre de bureaux que la surface de travail permet raisonnablement (affiché dans les annonces).</summary>
-    public int Capacity => (Width - LivingWidth) * Height / 9;
+    public int Capacity => MaxDesks > 0 ? MaxDesks : (Width - LivingWidth) * Height / 9;
 }

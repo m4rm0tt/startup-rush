@@ -122,7 +122,9 @@ public static class ContractMarket
         double effort = scope.Values.Sum();
 
         double expected = Math.Clamp(kind.Quality + (size > 150 ? 0.06 : 0) + random.Range(-0.05, 0.05), 0.45, 0.85);
-        decimal price = Math.Round((decimal)effort * kind.PricePerPoint * (decimal)random.Range(0.9, 1.15) / 50m) * 50m;
+        // Les gros clients paient mieux le point (projet mieux cadré, budget plus large) : la croissance d'une agence a du sens
+        decimal premium = size > 150 ? 1.3m : size > 55 ? 1.15m : 1m;
+        decimal price = Math.Round((decimal)effort * kind.PricePerPoint * premium * (decimal)random.Range(0.9, 1.15) / 50m) * 50m;
         // Délai : environ 6 points par jour ouvré pour une personne seule, avec une marge
         int workdays = (int)Math.Ceiling(effort / Math.Max(4, founderSpeed) * random.Range(1.3, 1.7)) + 2;
 

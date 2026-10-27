@@ -95,14 +95,21 @@ public class Autopilot(Strategy strategy)
         // Fondateur concentré sur le produit : de nouvelles prestations seulement si la trésorerie l'exige
         if (!Strategy.FounderOnContracts && ProductId != null && campaign.Ledger.Cash > 8_000 && !campaign.Staff.Any())
             return;
-        int capacity = Math.Max(1, ContractWorkers(campaign).Count) * Strategy.MaxContracts;
+        var workers = ContractWorkers(campaign);
+        int capacity = Math.Max(1, workers.Count) * Strategy.MaxContracts;
+        double speed = workers.Sum(p => campaign.WorkRate(p, p.BestDiscipline) * 60 * 6);
+        double backlog = campaign.ActiveContracts.Sum(c => campaign.WorkFor(WorkOwner.Contract, c.Id).Sum(w => w.Remaining));
         foreach (var offer in campaign.Offers.OrderByDescending(o => o.Price / (decimal)Math.Max(1, o.TotalEffort)).ToList())
         {
             if (campaign.ActiveContracts.Count() >= capacity)
                 break;
             if (offer.TotalEffort > Strategy.MaxContractSize)
                 continue;
-            campaign.AcceptContract(offer.Id, Strategy.Deadline, Strategy.Capitalize);
+            // Un joueur raisonnable ne signe que ce que son équipe peut livrer à temps
+            if (Strategy.CarefulHiring && backlog + offer.TotalEffort > speed * offer.Terms(Strategy.Deadline).Workdays * 0.85)
+                continue;
+            if (campaign.AcceptContract(offer.Id, Strategy.Deadline, Strategy.Capitalize).Ok)
+                backlog += offer.TotalEffort;
         }
     }
 

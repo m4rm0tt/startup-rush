@@ -75,7 +75,7 @@ public static class ProductCatalog
             "Des utilisateurs nombreux qui viennent pour le contenu et les autres membres. Bouche-à-oreille fort, abandon rapide, gros besoin de serveurs.",
             [RevenueModel.Ads, RevenueModel.Freemium],
             new() { [Need.Engagement] = 0.4, [Need.Discovery] = 0.3, [Need.Trust] = 0.15, [Need.Conversion] = 0.15 },
-            TrialRate: 0.22, ChurnFactor: 1.5, WordOfMouthFactor: 3, TicketFactor: 0.5,
+            TrialRate: 0.22, ChurnFactor: 1.2, WordOfMouthFactor: 6, TicketFactor: 0.5,
             ["feed"], "Un Fil de contenu est indispensable : sans contenu, personne ne revient."),
         new("marketplace", "Place de marché",
             "Deux publics à faire venir en même temps : des vendeurs pour l'offre, des acheteurs pour la demande. Sans assez de vendeurs, les acheteurs repartent.",
@@ -87,13 +87,13 @@ public static class ProductCatalog
 
     public static readonly IReadOnlyList<Segment> Segments =
     [
-        new("freelances", "Indépendants", "saas", 7_000, 19m, 1.3, "Prix serré, veulent gagner du temps tout de suite."),
-        new("smb", "PME", "saas", 2_500, 59m, 0.8, "Paient plus, attendent fiabilité, exports et support."),
-        new("associations", "Associations", "saas", 4_000, 9m, 1.7, "Petits budgets, beaucoup de bénévoles à former."),
-        new("students", "Étudiants", "social", 120_000, 4m, 2.0, "Nombreux, volatils, très sensibles au prix."),
-        new("creators", "Créateurs", "social", 40_000, 8m, 1.3, "Veulent de l'audience et des outils de publication."),
-        new("crafts", "Artisans locaux", "marketplace", 60_000, 8m, 1.0, "Acheteurs de produits régionaux ; les vendeurs sont rares au début."),
-        new("secondhand", "Matériel d'occasion", "marketplace", 140_000, 5m, 1.4, "Beaucoup de demande, marges faibles, besoin de confiance."),
+        new("freelances", "Indépendants", "saas", 80_000, 19m, 1.3, "Prix serré, veulent gagner du temps tout de suite."),
+        new("smb", "PME", "saas", 30_000, 59m, 0.8, "Paient plus, attendent fiabilité, exports et support."),
+        new("associations", "Associations", "saas", 40_000, 9m, 1.7, "Petits budgets, beaucoup de bénévoles à former."),
+        new("students", "Étudiants", "social", 400_000, 4m, 2.0, "Nombreux, volatils, très sensibles au prix."),
+        new("creators", "Créateurs", "social", 200_000, 8m, 1.3, "Veulent de l'audience et des outils de publication."),
+        new("crafts", "Artisans locaux", "marketplace", 150_000, 8m, 1.0, "Acheteurs de produits régionaux ; les vendeurs sont rares au début."),
+        new("secondhand", "Matériel d'occasion", "marketplace", 300_000, 5m, 1.4, "Beaucoup de demande, marges faibles, besoin de confiance."),
     ];
 
     private static readonly ModuleChoice[] Columns =

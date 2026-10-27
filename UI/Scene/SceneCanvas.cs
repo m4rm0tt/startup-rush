@@ -79,16 +79,29 @@ public class SceneCanvas : Control
         double fitH = Bounds.Height * scaling * 0.9 / (Premises.Height * Cell + WallHeight + Cell);
         _zoom = Math.Clamp((int)Math.Floor(Math.Min(fitW, fitH)), 1, 6);
         _cameraPlaced = Bounds.Width > 0;
+        _userMoved = false;
+    }
+
+    /// <summary>Le joueur a déplacé ou zoomé la vue : on ne la recadre plus quand la fenêtre change de taille.</summary>
+    private bool _userMoved;
+
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        base.OnSizeChanged(e);
+        if (!_userMoved)
+            ResetCamera();
     }
 
     public void Pan(double dx, double dy)
     {
+        _userMoved = true;
         _camX = Math.Clamp(_camX + dx / Scale, -Cell * 2, Premises.Width * Cell + Cell * 2);
         _camY = Math.Clamp(_camY + dy / Scale, -WallHeight - Cell * 2, Premises.Height * Cell + Cell * 2);
     }
 
     public void ZoomBy(int delta, Point? around = null)
     {
+        _userMoved = true;
         var anchor = around ?? new Point(Bounds.Width / 2, Bounds.Height / 2);
         var before = ToWorld(anchor);
         _zoom = Math.Clamp(_zoom + delta, 1, 8);
@@ -254,11 +267,11 @@ public class SceneCanvas : Control
             double x, y;
             if (def.OnDesk)
             {
-                // Sur le bureau : à gauche du plan de travail, posé sur le dessus
+                // Sur le bureau, posé sur le dessus : le portable devant la personne, un écran sur la moitié droite pour ne pas la cacher
                 var desk = Premises.Find(item.HostId ?? -1);
                 if (desk == null)
                     continue;
-                x = desk.X * Cell + 2;
+                x = def.Id == "laptop" ? desk.X * Cell + 1 : desk.X * Cell + Cell - 1;
                 y = desk.Y * Cell + 9 - sprite.Rect.Height;
                 key = (desk.Y + 1) * Cell + 0.2;
             }

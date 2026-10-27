@@ -139,7 +139,7 @@ public static class Market
                     revenue = (decimal)paying * product.Price / 30;
                     break;
                 case RevenueModel.Ads:
-                    revenue = (decimal)(product.Users * (0.004 + 0.012 * coverage[Need.Engagement]));
+                    revenue = (decimal)(product.Users * (0.008 + 0.02 * coverage[Need.Engagement]));
                     break;
                 case RevenueModel.Commission:
                     paying = product.Users * 0.015 * liquidity * (0.3 + coverage[Need.Conversion]) * priceFactor;

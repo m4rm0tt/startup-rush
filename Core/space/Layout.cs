@@ -39,6 +39,9 @@ public static class Layout
             return PlacementCheck.Valid;
         }
 
+        if (def.Kind == FurnitureKind.Desk && premises.MaxDesks > 0 && premises.Desks.Count(d => d.Id != ignoreId) >= premises.MaxDesks)
+            return PlacementCheck.Invalid($"{premises.Name} ne peut accueillir que {premises.MaxDesks} postes : il faut de vrais locaux.");
+
         var cells = Premises.Footprint(def, x, y).ToList();
         if (cells.Any(c => !premises.InBounds(c)))
             return PlacementCheck.Invalid("Hors du local.");

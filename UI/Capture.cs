@@ -141,13 +141,20 @@ public static class Capture
         report.Add($"Rechargement identique : {SaveStore.SerializeState(reloaded) == state}");
 
         // Campagne avancée : 14 mois joués par une stratégie mixte, puis reprise dans l'interface
-        var advanced = Campaign.New("Capture avancée", "Alex", "Studio Léman", FounderProfile.Developer, 7);
-        var pilot = new Autopilot(Strategies.All.First(s => s.Name == "mixte") with { MaxStaff = 5, HireAbove = 20_000, MarketingBudget = 1_500 });
+        var advanced = Campaign.New("Capture avancée", "Alex", "Studio Léman", FounderProfile.Developer, 37);
+        var pilot = new Autopilot(Strategies.All.First(s => s.Name == "agence") with
+        {
+            ProductDay = 150, Segment = "smb", MarketingBudget = 1_500, MaxStaff = 6,
+            Modules = ["landing", "login", "dashboard", "subscribe", "support"],
+        });
         pilot.Play(advanced, 420);
         while (GameTime.IsWorkday(advanced.Minute) == false)
             advanced.AdvanceDays(1);
         advanced.Advance(10 * 60 + 15 - GameTime.MinuteOfDay(advanced.Minute));
         report.Add($"Campagne avancée : {GameTime.FormatDate(advanced.Minute)}, {advanced.People.Count} personnes, {advanced.Premises.Name}, trésorerie {advanced.Ledger.Cash:N0}, état {advanced.Solvency.State}, produits {advanced.Products.Count(p => p.IsLive)}");
+        // Un peu d'ambiance là où il reste de la place (ce sont des achats normaux)
+        foreach (var (def, x, y) in new[] { ("plant", 15, 0), ("plant", 0, 9), ("coffee", 13, 0), ("whiteboard", 5, 0), ("sofa", 10, 0) })
+            advanced.BuyAndPlace(def, x, y);
         window.Store.Save(advanced, SaveKind.Manual, "Avancée");
         var advancedGame = window.StartGame(advanced, null);
         await Wait(1);

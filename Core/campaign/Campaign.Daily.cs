@@ -208,7 +208,7 @@ public partial class Campaign
         foreach (var person in People)
             person.PointsThisWeek = 0;
         Candidates.RemoveAll(c => c.ExpiresAt <= Minute);
-        int wanted = 3 + Math.Min(3, Staff.Count() / 3) + (IsUnlocked("hiring") ? 2 : 0);
+        int wanted = 3 + Math.Min(3, Staff.Count() / 3) + (IsUnlocked("hiring") ? 2 : 0) + SiteComfort().Recruits;
         double renown = Renown + (IsUnlocked("hiring") ? 25 : 0);
         while (Candidates.Count < wanted)
             Candidates.Add(Recruitment.Generate(Random, Minute, NewId(), renown));
@@ -261,9 +261,10 @@ public partial class Campaign
     private void UpdateTeam()
     {
         bool weekend = !GameTime.IsWorkday(Minute);
-        double shared = space.Layout.SharedMorale(Premises);
-        // Les pauses se font sur place : un coin pause rend un peu d'énergie chaque jour
-        double breakBonus = space.Layout.BreakRecovery(Premises, People.Count) - 3;
+        var comfort = SiteComfort();
+        double shared = comfort.Morale;
+        // Les pauses se font sur place : boissons, collations et sièges rendent un peu d'énergie chaque jour
+        double breakBonus = comfort.Break - space.Layout.BaseBreak;
         var overdueSalaries = Ledger.Overdue(Minute).Where(b => b.Category == Category.Salaries).Select(b => b.PersonId).ToHashSet();
 
         foreach (var person in People.ToList())
@@ -282,7 +283,7 @@ public partial class Campaign
 
             var post = Premises.SeatOf(person.Id);
             bool hasPost = post != null && space.Layout.Check(Premises, post) == space.WorkstationIssue.None;
-            double target = 58 + Math.Min(10, shared) + (post == null ? 0 : space.Layout.PostMorale(Premises, post));
+            double target = 58 + shared + (post == null ? 0 : space.Layout.PostMorale(Premises, post));
             if (!person.IsFounder)
             {
                 target += Math.Clamp((double)((person.Salary - MarketSalary(person)) / MarketSalary(person)) * 40, -12, 12);
@@ -479,24 +480,35 @@ public partial class Campaign
 
     private void CheckMilestones()
     {
-        void Reach(string id, bool condition, int points)
+        bool Reach(string id, bool condition, int points)
         {
             if (!condition || Milestones.ContainsKey(id))
-                return;
+                return false;
             Milestones[id] = Minute;
             var def = MilestoneDefs.First(m => m.Id == id);
             Notify(Severity.Good, "entreprise", $"Jalon : {def.Name}", def.Description, "tree");
             if (points > 0)
                 Award($"milestone:{id}", points, def.Name);
+            return true;
         }
 
-        Reach("first_launch", Products.Any(p => p.IsLive), 0);
+        if (Reach("first_launch", Products.Any(p => p.IsLive), 0))
+            GiveReward("trophy_project");
         Reach("first_hire", Staff.Any(), 1);
         Reach("office", Premises.ListingId != space.RealEstate.Apartment, 1);
         Reach("users1k", Products.Any(p => p.Users >= 1_000), 1);
-        Reach("mrr10k", RecurringRevenue30 >= 10_000, 2);
+        if (Reach("mrr10k", RecurringRevenue30 >= 10_000, 2))
+            GiveReward("award_plaque");
         Reach("portfolio3", Products.Count(p => p.IsLive && p.Users >= Tuning.Projects.AdoptionForPoints) >= 3, 1);
         Reach("team10", People.Count >= 10, 2);
         Reach("users50k", Products.Sum(p => p.Users) >= 50_000, 2);
+    }
+
+    /// <summary>La récompense d'un jalon (trophée, plaque) arrive dans les cartons, à poser où l'on veut.</summary>
+    private void GiveReward(string defId)
+    {
+        var def = space.FurnitureCatalog.Get(defId);
+        Storage.Add(new StoredItem { Id = NewId(), DefId = defId });
+        Notify(Severity.Good, "local", $"{def.Name} dans les cartons", "Pose-le depuis Aménagement : il apporte un peu de moral à l'équipe.", "build");
     }
 }

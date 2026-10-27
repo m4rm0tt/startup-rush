@@ -38,7 +38,7 @@ public sealed class RoomRenderer
         public Seated? Character;
     }
 
-    private readonly List<(Img img, int x, int y)> _floor = new(), _edges = new(), _walls = new(), _wallItems = new();
+    private readonly List<(Img img, int x, int y)> _floor = new(), _edges = new(), _walls = new(), _wallItems = new(), _ceiling = new();
     private readonly List<((double u0, double u1, double v0, double v1) fp, Node node)> _groups = new();
     private readonly int _ox, _oy, _w, _h;
     private readonly List<HitRegion> _hits = new();
@@ -74,9 +74,13 @@ public sealed class RoomRenderer
             var asset = PackLibrary.Asset(item.DefId);
             if (asset.TryGetProperty("render_layer", out var rl) && rl.GetString() == "floor_decor")
                 r.Decor(item);
+            else if (item.Def.Pack.Ceiling)
+                r.Hanging(item, r._ceiling, true);
             else
                 r.Place(premises, item, seated);
         }
+        foreach (var item in premises.WallItems)
+            r.Hanging(item, r._wallItems, false);
         return new RoomImage(r.Compose(), r._ox, r._oy, r._hits, r._heads);
     }
 
@@ -119,20 +123,21 @@ public sealed class RoomRenderer
         }
         Wall("wall_end", "se", 0, depth, null, Sw(left, "swatches"));
         Wall("wall_end", "sw", width, 0, null, Sw(right, "swatches"));
-        if (plan.TryGetProperty("wall_items", out var items))
-            foreach (var wi in items.EnumerateArray())
-            {
-                string aid = wi.GetProperty("asset").GetString()!;
-                if (!PackLibrary.Has(aid))
-                    continue;
-                string wall = wi.GetProperty("wall").GetString()!;
-                int index = wi.GetProperty("index").GetInt32();
-                var o = PackLibrary.Orient(PackLibrary.Asset(aid), wall == "left" ? "se" : "sw");
-                var img = PackLibrary.Layer(o.GetProperty("layers").GetProperty("base"), Sw(wi, "swatches"));
-                var (x, y) = wall == "left" ? Tile(0, index) : Tile(index, 0);
-                var (ax, ay) = PackLibrary.Anchor(o);
-                _wallItems.Add((img, (int)x - ax, (int)y - ay));
-            }
+    }
+
+    /// <summary>
+    /// Un objet du local hors du tri des emprises : au mur (après les murs, avant les objets au sol) ou au plafond
+    /// (par-dessus tout). Les objets muraux viennent du local réel, plus du plan : on peut les poser, déplacer, revendre.
+    /// </summary>
+    private void Hanging(PlacedItem item, List<(Img img, int x, int y)> layer, bool centered)
+    {
+        if (!PackLibrary.Has(item.DefId))
+            return;
+        var o = PackLibrary.Orient(PackLibrary.Asset(item.DefId), item.Facing);
+        var (x, y) = centered ? Tile(item.X + 0.5, item.Y + 0.5) : Tile(item.X, item.Y);
+        var (ax, ay) = PackLibrary.Anchor(o);
+        layer.Add((PackLibrary.Layer(o.GetProperty("layers").GetProperty("base"), item.Swatches), (int)Math.Round(x) - ax, (int)Math.Round(y) - ay));
+        AddHit(false, item.Id, o, (int)Math.Round(x), (int)Math.Round(y), centered ? 90_000 : -2);
     }
 
     private void FloorRect(string fid, int u0, int v0, int w, int d, Dictionary<string, string> sw)
@@ -416,6 +421,8 @@ public sealed class RoomRenderer
         foreach (var (s, x, y) in _wallItems)
             Blend.Over(img, s, x, y);
         Blend.Over(img, objects, 0, 0);
+        foreach (var (s, x, y) in _ceiling)
+            Blend.Over(img, s, x, y);
         return img;
     }
 

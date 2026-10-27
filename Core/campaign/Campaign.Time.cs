@@ -39,9 +39,28 @@ public partial class Campaign
     }
 
     /// <summary>À appeler après tout changement d'aménagement.</summary>
-    public void InvalidateLayout() => _blocked = null;
+    public void InvalidateLayout()
+    {
+        _blocked = null;
+        _comfort = null;
+    }
 
     private bool[,] Blocked => _blocked ??= Premises.Occupancy();
+
+    private (Premises Premises, int Items, int People, ComfortSummary Summary)? _comfort;
+
+    /// <summary>
+    /// Le confort du local pour toute l'équipe (Layout.Comfort), gardé en mémoire tant que le local, ses objets et l'effectif
+    /// ne changent pas : la simulation le lit à chaque minute de travail.
+    /// </summary>
+    public ComfortSummary SiteComfort()
+    {
+        if (_comfort is { } c && c.Premises == Premises && c.Items == Premises.Items.Count && c.People == People.Count)
+            return c.Summary;
+        var summary = Layout.Comfort(Premises, People.Count);
+        _comfort = (Premises, Premises.Items.Count, People.Count, summary);
+        return summary;
+    }
 
     private int ArrivalMinute(Person person) => 8 * 60 + 30 + person.Id * 7 % 30;
 
@@ -141,14 +160,13 @@ public partial class Campaign
     public Product? CurrentProject(Person person) =>
         person.Assignment.Kind == AssignmentKind.Project ? FindProduct(person.Assignment.TargetId) : AutoTarget();
 
-    /// <summary>Points de travail par minute de cette personne à son poste.</summary>
-    /// <summary>Production du poste de la personne (0 sans ordinateur), écrans en plus compris.</summary>
+    /// <summary>Production du poste de la personne (0 sans ordinateur), écrans en plus et concentration du local compris.</summary>
     public double StationOutput(Person person)
     {
         var post = Premises.SeatOf(person.Id);
         if (post == null || Premises.ComputerOf(post)?.Def is not { } computer)
             return 0;
-        return computer.Output * (1 + Layout.ScreenBonus(Premises, post));
+        return computer.Output * (1 + Layout.ScreenBonus(Premises, post)) * (1 + SiteComfort().Focus);
     }
 
     public double WorkRate(Person person, Discipline discipline, int teamSize = 1, bool lead = false)
@@ -157,7 +175,7 @@ public partial class Campaign
         double energy = person.Energy >= 40 ? 1 : 0.6 + person.Energy / 100;
         double morale = 0.85 + person.Morale / 100 * 0.3;
         double overtime = GameTime.Hour(Minute) >= Tuning.Work.DayEndHour ? 0.9 : 1;
-        int free = (lead ? Tuning.Work.CoordinationFreeTeamWithLead : Tuning.Work.CoordinationFreeTeam) + Layout.CoordinationBonus(Premises)
+        int free = (lead ? Tuning.Work.CoordinationFreeTeamWithLead : Tuning.Work.CoordinationFreeTeam) + (int)Math.Floor(SiteComfort().Coordination)
                    + (IsUnlocked("bigteam") ? 2 : 0);
         double coordination = teamSize <= free ? 1 : 1 / (1 + Tuning.Work.CoordinationLossPerExtraPerson * (teamSize - free));
         double tools = IsUnlocked("ai_tools") ? 1.1 : 1;
@@ -299,7 +317,7 @@ public partial class Campaign
     {
         var discipline = person.TrainingDiscipline!.Value;
         double level = person.Skill(discipline);
-        double gain = 7 * (1 + Layout.TrainingBonus(Premises)) * (IsUnlocked("academy") ? 1.3 : 1) * Math.Max(0.15, 1 - level / 110);
+        double gain = 7 * (1 + SiteComfort().Training) * (IsUnlocked("academy") ? 1.3 : 1) * Math.Max(0.15, 1 - level / 110);
         person.Skills[discipline] = Math.Round(Math.Min(95, level + gain), 1);
         person.TrainingDiscipline = null;
         person.Activity = Activity.Away;

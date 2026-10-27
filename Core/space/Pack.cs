@@ -23,13 +23,17 @@ public record PackAsset(
     string RenderLayer,
     bool Centered,
     string[] Provides,
-    IReadOnlyDictionary<string, PackFacing> Facings)
+    IReadOnlyDictionary<string, PackFacing> Facings,
+    int Span = 1)
 {
     public PackFacing Facing(string facing) => Facings.TryGetValue(facing, out var f) ? f : Facings.Values.First();
 
     public string DefaultFacing => Facings.ContainsKey("se") ? "se" : Facings.Keys.First();
 
     public bool WallMount => Kind == "wall";
+
+    /// <summary>Accroché au plafond (luminaire) : il ne prend aucune case au sol.</summary>
+    public bool Ceiling => Kind == "ceiling";
 
     /// <summary>Tapis et marquages : posés sur le sol, on marche dessus.</summary>
     public bool FloorDecor => RenderLayer == "floor_decor";
@@ -40,8 +44,26 @@ public record PlanObject(string Asset, int U, int V, string Facing, IReadOnlyLis
 
 public record PlanChild(string Socket, string Asset, bool HasCharacter);
 
-/// <summary>Un plan de pièce du pack (rooms/*.json) : taille, entrée, objets livrés.</summary>
-public record RoomPlan(string Id, string NameFr, int Width, int Depth, Cell Entrance, string EntranceWall, IReadOnlyList<PlanObject> Objects);
+/// <summary>Un objet mural d'un plan : mur du fond (« left » : U = 0, « right » : V = 0) et rang le long de ce mur.</summary>
+public record PlanWallItem(string Asset, string Wall, int Index);
+
+/// <summary>
+/// Un plan de pièce du pack (rooms/*.json) : taille, entrée, objets livrés, et les segments des deux murs du fond
+/// (« plain », « window », « window_wide », « door », null pour la suite d'une grande fenêtre).
+/// </summary>
+public record RoomPlan(string Id, string NameFr, int Width, int Depth, Cell Entrance, string EntranceWall, IReadOnlyList<PlanObject> Objects)
+{
+    public IReadOnlyList<string?> LeftWall { get; init; } = [];
+    public IReadOnlyList<string?> RightWall { get; init; } = [];
+    public IReadOnlyList<PlanWallItem> WallItems { get; init; } = [];
+
+    /// <summary>Le segment de mur à ce rang (null : hors du mur ou suite d'une grande fenêtre).</summary>
+    public string? Segment(string wall, int index)
+    {
+        var segments = wall == "left" ? LeftWall : RightWall;
+        return index >= 0 && index < segments.Count ? segments[index] : null;
+    }
+}
 
 /// <summary>Le pack original, embarqué dans le moteur : manifeste et plans de pièces.</summary>
 public static class Pack
@@ -56,6 +78,12 @@ public static class Pack
     public static PackAsset Asset(string id) => AssetsById.Value[id];
 
     public static RoomPlan Plan(string id) => PlansById.Value[id];
+
+    private static readonly Lazy<HashSet<string>> AcceptedTypes = new(() =>
+        AssetsById.Value.Values.SelectMany(a => a.Facings.Values).SelectMany(f => f.Sockets.Values).SelectMany(t => t).ToHashSet());
+
+    /// <summary>Un socket du pack accepte-t-il ce type d'objet ? (Un caisson « sous le bureau » n'a aucun hôte : il se pose au sol.)</summary>
+    public static bool Accepted(string type) => AcceptedTypes.Value.Contains(type);
 
     private static Stream Resource(string name) =>
         Assembly.GetExecutingAssembly().GetManifestResourceStream(name) ?? throw new InvalidOperationException($"Ressource du pack absente : {name}");
@@ -75,7 +103,9 @@ public static class Pack
                     var collision = o.Value.TryGetProperty("collision_tiles", out var c) && c.ValueKind == JsonValueKind.Array
                         ? c.EnumerateArray().Select(CellOf).ToList() : [];
                     var access = o.Value.TryGetProperty("access", out var ac) && ac.ValueKind == JsonValueKind.Array
-                        ? ac.EnumerateArray().Where(x => x.TryGetProperty("tile", out _)).Select(x => CellOf(x.GetProperty("tile"))).ToList() : [];
+                        ? ac.EnumerateArray().Where(x => x.TryGetProperty("tile", out _)).Select(x => CellOf(x.GetProperty("tile")))
+                            // La place de la personne derrière un comptoir est dans l'emprise : rien à laisser libre
+                            .Where(t => !collision.Contains(t)).ToList() : [];
                     var sockets = new Dictionary<string, string[]>();
                     if (o.Value.TryGetProperty("sockets", out var s) && s.ValueKind == JsonValueKind.Object)
                         foreach (var sock in s.EnumerateObject())
@@ -87,8 +117,10 @@ public static class Pack
             string Str(string key) => a.TryGetProperty(key, out var v) && v.ValueKind == JsonValueKind.String ? v.GetString()! : "";
             var provides = a.TryGetProperty("provides", out var p) && p.ValueKind == JsonValueKind.Array
                 ? p.EnumerateArray().Select(x => x.GetString()!).ToArray() : [];
+            int span = a.TryGetProperty("footprint_tiles", out var ft) && ft.ValueKind == JsonValueKind.Array
+                ? ft.EnumerateArray().Max(x => x.GetInt32()) : 1;
             result[Str("id")] = new PackAsset(Str("id"), Str("category"), Str("subcategory"), Str("name_fr"), Str("kind"),
-                Str("render_layer"), centered, provides, facings);
+                Str("render_layer"), centered, provides, facings, span);
         }
         return result;
     }
@@ -122,8 +154,19 @@ public static class Pack
             }
             var entrance = root.GetProperty("entrances")[0];
             string id = root.GetProperty("id").GetString()!;
+            List<string?> Segments(string wall) =>
+                root.TryGetProperty("walls", out var w) && w.TryGetProperty(wall, out var side) && side.TryGetProperty("segments", out var seg)
+                    ? seg.EnumerateArray().Select(x => x.ValueKind == JsonValueKind.String ? x.GetString() : null).ToList() : [];
+            var wallItems = root.TryGetProperty("wall_items", out var wi) && wi.ValueKind == JsonValueKind.Array
+                ? wi.EnumerateArray().Select(x => new PlanWallItem(x.GetProperty("asset").GetString()!, x.GetProperty("wall").GetString()!, x.GetProperty("index").GetInt32())).ToList()
+                : [];
             result[id] = new RoomPlan(id, root.GetProperty("name_fr").GetString()!, size[0].GetInt32(), size[1].GetInt32(),
-                CellOf(entrance.GetProperty("access_tile")), entrance.GetProperty("wall").GetString()!, objects);
+                CellOf(entrance.GetProperty("access_tile")), entrance.GetProperty("wall").GetString()!, objects)
+            {
+                LeftWall = Segments("left"),
+                RightWall = Segments("right"),
+                WallItems = wallItems,
+            };
         }
         return result;
     }

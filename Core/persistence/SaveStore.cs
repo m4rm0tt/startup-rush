@@ -118,6 +118,7 @@ public class SaveStore
             Migration.Finish(campaign, pending, notes);
         if (v2 != null)
             campaign.MigrationNote = string.Join(" ", new[] { campaign.MigrationNote, MigrationV2.Finish(campaign, v2) }.Where(n => n != ""));
+        campaign.ImportWallItems();
         return campaign;
     }
 

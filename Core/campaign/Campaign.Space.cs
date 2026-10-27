@@ -23,9 +23,21 @@ public partial class Campaign
         var paid = Spend(def.Price, Category.Equipment, $"Achat : {def.Name}");
         if (!paid.Ok)
             return paid;
-        Premises.Items.Add(new PlacedItem { Id = NewId(), DefId = def.Id, X = x, Y = y, Facing = f, PaidPrice = def.Price });
+        Premises.Items.Add(Placed(NewId(), def, x, y, f, def.Price));
         InvalidateLayout();
         return CommandResult.Success($"{def.Name} installé·e.");
+    }
+
+    /// <summary>Un objet posé en (x, y) : au sol, ou au mur que vise la case (son orientation suit alors le mur).</summary>
+    private static PlacedItem Placed(int id, FurnitureDef def, int x, int y, string facing, decimal paid)
+    {
+        var item = new PlacedItem { Id = id, DefId = def.Id, X = x, Y = y, Facing = facing, PaidPrice = paid };
+        if (def.OnWall && Layout.WallAt(x, y, facing) is { } wall)
+        {
+            item.Wall = wall;
+            item.Facing = Layout.WallFacing(wall);
+        }
+        return item;
     }
 
     /// <summary>Achète un objet et l'accroche à un objet posé (écran sur un bureau, machine à café sur un plan de travail).</summary>
@@ -68,7 +80,7 @@ public partial class Campaign
         if (!check.Ok)
             return CommandResult.Fail(check.Reason);
         Storage.Remove(stored);
-        Premises.Items.Add(new PlacedItem { Id = stored.Id, DefId = def.Id, X = x, Y = y, Facing = f, PaidPrice = stored.PaidPrice });
+        Premises.Items.Add(Placed(stored.Id, def, x, y, f, stored.PaidPrice));
         InvalidateLayout();
         return CommandResult.Success($"{def.Name} installé·e.");
     }
@@ -99,9 +111,11 @@ public partial class Campaign
         var check = Layout.CanPlace(Premises, item.Def, x, y, f, item.Id);
         if (!check.Ok)
             return CommandResult.Fail(check.Reason);
+        var moved = Placed(item.Id, item.Def, x, y, f, item.PaidPrice);
         item.X = x;
         item.Y = y;
-        item.Facing = f;
+        item.Facing = moved.Facing;
+        item.Wall = moved.Wall;
         foreach (var child in AllChildren(item))
             child.Facing = f;
         InvalidateLayout();
@@ -114,6 +128,8 @@ public partial class Campaign
         var item = Premises.Find(itemId);
         if (item == null || item.HostId != null)
             return CommandResult.Fail("Cet objet ne tourne pas.");
+        if (item.Wall != null && !(item.X == 0 && item.Y == 0))
+            return CommandResult.Fail("Un objet mural suit son mur : déplace-le dans le coin pour changer de mur.");
         var facings = item.Def.Pack.Facings.Keys.ToList();
         int start = facings.IndexOf(item.Facing);
         for (int k = 1; k < facings.Count; k++)
@@ -215,6 +231,22 @@ public partial class Campaign
             TakePlace(person);
         var issue = Layout.Check(Premises, Premises.SeatOf(id)!);
         return CommandResult.Success(issue == WorkstationIssue.None ? "Poste attribué." : $"Poste attribué, mais incomplet : {Layout.Describe(issue)}.");
+    }
+
+    /// <summary>
+    /// Les objets muraux du plan sont devenus de vrais objets du local (ils comptent dans le confort). Une sauvegarde plus
+    /// ancienne ne les a pas : on les ajoute une fois au chargement, comme livrés avec le local.
+    /// </summary>
+    public bool WallItemsImported { get; set; }
+
+    public void ImportWallItems()
+    {
+        if (WallItemsImported)
+            return;
+        if (!Premises.WallItems.Any() && Premises.PlanId != "")
+            Premises.Items.AddRange(RealEstate.WallItems(Pack.Plan(Premises.PlanId), NewId));
+        WallItemsImported = true;
+        InvalidateLayout();
     }
 
     /// <summary>Coût total d'un déménagement : garantie, forfait et transport des meubles, moins la garantie actuelle rendue.</summary>

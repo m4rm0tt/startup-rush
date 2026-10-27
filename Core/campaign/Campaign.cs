@@ -108,6 +108,7 @@ public partial class Campaign
 
         // Ta chambre, livrée avec ton lit, tes rangements et ton bureau modeste (vieille tour, écran simple)
         campaign.Premises = RealEstate.Create(RealEstate.Get(RealEstate.Apartment), campaign.NewId);
+        campaign.WallItemsImported = true;
 
         var skills = profile switch
         {

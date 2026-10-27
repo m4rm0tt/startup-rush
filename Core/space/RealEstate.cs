@@ -91,6 +91,15 @@ public static class RealEstate
                 });
             }
         }
+        premises.Items.AddRange(WallItems(plan, nextId));
         return premises;
     }
+
+    /// <summary>Les objets muraux du plan (affiches, horloge, stores, planning) : fixés au local, livrés avec lui.</summary>
+    public static IEnumerable<PlacedItem> WallItems(RoomPlan plan, Func<int> nextId) =>
+        plan.WallItems.Where(w => Pack.Has(w.Asset)).Select(w => new PlacedItem
+        {
+            Id = nextId(), DefId = w.Asset, X = w.Wall == "left" ? 0 : w.Index, Y = w.Wall == "left" ? w.Index : 0,
+            Wall = w.Wall, Facing = Layout.WallFacing(w.Wall), Included = true,
+        }).ToList();
 }

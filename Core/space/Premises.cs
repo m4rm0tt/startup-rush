@@ -7,7 +7,8 @@ public readonly record struct Cell(int X, int Y)
 
 /// <summary>
 /// Un objet du local. Posé au sol : sa case d'origine (X = U, Y = V, coin nord de l'emprise) et son orientation.
-/// Accroché : l'objet hôte (HostId) et le socket occupé ; il n'a pas de case à lui.
+/// Accroché : l'objet hôte (HostId) et le socket occupé ; il n'a pas de case à lui. Au mur : le mur du fond (Wall) et la
+/// case qui le longe (X = 0 pour le mur « left », Y = 0 pour le mur « right ») ; il ne prend aucune case au sol.
 /// </summary>
 public class PlacedItem
 {
@@ -20,6 +21,12 @@ public class PlacedItem
     public string Facing { get; set; } = "se";
 
     public int? HostId { get; set; }
+
+    /// <summary>Mur du fond qui porte l'objet (« left » ou « right »), null pour un objet au sol ou accroché.</summary>
+    public string? Wall { get; set; }
+
+    /// <summary>Rang le long de son mur : V pour le mur « left », U pour le mur « right ».</summary>
+    public int WallIndex => Wall == "left" ? Y : X;
 
     /// <summary>Socket de l'hôte occupé par cet objet (« chair », « monitor_main », « laptop_1 »...).</summary>
     public string? Socket { get; set; }
@@ -87,7 +94,10 @@ public class Premises
 
     public PlacedItem? Find(int id) => Items.FirstOrDefault(i => i.Id == id);
 
-    public IEnumerable<PlacedItem> Floor => Items.Where(i => i.HostId == null);
+    public IEnumerable<PlacedItem> Floor => Items.Where(i => i.HostId == null && i.Wall == null);
+
+    /// <summary>Les objets fixés aux murs du fond (affiches, horloge, stores, planning).</summary>
+    public IEnumerable<PlacedItem> WallItems => Items.Where(i => i.Wall != null);
 
     public IEnumerable<PlacedItem> Desks => Floor.Where(i => i.Def.Kind == FurnitureKind.Desk);
 
@@ -110,7 +120,7 @@ public class Premises
     public static IEnumerable<Cell> Footprint(FurnitureDef def, int x, int y, string facing)
     {
         var pack = def.Pack;
-        if (def.Attached || pack.FloorDecor || pack.WallMount || pack.Centered)
+        if (def.Attached || pack.FloorDecor || pack.WallMount || pack.Ceiling || pack.Centered)
             yield break;
         foreach (var c in pack.Facing(facing).Collision)
             yield return new Cell(x + c.X, y + c.Y);
@@ -121,17 +131,17 @@ public class Premises
 
     /// <summary>Cases où l'objet se trouve, même s'il ne bloque pas le passage (un objet centré est sur sa case).</summary>
     public static IEnumerable<Cell> Cells(FurnitureDef def, int x, int y, string facing) =>
-        def.Pack.Centered && !def.Attached ? [new Cell(x, y)] : Footprint(def, x, y, facing);
+        def.OnWall ? [] : def.Pack.Centered && !def.Attached ? [new Cell(x, y)] : Footprint(def, x, y, facing);
 
     public IEnumerable<Cell> Cells(PlacedItem item) =>
-        item.HostId != null ? [] : Cells(item.Def, item.X, item.Y, item.Facing);
+        item.HostId != null || item.Wall != null ? [] : Cells(item.Def, item.X, item.Y, item.Facing);
 
     /// <summary>Cases d'usage à laisser libres (devant un bureau : là où l'on s'assoit).</summary>
     public static IEnumerable<Cell> AccessCells(FurnitureDef def, int x, int y, string facing) =>
         def.Attached ? [] : def.Pack.Facing(facing).Access.Select(c => new Cell(x + c.X, y + c.Y));
 
     public IEnumerable<Cell> AccessCells(PlacedItem item) =>
-        item.HostId != null ? [] : AccessCells(item.Def, item.X, item.Y, item.Facing);
+        item.HostId != null || item.Wall != null ? [] : AccessCells(item.Def, item.X, item.Y, item.Facing);
 
     /// <summary>Les postes de travail : chaque socket de chaise de chaque bureau.</summary>
     public IEnumerable<Workstation> Workstations =>

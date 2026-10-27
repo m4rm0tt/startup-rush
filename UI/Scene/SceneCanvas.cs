@@ -343,6 +343,9 @@ public class SceneCanvas : Control
         }
         string facing = tool.Facing ?? def.Pack.DefaultFacing;
         var check = Layout.CanPlace(Premises, def, cell.X, cell.Y, facing, tool.MovingItemId);
+        // Au mur, l'objet prend l'orientation du mur visé (celui de gauche ou de droite, au choix dans le coin)
+        if (def.OnWall && Layout.WallAt(cell.X, cell.Y, facing) is { } wall)
+            facing = Layout.WallFacing(wall);
         var cells = Premises.Cells(def, cell.X, cell.Y, facing).ToList();
         foreach (var c in cells.Count > 0 ? cells : [cell])
             context.DrawGeometry(check.Ok ? ValidFill : InvalidFill, null, Diamond(c));

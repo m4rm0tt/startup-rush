@@ -10,9 +10,23 @@ using UI.Pixel;
 
 namespace UI.Hud.Panels;
 
-/// <summary>Aménagement : catalogue, cartons, état des postes, déménagement.</summary>
+/// <summary>Aménagement : état des postes, confort du local, catalogue par rubrique, cartons, déménagement.</summary>
 public class BuildPanel : GamePanel
 {
+    /// <summary>Rubrique du catalogue ouverte (gardée le temps de la session).</summary>
+    private static string _group = "Bureaux et chaises";
+
+    private static string GroupOf(FurnitureDef def) => def.Kind switch
+    {
+        FurnitureKind.Desk or FurnitureKind.Chair => "Bureaux et chaises",
+        FurnitureKind.Laptop or FurnitureKind.Tower or FurnitureKind.Monitor or FurnitureKind.Keyboard => "Informatique",
+        FurnitureKind.Coffee or FurnitureKind.Lounge or FurnitureKind.Kitchen or FurnitureKind.Refreshment => "Pauses",
+        FurnitureKind.Whiteboard or FurnitureKind.Bookshelf or FurnitureKind.Meeting or FurnitureKind.Reception => "Organisation",
+        FurnitureKind.Storage or FurnitureKind.Sanitary => "Confort de base",
+        FurnitureKind.Partition => "Cloisons",
+        FurnitureKind.Personal => "Objets personnels",
+        _ => "Ambiance"
+    };
     public override string Title => "Aménagement";
     public override string Context => Campaign.Premises.Name;
 
@@ -28,6 +42,7 @@ public class BuildPanel : GamePanel
             column.Children.Add(Ui.Card(Ui.Column(4,
                 Ui.Text(what, 16, Palette.Gold, bold: true),
                 Ui.Muted(def.Attached ? "Clique sur un bureau ou un meuble qui peut le recevoir : il prend le premier emplacement libre."
+                    : def.OnWall ? "Clique une case le long d'un mur du fond (dans le coin, R choisit le mur)."
                     : def.Kind == FurnitureKind.Desk
                         ? "Clique sur une case libre : la case en pointillés, devant, reste libre pour s'asseoir."
                         : "Clique sur une case libre. Vert : possible, rouge : impossible."),
@@ -57,22 +72,20 @@ public class BuildPanel : GamePanel
         column.Children.Add(Ui.Section($"Postes : {complete} complet(s) pour {people} personne(s)", stations,
             Ui.Muted("Un poste = un bureau, une chaise, un ordinateur (un portable, ou une tour avec écran et clavier) et une case libre devant. Clique un bureau pour l'attribuer.")));
 
-        // Catalogue
-        foreach (var group in FurnitureCatalog.Buyable.GroupBy(d => d.Kind switch
-                 {
-                     FurnitureKind.Desk or FurnitureKind.Chair => "Bureaux et chaises",
-                     FurnitureKind.Laptop or FurnitureKind.Tower or FurnitureKind.Monitor or FurnitureKind.Keyboard => "Informatique",
-                     FurnitureKind.Coffee or FurnitureKind.Lounge or FurnitureKind.Kitchen => "Pauses",
-                     FurnitureKind.Whiteboard or FurnitureKind.Bookshelf => "Organisation",
-                     FurnitureKind.Personal => "Objets personnels",
-                     _ => "Ambiance"
-                 }))
-        {
-            var wrap = new WrapPanel();
-            foreach (var def in group)
-                wrap.Children.Add(CatalogButton(def));
-            column.Children.Add(Ui.Section(group.Key, wrap));
-        }
+        column.Children.Add(ComfortSection());
+
+        // Catalogue, une rubrique à la fois
+        var groups = FurnitureCatalog.Buyable.GroupBy(GroupOf).ToList();
+        var wrap = new WrapPanel();
+        foreach (var def in groups.First(g => g.Key == _group))
+            wrap.Children.Add(CatalogButton(def));
+        column.Children.Add(Ui.Section("Catalogue",
+            Ui.Choice(groups.Select(g => (g.Key, g.Key)), _group, g =>
+            {
+                _group = g;
+                Refresh();
+            }),
+            wrap));
 
         // Cartons
         if (Campaign.Storage.Count > 0)
@@ -102,6 +115,59 @@ public class BuildPanel : GamePanel
         return column;
     }
 
+    /// <summary>
+    /// Ce que l'aménagement apporte, indicateur par indicateur, avec son plafond : la synthèse du local, et sur demande
+    /// les objets qui y contribuent. Un manque prive seulement d'un bonus.
+    /// </summary>
+    private Control ComfortSection()
+    {
+        var c = Campaign.SiteComfort();
+        var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"), RowSpacing = 4, ColumnSpacing = 8 };
+        int row = 0;
+        void Line(string icon, string label, double fraction, string value, string tip)
+        {
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+            var name = Ui.Row(4, Ui.Icon(icon, 16), Ui.Text(label, 14, Palette.Cloud, wrap: false));
+            ToolTip.SetTip(name, tip);
+            var bar = Ui.Bar(fraction, fraction >= 0.999 ? Palette.Leaf : Palette.Gold, 6);
+            bar.VerticalAlignment = VerticalAlignment.Center;
+            var number = Ui.Text(value, 14, Palette.Snow, wrap: false);
+            Grid.SetRow(name, row);
+            Grid.SetRow(bar, row);
+            Grid.SetColumn(bar, 1);
+            Grid.SetRow(number, row);
+            Grid.SetColumn(number, 2);
+            grid.Children.Add(name);
+            grid.Children.Add(bar);
+            grid.Children.Add(number);
+            row++;
+        }
+        Line("heart", "Ambiance", c.Ambiance / Layout.MaxAmbiance, $"+{c.Ambiance:0.#} moral", "Plantes, lampes, tapis, affiches, trophées. 6 de moral au plus.");
+        Line("people", "Détente", c.Lounge / Layout.MaxLounge, $"+{c.Lounge:0.#} moral", "Canapés et fauteuils. 4 de moral au plus.");
+        Line("check", "Confort de base", c.Basics / Layout.MaxBasics, $"+{c.Basics:0.#} moral",
+            $"Rangement pour {c.StorageCoverage:P0} de l'équipe, sanitaires {c.HygieneCoverage:P0}. 3 de moral au plus.");
+        Line("bolt", "Pause", (c.Break - Layout.BaseBreak) / (Layout.MaxBreak - Layout.BaseBreak), $"{c.Break:0.#} énergie",
+            "Une boisson ou une collation, et une place assise, pour chacun tant qu'il reste des places. 3 sans rien, 15 au plus.");
+        Line("screen", "Concentration", c.Focus / Layout.MaxFocus, $"+{c.Focus:P0}", "Production en plus grâce aux cloisons, selon les personnes couvertes. 4 % au plus.");
+        Line("crown", "Coordination", c.Coordination / Layout.MaxCoordination, $"+{System.Math.Floor(c.Coordination):0} pers.",
+            "Personnes de plus par équipe sans perte : tableaux, planning, tables de réunion avec leurs chaises. 3 au plus.");
+        Line("calendar", "Formation", c.Training / Layout.MaxTraining, $"+{c.Training:P0}", "Bibliothèques, livres, schémas, écran de présentation. 40 % au plus.");
+        if (c.Recruits > 0)
+            Line("user", "Accueil", 1, $"+{c.Recruits} candidat", "Une banque d'accueil : un candidat de plus chaque semaine.");
+
+        // Qui contribue à quoi, sur demande
+        var contributors = Ui.Column(2);
+        foreach (var group in Campaign.Premises.Items.Select(i => i.Def)
+                     .Where(d => d.Kind is not (FurnitureKind.Decor or FurnitureKind.Desk or FurnitureKind.Laptop or FurnitureKind.Tower
+                         or FurnitureKind.Monitor or FurnitureKind.Keyboard or FurnitureKind.Chair or FurnitureKind.Kitchen))
+                     .GroupBy(GroupOf).OrderBy(g => g.Key))
+            contributors.Children.Add(Ui.Muted($"{group.Key} : " + string.Join(", ", group.GroupBy(d => d.Name).Select(d => d.Count() > 1 ? $"{d.Key} ×{d.Count()}" : d.Key)), 13));
+        if (contributors.Children.Count == 0)
+            contributors.Children.Add(Ui.Muted("Rien pour l'instant.", 13));
+        string title = $"Confort du local ({c.People} personne{(c.People > 1 ? "s" : "")})";
+        return Ui.Section(title, grid, Ui.Details("Ce qui y contribue", contributors));
+    }
+
     private Control CatalogButton(FurnitureDef def)
     {
         var image = PackLibrary.Thumbnail(def.Id);
@@ -119,7 +185,10 @@ public class BuildPanel : GamePanel
         if (selected)
             button.Classes.Add("selected");
         var cells = Premises.Footprint(def, 0, 0, def.Pack.DefaultFacing).Count();
-        ToolTip.SetTip(button, def.Attached ? $"{def.Name} — {def.Effect} Se pose sur un meuble." : $"{def.Name} — {def.Effect} Emprise : {cells} case(s).");
+        ToolTip.SetTip(button, def.Attached ? $"{def.Name} — {def.Effect} Se pose sur un meuble."
+            : def.OnWall ? $"{def.Name} — {def.Effect} Se fixe sur un mur du fond."
+            : def.Pack.Ceiling ? $"{def.Name} — {def.Effect} Au plafond."
+            : $"{def.Name} — {def.Effect} Emprise : {cells} case(s).");
         button.Click += (_, _) =>
         {
             Session.SetTool(selected ? null : new BuildTool(def.Id));

@@ -148,6 +148,48 @@ calcul (9), GPU (120). La demande va vers une cible : taille du marché × renom
 jour de coupure sur 30 jours) × sécurité (+25 % avec une cage complète) ; une offre saturée perd des clients. Chaque offre
 explique ce qui la fait monter ou baisser (« trop cher », « plus de place », « des coupures », « fiable »).
 
+## 4 quater. Recherche, matériel et production
+
+✅ La recherche est une file de projets choisis. Les personnes affectées à la recherche (fiche : « Travaille sur », Recherche)
+avancent la première recherche dont l'équipement est sur leur site. Durée (points) et budget par jour ⚙️ sont annoncés ; le
+budget n'est payé que les jours où quelqu'un y a travaillé ; suspendre ne perd rien. Pas d'échec aléatoire.
+
+| Recherche ⚙️ | Débloque | Équipement (un de chaque groupe) |
+|---|---|---|
+| Conception de cartes (60 pts, 60 CHF/j) | famille « Cartes et kits » | établi électronique ; oscilloscope ou station de soudure |
+| Validation de PC (90) | « PC assemblés » | banc de test PC |
+| Imprimantes 3D (100) | « Imprimantes 3D » | imprimante 3D ; établi de calibration ou fraiseuse |
+| Équipements réseau (80) | « Équipements réseau » | établi ; oscilloscope |
+| Portables (140), Serveurs et NAS (140) | familles | bancs de test, chariot d'instruments |
+| Contrôle qualité (80) | −30 % de défauts | instruments ou oscilloscope ; microscope |
+| Gabarits d'assemblage (80) | postes manuels +25 % | découpeuse laser, fraiseuse ou imprimante 3D |
+| Cartes en série (120), Cobotique (100), Cartes graphiques (200), Microcomposants (260) | recettes et méthodes | microscope, instruments, cobot, paillasse |
+
+✅ Le matériel se conçoit comme un logiciel (composants, file, équipe), puis se **fabrique** : chaque unité consomme sa
+nomenclature (celle de la famille, plus une fois les matières de chaque composant présent). On ne vend que des unités entières
+**en stock**, par des canaux : vente directe (visibilité 0,5, 4 par jour), boutique en ligne (1,2, 4 % et 150 CHF/mois, 60 par
+jour), distributeurs (2,0, 25 %, 500 par jour). Les ventes perdues (rupture, canaux pleins) sont comptées. Les unités qui
+reviennent en panne coûtent leur réparation (garanties) ; le taux de pannes dépend de la conception, du contrôle qualité, du
+rodage (banc : −40 % sur 30 unités par jour) et du **mini-jeu de calibration** de la première série (jusqu'à −50 % sur 100 unités).
+
+✅ Une ligne de production relie des stations par des convoyeurs, port à port, dans le sens des flèches du pack, jusqu'à une fin
+de ligne. Rien n'est téléporté : une unité avance d'un nœud à la fois ; un convoyeur tient 2 unités, une station 1 ; une sortie
+bloquée arrête l'étape d'avant. Une station dont l'étape n'est plus au programme laisse passer ; une station d'une étape à venir
+bloque (« mauvaise entrée »). Il faut des opérateurs (affectation Production) : un par poste manuel au travail, un pour 4 automates
+(ou une armoire de contrôle). Diagnostics : matière manquante, sortie bloquée, mauvaise entrée, opérateur absent, stock plein,
+salle propre incomplète, électricité ou froid insuffisants.
+
+| Recette | Étapes | Matières → produit |
+|---|---|---|
+| Produit fini | assemblage → logiciel → emballage | nomenclature + 1 emballage → 1 unité |
+| Cartes électroniques | placement → refusion → inspection | 1 circuit + 2 composants → 1 carte |
+| Cartes graphiques | assemblage → inspection | 1 puce + 2 mémoires + 1 carte → 1 GPU |
+| Processeurs | traitement (salle propre, outil chargé à la main) | 1 plaquette → 20 puces (10 sans station de précision) |
+
+Stocks et achats ⚙️ : stock par site (40 + rack 150, palette 40, bac 10, étagère 20). Un achat est payé à la commande et livré
+après le délai du fournisseur. Les réserves automatiques recommandent jusqu'à leur niveau (stock + en route), sous un plafond par
+mois civil ; la matière la plus en manque d'abord, chacune limitée à sa part de la place.
+
 ## 5. Automatismes
 
 | Ce qui est automatique | Règle | Ce que le joueur règle |
@@ -197,6 +239,7 @@ Une seule monnaie : les **points de développement**. Ils ne servent qu'à la ca
 | Commercial | Moteurs de recherche (1), Lancements événementiels (1), Salons et presse (2), Fidélisation −15 % d'abandon (2) |
 | Innovation | Laboratoire qualité +0,05 (2), Assistants de code +10 % de production (3) |
 | Lot 4 | Plusieurs sites (Organisation, 1), Salle serveur (Infrastructure, 1), Haute densité (2), Datacenter (3), Offres cloud (Commercial, 2), Calcul à la demande (2) |
+| Lot 5 | Matériel (Création, 2), Industrialisation (Innovation, 3), Salle propre (3), Boutique en ligne (Commercial, 1), Distributeurs (2) ; recherches : +1 point chacune |
 
 Chaque nœud a un effet réel, testé ou visible dans la simulation. Aucune branche n'en exclut une autre et rien n'est irréversible. Les outils de base (application, jeu, composants niveaux 1 et 2, réseaux sociaux, hébergement mutualisé et Cloud S) sont disponibles dès le départ.
 

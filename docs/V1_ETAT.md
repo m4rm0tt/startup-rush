@@ -27,22 +27,22 @@ Ce fichier sert à reprendre le travail : il dit ce qui existe vraiment dans le 
 | Design → développement → tests automatiques par les employés | fait | `Core/campaign/Campaign.Time.cs` (`PickWork`, `DoWork`) | Étendre aux tâches de recherche, fabrication, IA |
 | Le fondateur ne produit plus en passif | **fait (lot 2)** | `Campaign.Time.cs` (`FounderTime`) : support seulement, hors terminal | — |
 | Terminal de saisie mot par mot | **fait (lot 2)** | `Core/campaign/Campaign.Terminal.cs`, `UI/Hud/TerminalView.cs`, `UI/Screens/GameScreen.cs` | Améliorations du terminal dans l'arbre (lot 3), saisie simplifiée d'accessibilité |
-| Mini-jeux de grosses actions et délégation | **fait (lot 3)** pour le logiciel | `Core/campaign/Campaign.Launch.cs`, `UI/Hud/LaunchView.cs` | Mini-jeux matériel, IA, quantique (lots 5 et 6) |
+| Mini-jeux de grosses actions et délégation | **fait** (logiciel au lot 3, calibration du matériel au lot 5) | `Core/campaign/Campaign.Launch.cs`, `UI/Hud/LaunchView.cs` | Mini-jeux IA et quantique (lot 6) |
 | Avis causaux avec lien vers le levier | partiel | `Core/products/Reviews.cs` ; offres cloud : `Campaign.CloudTrends` (prix, saturation, coupures) | Causes matériel (rupture, défauts, délai), IA |
 | Prix, marketing, souhaits, entretien, hébergement plafonné | **fait (lot 4)** | `Campaign.Products.cs` (`AdjustHosting` : externe, ou interne avec débordement sous le plafond), `Core/products/Market.cs` (`Product.Capacity`) | — |
 | Équipe : recrutement, horaires, congés, formation, augmentation | fait | `Core/campaign/Campaign.Team.cs`, `Core/team/` | Métiers nouveaux (opérateur, chercheur), apparences du pack |
-| Arbre de développement sur vrais jalons | partiel | `Core/progress/DevTree.cs` (25 nœuds, 6 branches dont « Outils du boss »), `Campaign.Daily.cs` (`AwardUsers`, `CheckMilestones`) | Sous-branches matériel, industrie, IA, cloud, recherche |
+| Arbre de développement sur vrais jalons | partiel | `Core/progress/DevTree.cs` (36 nœuds, 6 branches), `Campaign.Daily.cs` (`AwardUsers`, `CheckMilestones`), recherches (`Campaign.Research.cs`) | IA, quantique (lot 6) |
 | Finances et faillite progressive | fait | `Core/finance/Ledger.cs` (catégories `Cloud`, `Energy`), `Core/finance/Solvency.cs`, `Campaign.Daily.cs` | Matières (lot 5) ; détail du résultat par site |
-| Sauvegardes nommées, automatiques, atomiques, migration | **format 4 (lot 4)** | `SaveStore.cs` (format 4), `Migration.cs` (1 → 2), `MigrationV2.cs` (2 → 3), `MigrationV3.cs` (3 → 4), copie `.v<format>.json` | Nouvelles activités des lots 5 et 6 |
+| Sauvegardes nommées, automatiques, atomiques, migration | **format 5 (lot 5)** | `SaveStore.cs` (format 5 ; le format 4 se relit tel quel), `Migration.cs` (1 → 2), `MigrationV2.cs` (2 → 3), `MigrationV3.cs` (3 → 4), copie `.v<format>.json` | IA et studio (lot 6) |
 | Mobilier utile et plafonné | **fait (lot 3)** pour le bureau | `Core/space/Furniture.cs` (89 IDs du pack jouables), `Core/space/Layout.cs` (`Comfort` : 8 indicateurs plafonnés avec couverture), synthèse dans `UI/Hud/Panels/BuildPanel.cs` | `moving_box` ; mobilier des ateliers, labos et salles techniques (lots 4 à 6) ; synthèse multisite (lot 4) |
 | Plusieurs sites visitables, vue commune | **fait (lot 4)** | `Campaign.Sites`, `Campaign.SiteId` (vue), `Core/campaign/Campaign.Sites.cs`, `Core/space/RealEstate.cs` (parc d'offres), `UI/Hud/Panels/SitesPanel.cs` | Ateliers, usine, laboratoire (lots 5 et 6) ; transferts entre sites avec délai (lot 5, pour les stocks) |
 | Rendu isométrique, ancres, tri topologique, ombres, couches | **fait (lots 2 et 3)** | `UI/Iso/PackImages.cs`, `UI/Iso/RoomRenderer.cs` (portage du compositeur ; objets muraux et plafond depuis le local réel), `UI/Scene/SceneCanvas.cs` | Estompage des objets hauts |
 | HUD Papier, polices du pack, curseurs | partiel (lot 2) | `UI/Pixel/PixelPanel.cs` (9-slice du pack), `UI/Pixel/Palette.cs`, `UI/App.axaml`, `UI/Pixel/Icons.cs` | Curseurs, onglets, cartes, listes, cases à cocher du pack ; police à régler (taille non multiple de 12) |
 | Personnages en couches, coiffures, peaux | **fait (lot 2)** | `Core/team/Person.cs` (`Appearance`), `UI/Iso/Portraits.cs`, choix à la nouvelle campagne | Recoloration des tenues |
-| Matériel, usine, stocks, approvisionnement, canaux de vente | absent | — | Lot 5 |
+| Matériel, usine, stocks, approvisionnement, canaux de vente | **fait (lot 5)** | `Core/industry/Industry.cs`, `Core/campaign/Campaign.Industry.cs`, familles matérielles de `ProductCatalog.cs`, `UI/Hud/Panels/IndustryPanel.cs` | Kits XR (lot 6) ; transferts de stock entre sites ; rentabilité (lot 7) |
 | Infrastructure interne, racks, énergie, refroidissement, offres cloud | **fait (lot 4)** | `Core/space/Infrastructure.cs`, `Core/campaign/Campaign.Infra.cs`, `Core/campaign/Campaign.Cloud.cs`, `UI/Hud/Panels/CloudPanel.cs` | Usage du calcul et des GPU par l'IA et la recherche (lots 5 et 6) ; quantique (lot 6) |
 | IA simulée | absent | — | Lot 6 |
-| Recherche, laboratoires, studio, XR, quantique | absent | — | Lots 5 et 6 |
+| Recherche, laboratoires, studio, XR, quantique | **recherche et labos faits (lot 5)** | `Core/campaign/Campaign.Research.cs`, `UI/Hud/Panels/ResearchPanel.cs` | Studio, XR, quantique (lot 6) |
 | Bots d'équilibrage et rapport | partiel | `Core/bots/`, `Tests/balance/` (terminal, délégation, mots tapés mesurés) | Nouvelles branches (lots 4 à 6) |
 | Captures du vrai jeu | fait | `UI/Capture.cs` (`--capture`) | Refaire après chaque lot visuel |
 
@@ -56,7 +56,7 @@ Le pack fournit un compositeur C# de référence (`assets/StartupRushOriginalAss
 | 2 | Chambre avec les nouveaux assets, HUD, création de projet, terminal du boss, premier lancement, avis, sauvegarde et reprise | **fait**, voir ci-dessous |
 | 3 | Employés automatiques, délégation, mini-jeux sans spam, arbre et confort utiles | **fait**, voir « Lot 3 » (mini-jeux matériel, IA et quantique avec les lots 5 et 6) |
 | 4 | Multisite, réseau, racks, hébergement interne et externe, offres cloud | **fait**, voir « Lot 4 » |
-| 5 | Recherche, prototypage, gamme matérielle, flux d'usine, stocks, approvisionnement, canaux de vente | à faire |
+| 5 | Recherche, prototypage, gamme matérielle, flux d'usine, stocks, approvisionnement, canaux de vente | **fait**, voir « Lot 5 » |
 | 6 | IA simulées, studio, XR, calcul avancé et quantique | à faire |
 | 7 | Couverture de tous les IDs, équilibrage, performance, accessibilité, migrations, candidat de sortie | à faire |
 
@@ -170,8 +170,42 @@ Limites et suite :
 - Le datacenter et le siège n'ont pas de test dédié (même code que la salle serveur et les bureaux).
 - `moving_box` toujours sans fonction ; mini-jeux matériel/IA/quantique avec les lots 5 et 6.
 
+## Lot 5 : ce qui a été fait, ce qui reste
+
+Testé par `Tests/industry/IndustryTest.cs` (10 tests) ; vu sur les captures 29 à 33 du vrai jeu.
+
+- **Recherche** (`Campaign.Research.cs`) : 12 projets (familles, recettes, méthodes), une file ; des personnes affectées à la
+  recherche avancent la première recherche équipée sur leur site (un équipement de chaque groupe : établi, oscilloscope, bancs,
+  instruments...) ; durée et budget par jour annoncés, payés seulement si quelqu'un y a travaillé ; suspendre ne perd rien.
+  Établis et bancs de laboratoire servent de postes. Une recherche terminée débloque comme un nœud (`IsUnlocked`) et rapporte 1 point.
+- **Matériel** : 7 familles, 14 publics, 15 composants matériels conçus par l'équipe comme un logiciel ; chaque composant ajoute
+  des matières à la nomenclature (une fois). Coût des matières, marge, stock, ventes et pannes sur la fiche du projet.
+- **Production** (`Core/industry/Industry.cs`, `Campaign.Industry.cs`) : graphe des ports orientés du pack ; toutes les 10 minutes de
+  travail, les unités avancent de station en convoyeur (2 unités par convoyeur, 1 par station), une saturation bloque l'amont,
+  une station dont l'étape n'est plus au programme laisse passer, une station d'une étape à venir bloque (« mauvaise entrée ») ;
+  matières prises au stock à la première station ; fin de ligne → stock du site. Opérateurs (affectation Production) pour les
+  postes manuels et la supervision (1 pour 4 automates, armoires de contrôle) ; vitesse réduite par l'électricité/le froid.
+  Puces : outil chargé à la main en salle propre complète, la moitié rebutée sans station de précision. Dispositions conseillées
+  (assemblage, cartes, GPU) et ligne du plan d'usine, posées d'un clic avec coût annoncé.
+- **Stocks et achats** : stock par site borné (40 + racks, palettes, bacs) ; achats livrés après le délai ; réserves automatiques
+  sous plafond mensuel, transit compté, argent engagé à la commande, la matière la plus en manque d'abord et chacune à sa part de
+  place ; alerte quand un ordre manque d'une matière sans réserve ; bouton « Réserves pour cet ordre ».
+- **Ventes** : unités entières en stock seulement, par canaux (direct ; boutique en ligne ; distributeurs) avec visibilité,
+  commission et capacité ; ventes perdues comptées ; garanties payées selon le taux de pannes (qualité de conception, contrôle
+  qualité, rodage, calibration de la première série).
+- **Format 5** : rien à convertir (données ajoutées), copie `.v4.json` gardée.
+- **Bots** : « materiel » (0 faillite sur 5 ; ~60 cartes par mois sans rupture ; 10 356 CHF médian contre 191 938 sans matériel).
+
+Limites et suite :
+- Rentabilité : une carte à bas prix ne paie pas le loyer d'un atelier en 18 mois (bilan) ; PC, serveurs et GPU, plus chers,
+  ne sont pas encore mesurés par un bot. À reprendre au lot 7.
+- Pas de transferts de stock entre sites (chaque ligne prend au stock de son site ; les ventes puisent dans tous les sites).
+- Les opérateurs ne sont pas assis aux postes des stations : une bulle les montre près d'une station de leur ligne.
+- Le fondateur ne prépare pas la recherche au terminal (prévu par la spécification, pas fait).
+- Les objets studio, XR, quantique et le calcul avancé du plan de laboratoire restent pour le lot 6.
+
 ## Couverture du registre
 
-586 lignes : **77 validées**, 142 partielles (branchées sans test d'effet, ou vérifiées seulement en capture), 367 non
+586 lignes : **98 validées**, 169 partielles (branchées sans test d'effet, ou vérifiées seulement en capture), 319 non
 implémentées (dont les décors des plans, affichés mais sans fonction pour l'instant). Lot 3 : `tools/registry_lot3.py` ;
-lot 4 : `tools/registry_lot4.py`. Une ligne passe à « validé » seulement quand elle nomme un consommateur réel dans le jeu, son fichier de définition et un scénario de test qui vérifie une conséquence (avant/après pour un objet de gameplay, action et état pour un contrôle d'interface). Le contrôle `AssetRegistryTest` est statique : il vérifie les IDs et les fichiers cités, pas les effets.
+lot 4 : `tools/registry_lot4.py` ; lot 5 : `tools/registry_lot5.py`. Une ligne passe à « validé » seulement quand elle nomme un consommateur réel dans le jeu, son fichier de définition et un scénario de test qui vérifie une conséquence (avant/après pour un objet de gameplay, action et état pour un contrôle d'interface). Le contrôle `AssetRegistryTest` est statique : il vérifie les IDs et les fichiers cités, pas les effets.

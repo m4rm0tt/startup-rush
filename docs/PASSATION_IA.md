@@ -41,9 +41,9 @@
 
 ```
 dotnet build StartupRush.sln
-dotnet test Tests/Tests.csproj                                   # 115 tests à la fin du lot 4
+dotnet test Tests/Tests.csproj                                   # 126 tests à la fin du lot 5
 dotnet test Tests/Tests.csproj --filter Name=WriteBalanceReport  # réécrit BALANCE_REPORT.md (bots, ~1 min)
-UI.exe --capture <dossier>                                       # parcours scripté dans le vrai jeu, 32 captures + rapport
+UI.exe --capture <dossier>                                       # parcours scripté dans le vrai jeu, 37 captures + rapport
 ```
 
 Pièges connus :
@@ -101,7 +101,7 @@ Pièges connus :
   existants (contrôle **statique**, à présenter comme tel).
 - À la fin du lot 2 : 36 validées, 96 partielles, 454 non implémentées. À la fin du lot 3 : 59 validées, 124 partielles,
   403 non implémentées (`tools/registry_lot3.py`). À la fin du lot 4 : 77 validées, 142 partielles, 367 non implémentées
-  (`tools/registry_lot4.py`).
+  (`tools/registry_lot4.py`). À la fin du lot 5 : 98 validées, 169 partielles, 319 non implémentées (`tools/registry_lot5.py`).
 
 ## 7. Où on en est
 
@@ -131,9 +131,21 @@ Voir le tableau des lots de `docs/V1_ETAT.md` et la section « Lot 3 » ci-desso
   `RoomRenderer.Attach`. Répartition chaque nuit dans `Campaign.Infra.cs` (`RunInfrastructure`), offres dans `Campaign.Cloud.cs`.
 - Les plans `room_hw_workshop`, `room_factory_hall`, `room_advanced_lab` ne sont pas encore à louer (lots 5 et 6) ; leurs
   machines sont des décors. Le calcul et les GPU ne servent qu'aux offres cloud tant que l'IA et la recherche n'existent pas.
-- Ordre conseillé ensuite : lot 5 (recherche et prototypage, gamme matérielle, atelier et usine avec flux, stocks,
-  approvisionnement sous plafond, canaux de vente ; format 5), puis lot 6 (IA simulées sur le calcul/GPU du lot 4, studio, XR,
-  quantique), puis lot 7.
+
+## 10. Lot 5 et la suite
+
+- Lot 5 fait : voir « Lot 5 » dans `docs/V1_ETAT.md` et §4 quater de `DESIGN_SIMULATION.md`. Format de sauvegarde **5**.
+- **Recherche** : `Campaign.Research.cs` (catalogue `ResearchCatalog`, file `Research`, `ResearchDone` lu par `IsUnlocked`) ;
+  `AssignmentKind.Research` → `DoResearch` dans `Campaign.Time.cs`. `Campaign.UnlockName(id)` donne un nom lisible (nœud ou recherche).
+- **Production** : catalogue et graphe dans `Core/industry/Industry.cs` (matières, stations, recettes, canaux, dispositions,
+  `FlowGraph.Build`) ; état et simulation dans `Campaign.Industry.cs` (`Orders`, `FlowUnits`, `Stock`, `Purchases`, `Reserves`,
+  `RunProduction` toutes les 10 min de travail, `RunSupply` chaque nuit, `SettleHardware` après les ventes). `Campaign.Flow` =
+  diagnostics non sauvegardés. Opérateurs : `AssignmentKind.Production` (TargetId = site) ; `SiteOf` les rattache à ce site.
+- **Pièges** : le nom `Units` est pris (format des unités cloud) → la liste s'appelle `FlowUnits` ; `Seat` cherche la chaise sur
+  le site du poste (pas le site affiché) ; une recherche id commence par `res_` et n'est pas un nœud de `DevTree`.
+- Ordre conseillé ensuite : lot 6 (IA simulées sur le calcul/GPU du lot 4 et les stations GPU, studio audiovisuel, zone XR et kits
+  XR, calcul avancé et quantique dans le laboratoire avancé, mini-jeux IA et quantique ; format 6), puis lot 7 (couverture,
+  équilibrage dont la rentabilité du matériel et de la salle serveur, performance, accessibilité, candidat de sortie).
 - Points à vérifier signalés au lot 2 (toujours ouverts) : personnages assis moins nombreux que les postes sur la capture de
   la campagne avancée ; police pixel floue à certaines tailles ; « marketing excessif » trop peu puni (2/5 faillites).
 - Piège d'outillage : certains heredocs bash avec des apostrophes françaises échouent (« unexpected EOF ») ; écrire les scripts

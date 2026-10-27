@@ -219,6 +219,9 @@ public static class Capture
         later.HandleKey(Avalonia.Input.Key.Escape, Avalonia.Input.KeyModifiers.None);
         await Shot(window, folder, "22_pause", report);
         later.HandleKey(Avalonia.Input.Key.Escape, Avalonia.Input.KeyModifiers.None);
+        later.HandleKey(Avalonia.Input.Key.F12, Avalonia.Input.KeyModifiers.None);
+        await Shot(window, folder, "22b_menu_test", report);
+        later.HandleKey(Avalonia.Input.Key.F12, Avalonia.Input.KeyModifiers.None);
 
         // Lot 4 : une salle serveur en plus, deux baies équipées, le projet principal sur ses serveurs, une offre cloud
         advanced.Ledger.Cash += 150_000;

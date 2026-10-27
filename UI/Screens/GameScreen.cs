@@ -723,6 +723,12 @@ public class GameScreen : UserControl, IScreen
             OpenTerminal(product.Id);
             return true;
         }
+        // Menu de test : argent, déblocages, temps... (marque la campagne)
+        if (key == Key.F12)
+        {
+            Toggle(() => new CheatPanel());
+            return true;
+        }
         if (key == Key.R && Session.Tool != null)
         {
             Session.RotateTool();

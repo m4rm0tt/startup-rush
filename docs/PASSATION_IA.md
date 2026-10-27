@@ -46,6 +46,10 @@ dotnet test Tests/Tests.csproj --filter Name=WriteBalanceReport  # réécrit BAL
 UI.exe --capture <dossier>                                       # parcours scripté dans le vrai jeu, 37 captures + rapport
 ```
 
+Menu de test en jeu : **F12** (argent, points, tout débloquer, finir le travail en file, embaucher, énergie, stock,
+avancer le temps, payer les dettes). Code : , . Chaque usage
+marque la campagne (, sauvegardé).
+
 Pièges connus :
 - L'utilisateur garde souvent le jeu ouvert (`UI.exe`) : il verrouille `UI/bin` et `UI/obj`. Ne pas le tuer. Compiler dans un
   dossier à part : `dotnet build UI/UI.csproj -o <scratchpad>/uibuild`, et lancer `--capture` depuis ce dossier.

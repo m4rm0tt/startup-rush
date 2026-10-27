@@ -1,80 +1,73 @@
 # Bilan d'équilibrage mesuré
 
 Généré par `Tests/balance/BalanceReportTest.cs` (`dotnet test Tests/Tests.csproj --filter Name=WriteBalanceReport`).
-Protocole : 9 stratégies × 5 graines (11, 23, 37, 41, 59), 18 mois de jeu chacune, fondateur polyvalent, valeurs de `Core/campaign/Tuning.cs`. Les stratégies sont jouées par `Core/bots/Autopilot.cs`, une décision par jour ouvré, avec les mêmes commandes que l'interface.
+Protocole : 8 façons de jouer × 5 graines (11, 23, 37, 41, 59), 18 mois de jeu, fondateur polyvalent, réglages de `Core/campaign/Tuning.cs`. Joué par `Core/bots/Autopilot.cs` : une décision par jour ouvré, avec les commandes de l'interface. Aucune prestation client n'existe dans cette version.
 
-## Résumé par stratégie
+## Résumé
 
-| Stratégie | Liquidations | Trésorerie finale (médiane) | Pire creux | Mois en impayés (moy.) | Recettes 18 mois (méd.) | Revenus récurrents finaux (méd.) | Équipe max | Contrats livrés / rompus |
-|---|---|---|---|---|---|---|---|---|
-| freelance | 0/5 | 112 967 | 4 800 | 0.0 | 148 287 | 0 | 0 | 79 / 0 |
-| agence | 1/5 | 92 268 | -1 580 | 1.0 | 528 577 | 0 | 5 | 170 / 25 |
-| produit_tot | 0/5 | 2 143 | -788 | 0.0 | 41 777 | 3 027 | 0 | 7 / 0 |
-| produit_soigne | 3/5 | -1 363 | -1 975 | 2.4 | 140 663 | 2 263 | 3 | 71 / 0 |
-| croissance | 5/5 | -553 | -1 568 | 3.0 | 49 260 | 409 | 3 | 45 / 0 |
-| embauche_rapide | 2/5 | 18 281 | -1 951 | 2.2 | 824 327 | 0 | 6 | 172 / 42 |
-| marketing | 5/5 | -1 058 | -1 996 | 2.8 | 84 041 | 596 | 3 | 56 / 0 |
-| sous_qualite | 5/5 | 3 801 | -1 983 | 4.2 | 88 590 | 941 | 2 | 60 / 1 |
-| mixte | 1/5 | 1 | -1 988 | 1.8 | 300 346 | 7 318 | 4 | 89 / 0 |
+| Stratégie | Faillites | Argent final (médiane) | Pire creux | 1re sortie (jour, méd.) | 1er mois bénéficiaire (jour, méd.) | Revenus des projets / mois (méd.) | Utilisateurs (méd.) | Points gagnés (méd.) | Décisions sur 18 mois (méd.) |
+|---|---|---|---|---|---|---|---|---|---|
+| un_projet | 0/5 | 50 036 | 11 123 | 23 | 150 (5/5) | 24 791 | 3 179 | 10 | 38 |
+| plusieurs_petits | 0/5 | 172 230 | 10 677 | 23 | 210 (5/5) | 38 135 | 1 675 | 16 | 67 |
+| ambitieux | 0/5 | 92 034 | -1 902 | 24 | 30 (5/5) | 15 326 | 7 637 | 13 | 30 |
+| jeu_simple | 0/5 | 9 892 | 7 826 | 30 | 330 (5/5) | 3 016 | 3 583 | 8 | 25 |
+| marketing_excessif | 5/5 | -736 | -1 987 | 23 | 150 (5/5) | 5 527 | 897 | 6 | 20 |
+| exces_puis_correction | 0/5 | 50 001 | -399 | 23 | 150 (5/5) | 19 347 | 2 479 | 10 | 35 |
+| recrutement_precoce | 5/5 | -916 | -1 999 | 11 | 60 (4/5) | 974 | 229 | 7 | 24 |
+| trop_de_projets | 5/5 | -502 | -1 632 | 29 | 120 (5/5) | 947 | 499 | 5 | 23 |
 
-## Stratégies jouées
+## Façons de jouer
 
-- **freelance** : Freelance prudent : seulement des prestations, délai sûr, personne d'embauché.
-- **agence** : Agence : prestations en continu, code capitalisé, embauches dès que la trésorerie le permet.
-- **produit_tot** : Produit lancé tôt : un SaaS minimal dès la 2e semaine, le fondateur dessus, quelques prestations pour survivre.
-- **produit_soigne** : Produit très soigné : prestations d'abord, puis un SaaS complet avec support et correctifs.
-- **croissance** : Croissance financée : embauches rapides et marketing agressif sur un produit communautaire.
-- **embauche_rapide** : Embauche rapide sans produit : beaucoup de salaires, des prestations pour les payer.
-- **marketing** : Marketing agressif sur une place de marché, sans gros soin du produit.
-- **sous_qualite** : Sous-investissement dans la qualité : SaaS sans tests de support ni correctifs, promesses rapides.
-- **mixte** : Stratégie mixte : prestations pour financer, SaaS PME bien construit, croissance mesurée.
+- **un_projet** : Se concentrer sur une application, l'améliorer d'après les avis, embaucher quand elle rapporte.
+- **plusieurs_petits** : Plusieurs petits projets l'un après l'autre (application, jeu, application pour PME).
+- **ambitieux** : Un jeu ambitieux pour passionnés : beaucoup de composants, une embauche dès le départ, promotion avant la sortie.
+- **jeu_simple** : Un petit jeu grand public, puis des mises à jour régulières.
+- **marketing_excessif** : Erreur : 6 000 CHF de marketing par mois dès la sortie d'une petite application.
+- **exces_puis_correction** : Même erreur de marketing, mais corrigée dès que l'argent devient tendu (budget coupé, prêt si possible).
+- **recrutement_precoce** : Erreur : trois embauches dès le départ, avant le moindre revenu.
+- **trop_de_projets** : Erreur : cinq projets ouverts d'un coup, chacun avec 1 500 CHF de promotion par mois avant même sa sortie.
 
-## Détail des parties
+## Détail
 
-| Stratégie | Graine | Issue | Jours | Trésorerie par trimestre | Produit : utilisateurs / payants / bugs | Local final | Équipe finale | Matériel acheté |
-|---|---|---|---|---|---|---|---|---|
-| freelance | 11 | en activité | 540 | 15 285 → 37 396 → 54 276 → 73 129 → 104 392 → 122 225 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 0 |
-| freelance | 23 | en activité | 540 | 19 194 → 35 981 → 53 014 → 77 199 → 103 460 → 133 309 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 0 |
-| freelance | 37 | en activité | 540 | 16 582 → 45 337 → 53 343 → 73 323 → 94 249 → 111 604 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 0 |
-| freelance | 41 | en activité | 540 | 19 878 → 28 730 → 49 326 → 65 969 → 76 337 → 112 967 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 0 |
-| freelance | 59 | en activité | 540 | 18 275 → 34 735 → 56 314 → 81 217 → 106 375 → 107 005 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 0 |
-| agence | 11 | liquidée | 376 | 17 141 → 19 946 → 25 951 → -1 576 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 4 230 |
-| agence | 23 | en activité | 540 | 18 279 → 33 156 → 108 769 → 71 675 → -1 580 → 4 821 | 0 / 0 / 0 | Petit bureau, Flon | 5 | 9 950 |
-| agence | 37 | en activité | 540 | 17 197 → 34 524 → 33 915 → 39 643 → 96 391 → 92 268 | 0 / 0 / 0 | Petit bureau, Flon | 5 | 9 950 |
-| agence | 41 | en activité | 540 | 17 042 → 29 975 → 68 234 → 73 736 → 141 637 → 180 135 | 0 / 0 / 0 | Petit bureau, Flon | 5 | 9 950 |
-| agence | 59 | en activité | 540 | 17 895 → 35 823 → 14 475 → 55 043 → 151 820 → 124 435 | 0 / 0 / 0 | Petit bureau, Flon | 5 | 9 950 |
-| produit_tot | 11 | en activité | 540 | 6 360 → 1 795 → 5 803 → 4 405 → 3 336 → 2 143 | 333 / 148 / 0 | Ton appartement, Prilly | 0 | 0 |
-| produit_tot | 23 | en activité | 540 | 7 035 → 2 018 → 3 555 → 2 282 → 1 880 → 1 414 | 357 / 158 / 0 | Ton appartement, Prilly | 0 | 0 |
-| produit_tot | 37 | en activité | 540 | 4 522 → 692 → 3 174 → 2 991 → 3 061 → 2 808 | 363 / 161 / 0 | Ton appartement, Prilly | 0 | 0 |
-| produit_tot | 41 | en activité | 540 | 5 311 → 1 432 → 938 → 1 813 → 2 829 → 3 673 | 365 / 162 / 0 | Ton appartement, Prilly | 0 | 0 |
-| produit_tot | 59 | en activité | 540 | 4 885 → 434 → 1 566 → 1 298 → 1 341 → 1 111 | 350 / 155 / 0 | Ton appartement, Prilly | 0 | 0 |
-| produit_soigne | 11 | liquidée | 406 | 16 931 → 40 811 → 36 186 → -1 249 | 248 / 122 / 12 | Petit bureau, Flon | 0 | 4 470 |
-| produit_soigne | 23 | liquidée | 497 | 21 373 → 32 458 → 24 065 → 23 176 → -1 266 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 2 980 |
-| produit_soigne | 37 | en activité | 540 | 18 439 → 25 751 → 21 713 → 15 511 → 36 149 → -1 088 | 242 / 108 / 73 | Ton appartement, Prilly | 0 | 2 980 |
-| produit_soigne | 41 | en activité | 540 | 22 096 → 26 383 → 17 325 → 19 295 → 518 → -1 512 | 337 / 173 / 59 | Ton appartement, Prilly | 0 | 2 980 |
-| produit_soigne | 59 | liquidée | 468 | 20 271 → 32 000 → 40 314 → 5 614 → -564 | 310 / 148 / 23 | Ton appartement, Prilly | 0 | 2 980 |
-| croissance | 11 | liquidée | 162 | 3 380 → -774 | 750 / 0 / 16 | Petit bureau, Flon | 0 | 4 470 |
-| croissance | 23 | liquidée | 162 | 12 211 → 2 470 | 673 / 0 / 12 | Petit bureau, Flon | 0 | 4 470 |
-| croissance | 37 | liquidée | 162 | 10 994 → 318 | 847 / 0 / 7 | Petit bureau, Flon | 0 | 4 470 |
-| croissance | 41 | liquidée | 162 | 7 997 → -1 546 | 709 / 0 / 6 | Petit bureau, Flon | 0 | 4 470 |
-| croissance | 59 | liquidée | 162 | 7 849 → -553 | 629 / 0 / 18 | Petit bureau, Flon | 0 | 4 470 |
-| embauche_rapide | 11 | en activité | 540 | 5 709 → 50 478 → 145 518 → 256 885 → 330 440 → 386 796 | 0 / 0 / 0 | Petit bureau, Flon | 6 | 9 180 |
-| embauche_rapide | 23 | en activité | 540 | 783 → 69 614 → 58 496 → 4 621 → 36 274 → 18 281 | 0 / 0 / 0 | Petit bureau, Flon | 6 | 8 940 |
-| embauche_rapide | 37 | liquidée | 192 | -1 264 → -1 863 | 0 / 0 / 0 | Petit bureau, Flon | 0 | 4 710 |
-| embauche_rapide | 41 | en activité | 540 | -1 317 → 12 722 → 50 762 → 71 526 → 111 490 → 156 912 | 0 / 0 / 0 | Petit bureau, Flon | 6 | 8 940 |
-| embauche_rapide | 59 | liquidée | 131 | 1 669 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 2 980 |
-| marketing | 11 | liquidée | 253 | 16 931 → 5 860 → -1 768 | 450 / 5 / 7 | Petit bureau, Flon | 0 | 4 470 |
-| marketing | 23 | liquidée | 253 | 19 883 → 2 234 → 446 | 327 / 3 / 18 | Petit bureau, Flon | 0 | 4 470 |
-| marketing | 37 | liquidée | 223 | 16 949 → -1 433 | 333 / 3 / 15 | Petit bureau, Flon | 0 | 4 470 |
-| marketing | 41 | liquidée | 237 | 20 606 → 199 | 369 / 4 / 6 | Petit bureau, Flon | 0 | 4 470 |
-| marketing | 59 | liquidée | 207 | 18 781 → -360 | 269 / 3 / 8 | Petit bureau, Flon | 0 | 4 470 |
-| sous_qualite | 11 | liquidée | 310 | 18 762 → 15 130 → -307 | 171 / 72 / 35 | Ton appartement, Prilly | 0 | 2 980 |
-| sous_qualite | 23 | liquidée | 343 | 24 608 → 21 469 → -785 → 845 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 2 980 |
-| sous_qualite | 37 | liquidée | 253 | 21 169 → 1 753 → 4 790 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 2 980 |
-| sous_qualite | 41 | liquidée | 253 | 22 910 → -1 714 → 5 944 | 184 / 79 / 17 | Ton appartement, Prilly | 0 | 2 980 |
-| sous_qualite | 59 | liquidée | 310 | 25 171 → 6 335 → -1 229 | 128 / 50 / 34 | Ton appartement, Prilly | 0 | 2 980 |
-| mixte | 11 | en activité | 540 | 17 141 → 40 084 → 20 358 → 34 253 → 968 → 9 871 | 274 / 120 / 47 | Petit bureau, Flon | 0 | 8 460 |
-| mixte | 23 | en activité | 540 | 18 279 → 25 142 → 49 069 → 27 713 → 741 → -1 614 | 623 / 340 / 0 | Petit bureau, Flon | 3 | 8 460 |
-| mixte | 37 | en activité | 540 | 17 197 → 26 661 → 10 137 → 24 574 → 2 849 → 1 | 261 / 118 / 0 | Ton appartement, Prilly | 1 | 4 230 |
-| mixte | 41 | liquidée | 468 | 17 042 → 33 611 → 13 586 → 11 963 → -1 582 | 0 / 0 / 0 | Ton appartement, Prilly | 0 | 4 230 |
-| mixte | 59 | en activité | 540 | 17 895 → 27 209 → 8 041 → 8 644 → 46 261 → 7 803 | 425 / 223 / 0 | Petit bureau, Flon | 4 | 8 460 |
+| Stratégie | Graine | Issue | Jours | Argent par trimestre | Équipe | Local | Nœuds débloqués |
+|---|---|---|---|---|---|---|---|
+| un_projet | 11 | en activité | 540 | 12 436 → 13 871 → 28 481 → 34 149 → 36 893 → 54 120 | 2 | Ton appartement, Prilly | 8 |
+| un_projet | 23 | en activité | 540 | 12 550 → 14 956 → 30 712 → 35 810 → 36 549 → 54 096 | 2 | Ton appartement, Prilly | 8 |
+| un_projet | 37 | en activité | 540 | 12 592 → 14 879 → 29 146 → 23 098 → 25 810 → 24 926 | 2 | Ton appartement, Prilly | 8 |
+| un_projet | 41 | en activité | 540 | 12 458 → 13 859 → 28 175 → 35 961 → 37 279 → 50 036 | 2 | Ton appartement, Prilly | 8 |
+| un_projet | 59 | en activité | 540 | 12 511 → 14 423 → 28 565 → 28 425 → 28 845 → 43 069 | 2 | Ton appartement, Prilly | 8 |
+| plusieurs_petits | 11 | en activité | 540 | 12 467 → 12 027 → 16 746 → 35 048 → 90 016 → 172 230 | 1 | Ton appartement, Prilly | 8 |
+| plusieurs_petits | 23 | en activité | 540 | 12 572 → 12 219 → 17 443 → 37 652 → 96 006 → 178 111 | 1 | Ton appartement, Prilly | 8 |
+| plusieurs_petits | 37 | en activité | 540 | 12 612 → 12 243 → 18 661 → 38 283 → 97 245 → 176 460 | 1 | Ton appartement, Prilly | 8 |
+| plusieurs_petits | 41 | en activité | 540 | 12 488 → 11 460 → 15 011 → 39 675 → 92 644 → 170 871 | 1 | Ton appartement, Prilly | 8 |
+| plusieurs_petits | 59 | en activité | 540 | 12 535 → 12 186 → 17 393 → 37 291 → 92 076 → 158 416 | 1 | Ton appartement, Prilly | 8 |
+| ambitieux | 11 | en activité | 540 | 10 953 → 13 802 → 29 010 → 46 456 → 62 340 → 71 660 | 1 | Ton appartement, Prilly | 8 |
+| ambitieux | 23 | en activité | 540 | 11 995 → 17 521 → 36 168 → 57 935 → 77 846 → 92 034 | 1 | Ton appartement, Prilly | 8 |
+| ambitieux | 37 | en activité | 540 | 9 726 → 21 990 → 9 432 → 5 437 → 2 884 → 9 994 | 1 | Ton appartement, Prilly | 7 |
+| ambitieux | 41 | en activité | 540 | 17 060 → 30 993 → 57 064 → 86 232 → 113 957 → 133 790 | 1 | Ton appartement, Prilly | 8 |
+| ambitieux | 59 | en activité | 540 | 16 934 → 24 716 → 44 346 → 65 895 → 86 047 → 101 768 | 1 | Ton appartement, Prilly | 8 |
+| jeu_simple | 11 | en activité | 540 | 14 499 → 12 022 → 12 449 → 15 446 → 20 200 → 25 398 | 0 | Ton appartement, Prilly | 8 |
+| jeu_simple | 23 | en activité | 540 | 13 956 → 10 483 → 9 292 → 9 266 → 9 497 → 9 892 | 0 | Ton appartement, Prilly | 7 |
+| jeu_simple | 37 | en activité | 540 | 14 108 → 10 928 → 9 666 → 9 333 → 9 244 → 9 685 | 0 | Ton appartement, Prilly | 7 |
+| jeu_simple | 41 | en activité | 540 | 13 767 → 10 085 → 8 538 → 8 159 → 8 397 → 9 302 | 0 | Ton appartement, Prilly | 7 |
+| jeu_simple | 59 | en activité | 540 | 14 473 → 12 372 → 13 268 → 17 013 → 21 552 → 26 071 | 0 | Ton appartement, Prilly | 8 |
+| marketing_excessif | 11 | faillite | 176 | 6 446 → -87 | 0 | Ton appartement, Prilly | 5 |
+| marketing_excessif | 23 | faillite | 207 | 6 585 → 284 | 0 | Ton appartement, Prilly | 6 |
+| marketing_excessif | 37 | faillite | 207 | 6 648 → 741 | 0 | Ton appartement, Prilly | 6 |
+| marketing_excessif | 41 | faillite | 176 | 6 458 → -1 742 | 0 | Ton appartement, Prilly | 5 |
+| marketing_excessif | 59 | faillite | 176 | 6 533 → -920 | 0 | Ton appartement, Prilly | 5 |
+| exces_puis_correction | 11 | en activité | 540 | 6 444 → 2 855 → 12 357 → 19 886 → 25 661 → 30 117 | 0 | Ton appartement, Prilly | 5 |
+| exces_puis_correction | 23 | en activité | 540 | 6 583 → 4 030 → 20 307 → 29 750 → 36 659 → 56 138 | 1 | Ton appartement, Prilly | 8 |
+| exces_puis_correction | 37 | en activité | 540 | 6 646 → 4 444 → 22 151 → 30 942 → 45 533 → 72 551 | 1 | Ton appartement, Prilly | 8 |
+| exces_puis_correction | 41 | en activité | 540 | 6 456 → 2 918 → 17 268 → 30 223 → 34 601 → 50 001 | 1 | Ton appartement, Prilly | 8 |
+| exces_puis_correction | 59 | en activité | 540 | 6 531 → 4 044 → 20 095 → 25 832 → 18 039 → 20 385 | 1 | Ton appartement, Prilly | 8 |
+| recrutement_precoce | 11 | faillite | 72 | -1 652 | 0 | Petit bureau, Flon | 5 |
+| recrutement_precoce | 23 | faillite | 162 | -257 → 997 | 0 | Ton appartement, Prilly | 6 |
+| recrutement_precoce | 37 | faillite | 72 | -1 471 | 0 | Petit bureau, Flon | 6 |
+| recrutement_precoce | 41 | faillite | 72 | -916 | 0 | Petit bureau, Flon | 6 |
+| recrutement_precoce | 59 | faillite | 72 | -60 | 0 | Petit bureau, Flon | 6 |
+| trop_de_projets | 11 | faillite | 146 | -1 528 | 0 | Ton appartement, Prilly | 5 |
+| trop_de_projets | 23 | faillite | 146 | -1 522 | 0 | Ton appartement, Prilly | 5 |
+| trop_de_projets | 37 | faillite | 146 | -1 479 | 0 | Ton appartement, Prilly | 5 |
+| trop_de_projets | 41 | faillite | 146 | -1 519 | 0 | Ton appartement, Prilly | 5 |
+| trop_de_projets | 59 | faillite | 146 | -1 505 | 0 | Ton appartement, Prilly | 5 |

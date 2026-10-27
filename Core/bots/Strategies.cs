@@ -26,6 +26,10 @@ public static class Strategies
         {
             Projects = [("freelances", null)], Marketing = 6_000, MaxStaff = 0, Recover = false, Borrow = false,
         },
+        new("exces_puis_correction", "Même erreur de marketing, mais corrigée dès que l'argent devient tendu (budget coupé, prêt si possible).")
+        {
+            Projects = [("freelances", null)], Marketing = 6_000, MaxStaff = 1,
+        },
         new("recrutement_precoce", "Erreur : trois embauches dès le départ, avant le moindre revenu.")
         {
             Projects = [("freelances", null)], Marketing = 300, MaxStaff = 3, HireAbove = 0, CarefulHiring = false, Borrow = false,

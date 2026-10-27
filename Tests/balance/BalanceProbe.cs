@@ -8,7 +8,7 @@ namespace Tests.balance;
 public class BalanceProbe
 {
     [Test, Explicit]
-    public void Probe([Values("un_projet", "plusieurs_petits", "ambitieux", "jeu_simple", "marketing_excessif", "recrutement_precoce", "trop_de_projets")] string name)
+    public void Probe([Values("un_projet", "plusieurs_petits", "ambitieux", "jeu_simple", "marketing_excessif", "recrutement_precoce", "trop_de_projets", "exces_puis_correction")] string name)
     {
         var strategy = Strategies.All.First(s => s.Name == name);
         var campaign = Campaign.New("Probe", "Bot", "Bot SA", FounderProfile.Generalist, 11);

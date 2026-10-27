@@ -1,46 +1,71 @@
-# Validation de la refonte
+# Validation : version « tycoon »
 
-Ce qui a été vérifié, comment, et ce qui ne l'a pas été. Environnement : Windows 11 x64, .NET 9.0.302, Avalonia 12.1.3.
+Environnement : Windows 11 x64, .NET 9.0.302, Avalonia 12.1.3. Travail fait **sur le PC local** (pas dans le cloud) : le SDK y était déjà installé, et le jeu y a été compilé, testé et lancé.
 
-## Comment
+## Avant / après
 
-- **64 tests NUnit** (`dotnet test Tests/Tests.csproj`) sur le moteur sans interface : 54 lancés par défaut, plus la campagne d'équilibrage et 9 sondes lancées à la main.
-- **Parcours dans le vrai jeu** : `StartupRush.exe --capture <dossier>` ouvre le jeu, joue un scénario avec les mêmes écrans et commandes qu'un joueur, enregistre des captures de l'interface rendue et un rapport (`docs/captures/capture_report.txt`). Ce ne sont pas des images conceptuelles.
-- **Campagne d'équilibrage** : 9 stratégies × 5 graines × 18 mois (`BALANCE_REPORT.md`).
+| | Avant (simulation à prestations) | Après |
+|---|---|---|
+| Démarrage | 7 000 CHF ; il fallait signer des prestations pour survivre | 18 000 CHF ; le premier projet sort en environ 3 semaines, sans aucun client |
+| Créer un produit | Éditeur de pages : pages, menus, modules, options, textes | Choisir un type et un public, puis des composants à niveaux dans un atelier |
+| Production | Affecter chaque personne à un contrat, au développement, au support ou à la maintenance | Personne en « Auto » sur le projet prioritaire ; design, développement et tests s'enchaînent ; l'entretien prend une part fixe du temps |
+| Retours | Tableau de facteurs à interpréter | Avis d'utilisateurs groupés par tendance, avec un bouton vers le composant ou le réglage concerné |
+| Progression | Jalons sans effet | Arbre de développement : 5 branches, 17 nœuds à effet réel, points gagnés par de vrais succès |
+| Équipe | Affectations multiples, augmentations libres | Auto ou un projet ; congés ; formation ; deux augmentations par an au plus, coût affiché |
+| Menus | 7 menus denses (Produits et Projets désignaient deux choses différentes) | 5 menus : Projets, Équipe, Aménagement, Développement, Finances. Vue immédiate, détails repliés, aide d'une phrase la première fois |
+| Notifications | Une ligne par événement | Problèmes regroupés et résolus automatiquement ; trois catégories |
 
-Les parcours d'interface ne sont **pas** couverts par des tests automatiques (pas de banc Avalonia headless dans le projet) : ils sont vérifiés par le parcours de captures et par la lecture des captures.
+## Tests (65 lancés par défaut, plus la campagne d'équilibrage et 8 sondes)
 
-## Critères d'acceptation
+| Thème | Tests |
+|---|---|
+| Début sans contrats | `TheFirstProjectIsReadyInAFewWeeksSolo`, `AFounderAloneShipsAndEarnsWithoutClientWork` (première sortie entre 10 et 60 jours et premiers revenus avant 90 jours, sur 3 graines) |
+| Production automatique | `TheFounderWorksAutomaticallyOnTheNewProject…`, `DesignThenCodeThenTestsFollowWithoutReassignment`, `AutomaticModeFollowsThePortfolioPriority`, `APersonWorksOnOneProjectAtATime`, `UpkeepIsAutomaticAndKeepsALiveProjectHealthy` |
+| Composants | `ComponentsRaiseAppealWithDiminishingReturns`, `TheProjectColorDoesNotChangeTheSimulation`, `QueueRulesExplainWhatIsMissing`, `CancellingAComponentAlsoCancels…`, `AnUpdateAfterLaunchRaisesTheVersion`, `ALaunchNeedsAtLeastTwoComponents` |
+| Jeux | `AGameSellsItsWishlistOnLaunchDay` |
+| Avis reliés au réel | `AMissingFeatureShowsUpAndPointsToARealComponent`, `BuildingTheSuggestedComponentMakesTheComplaintGoAway`, `SlowServersAndUnansweredUsersAreReported`, `ThereIsAlsoGoodNewsAndTheFeedStaysShort` |
+| Arbre | `TheStartOffersAFirstChoice…`, `UnlockingNeedsPointsAndPrerequisites`, `AnUnlockedTypeBecomesPlayable`, `EmptyProjectsEarnNoPointsAndEachAchievementCountsOnce` (pas d'abus par des projets vides) |
+| Équipe | `VacationRestoresEnergy…`, `RaisesShowTheirCostAndAreLimited`, `TrainingIsCheaperWithTheAcademy`, `ANewHireWithoutAWorkstationDoesNotProduce` |
+| Marché | `MarketingBringsUsersWithDiminishingReturns`, `AutomaticHostingFollowsTheLoadUnderItsCap`, `InsufficientHostingCausesOutages…`, `PriceMattersAccordingToTheAudience`, `ForecastGivesARange`, `ClosingAProjectStopsItsCosts` |
+| Argent et faillite | `ASlightlyNegativeBalanceIsNotAGameOver`, `PersistentUnpaidObligationsLeadToNoticeThenLiquidation` (alertes regroupées), `PayingTheArrearsLiftsTheNotice`, `TheRecoveryPlan…`, `HiringBeforeAnyRevenueLeadsToBankruptcy` |
+| Notifications | `RepeatedProblemsAreGroupedAndResolvedOnceFixed` |
+| Sauvegardes | `ReloadingRestoresTheExactStateAndTheSameFuture`, `ComponentsQueuesAndSettingsSurviveAReload`, `AnOldSaveWithContractsIsMigratedWithoutLosingMoney`, `ACorruptSaveIsKept…`, `CampaignsAreStoredSeparately…`, `TheLegacyRoguelikeProfile…` |
+| Local | Tests d'aménagement, de chemins, de postes et d'atlas (inchangés) |
 
-| # | Critère | État | Preuve |
-|---|---|---|---|
-| 1 | Plus de HUD à colonnes, le local domine, menus ouvrables, retour, raccourcis | ✅ | Captures 02, 07, 12 (au repos : barre du haut, scène, barre d'outils) ; 03, 05, 08, 10 (un seul menu, en-tête avec retour et fermeture) ; Échap : `GameScreen.Escape` (fenêtre → outil → menu → sélection → pause) |
-| 2 | Placement, obstruction et attribution agissent sur la capacité réelle | ✅ | `ADeskNeedsAChairBehind…`, `AChairAloneIsNot…`, `FurnitureCannotOverlap…`, `APlacementThatWouldCutOff…`, `BusinessFurnitureStaysOut…`, `ANewHireWithoutAWorkstationDoesNotProduce`, `WithoutAComputerNothingGetsDone` ; captures 03 et 04 (fantôme vert, puis refus en partie privée) |
-| 3 | Travail limité par le temps, les rôles, les moyens ; pas de double affectation | ✅ | `TheFounderProducesOnlyAt…WorkHours`, `APersonHasOneAssignment…`, `TasksWaitForTheirDependencies`, `AnOversizedTeamLosesEfficiency…`, `BetterComputersHelpWithDiminishingReturns` |
-| 4 | Contrats, encaissements, charges, retards, loyers cohérents ; rien ne se déclenche deux fois | ✅ | `AnInvoiceIsAReceivable…`, `DeliveringOnTime…`, `ARushedPromise…Cancellation`, `NegotiatingASaferDeadline…`, `CapitalizingCosts…`, `AnUnreliableClientMayNeverPay`, `SalariesAndRentAreBilledOncePerMonth…` |
-| 5 | Pages et modules personnalisables, aperçu et état de publication différents selon les choix, conservés après reprise | ✅ | `VisualChoicesDoNotChange…`, `UsefulModulesRaiseAppeal…`, `ModulesOnAnUnlinkedPage…`, `TooManyModules…`, `TheDraftBecomesWork…`, `OnlyTheChangesAreRebuilt`, `PagesDraftsAndVersionsSurviveAReload` ; captures 05 (deux pages, thèmes différents, réglages visibles dans l'aperçu) et 06 (plan de travail et prévision) |
-| 6 | Qualité, infrastructure, demande, prix, marketing : effets mesurables et expliqués | ✅ | `MarketingBringsUsersWithDiminishingReturns`, `InsufficientHosting…Outages…`, `WithoutPaymentModule…`, `TheMarketplaceNeedsSellers…`, `PriceMatters…`, `ForecastGivesARange…` ; capture 09 (causes listées) |
-| 7 | Redressement possible dans un scénario, vraie défaite dans un autre | ✅ | `PayingTheArrearsLiftsTheNotice`, `TheRecoveryPlanNeedsRecurringRevenue…`, `PersistentUnpaidObligations…Liquidation`, `HiringAndSpendingWithoutRevenue…`, `ASlightlyNegativeBalanceIsNotAGameOver` ; capture 14 (bilan de liquidation) ; bilan : 2 stratégies sur 9 n'ont jamais été liquidées, 3 l'ont été à chaque fois |
-| 8 | Sauvegarde, redémarrage : même état ; campagnes isolées | ✅ | `ReloadingRestoresTheExactStateAndTheSameFuture` (deux copies avancées de 20 jours restent identiques), `ReloadingDoesNotDuplicate…`, `CampaignsAreStoredSeparately…` ; rapport de capture : « Rechargement identique : True » |
-| 9 | Anciennes sauvegardes préservées, sauvegarde abîmée gérée | ✅ | `TheLegacyRoguelikeProfileIsRead…NeverModified`, `AnOldRoguelikeFile…`, `ACorruptSaveIsKept…` |
-| 10 | Temps indépendant du framerate, pause et vitesses fiables, pas d'inflation au chargement, listes bornées | ✅ en partie | Le temps est le temps réel mesuré × vitesse, plafonné à 0,1 s par image (`GameSession.Update`) ; rechargement identique (8). Listes bornées : notifications 150, mouvements 800, historique produit 400 jours, contrats et factures anciens élagués. **Pas de test de longue durée de la mémoire de l'interface.** |
-| 11 | Lisible en petite fenêtre et en 1080p, clavier et souris, mise à l'échelle, pas de clic au travers | ✅ en partie | Captures 11 (960 × 540) et 12 (1920 × 1080) ; échelle de l'interface automatique ou réglée ; les cadres des menus captent la souris (`PixelPanel.HitTest`), la scène ne reçoit que les clics hors des menus. Mise à l'échelle Windows : zoom entier calculé en pixels physiques ; **seulement vu à 100 %**. |
-| 12 | Ressources présentes et sons déclenchés depuis le build | ✅ en partie | Rapport de capture : 16 sons, 4 musiques et 25 sprites chargés depuis les ressources embarquées ; `EveryFurnitureHasASprite…`. Les sons partent (liste dans le rapport) mais **n'ont pas été écoutés**. |
+## Parcours réel dans le jeu
 
-## Boucle de jeu
+`StartupRush.exe --capture` joue dans l'interface réelle. Les captures sont dans `docs/captures/` ; le rapport dans `docs/captures/capture_report.txt`.
 
-La tranche verticale demandée est jouable de bout en bout et a été rejouée par le parcours de captures : nouvelle campagne → appartement → poste posé (chaise, bureau, PC) → contrat accepté → produit créé → deux pages construites → version planifiée avec prévision → sauvegarde → rechargement identique. Les bots ont joué la suite (développement, publication, premiers clients et coûts, embauches, déménagement, redressement, liquidation) sur 18 mois.
+1. Partie neuve, portefeuille vide, écran « Nouveau projet » (captures 02 à 04).
+2. Projet créé ; le fondateur s'y met seul (05, 06). **Prêt en 21 jours, sans aucune affectation manuelle.**
+3. « Prêt à sortir », puis lancement (07). 50 jours plus tard : 94 utilisateurs, 43 payants. L'argent est passé de 18 000 à 14 101 CHF, le projet ne couvre pas encore les dépenses.
+4. Avis : « Rien ne me donne envie de revenir », avec un lien vers **Messagerie**, marquée « Demandé dans les avis » dans l'atelier (08, 09).
+5. Réglages et aperçu (10, 11). La sauvegarde puis le rechargement donnent **exactement le même état**.
+6. Campagne avancée jouée par un bot pendant 16 mois : 4 personnes, petit bureau, 3 projets en ligne, 8 nœuds débloqués, **72 décisions en 16 mois** (12 à 19).
+7. Petite fenêtre 960 × 540, 1080p, pause, faillite (sauvegarde conservée), menus d'accueil (20 à 25).
 
-## Ce que dit l'équilibrage (voir les chiffres dans BALANCE_REPORT.md)
+## Équilibrage (BALANCE_REPORT.md)
 
-- **Une vraie période de survie** : 7 000 CHF et 2 360 CHF de charges ; sans contrat dans les premières semaines, la trésorerie part dans le découvert.
-- **Choix réel produit contre revenus immédiats** : le fondateur seul sur un produit (produit_tot) finit avec environ 3 000 CHF de revenus récurrents après 18 mois mais une trésorerie maigre ; le freelance prudent accumule plus de 100 000 CHF mais n'a rien de récurrent ni d'équipe.
-- **La croissance coûte** : embaucher vite donne des trajectoires très dispersées (une partie liquidée, une autre très rentable) ; la croissance financée par du marketing sur une app communautaire a été liquidée 5 fois sur 5 ; le marketing agressif sur une place de marché aussi.
-- **Erreurs rattrapables, erreurs fatales** : impayés passagers suivis d'un retour à la normale dans plusieurs parties (mois en impayés > 0 sans liquidation) ; accumulation de charges sans revenus → liquidation.
-- **Pas de séquence d'achats dominante** : le matériel améliore un rendement précis avec plafonds ; aucune stratégie ne gagne en achetant.
+Le protocole : 8 façons de jouer, 5 graines chacune, 18 mois de jeu.
+
+- **Trois approches viables ou plus** : se concentrer sur un projet (`un_projet`), plusieurs petits projets (`plusieurs_petits`), un jeu ambitieux avec une embauche tôt (`ambitieux`), un petit jeu (`jeu_simple`). Aucune faillite sur 5 graines.
+- **Le projet ambitieux est risqué** : son pire creux passe par le découvert, mais il paie au lancement.
+- **Les erreurs persistantes mènent à la faillite**, 5 fois sur 5 :
+  - 6 000 CHF de marketing par mois pour une petite application ;
+  - trois embauches avant le moindre revenu ;
+  - cinq projets ouverts d'un coup avec beaucoup de promotion.
+- **On peut se rattraper** : la même erreur de marketing, corrigée dès que l'argent devient tendu (`exces_puis_correction`), ne mène à aucune faillite (pire creux −399 CHF).
+- **Quantité d'actions** : 25 à 67 décisions en 18 mois selon la stratégie, soit quelques-unes par mois. Tout le reste est automatique.
 
 ### Limites de ces mesures
 
-- Les bots jouent des règles simples, une décision par jour ouvré. Ils ne relancent pas un client, n'ajustent pas les prix, ne lisent pas les explications. Un humain fera mieux sur certaines stratégies, moins bien sur d'autres.
-- **Déséquilibre connu** : sur 18 mois, l'agence bien gérée rapporte nettement plus que les produits, et la stratégie produit la plus soignée a été liquidée 3 fois sur 5 (elle embauche avant d'avoir des revenus). Les produits ont été renforcés pendant le réglage mais restent plus lents à payer ; à recalibrer avec de vraies parties (tailles de marché, conversion, salaires).
-- Les valeurs proposées sont toutes dans `Core/campaign/Tuning.cs` et les catalogues ; rejouer la campagne prend environ 1 min 30.
+- Les bots appliquent des règles simples : ils lisent la première tendance d'avis, font une amélioration à la fois et coupent le marketing quand l'argent devient tendu. **Le plaisir de jeu humain n'a pas été mesuré.**
+- La stratégie à plusieurs petits projets rapporte nettement plus que les autres sur 18 mois. C'est voulu (la diversification paie), mais l'écart reste à vérifier avec de vraies parties.
+- `jeu_simple` vivote : un petit jeu à 6 CHF ne suffit pas à lui seul.
+- Les valeurs sont toutes dans `Core/campaign/Tuning.cs` et les catalogues. Rejouer le bilan prend environ 25 secondes.
+
+## Ce qui n'a pas été vérifié
+
+- La mise à l'échelle Windows au-delà de 100 %.
+- Les sons à l'oreille.
+- L'intégration des nouveaux assets (pas reçus) et la simulation du matériel ou de la fabrication (non demandée maintenant).

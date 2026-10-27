@@ -1,23 +1,35 @@
 Audio : 16 sons et 4 musiques chargés depuis le build.
 Atlas : 25 sprites dans furniture.json.
 01_menu_principal.png : 1600×900
-02_appartement_initial.png : 1600×900
-03_amenagement_valide.png : 1600×900
-04_amenagement_invalide.png : 1600×900
-Poste posé : chaise True, bureau True, PC True ; postes complets : 2
-05_editeur_pages.png : 1600×900
-Brouillon : 2 pages, 6 modules, attrait estimé 39%
-06_version_prevision.png : 1600×900
+02_appartement_debut.png : 1600×900
+03_portefeuille_vide.png : 1600×900
+04_nouveau_projet.png : 1600×900
+05_projet_en_developpement.png : 1600×900
+06_scene_travail.png : 1600×900
+Premier projet prêt en 21 jours (fondateur seul, sans aucune affectation manuelle).
+07_pret_a_sortir.png : 1600×900
+50 jours après la sortie : 94 utilisateurs, 43 payants, revenus 30 j 374 CHF, argent 18 000 → 14 101.
+Avis principal : « Rien ne me donne envie de revenir. » → component:messaging
+08_avis.png : 1600×900
+09_atelier_composants.png : 1600×900
+10_reglages_projet.png : 1600×900
+11_apercu_projet.png : 1600×900
 Rechargement identique : True
-Campagne avancée : 28.02.2028, 4 personnes, Petit bureau, Flon, trésorerie 1 478, état Tight, produits 1
-07_campagne_avancee.png : 1600×900
-08_finances.png : 1600×900
-09_resultats_produit.png : 1600×900
-10_equipe.png : 1600×900
-11_petite_fenetre_projets.png : 960×540
-12_1080p.png : 1920×1080
-13_pause.png : 1600×900
-14_liquidation.png : 1600×900
-Défaite : Liquidated, sauvegardes de la campagne encore présentes : 1
-Sons déclenchés (derniers) : PauseIn, Notify
-Sauvegardes de capture : C:\Users\pb86ydy\AppData\Local\Temp\StartupRushCapture\db6edabf17764d00b1cec55507b3c979
+Campagne avancée : 28.04.2028, 4 personnes, Petit bureau, Flon, argent 12 347, 3 projets en ligne, 8 nœuds, 72 décisions en 16 mois.
+12_campagne_avancee.png : 1600×900
+13_portefeuille.png : 1600×900
+14_equipe.png : 1600×900
+15_arbre.png : 1600×900
+16_finances.png : 1600×900
+17_journal.png : 1600×900
+18_amenagement.png : 1600×900
+19_fiche_personne.png : 1600×900
+20_petite_fenetre.png : 960×540
+21_1080p.png : 1920×1061
+22_pause.png : 1600×900
+23_faillite.png : 1600×900
+Faillite : Liquidated le 15.06.2027, sauvegardes conservées : 1
+24_nouvelle_partie.png : 1600×900
+25_charger.png : 1600×900
+Sons déclenchés : PauseIn, Notify, Milestone
+Sauvegardes de capture : C:\Users\pb86ydy\AppData\Local\Temp\StartupRushCapture\6742597ed1f448abb468f9b3435e4f68

@@ -249,6 +249,9 @@ public class Autopilot(Strategy strategy)
     {
         if (campaign.Solvency.State == SolvencyState.Healthy)
             return;
+        // Dès que l'argent devient tendu : couper le marketing qui coûte plus qu'il ne rapporte
+        foreach (var product in campaign.Products.Where(p => p.MarketingBudget > Strategy.Marketing / 4 && p.MarketingBudget > 500))
+            Act(campaign.SetMarketing(product.Id, Math.Min(product.MarketingBudget, 300)));
         if (Strategy.Borrow && campaign.LoanTerms().Max > 0)
             Act(campaign.TakeLoan(campaign.LoanTerms().Max));
         if (campaign.Solvency.State is not (SolvencyState.Overdue or SolvencyState.Notice))

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -11,28 +12,33 @@ using Core.space;
 using Core.team;
 using UI.Audio;
 using UI.Game;
+using UI.Iso;
 using UI.Pixel;
 
 namespace UI.Scene;
 
 /// <summary>
-/// La scène du local, vue de 3/4 dessus : le sol est une grille de cases de 16 pixels vue de dessus,
-/// les objets sont dessinés de face avec leur dessus visible et posés sur le bas de leur emprise.
-/// Tout est trié par la ligne de base (le bas de l'emprise) : un personnage assis derrière son bureau
-/// est caché par le bureau, celui qui passe devant le recouvre.
+/// La scène du local en vue isométrique 2:1 (cases de 64 × 32 px, X = (U − V)·32, Y = (U + V)·16), composée par
+/// RoomRenderer comme le compositeur de référence du pack. L'image de la pièce n'est recomposée que si le local ou les
+/// personnes assises changent ; à chaque image, on la dessine au zoom entier puis on ajoute les bulles, la sélection,
+/// le survol et, en aménagement, le fantôme de l'objet à poser. Caméra sans rotation ; les objets tournent (touche R).
 /// </summary>
 public class SceneCanvas : Control
 {
-    public const int Cell = 16;
-    private const int WallHeight = 2 * Cell;
-
     private readonly GameSession _session;
     private double _camX, _camY;
-    private int _zoom = 3;
+    private int _zoom = 2;
     private bool _cameraPlaced;
+    private bool _userMoved;
     private Point? _panFrom;
     private Cell? _hover;
+    private bool _hoverPinned;
     private double _clock;
+
+    private RoomImage? _room;
+    private Bitmap? _bitmap;
+    private string _signature = "";
+    private readonly Dictionary<string, (Bitmap Image, int AnchorX, int AnchorY)> _ghosts = new();
 
     /// <summary>Message après une action dans la scène (placement refusé...) : texte et réussite.</summary>
     public event Action<string, bool>? Feedback;
@@ -57,12 +63,44 @@ public class SceneCanvas : Control
         _hoverPinned = cell != null;
     }
 
-    private bool _hoverPinned;
-
     public void Tick(double deltaTime)
     {
         _clock += deltaTime;
         InvalidateVisual();
+    }
+
+    // ------------------------------------------------------------------ Image de la pièce
+
+    /// <summary>Qui est assis où en ce moment (chaise → personne), pour dessiner les personnages à leur poste.</summary>
+    private Dictionary<int, Seated> SeatedPeople()
+    {
+        var seated = new Dictionary<int, Seated>();
+        foreach (var person in Campaign.People.Where(p => p.Activity == Activity.Working))
+            if (Premises.SeatOf(person.Id) is { } post && Premises.ChairOf(post) is { } chair)
+                seated[chair.Id] = new Seated(person.Id, person.Appearance);
+        return seated;
+    }
+
+    private string Signature(Dictionary<int, Seated> seated)
+    {
+        var sb = new StringBuilder(Premises.PlanId);
+        foreach (var i in Premises.Items)
+            sb.Append('|').Append(i.Id).Append(i.DefId).Append(i.X).Append(',').Append(i.Y).Append(i.Facing).Append(i.HostId).Append(i.Socket)
+                .Append(string.Join(",", i.Swatches.Select(kv => kv.Key + kv.Value)));
+        foreach (var (chair, who) in seated.OrderBy(k => k.Key))
+            sb.Append('#').Append(chair).Append(':').Append(who.PersonId).Append(who.Look.Base).Append(who.Look.Hair).Append(who.Look.HairRamp).Append(who.Look.Skin);
+        return sb.ToString();
+    }
+
+    private void Refresh()
+    {
+        var seated = SeatedPeople();
+        string signature = Signature(seated);
+        if (signature == _signature && _bitmap != null)
+            return;
+        _signature = signature;
+        _room = RoomRenderer.Render(Premises, seated);
+        _bitmap = _room.Image.ToBitmap();
     }
 
     // ------------------------------------------------------------------ Caméra
@@ -72,18 +110,19 @@ public class SceneCanvas : Control
     /// <summary>Recentre la vue sur le local, au plus grand zoom entier où il tient (appelé après un déménagement).</summary>
     public void ResetCamera()
     {
-        _camX = Premises.Width * Cell / 2.0;
-        _camY = (Premises.Height * Cell - WallHeight) / 2.0;
+        Refresh();
+        if (_room == null)
+            return;
+        _camX = _room.Image.W / 2.0;
+        _camY = _room.Image.H / 2.0;
         double scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1;
-        double fitW = Bounds.Width * scaling / (Premises.Width * Cell + 2 * Cell);
-        double fitH = Bounds.Height * scaling * 0.9 / (Premises.Height * Cell + WallHeight + Cell);
-        _zoom = Math.Clamp((int)Math.Floor(Math.Min(fitW, fitH)), 1, 6);
+        // L'image a des marges : on accepte qu'elles débordent un peu pour garder le plus grand zoom entier
+        double fitW = Bounds.Width * scaling / (_room.Image.W - 60);
+        double fitH = Bounds.Height * scaling * 0.92 / (_room.Image.H - 60);
+        _zoom = Math.Clamp((int)Math.Floor(Math.Min(fitW, fitH)), 1, 4);
         _cameraPlaced = Bounds.Width > 0;
         _userMoved = false;
     }
-
-    /// <summary>Le joueur a déplacé ou zoomé la vue : on ne la recadre plus quand la fenêtre change de taille.</summary>
-    private bool _userMoved;
 
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
@@ -95,8 +134,10 @@ public class SceneCanvas : Control
     public void Pan(double dx, double dy)
     {
         _userMoved = true;
-        _camX = Math.Clamp(_camX + dx / Scale, -Cell * 2, Premises.Width * Cell + Cell * 2);
-        _camY = Math.Clamp(_camY + dy / Scale, -WallHeight - Cell * 2, Premises.Height * Cell + Cell * 2);
+        if (_room == null)
+            return;
+        _camX = Math.Clamp(_camX + dx / Scale, 0, _room.Image.W);
+        _camY = Math.Clamp(_camY + dy / Scale, 0, _room.Image.H);
     }
 
     public void ZoomBy(int delta, Point? around = null)
@@ -104,15 +145,15 @@ public class SceneCanvas : Control
         _userMoved = true;
         var anchor = around ?? new Point(Bounds.Width / 2, Bounds.Height / 2);
         var before = ToWorld(anchor);
-        _zoom = Math.Clamp(_zoom + delta, 1, 8);
+        _zoom = Math.Clamp(_zoom + delta, 1, 4);
         var after = ToWorld(anchor);
         _camX += before.X - after.X;
         _camY += before.Y - after.Y;
     }
 
+    /// <summary>Position écran du coin haut-gauche de l'image de la pièce, arrondie au pixel physique (sprites nets).</summary>
     private Point Origin()
     {
-        // Translation arrondie au pixel physique : les sprites restent nets
         double scaling = TopLevel.GetTopLevel(this)?.RenderScaling ?? 1;
         double x = Math.Round((Bounds.Width / 2 - _camX * Scale) * scaling) / scaling;
         double y = Math.Round((Bounds.Height / 2 - _camY * Scale) * scaling) / scaling;
@@ -125,334 +166,236 @@ public class SceneCanvas : Control
         return new Point((screen.X - origin.X) / Scale, (screen.Y - origin.Y) / Scale);
     }
 
-    private Rect ToScreen(double x, double y, double w, double h)
+    private Point ToScreen(double x, double y)
     {
         var origin = Origin();
-        return new Rect(origin.X + x * Scale, origin.Y + y * Scale, w * Scale, h * Scale);
+        return new Point(origin.X + x * Scale, origin.Y + y * Scale);
     }
+
+    /// <summary>Coin nord d'une case, en pixels de l'image de la pièce.</summary>
+    private (double X, double Y) Tile(double u, double v) =>
+        (_room!.OriginX + (u - v) * 32, _room.OriginY + (u + v) * 16);
 
     private Cell CellAt(Point screen)
     {
         var world = ToWorld(screen);
-        return new Cell((int)Math.Floor(world.X / Cell), (int)Math.Floor(world.Y / Cell));
+        double dx = world.X - _room!.OriginX, dy = world.Y - _room.OriginY;
+        return new Cell((int)Math.Floor((dx / 32 + dy / 16) / 2), (int)Math.Floor((dy / 16 - dx / 32) / 2));
+    }
+
+    private StreamGeometry Diamond(Cell cell)
+    {
+        var geometry = new StreamGeometry();
+        using var ctx = geometry.Open();
+        var (ax, ay) = Tile(cell.X, cell.Y);
+        var (bx, by) = Tile(cell.X + 1, cell.Y);
+        var (cx, cy) = Tile(cell.X + 1, cell.Y + 1);
+        var (dx, dy) = Tile(cell.X, cell.Y + 1);
+        ctx.BeginFigure(ToScreen(ax, ay), true);
+        ctx.LineTo(ToScreen(bx, by));
+        ctx.LineTo(ToScreen(cx, cy));
+        ctx.LineTo(ToScreen(dx, dy));
+        ctx.EndFigure(true);
+        return geometry;
+    }
+
+    private StreamGeometry Polygon((double X, double Y)[] points)
+    {
+        var geometry = new StreamGeometry();
+        using var ctx = geometry.Open();
+        ctx.BeginFigure(ToScreen(points[0].X, points[0].Y), true);
+        foreach (var p in points.Skip(1))
+            ctx.LineTo(ToScreen(p.X, p.Y));
+        ctx.EndFigure(true);
+        return geometry;
     }
 
     // ------------------------------------------------------------------ Rendu
 
-    private record Drawable(double Key, Action<DrawingContext> Draw, Rect Bounds, SelectionKind Kind, int Id);
-
-    private readonly List<Drawable> _drawn = new();
+    private static readonly IBrush Backdrop = Palette.Brush("#2b2128");
+    private static readonly IBrush ValidFill = new SolidColorBrush(Color.Parse("#7062a04b"));
+    private static readonly IBrush InvalidFill = new SolidColorBrush(Color.Parse("#80c8453d"));
+    private static readonly IBrush EntranceFill = new SolidColorBrush(Color.Parse("#50357c82"));
+    private static readonly IPen GridPen = new Pen(new SolidColorBrush(Color.Parse("#40fbf5e6")), 1);
+    private static readonly IPen HoverPen = new Pen(new SolidColorBrush(Color.Parse("#a0fbf5e6")), 1);
 
     public override void Render(DrawingContext context)
     {
+        Refresh();
         if (!_cameraPlaced && Bounds.Width > 0)
             ResetCamera();
-        context.FillRectangle(new SolidColorBrush(Color.Parse("#193c3e")), new Rect(Bounds.Size));
+        context.FillRectangle(Backdrop, new Rect(Bounds.Size));
+        if (_room == null || _bitmap == null)
+            return;
         using var _ = context.PushRenderOptions(new RenderOptions { BitmapInterpolationMode = BitmapInterpolationMode.None, EdgeMode = EdgeMode.Aliased });
 
-        DrawFloor(context);
-        DrawWalls(context);
+        var origin = Origin();
+        context.DrawImage(_bitmap, new Rect(0, 0, _bitmap.PixelSize.Width, _bitmap.PixelSize.Height),
+            new Rect(origin.X, origin.Y, _room.Image.W * Scale, _room.Image.H * Scale));
 
-        _drawn.Clear();
-        CollectItems();
-        CollectPeople();
-        foreach (var drawable in _drawn.OrderBy(d => d.Key))
-            drawable.Draw(context);
-
-        DrawSouthWall(context);
         if (_session.BuildMode)
             DrawBuildOverlay(context);
         DrawSelection(context);
+        DrawBubbles(context);
         DrawNight(context);
     }
 
-    private static readonly IBrush WoodA = Palette.Brush("#c28569");
-    private static readonly IBrush WoodB = Palette.Brush("#b86f50");
-    private static readonly IBrush WoodLine = Palette.Brush("#733e39");
-    private static readonly IBrush TileA = Palette.Brush("#ead4aa");
-    private static readonly IBrush TileB = Palette.Brush("#e4a672");
-    private static readonly IBrush CarpetA = Palette.Brush("#5a6988");
-    private static readonly IBrush CarpetB = Palette.Brush("#4f5d7c");
-    private static readonly IBrush CarpetLine = Palette.Brush("#3a4466");
-    private static readonly IBrush WallFace = Palette.Brush("#c0cbdc");
-    private static readonly IBrush WallTrim = Palette.Brush("#8b9bb4");
-    private static readonly IBrush WallTop = Palette.Brush("#3a4466");
-    private static readonly IBrush WallDark = Palette.Brush("#262b44");
-
-    private void DrawFloor(DrawingContext context)
+    /// <summary>
+    /// Au-dessus de la tête : une icône de ce que la personne fait vraiment (terminal, design, code, tests, support,
+    /// maintenance, attente) et la barre de sa tâche. Qui n'a pas de poste attend à l'entrée, avec un avertissement.
+    /// </summary>
+    private void DrawBubbles(DrawingContext context)
     {
-        bool apartment = Premises.ListingId == RealEstate.Apartment;
-        for (int y = 0; y < Premises.Height; y++)
-        for (int x = 0; x < Premises.Width; x++)
-        {
-            var rect = ToScreen(x * Cell, y * Cell, Cell, Cell);
-            if (Premises.InLivingZone(new Cell(x, y)))
-            {
-                context.FillRectangle((x + y) % 2 == 0 ? TileA : TileB, rect);
-            }
-            else if (apartment)
-            {
-                // Parquet : lames de deux cases, joints décalés d'une rangée à l'autre
-                context.FillRectangle(y % 2 == 0 ? WoodA : WoodB, rect);
-                context.FillRectangle(WoodLine, ToScreen(x * Cell, y * Cell + Cell - 1, Cell, 1));
-                if ((x + y) % 3 == 0)
-                    context.FillRectangle(WoodLine, ToScreen(x * Cell, y * Cell, 1, Cell));
-            }
-            else
-            {
-                context.FillRectangle((x / 2 + y / 2) % 2 == 0 ? CarpetA : CarpetB, rect);
-                if (x % 4 == 0)
-                    context.FillRectangle(CarpetLine, ToScreen(x * Cell, y * Cell, 1, Cell));
-            }
-        }
-        // Séparation entre la partie privée et la partie travail
-        if (Premises.LivingWidth > 0)
-            context.FillRectangle(WallTrim, ToScreen(Premises.LivingWidth * Cell - 1, 0, 2, Premises.Height * Cell));
-    }
-
-    private void DrawWalls(DrawingContext context)
-    {
-        int width = Premises.Width * Cell;
-        // Mur du fond, vu de face, avec fenêtres
-        context.FillRectangle(WallFace, ToScreen(0, -WallHeight, width, WallHeight));
-        context.FillRectangle(WallTrim, ToScreen(0, -4, width, 4));
-        context.FillRectangle(WallTop, ToScreen(-4, -WallHeight - 4, width + 8, 4));
-        var window = Atlas.Sprite("window");
-        if (window != null)
-            for (int x = 3; x + 2 < Premises.Width; x += 5)
-                DrawSprite(context, window, x * Cell + 3, -WallHeight + 4);
-        // Murs latéraux, vus de dessus
-        context.FillRectangle(WallTop, ToScreen(-4, -WallHeight, 4, WallHeight + Premises.Height * Cell + 4));
-        context.FillRectangle(WallTop, ToScreen(width, -WallHeight, 4, WallHeight + Premises.Height * Cell + 4));
-    }
-
-    private void DrawSouthWall(DrawingContext context)
-    {
-        int y = Premises.Height * Cell;
-        int door = Premises.DoorX * Cell;
-        context.FillRectangle(WallTop, ToScreen(-4, y, door + 4, 4));
-        context.FillRectangle(WallTop, ToScreen(door + Cell, y, Premises.Width * Cell - door - Cell + 4, 4));
-        context.FillRectangle(WallDark, ToScreen(door, y + 3, Cell, 1));
-    }
-
-    private void DrawSprite(DrawingContext context, AtlasSprite sprite, double x, double y, double opacity = 1)
-    {
-        var target = ToScreen(x, y, sprite.Rect.Width, sprite.Rect.Height);
-        if (opacity < 1)
-        {
-            using (context.PushOpacity(opacity))
-                context.DrawImage(Atlas.Image, sprite.Rect.ToRect(1), target);
-        }
-        else
-            context.DrawImage(Atlas.Image, sprite.Rect.ToRect(1), target);
-    }
-
-    /// <summary>Position du sprite d'un meuble : centré sur son emprise, posé sur sa ligne du bas.</summary>
-    private static (double X, double Y) SpritePosition(FurnitureDef def, AtlasSprite sprite, int x, int y)
-    {
-        double px = x * Cell + (def.Width * Cell - sprite.Rect.Width) / 2.0;
-        double py = (y + def.Height) * Cell - sprite.Rect.Height;
-        return (Math.Round(px), py);
-    }
-
-    private void CollectItems()
-    {
-        foreach (var item in Premises.Items)
-        {
-            var def = item.Def;
-            var sprite = Atlas.Sprite(def.Id);
-            if (sprite == null)
-                continue;
-            double key;
-            double x, y;
-            if (def.OnDesk)
-            {
-                // Sur le bureau, posé sur le dessus : le portable devant la personne, un écran sur la moitié droite pour ne pas la cacher
-                var desk = Premises.Find(item.HostId ?? -1);
-                if (desk == null)
-                    continue;
-                x = def.Id == "laptop" ? desk.X * Cell + 1 : desk.X * Cell + Cell - 1;
-                y = desk.Y * Cell + 9 - sprite.Rect.Height;
-                key = (desk.Y + 1) * Cell + 0.2;
-            }
-            else
-            {
-                (x, y) = SpritePosition(def, sprite, item.X, item.Y);
-                key = (item.Y + def.Height) * Cell + (def.Kind == FurnitureKind.Chair ? -0.5 : 0) + (def.Kind == FurnitureKind.Decor ? -100 : 0);
-            }
-            var bounds = new Rect(x, y, sprite.Rect.Width, sprite.Rect.Height);
-            _drawn.Add(new Drawable(key, c => DrawSprite(c, sprite, x, y, _session.Tool?.MovingItemId == item.Id ? 0.35 : 1), bounds, SelectionKind.Item, item.Id));
-        }
-    }
-
-    private (double X, double Y) PersonPosition(Person person)
-    {
-        if (person.Activity == Activity.Walking && person.Path.Count > 1 && person.PathIndex + 1 < person.Path.Count)
-        {
-            var a = person.Path[person.PathIndex];
-            var b = person.Path[person.PathIndex + 1];
-            double t = _session.Running ? _session.SubMinute : 0;
-            return (a.X + (b.X - a.X) * t, a.Y + (b.Y - a.Y) * t);
-        }
-        return (person.Position.X, person.Position.Y);
-    }
-
-    private void CollectPeople()
-    {
+        int waiting = 0;
         foreach (var person in Campaign.People)
         {
             if (person.Activity is Activity.Away or Activity.Training)
                 continue;
-            var sprite = Atlas.Sprite($"person{person.Look % 5}");
-            if (sprite == null)
+            double x, y;
+            if (person.Activity == Activity.Working && _room!.Heads.TryGetValue(person.Id, out var head))
+                (x, y) = (head.X, head.Y);
+            else
+            {
+                var (ex, ey) = Tile(Premises.Entrance.X + 0.5, Premises.Entrance.Y + 0.5);
+                (x, y) = (ex + waiting * 14, ey - 8);
+                waiting++;
+            }
+            string? icon = person.Activity switch
+            {
+                Activity.Idle => "icon_warning",
+                Activity.Working when person.IsFounder && Campaign.Terminal != null => "icon_terminal",
+                Activity.Working when person.Status.Contains("répond") => "icon_support",
+                Activity.Working when person.Status.Contains("maintenance") => "icon_maintenance",
+                Activity.Working when person.CurrentWorkItemId == null => "icon_time",
+                Activity.Working => CurrentDiscipline(person) switch
+                {
+                    Discipline.Design => "icon_design",
+                    Discipline.Test => "icon_test",
+                    _ => "icon_code"
+                },
+                _ => null
+            };
+            if (icon == null)
                 continue;
-            var (cx, cy) = PersonPosition(person);
-            bool seated = person.Activity == Activity.Working;
-            double x = Math.Round(cx * Cell + Cell / 2.0 - sprite.Rect.Width / 2.0);
-            double bottom = seated ? (cy + 1) * Cell + 6 : (cy + 1) * Cell - 2;
-            if (person.Activity == Activity.Walking && (int)(_clock * 6 + person.Id) % 2 == 0)
-                bottom -= 1;
-            double y = Math.Round(bottom - sprite.Rect.Height);
-            double key = (cy + 1) * Cell + 0.1;
-            var bounds = new Rect(x, y, sprite.Rect.Width, sprite.Rect.Height);
-            _drawn.Add(new Drawable(key, c =>
-            {
-                DrawSprite(c, sprite, x, y);
-                DrawBubble(c, person, x + sprite.Rect.Width / 2.0, y - 2);
-            }, bounds, SelectionKind.Person, person.Id));
-        }
-    }
+            string tint = icon == "icon_warning" ? "#c8453d" : icon == "icon_terminal" ? "#357c82" : "#2b2128";
+            var bitmap = PackLibrary.Icon(icon, tint);
+            var top = ToScreen(x - 9, y - 22);
+            var rect = new Rect(top.X, top.Y, 18 * Scale, 18 * Scale);
+            context.FillRectangle(Palette.Brush("#2b2128"), rect.Inflate(Scale));
+            context.FillRectangle(Palette.Brush("#fbf5e6"), rect);
+            context.DrawImage(bitmap, new Rect(0, 0, 16, 16), rect.Deflate(Scale));
 
-    /// <summary>
-    /// Au-dessus de la tête : une petite icône de ce que la personne fait vraiment, et la barre de progression
-    /// de sa tâche en cours (développement d'un composant).
-    /// </summary>
-    private void DrawBubble(DrawingContext context, Person person, double centerX, double top)
-    {
-        string? icon = person.Activity switch
-        {
-            Activity.Idle => "warning",
-            Activity.Working when person.Status.Contains("répond") => "mail",
-            Activity.Working when person.Status.Contains("maintenance") => "bolt",
-            Activity.Working when person.CurrentWorkItemId == null => "hourglass",
-            Activity.Working => CurrentDiscipline(person) switch
+            if (person.CurrentWorkItemId is int id && Campaign.FindWork(id) is { } item)
             {
-                Discipline.Design => "gem",
-                Discipline.Test => "check",
-                _ => "computer"
-            },
-            _ => null
-        };
-        if (icon == null)
-            return;
-        var bitmap = Icons.Get(icon);
-        double size = 10;
-        var rect = ToScreen(centerX - size / 2, top - size - 5, size, size);
-        context.FillRectangle(Palette.Ink, rect.Inflate(Scale));
-        context.FillRectangle(Palette.Snow, rect.Inflate(Scale * 0.5));
-        context.DrawImage(bitmap, new Rect(0, 0, bitmap.PixelSize.Width, bitmap.PixelSize.Height), rect);
-
-        if (person.CurrentWorkItemId is int id && Campaign.FindWork(id) is { } item)
-        {
-            var track = ToScreen(centerX - 8, top - 3, 16, 2);
-            context.FillRectangle(Palette.Ink, track.Inflate(Scale * 0.5));
-            context.FillRectangle(Palette.Gold, new Rect(track.X, track.Y, track.Width * item.Fraction, track.Height));
+                var track = new Rect(ToScreen(x - 10, y - 3), new Size(20 * Scale, 2 * Scale));
+                context.FillRectangle(Palette.Brush("#2b2128"), track.Inflate(Scale * 0.5));
+                context.FillRectangle(Palette.Brush("#ecb841"), new Rect(track.X, track.Y, track.Width * item.Fraction, track.Height));
+            }
         }
     }
 
     private Discipline? CurrentDiscipline(Person person) =>
         person.CurrentWorkItemId is int id ? Campaign.FindWork(id)?.Discipline : null;
 
-    private static readonly IBrush ValidFill = new SolidColorBrush(Color.Parse("#6063c74d"));
-    private static readonly IBrush InvalidFill = new SolidColorBrush(Color.Parse("#70e43b44"));
-    private static readonly IBrush LivingShade = new SolidColorBrush(Color.Parse("#50181425"));
-    private static readonly IPen GridPen = new Pen(new SolidColorBrush(Color.Parse("#30ffffff")), 1);
+    private (Bitmap Image, int AnchorX, int AnchorY) Ghost(string defId, string facing)
+    {
+        string key = defId + facing;
+        if (_ghosts.TryGetValue(key, out var ghost))
+            return ghost;
+        var o = PackLibrary.Orient(PackLibrary.Asset(defId), facing);
+        var (ax, ay) = PackLibrary.Anchor(o);
+        var img = PackLibrary.Layer(o.GetProperty("layers").GetProperty("base"), new Dictionary<string, string>());
+        return _ghosts[key] = (img.ToBitmap(), ax, ay);
+    }
 
     private void DrawBuildOverlay(DrawingContext context)
     {
-        // Grille légère, partie privée assombrie
-        for (int x = 0; x <= Premises.Width; x++)
-        {
-            var a = ToScreen(x * Cell, 0, 0, 0);
-            var b = ToScreen(x * Cell, Premises.Height * Cell, 0, 0);
-            context.DrawLine(GridPen, a.TopLeft, b.TopLeft);
-        }
-        for (int y = 0; y <= Premises.Height; y++)
-        {
-            var a = ToScreen(0, y * Cell, 0, 0);
-            var b = ToScreen(Premises.Width * Cell, y * Cell, 0, 0);
-            context.DrawLine(GridPen, a.TopLeft, b.TopLeft);
-        }
-        if (Premises.LivingWidth > 0)
-            context.FillRectangle(LivingShade, ToScreen(0, 0, Premises.LivingWidth * Cell, Premises.Height * Cell));
-        context.FillRectangle(ValidFill, ToScreen(Premises.Entrance.X * Cell, Premises.Entrance.Y * Cell, Cell, Cell));
+        // Grille des cases, entrée à laisser libre
+        for (int u = 0; u < Premises.Width; u++)
+            for (int v = 0; v < Premises.Height; v++)
+                context.DrawGeometry(null, GridPen, Diamond(new Cell(u, v)));
+        context.DrawGeometry(EntranceFill, null, Diamond(Premises.Entrance));
 
-        // État de chaque poste
-        foreach (var desk in Premises.Desks)
+        // État de chaque poste : coche ou avertissement au-dessus du bureau
+        foreach (var post in Premises.Workstations)
         {
-            var issue = Layout.Check(Premises, desk);
-            var icon = Icons.Get(issue == WorkstationIssue.None ? "check" : "warning");
-            context.DrawImage(icon, new Rect(0, 0, icon.PixelSize.Width, icon.PixelSize.Height), ToScreen(desk.X * Cell + 10, desk.Y * Cell - 30, 12, 12));
+            var issue = Layout.Check(Premises, post);
+            var seat = Premises.SeatCell(post);
+            var (sx, sy) = Tile(seat.X + 0.5, seat.Y + 0.5);
+            var icon = PackLibrary.Icon(issue == WorkstationIssue.None ? "icon_success" : "icon_warning", issue == WorkstationIssue.None ? "#62a04b" : "#c8453d");
+            var at = ToScreen(sx - 8, sy - 70);
+            context.DrawImage(icon, new Rect(0, 0, 16, 16), new Rect(at.X, at.Y, 16 * Scale, 16 * Scale));
         }
 
-        // Fantôme de l'objet à poser
-        if (_session.Tool is { } tool && _hover is { } cell)
+        if (_session.Tool is not { } tool || _hover is not { } cell)
+            return;
+        var def = FurnitureCatalog.Get(tool.DefId);
+        if (def.Attached)
         {
-            var def = FurnitureCatalog.Get(tool.DefId);
-            var check = Layout.CanPlace(Premises, def, cell.X, cell.Y, tool.MovingItemId);
-            if (def.OnDesk)
-            {
-                context.FillRectangle(check.Ok ? ValidFill : InvalidFill, ToScreen(cell.X * Cell, cell.Y * Cell, Cell, Cell));
-            }
+            // Objet à accrocher : on survole le meuble qui le recevra
+            var host = HostAt(cell);
+            bool ok = host != null && Layout.FreeSocket(Premises, def, host, tool.MovingItemId) != null;
+            if (host != null && _room!.Hits.FirstOrDefault(h => !h.Person && h.Id == host.Id) is { } hit)
+                context.DrawGeometry(ok ? ValidFill : InvalidFill, null, Polygon(hit.Polygon));
             else
-            {
-                foreach (var c in Premises.Footprint(def, cell.X, cell.Y))
-                    context.FillRectangle(check.Ok ? ValidFill : InvalidFill, ToScreen(c.X * Cell, c.Y * Cell, Cell, Cell));
-                if (def.Kind == FurnitureKind.Desk)
-                    context.DrawRectangle(new Pen(Palette.Lemon, 1), ToScreen(cell.X * Cell + 2, (cell.Y - 1) * Cell + 2, Cell - 4, Cell - 4));
-                var sprite = Atlas.Sprite(def.Id);
-                if (sprite != null)
-                {
-                    var (x, y) = SpritePosition(def, sprite, cell.X, cell.Y);
-                    DrawSprite(context, sprite, x, y, 0.75);
-                }
-            }
+                context.DrawGeometry(InvalidFill, null, Diamond(cell));
+            return;
         }
+        string facing = tool.Facing ?? def.Pack.DefaultFacing;
+        var check = Layout.CanPlace(Premises, def, cell.X, cell.Y, facing, tool.MovingItemId);
+        var cells = Premises.Cells(def, cell.X, cell.Y, facing).ToList();
+        foreach (var c in cells.Count > 0 ? cells : [cell])
+            context.DrawGeometry(check.Ok ? ValidFill : InvalidFill, null, Diamond(c));
+        foreach (var c in Premises.AccessCells(def, cell.X, cell.Y, facing))
+            context.DrawGeometry(null, new Pen(Palette.Brush("#ecb841"), 1, DashStyle.Dash), Diamond(c));
+        var (image, ax2, ay2) = Ghost(def.Id, facing);
+        var (tx, ty) = def.Pack.Centered ? Tile(cell.X + 0.5, cell.Y + 0.5) : Tile(cell.X, cell.Y);
+        var pos = ToScreen(Math.Round(tx) - ax2, Math.Round(ty) - ay2);
+        using (context.PushOpacity(0.7))
+            context.DrawImage(image, new Rect(0, 0, image.PixelSize.Width, image.PixelSize.Height),
+                new Rect(pos.X, pos.Y, image.PixelSize.Width * Scale, image.PixelSize.Height * Scale));
     }
+
+    /// <summary>Le meuble au sol sur cette case (pour y accrocher un objet), le plus proche d'abord.</summary>
+    private PlacedItem? HostAt(Cell cell) =>
+        Premises.Floor.Where(i => Premises.Cells(i).Contains(cell) || i.X == cell.X && i.Y == cell.Y)
+            .OrderByDescending(i => i.Def.Pack.Facing(i.Facing).Sockets.Count).FirstOrDefault();
 
     private void DrawSelection(DrawingContext context)
     {
-        var pen = new Pen(Palette.Gold, Math.Max(1, Scale / 1.5));
+        var pen = new Pen(Palette.Brush("#ecb841"), Math.Max(1, Scale));
         if (_session.SelectionKind == SelectionKind.Item && Premises.Find(_session.SelectionId) is { } item)
         {
-            if (item.Def.OnDesk)
-                item = Premises.Find(item.HostId ?? -1) ?? item;
-            foreach (var c in Premises.Footprint(item))
-                context.DrawRectangle(pen, ToScreen(c.X * Cell, c.Y * Cell, Cell, Cell));
-            if (item.Def.Kind == FurnitureKind.Desk)
-                context.DrawRectangle(new Pen(Palette.Lemon, 1, DashStyle.Dash), ToScreen(item.X * Cell, (item.Y - 1) * Cell, Cell, Cell));
+            var root = Premises.Root(item);
+            if (_room!.Hits.FirstOrDefault(h => !h.Person && h.Id == root.Id) is { } hit)
+                context.DrawGeometry(null, pen, Polygon(hit.Polygon));
         }
-        else if (_session.SelectionKind == SelectionKind.Person)
-        {
-            var drawn = _drawn.FirstOrDefault(d => d.Kind == SelectionKind.Person && d.Id == _session.SelectionId);
-            if (drawn != null)
-                context.DrawRectangle(pen, ToScreen(drawn.Bounds.X - 1, drawn.Bounds.Y - 1, drawn.Bounds.Width + 2, drawn.Bounds.Height + 2));
-        }
+        else if (_session.SelectionKind == SelectionKind.Person && _room!.Hits.FirstOrDefault(h => h.Person && h.Id == _session.SelectionId) is { } person)
+            context.DrawGeometry(null, pen, Polygon(person.Polygon));
 
         if (!_session.BuildMode && _hover is { } hover && Premises.InBounds(hover))
-            context.DrawRectangle(new Pen(new SolidColorBrush(Color.Parse("#60ffffff")), 1), ToScreen(hover.X * Cell, hover.Y * Cell, Cell, Cell));
+            context.DrawGeometry(null, HoverPen, Diamond(hover));
     }
 
     private void DrawNight(DrawingContext context)
     {
-        int minute = GameTime.MinuteOfDay(Campaign.Minute);
-        double hour = minute / 60.0;
-        double darkness = hour < 6 ? 0.45 : hour < 8 ? 0.45 * (8 - hour) / 2 : hour > 21 ? 0.45 : hour > 18 ? 0.45 * (hour - 18) / 3 : 0;
+        double hour = GameTime.MinuteOfDay(Campaign.Minute) / 60.0;
+        double darkness = hour < 6 ? 0.4 : hour < 8 ? 0.4 * (8 - hour) / 2 : hour > 21 ? 0.4 : hour > 18 ? 0.4 * (hour - 18) / 3 : 0;
         if (darkness > 0.01)
-            context.FillRectangle(new SolidColorBrush(Color.FromArgb((byte)(darkness * 255), 0x12, 0x14, 0x30)), new Rect(Bounds.Size));
+            context.FillRectangle(new SolidColorBrush(Color.FromArgb((byte)(darkness * 255), 0x16, 0x22, 0x35)), new Rect(Bounds.Size));
     }
 
     // ------------------------------------------------------------------ Souris
+
+    private static bool Inside((double X, double Y)[] polygon, Point p)
+    {
+        bool inside = false;
+        for (int i = 0, j = polygon.Length - 1; i < polygon.Length; j = i++)
+            if ((polygon[i].Y > p.Y) != (polygon[j].Y > p.Y)
+                && p.X < (polygon[j].X - polygon[i].X) * (p.Y - polygon[i].Y) / (polygon[j].Y - polygon[i].Y) + polygon[i].X)
+                inside = !inside;
+        return inside;
+    }
 
     protected override void OnPointerMoved(PointerEventArgs e)
     {
@@ -463,6 +406,8 @@ public class SceneCanvas : Control
             Pan(from.X - point.X, from.Y - point.Y);
             _panFrom = point;
         }
+        if (_room == null)
+            return;
         var cell = CellAt(point);
         _hoverPinned = false;
         _hover = Premises.InBounds(cell) ? cell : null;
@@ -499,21 +444,19 @@ public class SceneCanvas : Control
             e.Handled = true;
             return;
         }
-        if (!point.Properties.IsLeftButtonPressed)
+        if (!point.Properties.IsLeftButtonPressed || _room == null)
             return;
 
         var cell = CellAt(point.Position);
         if (_session.Tool is { } tool)
-        {
             Place(tool, cell);
-        }
         else
         {
             var world = ToWorld(point.Position);
-            var hit = _drawn.OrderByDescending(d => d.Key).FirstOrDefault(d => d.Bounds.Contains(world));
+            var hit = _room.Hits.OrderByDescending(h => h.Order).FirstOrDefault(h => Inside(h.Polygon, world));
             if (hit != null)
             {
-                _session.Select(hit.Kind, hit.Id);
+                _session.Select(hit.Person ? SelectionKind.Person : SelectionKind.Item, hit.Id);
                 Sfx.Play(Sound.Click);
             }
             else
@@ -530,13 +473,22 @@ public class SceneCanvas : Control
 
     private void Place(BuildTool tool, Cell cell)
     {
+        var def = FurnitureCatalog.Get(tool.DefId);
+        string? facing = tool.Facing;
         CommandResult result;
-        if (tool.MovingItemId is int moving)
-            result = Campaign.Move(moving, cell.X, cell.Y);
+        if (def.Attached)
+        {
+            var host = HostAt(cell);
+            result = host == null ? CommandResult.Fail("Clique un bureau ou un meuble qui peut le recevoir.")
+                : tool.StoredId is int storedId ? Campaign.AttachFromStorage(storedId, host.Id)
+                : Campaign.BuyAndAttach(tool.DefId, host.Id);
+        }
+        else if (tool.MovingItemId is int moving)
+            result = Campaign.Move(moving, cell.X, cell.Y, facing);
         else if (tool.StoredId is int stored)
-            result = Campaign.PlaceFromStorage(stored, cell.X, cell.Y);
+            result = Campaign.PlaceFromStorage(stored, cell.X, cell.Y, facing);
         else
-            result = Campaign.BuyAndPlace(tool.DefId, cell.X, cell.Y);
+            result = Campaign.BuyAndPlace(tool.DefId, cell.X, cell.Y, facing);
 
         Sfx.Play(result.Ok ? Sound.Place : Sound.Error);
         if (!result.Ok)

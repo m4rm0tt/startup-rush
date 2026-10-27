@@ -16,6 +16,9 @@ public class StoredItem
 {
     public int Id { get; set; }
     public string DefId { get; set; } = "";
+
+    /// <summary>Prix payé à l'achat : la revente en rend la moitié.</summary>
+    public decimal PaidPrice { get; set; }
 }
 
 /// <summary>Résultat d'une commande du joueur : réussie ou non, avec la raison.</summary>
@@ -89,7 +92,7 @@ public partial class Campaign
 
     public const int MaxNotices = 150;
 
-    public static Campaign New(string name, string founderName, string companyName, FounderProfile profile, ulong seed)
+    public static Campaign New(string name, string founderName, string companyName, FounderProfile profile, ulong seed, Appearance? look = null)
     {
         var campaign = new Campaign
         {
@@ -103,13 +106,8 @@ public partial class Campaign
         campaign.Ledger.Overdraft = Tuning.Start.Overdraft;
         campaign.Companies.Add(new Company { Id = campaign.NewId(), Name = companyName, Sector = "Agence web et produits numériques", FoundedAt = campaign.Minute });
 
-        // L'appartement, avec le coin de travail du début : une table, une chaise et ton vieux portable
+        // Ta chambre, livrée avec ton lit, tes rangements et ton bureau modeste (vieille tour, écran simple)
         campaign.Premises = RealEstate.Create(RealEstate.Get(RealEstate.Apartment), campaign.NewId);
-        var desk = new PlacedItem { Id = campaign.NewId(), DefId = "desk", X = 8, Y = 2 };
-        campaign.Premises.Items.Add(desk);
-        campaign.Premises.Items.Add(new PlacedItem { Id = campaign.NewId(), DefId = "chair", X = 8, Y = 1 });
-        campaign.Premises.Items.Add(new PlacedItem { Id = campaign.NewId(), DefId = "laptop", X = 8, Y = 2, HostId = desk.Id });
-        campaign.Premises.Items.Add(new PlacedItem { Id = campaign.NewId(), DefId = "plant", X = 13, Y = 0 });
 
         var skills = profile switch
         {
@@ -122,7 +120,7 @@ public partial class Campaign
             Id = campaign.NewId(),
             Name = founderName,
             IsFounder = true,
-            Look = 0,
+            Appearance = look ?? new Appearance { Base = "player_m", Hair = "hair_short_crop", HairRamp = "hair_brown", Skin = "skin_light" },
             Skills = new()
             {
                 [Discipline.Design] = skills.Design,
@@ -133,7 +131,8 @@ public partial class Campaign
             HiredAt = campaign.Minute,
             Morale = 75,
         };
-        desk.AssignedPersonId = founder.Id;
+        if (campaign.Premises.Workstations.FirstOrDefault() is { } post && campaign.Premises.ChairOf(post) is { } chair)
+            chair.AssignedPersonId = founder.Id;
         campaign.People.Add(founder);
 
         campaign.SeedCompetitors();
@@ -141,7 +140,7 @@ public partial class Campaign
             campaign.Candidates.Add(Recruitment.Generate(campaign.Random, campaign.Minute, campaign.NewId(), 0));
 
         campaign.Notify(Severity.Info, "entreprise", $"Bienvenue chez {companyName}",
-            "Crée ton premier projet : une application ou un jeu.", "projects");
+            "Crée ton premier projet, puis ouvre le terminal pour y travailler.", "projects");
         return campaign;
     }
 

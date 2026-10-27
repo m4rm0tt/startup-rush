@@ -18,6 +18,9 @@ public record Strategy(string Name, string Description)
     public int ProjectInterval { get; init; } = 120;
 
     public decimal Marketing { get; init; } = 300;
+
+    /// <summary>Mots tapés au terminal par jour ouvré (moins d'une minute de saisie : l'équivalent de l'ancien fondateur seul).</summary>
+    public int WordsPerDay { get; init; } = 30;
     public decimal PreLaunchMarketing { get; init; }
     public int MaxStaff { get; init; }
     public decimal HireAbove { get; init; } = 30_000;
@@ -64,6 +67,7 @@ public class Autopilot(Strategy strategy)
     public void Decide(Campaign campaign)
     {
         CreateProjects(campaign);
+        Type(campaign);
         foreach (var product in campaign.Products.ToList())
             RunProject(campaign, product);
         Tree(campaign);
@@ -191,12 +195,10 @@ public class Autopilot(Strategy strategy)
     /// <summary>Trouve la place d'un poste complet ; déménage si le local est plein et que l'argent le permet.</summary>
     public static bool EnsureWorkstation(Campaign campaign)
     {
-        if (campaign.Premises.Desks.Any(d => d.AssignedPersonId == null && Layout.Check(campaign.Premises, d) == WorkstationIssue.None))
-            return true;
         for (int attempt = 0; attempt < 2; attempt++)
         {
-            if (FindDeskSpot(campaign.Premises) is var (x, y))
-                return campaign.BuyAndPlace("chair", x, y - 1).Ok && campaign.BuyAndPlace("desk", x, y).Ok && campaign.BuyAndPlace("pc", x, y).Ok;
+            if (campaign.InstallWorkstation(buy: true) != null)
+                return true;
             var next = RealEstate.Listings.SkipWhile(l => l.Id != campaign.Premises.ListingId).Skip(1).FirstOrDefault();
             if (next == null || !campaign.MoveTo(next.Id).Ok)
                 return false;
@@ -205,44 +207,28 @@ public class Autopilot(Strategy strategy)
         return false;
     }
 
-    /// <summary>Après un déménagement : réinstalle les postes depuis les cartons.</summary>
-    public static void Reinstall(Campaign campaign)
-    {
-        foreach (var desk in campaign.Storage.Where(s => FurnitureCatalog.Get(s.DefId).Kind == FurnitureKind.Desk).ToList())
-        {
-            if (FindDeskSpot(campaign.Premises) is not var (x, y))
-                break;
-            var chair = campaign.Storage.FirstOrDefault(s => FurnitureCatalog.Get(s.DefId).Kind == FurnitureKind.Chair);
-            if (chair == null || !campaign.PlaceFromStorage(chair.Id, x, y - 1).Ok)
-                break;
-            campaign.PlaceFromStorage(desk.Id, x, y);
-            var computer = campaign.Storage.FirstOrDefault(s => FurnitureCatalog.Get(s.DefId).Kind == FurnitureKind.Computer);
-            if (computer != null)
-                campaign.PlaceFromStorage(computer.Id, x, y);
-        }
-        foreach (var person in campaign.People)
-        {
-            var free = campaign.Premises.Desks.FirstOrDefault(d => d.AssignedPersonId == null && Layout.Check(campaign.Premises, d) == WorkstationIssue.None);
-            if (free != null && campaign.Premises.DeskOf(person.Id) == null)
-                campaign.AssignDesk(free.Id, person.Id);
-        }
-    }
+    /// <summary>Après un déménagement : réinstalle les postes depuis les cartons (et achète ce qui manque).</summary>
+    public static void Reinstall(Campaign campaign) => campaign.SeatEveryone(buy: true);
 
-    public static (int X, int Y)? FindDeskSpot(Premises premises)
+    /// <summary>
+    /// Le fondateur travaille au terminal : un nombre fixe de mots par jour ouvré, tapés à vitesse normale (environ une minute
+    /// de saisie). C'est la même commande que l'interface ; le bot n'a aucun travail gratuit.
+    /// </summary>
+    private void Type(Campaign campaign)
     {
-        for (int y = 2; y < premises.Height - 1; y += 3)
-        for (int x = Math.Max(premises.LivingWidth, 1); x + 1 < premises.Width; x += 3)
+        int words = Strategy.WordsPerDay;
+        while (words > 0)
         {
-            if (!Layout.CanPlace(premises, FurnitureCatalog.Get("chair"), x, y - 1).Ok)
-                continue;
-            var chair = new PlacedItem { Id = -99, DefId = "chair", X = x, Y = y - 1 };
-            premises.Items.Add(chair);
-            bool ok = Layout.CanPlace(premises, FurnitureCatalog.Get("desk"), x, y).Ok;
-            premises.Items.Remove(chair);
-            if (ok)
-                return (x, y);
+            var product = campaign.Products.OrderBy(p => p.Priority).FirstOrDefault(p => campaign.CanOpenTerminal(p.Id).Ok);
+            if (product == null || !campaign.OpenTerminal(product.Id).Ok)
+                return;
+            while (words > 0 && campaign.Terminal is { Finished: false } session)
+            {
+                campaign.SubmitWord(session.Word, session.Word.Length / 4.0);
+                words--;
+            }
+            campaign.CloseTerminal();
         }
-        return null;
     }
 
     private void Recovery(Campaign campaign)

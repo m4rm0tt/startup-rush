@@ -5,86 +5,177 @@ public readonly record struct Cell(int X, int Y)
     public Cell Offset(int dx, int dy) => new(X + dx, Y + dy);
 }
 
-/// <summary>Un meuble posé dans le local. Un ordinateur est posé sur un bureau (HostId) et n'occupe pas le sol.</summary>
+/// <summary>
+/// Un objet du local. Posé au sol : sa case d'origine (X = U, Y = V, coin nord de l'emprise) et son orientation.
+/// Accroché : l'objet hôte (HostId) et le socket occupé ; il n'a pas de case à lui.
+/// </summary>
 public class PlacedItem
 {
     public int Id { get; set; }
     public string DefId { get; set; } = "";
     public int X { get; set; }
     public int Y { get; set; }
+
+    /// <summary>Orientation du pack : se, sw, nw ou ne.</summary>
+    public string Facing { get; set; } = "se";
+
     public int? HostId { get; set; }
 
-    /// <summary>Pour un bureau : la personne à qui le poste est attribué.</summary>
+    /// <summary>Socket de l'hôte occupé par cet objet (« chair », « monitor_main », « laptop_1 »...).</summary>
+    public string? Socket { get; set; }
+
+    /// <summary>Pour une chaise de poste : la personne qui y travaille.</summary>
     public int? AssignedPersonId { get; set; }
+
+    /// <summary>Livré avec le local (ton lit, la cuisine d'un bureau loué) : il reste sur place et ne se revend pas.</summary>
+    public bool Included { get; set; }
+
+    /// <summary>Prix réellement payé (0 pour ce qui était déjà là) : la revente en rend la moitié.</summary>
+    public decimal PaidPrice { get; set; }
+
+    /// <summary>Couleurs choisies par canal de masque (« wood » → « oak »), purement visuelles.</summary>
+    public Dictionary<string, string> Swatches { get; set; } = new();
 
     public FurnitureDef Def => FurnitureCatalog.Get(DefId);
 }
 
+/// <summary>Un poste de travail : un bureau et l'un de ses sockets de chaise (un bench en a trois).</summary>
+public record Workstation(PlacedItem Desk, string ChairSocket)
+{
+    /// <summary>« » pour un bureau à un poste, « _1 » pour le deuxième poste d'un bench.</summary>
+    public string Suffix => ChairSocket.Length > 5 ? ChairSocket[5..] : "";
+
+    public int Index => Suffix.Length > 1 && int.TryParse(Suffix[1..], out int i) ? i : 0;
+}
+
 /// <summary>
-/// Le local occupé : une grille de cases vue de dessus (la rangée 0 longe le mur du fond).
-/// La porte est dans le mur du bas ; la case juste à l'intérieur doit rester libre.
+/// Le local occupé : un plan de pièce du pack, grille de cases U × V (vue isométrique : U vers le bas-droite, V vers le
+/// bas-gauche). Les murs du fond longent U = 0 et V = 0 ; la porte est dans l'un d'eux, sa case d'accès doit rester libre.
 /// </summary>
 public class Premises
 {
     public string ListingId { get; set; } = "";
+
+    /// <summary>Plan du pack (rooms/*.json) : sols, murs et objets livrés se lisent là.</summary>
+    public string PlanId { get; set; } = "";
+
     public string Name { get; set; } = "";
     public int Width { get; set; }
     public int Height { get; set; }
-    public int DoorX { get; set; }
 
-    /// <summary>Colonnes 0 à LivingWidth-1 : partie privée du logement, où l'on ne place pas de matériel d'entreprise.</summary>
-    public int LivingWidth { get; set; }
+    /// <summary>Case juste à l'intérieur de la porte.</summary>
+    public int EntranceX { get; set; }
 
-    /// <summary>Nombre maximal de bureaux (0 = seulement limité par la place). L'appartement reste un appartement.</summary>
+    public int EntranceY { get; set; }
+
+    /// <summary>Mur de la porte : « left » (U = 0) ou « right » (V = 0).</summary>
+    public string EntranceWall { get; set; } = "left";
+
+    /// <summary>Nombre maximal de postes (0 = seulement limité par la place). La chambre reste une chambre.</summary>
     public int MaxDesks { get; set; }
 
     public decimal Rent { get; set; }
     public decimal Deposit { get; set; }
     public List<PlacedItem> Items { get; set; } = new();
 
-    public Cell Entrance => new(DoorX, Height - 1);
+    public Cell Entrance => new(EntranceX, EntranceY);
 
-    /// <summary>Juste dehors, derrière la porte : là où l'on arrive et d'où l'on part.</summary>
-    public Cell Outside => new(DoorX, Height);
+    /// <summary>Juste dehors, derrière la porte : là où l'on se trouve hors des heures de travail.</summary>
+    public Cell Outside => EntranceWall == "left" ? new(EntranceX - 1, EntranceY) : new(EntranceX, EntranceY - 1);
 
     public bool InBounds(Cell cell) => cell.X >= 0 && cell.Y >= 0 && cell.X < Width && cell.Y < Height;
 
-    public bool InLivingZone(Cell cell) => cell.X < LivingWidth;
-
     public PlacedItem? Find(int id) => Items.FirstOrDefault(i => i.Id == id);
 
-    public IEnumerable<PlacedItem> Desks => Items.Where(i => i.Def.Kind == FurnitureKind.Desk);
+    public IEnumerable<PlacedItem> Floor => Items.Where(i => i.HostId == null);
 
-    public IEnumerable<Cell> Footprint(PlacedItem item) => Footprint(item.Def, item.X, item.Y);
+    public IEnumerable<PlacedItem> Desks => Floor.Where(i => i.Def.Kind == FurnitureKind.Desk);
 
-    public static IEnumerable<Cell> Footprint(FurnitureDef def, int x, int y)
+    public IEnumerable<PlacedItem> Children(PlacedItem host) => Items.Where(i => i.HostId == host.Id);
+
+    public PlacedItem? ChildAt(PlacedItem host, string socket) => Items.FirstOrDefault(i => i.HostId == host.Id && i.Socket == socket);
+
+    /// <summary>L'objet au sol qui porte cet objet (lui-même s'il est au sol).</summary>
+    public PlacedItem Root(PlacedItem item)
     {
-        if (def.OnDesk)
-            yield break;
-        for (int dy = 0; dy < def.Height; dy++)
-        for (int dx = 0; dx < def.Width; dx++)
-            yield return new Cell(x + dx, y + dy);
+        while (item.HostId is int host && Find(host) is { } parent)
+            item = parent;
+        return item;
     }
 
-    /// <summary>Case où l'on s'assoit pour travailler : juste derrière le bureau, côté mur du fond.</summary>
-    public static Cell SeatCell(PlacedItem desk) => new(desk.X, desk.Y - 1);
+    /// <summary>
+    /// Cases qui bloquent le passage : l'emprise de l'orientation. Comme dans le pack, un petit objet centré (corbeille,
+    /// lampadaire, table de chevet), un tapis ou un objet accroché ne bloque pas : on passe à côté.
+    /// </summary>
+    public static IEnumerable<Cell> Footprint(FurnitureDef def, int x, int y, string facing)
+    {
+        var pack = def.Pack;
+        if (def.Attached || pack.FloorDecor || pack.WallMount || pack.Centered)
+            yield break;
+        foreach (var c in pack.Facing(facing).Collision)
+            yield return new Cell(x + c.X, y + c.Y);
+    }
 
-    /// <summary>Case devant un objet (au sud), où l'on se tient pour l'utiliser.</summary>
-    public static Cell FrontCell(FurnitureDef def, int x, int y) => new(x, y + def.Height);
+    public IEnumerable<Cell> Footprint(PlacedItem item) =>
+        item.HostId != null ? [] : Footprint(item.Def, item.X, item.Y, item.Facing);
 
-    public PlacedItem? ChairAt(Cell cell) =>
-        Items.FirstOrDefault(i => i.Def.Kind == FurnitureKind.Chair && i.X == cell.X && i.Y == cell.Y);
+    /// <summary>Cases où l'objet se trouve, même s'il ne bloque pas le passage (un objet centré est sur sa case).</summary>
+    public static IEnumerable<Cell> Cells(FurnitureDef def, int x, int y, string facing) =>
+        def.Pack.Centered && !def.Attached ? [new Cell(x, y)] : Footprint(def, x, y, facing);
 
-    public PlacedItem? ComputerOn(PlacedItem desk) =>
-        Items.FirstOrDefault(i => i.HostId == desk.Id && i.Def.Kind == FurnitureKind.Computer);
+    public IEnumerable<Cell> Cells(PlacedItem item) =>
+        item.HostId != null ? [] : Cells(item.Def, item.X, item.Y, item.Facing);
 
-    public PlacedItem? DeskOf(int personId) => Desks.FirstOrDefault(d => d.AssignedPersonId == personId);
+    /// <summary>Cases d'usage à laisser libres (devant un bureau : là où l'on s'assoit).</summary>
+    public static IEnumerable<Cell> AccessCells(FurnitureDef def, int x, int y, string facing) =>
+        def.Attached ? [] : def.Pack.Facing(facing).Access.Select(c => new Cell(x + c.X, y + c.Y));
 
-    /// <summary>Grille des cases occupées par un meuble au sol (sans l'objet ignoré, par exemple celui qu'on déplace).</summary>
+    public IEnumerable<Cell> AccessCells(PlacedItem item) =>
+        item.HostId != null ? [] : AccessCells(item.Def, item.X, item.Y, item.Facing);
+
+    /// <summary>Les postes de travail : chaque socket de chaise de chaque bureau.</summary>
+    public IEnumerable<Workstation> Workstations =>
+        Desks.SelectMany(d => d.Def.Pack.Facing(d.Facing).Sockets.Keys.Where(s => s == "chair" || s.StartsWith("chair_")).Select(s => new Workstation(d, s)));
+
+    public PlacedItem? ChairOf(Workstation post) => ChildAt(post.Desk, post.ChairSocket);
+
+    public Workstation? SeatOf(int personId)
+    {
+        var chair = Items.FirstOrDefault(i => i.AssignedPersonId == personId && i.HostId != null);
+        return chair == null || Find(chair.HostId!.Value) is not { } desk ? null : new Workstation(desk, chair.Socket!);
+    }
+
+    public PlacedItem? DeskOf(int personId) => SeatOf(personId)?.Desk;
+
+    /// <summary>La case où la personne du poste s'assoit (case d'accès du bureau correspondant au poste).</summary>
+    public Cell SeatCell(Workstation post)
+    {
+        var access = AccessCells(post.Desk).ToList();
+        if (access.Count == 0)
+            return new Cell(post.Desk.X, post.Desk.Y);
+        // Un bench liste ses accès du dernier poste au premier
+        return access[Math.Clamp(access.Count - 1 - post.Index, 0, access.Count - 1)];
+    }
+
+    /// <summary>L'ordinateur du poste : un portable dans son socket, ou une tour (qui demande alors un écran et un clavier).</summary>
+    public PlacedItem? ComputerOf(Workstation post) =>
+        ChildAt(post.Desk, "laptop" + post.Suffix) is { Def.Kind: FurnitureKind.Laptop } laptop ? laptop
+        : post.Suffix == "" && ChildAt(post.Desk, "tower_floor") is { Def.Kind: FurnitureKind.Tower } tower ? tower
+        : null;
+
+    /// <summary>Les écrans du poste (le principal, le second, ceux de l'arrière du bureau).</summary>
+    public IEnumerable<PlacedItem> MonitorsOf(Workstation post) =>
+        Children(post.Desk).Where(c => c.Def.Kind == FurnitureKind.Monitor
+                                       && (post.Suffix == "" ? !char.IsDigit(c.Socket![^1]) : c.Socket == "monitor" + post.Suffix));
+
+    /// <summary>Le clavier du poste.</summary>
+    public PlacedItem? KeyboardOf(Workstation post) => ChildAt(post.Desk, "keyboard" + post.Suffix) is { Def.Kind: FurnitureKind.Keyboard } k ? k : null;
+
+    /// <summary>Grille des cases occupées par un objet au sol (sans l'objet ignoré, par exemple celui qu'on déplace).</summary>
     public bool[,] Occupancy(int? ignoreId = null)
     {
         var grid = new bool[Width, Height];
-        foreach (var item in Items)
+        foreach (var item in Floor)
         {
             if (item.Id == ignoreId)
                 continue;
@@ -95,6 +186,6 @@ public class Premises
         return grid;
     }
 
-    /// <summary>Nombre de bureaux que la surface de travail permet raisonnablement (affiché dans les annonces).</summary>
-    public int Capacity => MaxDesks > 0 ? MaxDesks : (Width - LivingWidth) * Height / 9;
+    /// <summary>Nombre de postes que la surface permet raisonnablement (affiché dans les annonces).</summary>
+    public int Capacity => MaxDesks > 0 ? MaxDesks : Width * Height / 6;
 }

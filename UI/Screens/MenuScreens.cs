@@ -21,22 +21,31 @@ public abstract class MenuScreen : UserControl, IScreen
     protected MenuScreen(MainWindow window)
     {
         Window = window;
-        Background = Palette.Brush("#181425");
+        Background = Palette.Brush("#efe4cc");
     }
+
+    private static readonly Core.team.Appearance[] TitleFaces =
+    [
+        new() { Base = "player_f", Hair = "hair_bob", HairRamp = "hair_black", Skin = "skin_medium" },
+        new() { Base = "employee_m_02", Hair = "hair_curly_top", HairRamp = "hair_brown", Skin = "skin_deep" },
+        new() { Base = "player_m", Hair = "hair_short_crop", HairRamp = "hair_brown", Skin = "skin_light" },
+        new() { Base = "employee_f_03", Hair = "hair_bun", HairRamp = "hair_auburn", Skin = "skin_light" },
+        new() { Base = "employee_m_05", Hair = "hair_side_part", HairRamp = "hair_gray", Skin = "skin_medium" },
+    ];
 
     protected Control Frame(Control content, double width = 560)
     {
         var title = new TextBlock { Text = "STARTUP RUSH", FontSize = 44, Foreground = Palette.Gold, HorizontalAlignment = HorizontalAlignment.Center };
         title.Classes.Add("title");
+        // Quelques visages de l'équipe à venir : les personnages en couches du pack
         var people = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 12, HorizontalAlignment = HorizontalAlignment.Center };
-        for (int i = 0; i < 5; i++)
-            if (Atlas.Cropped($"person{i}") is { } sprite)
-                people.Children.Add(Ui.Image(sprite, sprite.SourceRect.Width * 3, sprite.SourceRect.Height * 3));
+        foreach (var look in TitleFaces)
+            people.Children.Add(Ui.Image(UI.Iso.Portraits.Of(look), 64, 64));
 
         var panel = new PixelPanel { Padding = new Thickness(24, 18), Child = content, Width = width };
         var column = Ui.Column(18,
             title,
-            Ui.Text("Simulation d'entreprise tech — de ton appartement à tes propres bureaux", 18, Palette.Cloud),
+            Ui.Text("Simulation d'entreprise tech — de ta chambre à tes propres bureaux", 18, Palette.Cloud),
             people,
             panel);
         column.HorizontalAlignment = HorizontalAlignment.Center;
@@ -125,6 +134,7 @@ public class NewCampaignScreen : MenuScreen
     private string _company = "";
     private string _campaign = "";
     private FounderProfile _profile = FounderProfile.Developer;
+    private readonly Core.team.Appearance _look = new() { Base = "player_m", Hair = "hair_short_crop", HairRamp = "hair_brown", Skin = "skin_light" };
     private string _seed = "";
     private bool _touched;
 
@@ -155,6 +165,13 @@ public class NewCampaignScreen : MenuScreen
             Ui.Text("Ton profil", 14, Palette.Fog),
             Ui.Choice(profiles, _profile, p => { _profile = p; _touched = true; Build(); }),
             Ui.Muted(profileText),
+            Ui.Text("Ton apparence (sans effet sur le jeu)", 14, Palette.Fog),
+            Ui.Row(12, Ui.Image(UI.Iso.Portraits.Of(_look), 64, 64), Ui.Column(4,
+                Ui.Choice(new[] { ("player_m", "Présentation masculine"), ("player_f", "Présentation féminine") }, _look.Base, b => { _look.Base = b; Build(); }),
+                Ui.Choice(Core.team.Appearance.Hairs.Select(h => (h, HairName(h))), _look.Hair, h => { _look.Hair = h; Build(); }),
+                Ui.Row(6,
+                    Ui.Choice(Core.team.Appearance.HairRamps.Select(r => (r, RampName(r))), _look.HairRamp, r => { _look.HairRamp = r; Build(); }),
+                    Ui.Choice(Core.team.Appearance.Skins.Select((k, i) => (k, $"Peau {i + 1}")), _look.Skin, k => { _look.Skin = k; Build(); })))),
             Ui.Text("Nom de la campagne (facultatif)", 14, Palette.Fog),
             Ui.Input(_campaign, v => { _campaign = v; _touched = true; }),
             Ui.Text("Graine (facultatif, pour rejouer exactement la même partie)", 14, Palette.Fog),
@@ -163,13 +180,24 @@ public class NewCampaignScreen : MenuScreen
         Content = Frame(form, 560);
     }
 
+    private static string HairName(string id) => id switch
+    {
+        "hair_short_crop" => "Court", "hair_side_part" => "Raie", "hair_curly_top" => "Bouclé", "hair_long_straight" => "Long",
+        "hair_bun" => "Chignon", _ => "Carré"
+    };
+
+    private static string RampName(string id) => id switch
+    {
+        "hair_black" => "Noirs", "hair_brown" => "Bruns", "hair_auburn" => "Auburn", "hair_blond" => "Blonds", _ => "Gris"
+    };
+
     private void Start()
     {
         string company = string.IsNullOrWhiteSpace(_company) ? "Studio sans nom" : _company.Trim();
         string founder = string.IsNullOrWhiteSpace(_founder) ? "Alex" : _founder.Trim();
         ulong seed = ulong.TryParse(_seed, out ulong parsed) ? parsed : (ulong)Random.Shared.NextInt64(1, long.MaxValue);
         string name = string.IsNullOrWhiteSpace(_campaign) ? company : _campaign.Trim();
-        var campaign = Campaign.New(name, founder, company, _profile, seed);
+        var campaign = Campaign.New(name, founder, company, _profile, seed, _look);
         Window.Store.Save(campaign, SaveKind.Manual, "Début");
         Window.StartGame(campaign, null, "Partie créée et sauvegardée (« Début »).");
     }
@@ -306,7 +334,10 @@ public class SettingsScreen : MenuScreen
             Ui.Text("Grands menus (produits, finances)", 14, Palette.Fog),
             Ui.Choice([(true, "Mettent le temps en pause"), (false, "Le temps continue")], s.PauseInLargeMenus, v => Change(() => s.PauseInLargeMenus = v)),
             Ui.Text("Nuits et week-ends sans personne au bureau", 14, Palette.Fog),
-            Ui.Choice([(true, "Accélérés ×8"), (false, "Vitesse normale")], s.FastNights, v => Change(() => s.FastNights = v)));
+            Ui.Choice([(true, "Accélérés ×8"), (false, "Vitesse normale")], s.FastNights, v => Change(() => s.FastNights = v)),
+            Ui.Text("Pendant la saisie au terminal (accessibilité)", 14, Palette.Fog),
+            Ui.Choice([(false, "L'entreprise continue"), (true, "L'entreprise attend")], s.PauseDuringTerminal, v => Change(() => s.PauseDuringTerminal = v)),
+            Ui.Muted("Le rendement d'un mot ne dépend jamais du temps qui passe : ce réglage change seulement ce qui arrive pendant que tu tapes.", 13));
         if (back != null)
             column.Children.Add(Ui.Button("Retour", back));
         return column;

@@ -2,31 +2,35 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:px="using:UI.Pixel"
              x:Class="UI.App"
-             RequestedThemeVariant="Dark">
-    <!-- Direction artistique : palette Endesga 32, polices pixel (SIL OFL), cadres 9-slice Kenney recolorés, aucun arrondi -->
+             RequestedThemeVariant="Light">
+    <!-- Direction artistique : HUD « Papier » du pack original (crème et encre, accents sarcelle, corail et soleil),
+         polices originales StartupRush Pixel et Mono, cadres 9-slice du pack, aucun arrondi -->
 
     <Application.Resources>
-        <FontFamily x:Key="PixelFont">avares://UI/Assets/Fonts#Pixelify Sans</FontFamily>
-        <FontFamily x:Key="TermFont">avares://UI/Assets/Fonts#VT323</FontFamily>
-        <FontFamily x:Key="TitleFont">avares://UI/Assets/Fonts#Press Start 2P</FontFamily>
+        <FontFamily x:Key="PixelFont">avares://UI/Assets/Fonts#StartupRush Pixel</FontFamily>
+        <FontFamily x:Key="TermFont">avares://UI/Assets/Fonts#StartupRush Mono</FontFamily>
+        <FontFamily x:Key="TitleFont">avares://UI/Assets/Fonts#StartupRush Pixel</FontFamily>
 
-        <SolidColorBrush x:Key="Ink" Color="#181425"/>
-        <SolidColorBrush x:Key="Night" Color="#262b44"/>
-        <SolidColorBrush x:Key="Slate" Color="#3a4466"/>
-        <SolidColorBrush x:Key="Steel" Color="#5a6988"/>
-        <SolidColorBrush x:Key="Fog" Color="#8b9bb4"/>
-        <SolidColorBrush x:Key="Cloud" Color="#c0cbdc"/>
-        <SolidColorBrush x:Key="Snow" Color="#ffffff"/>
-        <SolidColorBrush x:Key="Gold" Color="#feae34"/>
-        <SolidColorBrush x:Key="Lemon" Color="#fee761"/>
-        <SolidColorBrush x:Key="Leaf" Color="#63c74d"/>
-        <SolidColorBrush x:Key="Forest" Color="#3e8948"/>
-        <SolidColorBrush x:Key="Blood" Color="#e43b44"/>
-        <SolidColorBrush x:Key="Wine" Color="#a22633"/>
-        <SolidColorBrush x:Key="Sky" Color="#0099db"/>
-        <SolidColorBrush x:Key="Ice" Color="#2ce8f5"/>
-        <SolidColorBrush x:Key="Plum" Color="#b55088"/>
-        <SolidColorBrush x:Key="Ember" Color="#f77622"/>
+        <!-- Jetons du thème « Papier » (assets/hud/theme_tokens.json) ; les noms sont ceux de UI/Pixel/Palette.cs -->
+        <SolidColorBrush x:Key="Ink" Color="#2b2128"/>
+        <SolidColorBrush x:Key="Night" Color="#efe4cc"/>
+        <SolidColorBrush x:Key="Slate" Color="#dccdb1"/>
+        <SolidColorBrush x:Key="Steel" Color="#c2ae94"/>
+        <SolidColorBrush x:Key="Fog" Color="#6f5f5d"/>
+        <SolidColorBrush x:Key="Cloud" Color="#4a3a42"/>
+        <SolidColorBrush x:Key="Snow" Color="#2b2128"/>
+        <SolidColorBrush x:Key="Gold" Color="#c9922e"/>
+        <SolidColorBrush x:Key="Lemon" Color="#275a66"/>
+        <SolidColorBrush x:Key="Leaf" Color="#437d40"/>
+        <SolidColorBrush x:Key="Forest" Color="#437d40"/>
+        <SolidColorBrush x:Key="Blood" Color="#a23a34"/>
+        <SolidColorBrush x:Key="Wine" Color="#74292b"/>
+        <SolidColorBrush x:Key="Sky" Color="#4670a6"/>
+        <SolidColorBrush x:Key="Ice" Color="#357c82"/>
+        <SolidColorBrush x:Key="Plum" Color="#8f3d39"/>
+        <SolidColorBrush x:Key="Ember" Color="#c05843"/>
+        <SolidColorBrush x:Key="Paper" Color="#fbf5e6"/>
+        <SolidColorBrush x:Key="OnAccent" Color="#fbf5e6"/>
     </Application.Resources>
 
     <Application.Styles>
@@ -37,7 +41,7 @@
             <Setter Property="FontSize" Value="64"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
-        <!-- Press Start 2P : seulement pour les titres sans majuscule accentuée (elle les dessine en petit) -->
+        <!-- Titres : StartupRush Pixel, comme le reste de l'interface -->
         <Style Selector="TextBlock.title">
             <Setter Property="FontFamily" Value="{StaticResource TitleFont}"/>
             <Setter Property="FontWeight" Value="Normal"/>
@@ -126,7 +130,7 @@
         </Style>
 
         <Style Selector="Button.gold">
-            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+            <Setter Property="Foreground" Value="{StaticResource OnAccent}"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
         <Style Selector="Button.gold /template/ px|PixelPanel#PART_Frame">
@@ -165,7 +169,13 @@
             <Setter Property="FontSize" Value="17"/>
         </Style>
         <Style Selector="Button.tab.selected">
-            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+            <Setter Property="Foreground" Value="{StaticResource OnAccent}"/>
+        </Style>
+        <Style Selector="Button.green">
+            <Setter Property="Foreground" Value="{StaticResource OnAccent}"/>
+        </Style>
+        <Style Selector="Button.red">
+            <Setter Property="Foreground" Value="{StaticResource OnAccent}"/>
         </Style>
         <Style Selector="Button.tab.selected /template/ px|PixelPanel#PART_Frame">
             <Setter Property="Skin" Value="gold"/>
@@ -187,7 +197,7 @@
         <!-- Barres -->
         <Style Selector="ProgressBar">
             <Setter Property="CornerRadius" Value="0"/>
-            <Setter Property="Background" Value="{StaticResource Ink}"/>
+            <Setter Property="Background" Value="{StaticResource Slate}"/>
             <Setter Property="MinHeight" Value="4"/>
         </Style>
         <Style Selector="ProgressBar /template/ Border">
@@ -199,13 +209,15 @@
             <Setter Property="CornerRadius" Value="0"/>
             <Setter Property="FontFamily" Value="{StaticResource PixelFont}"/>
             <Setter Property="FontSize" Value="18"/>
-            <Setter Property="Background" Value="{StaticResource Ink}"/>
+            <Setter Property="Background" Value="{StaticResource Paper}"/>
+            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
             <Setter Property="BorderBrush" Value="{StaticResource Steel}"/>
         </Style>
         <Style Selector="ToolTip">
             <Setter Property="FontFamily" Value="{StaticResource PixelFont}"/>
             <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Background" Value="{StaticResource Ink}"/>
+            <Setter Property="Background" Value="{StaticResource Paper}"/>
+            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
             <Setter Property="BorderBrush" Value="{StaticResource Gold}"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="CornerRadius" Value="0"/>

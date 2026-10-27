@@ -35,17 +35,14 @@ public class SaveTest
     {
         var campaign = NewCampaign(7);
         campaign.Ledger.Cash = 40_000;
-        AddWorkstation(campaign, 11, 5);
-        var candidate = campaign.Candidates.First();
-        candidate.NoticeWorkdays = 0;
-        campaign.Hire(candidate.Person.Id);
+        var hired = HireDeveloper(campaign);
         var app = NewProject(campaign);
         app.Color = 9;
         FinishQueue(campaign, app);
         campaign.Launch(app.Id);
         campaign.QueueComponent(app.Id, "export");
         var game = NewProject(campaign, "casual");
-        campaign.Assign(candidate.Person.Id, game.Id);
+        campaign.Assign(hired.Id, game.Id);
         campaign.SetUpkeep(app.Id, Upkeep.High);
         campaign.Vacation(campaign.Founder.Id);
         campaign.AdvanceDays(3);
@@ -132,6 +129,43 @@ public class SaveTest
         campaign.AdvanceDays(30);
         Assert.That(campaign.Status, Is.EqualTo(CampaignStatus.Running));
         Assert.That(SaveStore.Deserialize(SaveStore.Serialize(campaign)).Products.Single().Components.Count, Is.EqualTo(product.Components.Count));
+    }
+
+    [Test]
+    public void ATycoonSaveMovesToThePackPremisesWithoutLosingAnything()
+    {
+        string path = Path.Combine(_root, "v2", "auto-1.json");
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.Copy(Path.Combine(balance.BalanceReportTest.RootFolder(), "Tests", "fixtures", "campaign_v2.json"), path);
+        var old = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(path))!["Campaign"]!;
+        decimal cash = old["Ledger"]!["Cash"]!.GetValue<decimal>();
+        int bills = old["Ledger"]!["Bills"]!.AsArray().Count;
+        int people = old["People"]!.AsArray().Count;
+        int products = old["Products"]!.AsArray().Count;
+        string listing = old["Premises"]!["ListingId"]!.GetValue<string>();
+
+        var campaign = new SaveStore(_root).Load(path);
+
+        Assert.That(campaign.Ledger.Cash, Is.EqualTo(cash), "rien n'est acheté pendant la migration");
+        Assert.That(campaign.Ledger.Bills, Has.Count.EqualTo(bills));
+        Assert.That(campaign.People, Has.Count.EqualTo(people));
+        Assert.That(campaign.Products, Has.Count.EqualTo(products));
+        Assert.That(campaign.Premises.ListingId, Is.EqualTo(listing));
+        Assert.That(campaign.Premises.PlanId, Is.EqualTo(Core.space.RealEstate.Get(listing).PlanId));
+        Assert.That(campaign.Founder.Appearance.Base, Is.EqualTo("player_m"));
+        var post = campaign.Premises.SeatOf(campaign.Founder.Id);
+        Assert.That(post, Is.Not.Null);
+        Assert.That(Core.space.Layout.Check(campaign.Premises, post!), Is.EqualTo(Core.space.WorkstationIssue.None), "le poste se refait avec les anciens meubles");
+        Assert.That(campaign.Premises.Items.Concat<object>(campaign.Storage).Count(), Is.GreaterThan(0));
+        Assert.That(campaign.MigrationNote, Does.Contain("terminal"));
+        Assert.That(File.Exists(Path.ChangeExtension(path, ".v2.json")), Is.True, "l'original est gardé");
+
+        // Le résultat est une sauvegarde au format 3 qui se relit à l'identique
+        string saved = SaveStore.Serialize(campaign);
+        Assert.That(System.Text.Json.Nodes.JsonNode.Parse(saved)!["Format"]!.GetValue<int>(), Is.EqualTo(SaveStore.CurrentFormat));
+        Assert.That(SaveStore.SerializeState(SaveStore.Deserialize(saved)), Is.EqualTo(SaveStore.SerializeState(campaign)));
+        campaign.AdvanceDays(10);
+        Assert.That(campaign.Status, Is.EqualTo(CampaignStatus.Running));
     }
 
     [Test]

@@ -307,11 +307,11 @@ public partial class Campaign
     public Product? AutoTarget() =>
         Products.OrderBy(p => p.Priority).FirstOrDefault(p => p.Queue.Count > 0) ?? Products.OrderBy(p => p.Priority).FirstOrDefault(p => p.IsLive);
 
-    /// <summary>Les personnes qui travaillent sur ce projet (affectées, ou en automatique quand c'est la cible).</summary>
+    /// <summary>Les employés qui travaillent sur ce projet (affectés, ou en automatique quand c'est la cible). Le fondateur n'en fait pas partie : il travaille au terminal.</summary>
     public IEnumerable<Person> TeamOf(Product product)
     {
         var auto = AutoTarget();
-        return People.Where(p => p.Assignment.Is(AssignmentKind.Project, product.Id) || p.Assignment.Kind == AssignmentKind.None && auto?.Id == product.Id);
+        return Staff.Where(p => p.Assignment.Is(AssignmentKind.Project, product.Id) || p.Assignment.Kind == AssignmentKind.None && auto?.Id == product.Id);
     }
 
     /// <summary>Points restants dans la file et jours ouvrés estimés au rythme de l'équipe actuelle.</summary>

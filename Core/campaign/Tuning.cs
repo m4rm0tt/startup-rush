@@ -61,8 +61,36 @@ public static class Tuning
         /// <summary>Utilisateurs actifs à atteindre pour qu'un lancement rapporte des points de développement (pas de points pour un projet vide).</summary>
         public const int AdoptionForPoints = 50;
 
-        /// <summary>Multiplicateur d'effort des composants : un premier projet prend 3 à 5 semaines au fondateur seul.</summary>
+        /// <summary>
+        /// Multiplicateur d'effort des composants. Les trois composants de départ d'une application demandent environ
+        /// 92 points : quelque 380 mots au terminal pour le fondateur seul (une douzaine de minutes de saisie).
+        /// </summary>
         public const double EffortScale = 2.2;
+    }
+
+    /// <summary>Le terminal du fondateur : son seul moyen de produire (voir Campaign.Terminal.cs).</summary>
+    public static class Terminal
+    {
+        /// <summary>Points de travail d'un mot validé pour un niveau 50 sur un poste standard, à vitesse normale.</summary>
+        public const double PointsPerWord = 0.25;
+
+        /// <summary>Mots d'une session (20 à 45 secondes) ; on peut en enchaîner une autre aussitôt.</summary>
+        public const int WordsPerSession = 24;
+
+        /// <summary>Vitesse de frappe (caractères par seconde) : lente, normale, rapide, et le bonus au plus.</summary>
+        public const double SlowCharsPerSecond = 1.5;
+
+        public const double FastCharsPerSecond = 6.5;
+        public const double SlowFactor = 0.85;
+        public const double FastFactor = 1.2;
+
+        /// <summary>Énergie dépensée par mot validé (environ 240 mots avant d'être épuisé, en partant reposé).</summary>
+        public const double EnergyPerWord = 0.35;
+
+        /// <summary>Heures où le fondateur peut travailler au terminal.</summary>
+        public const int FirstHour = 7;
+
+        public const int LastHour = 23;
     }
 
     public static class Products

@@ -109,16 +109,14 @@ public class SolvencyTest
     {
         var campaign = NewCampaign();
         campaign.Ledger.Cash = 20_000;
-        var desk = AddWorkstation(campaign, 11, 5);
-        var candidate = campaign.Candidates.First();
-        campaign.Hire(candidate.Person.Id);
-        desk.AssignedPersonId = candidate.Person.Id;
+        var person = HireDeveloper(campaign);
+        var chair = campaign.Premises.ChairOf(campaign.Premises.SeatOf(person.Id)!)!;
 
-        campaign.Fire(candidate.Person.Id);
+        campaign.Fire(person.Id);
 
         Assert.That(campaign.People, Has.Count.EqualTo(1));
-        Assert.That(desk.AssignedPersonId, Is.Null);
-        Assert.That(campaign.Ledger.Bills.Any(b => b.Category == Category.Severance && b.Amount == candidate.Person.Salary), Is.True);
+        Assert.That(chair.AssignedPersonId, Is.Null);
+        Assert.That(campaign.Ledger.Bills.Any(b => b.Category == Category.Severance && b.Amount == person.Salary), Is.True);
     }
 
     [Test]

@@ -231,8 +231,29 @@ public static class Icons
     private static readonly Dictionary<string, WriteableBitmap> Cache = new();
 
     /// <summary>L'icône demandée, ou une étoile si la clé est inconnue.</summary>
-    public static WriteableBitmap Get(string key)
+    /// <summary>Les noms d'icônes du jeu → icônes 16 px du pack (HUD « Papier »), teintées à l'encre ; les autres restent dessinées ici.</summary>
+    private static readonly Dictionary<string, (string Id, string Tint)> PackIcons = new()
     {
+        ["bill"] = ("icon_invoice", "#2b2128"), ["bolt"] = ("icon_energy", "#2b2128"), ["brief"] = ("icon_project", "#2b2128"),
+        ["briefcase"] = ("icon_project", "#2b2128"), ["building"] = ("icon_office", "#2b2128"), ["calendar"] = ("icon_calendar", "#2b2128"),
+        ["chair"] = ("icon_furnish", "#2b2128"), ["chart"] = ("icon_chart_line", "#2b2128"), ["check"] = ("icon_success", "#437d40"),
+        ["clock"] = ("icon_time", "#2b2128"), ["coin"] = ("icon_cash", "#2b2128"), ["computer"] = ("icon_pc", "#2b2128"),
+        ["crown"] = ("icon_trophy", "#2b2128"), ["dice"] = ("icon_comp_game_menu", "#2b2128"), ["fire"] = ("icon_risk", "#c05843"),
+        ["gem"] = ("icon_quality", "#2b2128"), ["gold"] = ("icon_cash", "#c9922e"), ["hand"] = ("icon_assignment", "#2b2128"),
+        ["heart"] = ("icon_retention", "#c05843"), ["home"] = ("icon_home", "#2b2128"), ["hourglass"] = ("icon_time", "#2b2128"),
+        ["leaf"] = ("icon_idea", "#437d40"), ["link"] = ("icon_link", "#2b2128"), ["lock"] = ("icon_lock", "#6f5f5d"),
+        ["mail"] = ("icon_mail", "#2b2128"), ["megaphone"] = ("icon_marketing", "#2b2128"), ["money"] = ("icon_cash", "#2b2128"),
+        ["people"] = ("icon_users", "#2b2128"), ["piggy"] = ("icon_subscription", "#2b2128"), ["plus"] = ("icon_plus", "#357c82"),
+        ["rocket"] = ("icon_deploy", "#2b2128"), ["screen"] = ("icon_monitor", "#2b2128"), ["shield"] = ("icon_security", "#2b2128"),
+        ["skull"] = ("icon_error", "#a23a34"), ["star"] = ("icon_star", "#c9922e"), ["suit"] = ("icon_user", "#2b2128"),
+        ["tag"] = ("icon_price", "#2b2128"), ["trophy"] = ("icon_trophy", "#c9922e"), ["user"] = ("icon_user", "#2b2128"),
+        ["warning"] = ("icon_warning", "#a23a34"), ["wifi"] = ("icon_network", "#2b2128"),
+    };
+
+    public static Avalonia.Media.Imaging.Bitmap Get(string key)
+    {
+        if (PackIcons.TryGetValue(key, out var icon))
+            return UI.Iso.PackLibrary.Icon(icon.Id, icon.Tint);
         if (Cache.TryGetValue(key, out var bitmap))
             return bitmap;
 

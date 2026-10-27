@@ -142,7 +142,11 @@ public class NewProjectPanel : GamePanel
         // 3. Ce qui sera fait, et combien de temps
         var starters = type.Starters.Select(ProductCatalog.Component).ToList();
         double points = starters.Sum(c => Design.TotalEffort(c, 1));
-        double speed = Campaign.People.Where(p => p.Assignment.Kind == Core.team.AssignmentKind.None).Sum(p => Campaign.WorkRate(p, p.BestDiscipline) * 60 * 7);
+        // Les employés en automatique travaillent seuls ; le fondateur, au terminal (mots à vitesse normale)
+        double speed = Campaign.Staff.Where(p => p.Assignment.Kind == Core.team.AssignmentKind.None).Sum(p => Campaign.WorkRate(p, p.BestDiscipline) * 60 * 7);
+        double perWord = Tuning.Terminal.PointsPerWord * (0.4 + Campaign.Founder.Skill(Campaign.Founder.BestDiscipline) * 0.012) * Campaign.StationOutput(Campaign.Founder);
+        string effort = speed > 0 ? $"environ {Math.Ceiling(points / speed)} jours de travail de l'équipe"
+            : perWord > 0 ? $"environ {Math.Ceiling(points / perWord / 10) * 10:0} mots au terminal" : "il te faut un poste complet";
         var model = type.Models[0];
         decimal price = ProductCatalog.DefaultPrice(segment, model);
         var startersRow = new WrapPanel();
@@ -153,7 +157,7 @@ public class NewProjectPanel : GamePanel
             Ui.Section("1. Quoi ?", types),
             Ui.Section("2. Pour qui ?", publics, Ui.Muted($"{segment.Pitch} {segment.Size:N0} personnes.", 13)),
             Ui.Section("3. Pour commencer", startersRow,
-                Ui.Muted($"{ProductCatalog.ModelName(model)}{(price > 0 ? $" à {price:0} {(model == RevenueModel.Commission ? "%" : model == RevenueModel.Purchase ? "CHF" : "CHF/mois")}" : "")} · environ {(speed > 0 ? Math.Ceiling(points / speed) : 0)} jours de travail · aucun coût en plus", 13)),
+                Ui.Muted($"{ProductCatalog.ModelName(model)}{(price > 0 ? $" à {price:0} {(model == RevenueModel.Commission ? "%" : model == RevenueModel.Purchase ? "CHF" : "CHF/mois")}" : "")} · {effort} · aucun coût en plus", 13)),
             Ui.Section("Nom", Ui.Input(_name, v => _name = v, "Laisse vide pour un nom proposé", 320)),
             Ui.Button("Créer et commencer", () =>
             {

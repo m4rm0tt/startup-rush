@@ -41,7 +41,7 @@ public record SaveEntry(string Path, SaveKind Kind, string Label, SaveSummary? S
 /// </summary>
 public class SaveStore
 {
-    public const int CurrentFormat = 2;
+    public const int CurrentFormat = 3;
     public const int AutosaveSlots = 3;
 
     private static readonly JsonSerializerOptions Options = new()
@@ -85,7 +85,7 @@ public class SaveStore
 
     public static Campaign Deserialize(string json) => Deserialize(json, out _);
 
-    /// <summary>Lit une sauvegarde ; une sauvegarde au format 1 est convertie (voir Migration) et migrated vaut true.</summary>
+    /// <summary>Lit une sauvegarde ; une sauvegarde au format 1 ou 2 est convertie (Migration, MigrationV2) et migrated vaut true.</summary>
     public static Campaign Deserialize(string json, out bool migrated)
     {
         migrated = false;
@@ -105,11 +105,19 @@ public class SaveStore
             (pending, notes) = Migration.FromV1(campaignNode);
             migrated = true;
         }
+        MigrationV2.Pending? v2 = null;
+        if (format <= 2)
+        {
+            v2 = MigrationV2.FromV2(campaignNode);
+            migrated = true;
+        }
         var campaign = campaignNode.Deserialize<Campaign>(Options) ?? throw new InvalidDataException("Campagne illisible.");
         if (campaign.People.Count == 0 || campaign.Companies.Count == 0)
             throw new InvalidDataException("Campagne incomplète.");
-        if (migrated)
+        if (format == 1)
             Migration.Finish(campaign, pending, notes);
+        if (v2 != null)
+            campaign.MigrationNote = string.Join(" ", new[] { campaign.MigrationNote, MigrationV2.Finish(campaign, v2) }.Where(n => n != ""));
         return campaign;
     }
 
@@ -146,14 +154,15 @@ public class SaveStore
             File.Move(temporary, path);
     }
 
-    /// <summary>Charge une sauvegarde. Si elle vient d'une ancienne version, l'original est d'abord copié en .v1.json (jamais écrasé).</summary>
+    /// <summary>Charge une sauvegarde. Si elle vient d'une ancienne version, l'original est d'abord copié en .v&lt;format&gt;.json (jamais écrasé).</summary>
     public Campaign Load(string path)
     {
         string json = File.ReadAllText(path);
         var campaign = Deserialize(json, out bool migrated);
         if (migrated)
         {
-            string backup = Path.ChangeExtension(path, ".v1.json");
+            int format = JsonNode.Parse(json)?["Format"]?.GetValue<int>() ?? 1;
+            string backup = Path.ChangeExtension(path, $".v{format}.json");
             if (!File.Exists(backup))
                 File.Copy(path, backup);
         }

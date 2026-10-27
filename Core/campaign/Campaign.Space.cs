@@ -4,104 +4,165 @@ using Core.team;
 
 namespace Core.campaign;
 
-/// <summary>Aménagement : acheter, poser, déplacer, revendre, attribuer les postes, déménager.</summary>
+/// <summary>
+/// Aménagement : acheter, poser au sol ou accrocher à un socket, tourner, déplacer, ranger, revendre, attribuer les postes,
+/// déménager. Un objet accroché suit son hôte ; ranger ou revendre un hôte range ce qui est dessus.
+/// </summary>
 public partial class Campaign
 {
-    /// <summary>Achète un meuble et le pose en (x, y). Pour un ordinateur, (x, y) est un bureau.</summary>
-    public CommandResult BuyAndPlace(string defId, int x, int y)
+    /// <summary>Achète un objet et le pose au sol en (x, y) dans cette orientation.</summary>
+    public CommandResult BuyAndPlace(string defId, int x, int y, string? facing = null)
     {
         var def = FurnitureCatalog.Get(defId);
-        var check = Layout.CanPlace(Premises, def, x, y);
+        if (!def.Buyable)
+            return CommandResult.Fail("Cet objet ne s'achète pas.");
+        string f = facing ?? def.Pack.DefaultFacing;
+        var check = Layout.CanPlace(Premises, def, x, y, f);
         if (!check.Ok)
             return CommandResult.Fail(check.Reason);
         var paid = Spend(def.Price, Category.Equipment, $"Achat : {def.Name}");
         if (!paid.Ok)
             return paid;
-        Place(def, x, y, NewId());
+        Premises.Items.Add(new PlacedItem { Id = NewId(), DefId = def.Id, X = x, Y = y, Facing = f, PaidPrice = def.Price });
+        InvalidateLayout();
         return CommandResult.Success($"{def.Name} installé·e.");
     }
 
-    /// <summary>Pose un meuble rangé dans les cartons (déjà payé).</summary>
-    public CommandResult PlaceFromStorage(int storedId, int x, int y)
+    /// <summary>Achète un objet et l'accroche à un objet posé (écran sur un bureau, machine à café sur un plan de travail).</summary>
+    public CommandResult BuyAndAttach(string defId, int hostId, string? socket = null)
+    {
+        var def = FurnitureCatalog.Get(defId);
+        if (!def.Buyable)
+            return CommandResult.Fail("Cet objet ne s'achète pas.");
+        var (check, host, s) = AttachCheck(def, hostId, socket, null);
+        if (!check.Ok)
+            return CommandResult.Fail(check.Reason);
+        var paid = Spend(def.Price, Category.Equipment, $"Achat : {def.Name}");
+        if (!paid.Ok)
+            return paid;
+        Premises.Items.Add(new PlacedItem { Id = NewId(), DefId = def.Id, HostId = host!.Id, Socket = s, Facing = host.Facing, PaidPrice = def.Price });
+        InvalidateLayout();
+        return CommandResult.Success($"{def.Name} installé·e.");
+    }
+
+    private (PlacementCheck Check, PlacedItem? Host, string Socket) AttachCheck(FurnitureDef def, int hostId, string? socket, int? ignoreId)
+    {
+        var host = Premises.Find(hostId);
+        if (host == null)
+            return (PlacementCheck.Invalid("Il faut cliquer un meuble posé."), null, "");
+        string? s = socket ?? Layout.FreeSocket(Premises, def, host, ignoreId);
+        if (s == null)
+            return (PlacementCheck.Invalid($"Pas d'emplacement libre pour {def.Name} sur {host.Def.Name}."), host, "");
+        return (Layout.CanAttach(Premises, def, host, s, ignoreId), host, s);
+    }
+
+    /// <summary>Pose au sol un objet rangé dans les cartons (déjà payé).</summary>
+    public CommandResult PlaceFromStorage(int storedId, int x, int y, string? facing = null)
     {
         var stored = Storage.FirstOrDefault(s => s.Id == storedId);
         if (stored == null)
             return CommandResult.Fail("Objet introuvable dans les cartons.");
         var def = FurnitureCatalog.Get(stored.DefId);
-        var check = Layout.CanPlace(Premises, def, x, y);
+        string f = facing ?? def.Pack.DefaultFacing;
+        var check = Layout.CanPlace(Premises, def, x, y, f);
         if (!check.Ok)
             return CommandResult.Fail(check.Reason);
         Storage.Remove(stored);
-        Place(def, x, y, stored.Id);
+        Premises.Items.Add(new PlacedItem { Id = stored.Id, DefId = def.Id, X = x, Y = y, Facing = f, PaidPrice = stored.PaidPrice });
+        InvalidateLayout();
         return CommandResult.Success($"{def.Name} installé·e.");
     }
 
-    private void Place(FurnitureDef def, int x, int y, int id)
+    /// <summary>Accroche à un objet posé un objet rangé dans les cartons.</summary>
+    public CommandResult AttachFromStorage(int storedId, int hostId, string? socket = null)
     {
-        var item = new PlacedItem { Id = id, DefId = def.Id, X = x, Y = y };
-        if (def.OnDesk)
-        {
-            var desk = Premises.Desks.First(d => d.X <= x && x < d.X + d.Def.Width && d.Y == y);
-            item.X = desk.X;
-            item.Y = desk.Y;
-            item.HostId = desk.Id;
-        }
-        Premises.Items.Add(item);
-        InvalidateLayout();
-    }
-
-    public CommandResult Move(int itemId, int x, int y)
-    {
-        var item = Premises.Find(itemId);
-        if (item == null || !item.Def.Movable)
-            return CommandResult.Fail("Cet objet ne se déplace pas.");
-        var check = Layout.CanPlace(Premises, item.Def, x, y, item.Id);
+        var stored = Storage.FirstOrDefault(s => s.Id == storedId);
+        if (stored == null)
+            return CommandResult.Fail("Objet introuvable dans les cartons.");
+        var def = FurnitureCatalog.Get(stored.DefId);
+        var (check, host, s) = AttachCheck(def, hostId, socket, null);
         if (!check.Ok)
             return CommandResult.Fail(check.Reason);
+        Storage.Remove(stored);
+        Premises.Items.Add(new PlacedItem { Id = stored.Id, DefId = def.Id, HostId = host!.Id, Socket = s, Facing = host.Facing, PaidPrice = stored.PaidPrice });
+        InvalidateLayout();
+        return CommandResult.Success($"{def.Name} installé·e.");
+    }
 
-        int dx = x - item.X, dy = y - item.Y;
-        if (item.Def.OnDesk)
-        {
-            var desk = Premises.Desks.First(d => d.X <= x && x < d.X + d.Def.Width && d.Y == y);
-            item.X = desk.X;
-            item.Y = desk.Y;
-            item.HostId = desk.Id;
-        }
-        else
-        {
-            item.X = x;
-            item.Y = y;
-            // L'ordinateur suit son bureau
-            foreach (var hosted in Premises.Items.Where(i => i.HostId == item.Id))
-            {
-                hosted.X += dx;
-                hosted.Y += dy;
-            }
-        }
+    /// <summary>Déplace un objet au sol (ce qui est accroché dessus suit), éventuellement dans une autre orientation.</summary>
+    public CommandResult Move(int itemId, int x, int y, string? facing = null)
+    {
+        var item = Premises.Find(itemId);
+        if (item == null || item.HostId != null)
+            return CommandResult.Fail("Cet objet ne se déplace pas ainsi.");
+        string f = facing ?? item.Facing;
+        var check = Layout.CanPlace(Premises, item.Def, x, y, f, item.Id);
+        if (!check.Ok)
+            return CommandResult.Fail(check.Reason);
+        item.X = x;
+        item.Y = y;
+        item.Facing = f;
+        foreach (var child in AllChildren(item))
+            child.Facing = f;
         InvalidateLayout();
         return CommandResult.Success();
     }
 
-    /// <summary>Prix de revente : la moitié du prix d'achat (rien pour le vieux portable ni les équipements fixes).</summary>
-    public static decimal ResaleValue(FurnitureDef def) => Math.Round(def.Price * (decimal)Tuning.Finance.ResaleShare / 5m) * 5m;
+    /// <summary>Tourne un objet au sol vers la prochaine orientation possible à la même place.</summary>
+    public CommandResult Rotate(int itemId)
+    {
+        var item = Premises.Find(itemId);
+        if (item == null || item.HostId != null)
+            return CommandResult.Fail("Cet objet ne tourne pas.");
+        var facings = item.Def.Pack.Facings.Keys.ToList();
+        int start = facings.IndexOf(item.Facing);
+        for (int k = 1; k < facings.Count; k++)
+        {
+            string f = facings[(start + k) % facings.Count];
+            if (Layout.CanPlace(Premises, item.Def, item.X, item.Y, f, item.Id).Ok)
+                return Move(itemId, item.X, item.Y, f);
+        }
+        return CommandResult.Fail(facings.Count > 1 ? "Pas la place de le tourner ici." : "Cet objet n'a qu'une orientation.");
+    }
+
+    private List<PlacedItem> AllChildren(PlacedItem host)
+    {
+        var result = new List<PlacedItem>();
+        foreach (var child in Premises.Children(host).ToList())
+        {
+            result.Add(child);
+            result.AddRange(AllChildren(child));
+        }
+        return result;
+    }
+
+    /// <summary>Prix de revente : la moitié de ce qui a été payé (rien pour ce qui était déjà là).</summary>
+    public static decimal ResaleValue(decimal paid) => Math.Round(paid * (decimal)Tuning.Finance.ResaleShare / 5m) * 5m;
+
+    /// <summary>Retire un objet du local vers les cartons, avec ce qui est accroché dessus. Les chaises libèrent leur poste.</summary>
+    private void Unplace(PlacedItem item)
+    {
+        foreach (var child in AllChildren(item).Prepend(item))
+        {
+            Premises.Items.Remove(child);
+            if (!child.Included)
+                Storage.Add(new StoredItem { Id = child.Id, DefId = child.DefId, PaidPrice = child.PaidPrice });
+        }
+        InvalidateLayout();
+    }
 
     public CommandResult Sell(int itemId)
     {
         var item = Premises.Find(itemId);
-        if (item == null || !item.Def.Movable)
-            return CommandResult.Fail("Cet objet ne se vend pas.");
-        // Ce qui est posé dessus part dans les cartons
-        foreach (var hosted in Premises.Items.Where(i => i.HostId == item.Id).ToList())
-        {
-            Premises.Items.Remove(hosted);
-            Storage.Add(new StoredItem { Id = hosted.Id, DefId = hosted.DefId });
-        }
-        Premises.Items.Remove(item);
-        decimal value = ResaleValue(item.Def);
+        if (item == null || item.Included)
+            return CommandResult.Fail("Cet objet fait partie du local : il ne se vend pas.");
+        Unplace(item);
+        var stored = Storage.First(s => s.Id == item.Id);
+        Storage.Remove(stored);
+        decimal value = ResaleValue(item.PaidPrice);
         if (value > 0)
             Post(value, Category.Resale, $"Revente : {item.Def.Name}");
-        InvalidateLayout();
-        return CommandResult.Success(value > 0 ? $"{item.Def.Name} revendu·e {value:N0} CHF." : $"{item.Def.Name} retiré·e.");
+        return CommandResult.Success(value > 0 ? $"{item.Def.Name} revendu·e {value:N0} CHF." : $"{item.Def.Name} retiré·e (sans valeur de revente).");
     }
 
     public CommandResult SellStored(int storedId)
@@ -110,54 +171,56 @@ public partial class Campaign
         if (stored == null)
             return CommandResult.Fail("Objet introuvable.");
         Storage.Remove(stored);
-        decimal value = ResaleValue(FurnitureCatalog.Get(stored.DefId));
+        decimal value = ResaleValue(stored.PaidPrice);
         if (value > 0)
             Post(value, Category.Resale, $"Revente : {FurnitureCatalog.Get(stored.DefId).Name}");
         return CommandResult.Success();
     }
 
-    /// <summary>Range un objet dans les cartons (pour le reposer ailleurs plus tard).</summary>
+    /// <summary>Range un objet dans les cartons (pour le reposer ailleurs plus tard), avec ce qui est accroché dessus.</summary>
     public CommandResult Store(int itemId)
     {
         var item = Premises.Find(itemId);
-        if (item == null || !item.Def.Movable)
-            return CommandResult.Fail("Cet objet ne se range pas.");
-        foreach (var hosted in Premises.Items.Where(i => i.HostId == item.Id).ToList())
-        {
-            Premises.Items.Remove(hosted);
-            Storage.Add(new StoredItem { Id = hosted.Id, DefId = hosted.DefId });
-        }
-        Premises.Items.Remove(item);
-        Storage.Add(new StoredItem { Id = item.Id, DefId = item.DefId });
-        InvalidateLayout();
+        if (item == null || item.Included)
+            return CommandResult.Fail("Cet objet fait partie du local : il reste en place.");
+        Unplace(item);
         return CommandResult.Success();
     }
 
-    /// <summary>Attribue un bureau à une personne (chacun a au plus un bureau, chaque bureau au plus une personne).</summary>
+    /// <summary>
+    /// Attribue un poste du bureau à une personne : celui où elle est déjà, sinon le premier poste libre qui a une chaise.
+    /// Chacun a au plus un poste ; personId null libère les postes de ce bureau.
+    /// </summary>
     public CommandResult AssignDesk(int deskId, int? personId)
     {
         var desk = Premises.Find(deskId);
         if (desk is not { Def.Kind: FurnitureKind.Desk })
             return CommandResult.Fail("Ce n'est pas un bureau.");
-        if (personId is int id)
+        var chairs = Premises.Workstations.Where(p => p.Desk.Id == deskId).Select(Premises.ChairOf).Where(c => c != null).Select(c => c!).ToList();
+        if (personId is not int id)
         {
-            if (FindPerson(id) == null)
-                return CommandResult.Fail("Personne inconnue.");
-            foreach (var other in Premises.Desks.Where(d => d.AssignedPersonId == id))
-                other.AssignedPersonId = null;
+            foreach (var c in chairs)
+                c.AssignedPersonId = null;
+            return CommandResult.Success("Poste libéré.");
         }
-        desk.AssignedPersonId = personId;
-        var person = personId is int pid ? FindPerson(pid) : null;
-        if (person != null && person.Activity is Activity.Working or Activity.Idle)
+        if (FindPerson(id) is not { } person)
+            return CommandResult.Fail("Personne inconnue.");
+        var chair = chairs.FirstOrDefault(c => c.AssignedPersonId == id) ?? chairs.FirstOrDefault(c => c.AssignedPersonId == null);
+        if (chair == null)
+            return CommandResult.Fail(chairs.Count == 0 ? "Il faut d'abord une chaise à ce bureau." : "Tous les postes de ce bureau sont pris.");
+        foreach (var other in Premises.Items.Where(i => i.AssignedPersonId == id))
+            other.AssignedPersonId = null;
+        chair.AssignedPersonId = id;
+        if (person.Activity is Activity.Working or Activity.Idle)
             TakePlace(person);
-        var issue = Layout.Check(Premises, desk);
+        var issue = Layout.Check(Premises, Premises.SeatOf(id)!);
         return CommandResult.Success(issue == WorkstationIssue.None ? "Poste attribué." : $"Poste attribué, mais incomplet : {Layout.Describe(issue)}.");
     }
 
     /// <summary>Coût total d'un déménagement : garantie, forfait et transport des meubles, moins la garantie actuelle rendue.</summary>
     public (decimal Upfront, decimal Refund) MoveCost(Listing listing)
     {
-        int items = Premises.Items.Count(i => i.Def.Movable) + Storage.Count;
+        int items = Premises.Items.Count(i => !i.Included) + Storage.Count;
         decimal upfront = listing.Deposit + listing.MovingCost + items * RealEstate.MovingCostPerItem;
         return (upfront, Ledger.DepositHeld);
     }
@@ -178,9 +241,9 @@ public partial class Campaign
         Post(-(upfront - listing.Deposit), Category.Moving, $"Déménagement vers {listing.Name}");
         Ledger.DepositHeld = listing.Deposit;
 
-        // Tout ce qui se déplace part dans les cartons, rien n'est perdu ni à racheter
-        foreach (var item in Premises.Items.Where(i => i.Def.Movable))
-            Storage.Add(new StoredItem { Id = item.Id, DefId = item.DefId });
+        // Tout ce qui t'appartient part dans les cartons, rien n'est perdu ni à racheter ; ce qui était livré reste au local
+        foreach (var item in Premises.Items.Where(i => !i.Included))
+            Storage.Add(new StoredItem { Id = item.Id, DefId = item.DefId, PaidPrice = item.PaidPrice });
         Premises = RealEstate.Create(listing, NewId);
         InvalidateLayout();
         foreach (var person in People)

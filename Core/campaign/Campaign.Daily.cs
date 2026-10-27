@@ -46,8 +46,9 @@ public partial class Campaign
                 decimal preMarketing = product.MarketingBudget / 30;
                 if (preMarketing > 0)
                     Ledger.Accrue(Category.Marketing, preMarketing);
-                if (!TeamOf(product).Any() && product.Queue.Count > 0)
-                    Notify(Severity.Warning, "projet", $"{product.Name} n'avance pas", "Personne ne travaille dessus : passe quelqu'un en automatique ou sur ce projet.",
+                // Sans employé, c'est au fondateur de travailler au terminal : pas d'alerte, l'aide du projet le dit
+                if (Staff.Any() && !TeamOf(product).Any() && product.Queue.Count > 0)
+                    Notify(Severity.Warning, "projet", $"{product.Name} n'avance pas", "Aucun employé dessus : affecte quelqu'un à ce projet, ou travaille au terminal.",
                         $"product:{product.Id}", key: $"noteam:{product.Id}");
                 else
                     Resolve($"noteam:{product.Id}");
@@ -270,14 +271,17 @@ public partial class Campaign
             person.Path.Clear();
             person.Position = Premises.Outside;
             double recovery = weekend ? Tuning.Work.EnergyWeekendRecovery : Tuning.Work.EnergyNightRecovery + breakBonus;
+            // Ton lit, dans ta chambre : tu récupères un peu mieux la nuit
+            if (person.IsFounder)
+                recovery += space.Layout.NightRecovery(Premises);
             person.Energy = OnVacation(person) ? 100 : Math.Min(100, person.Energy + recovery * (person.Energy < 30 ? 0.8 : 1));
 
             if (overdueSalaries.Contains(person.Id))
                 person.UnpaidDays++;
 
-            var desk = Premises.DeskOf(person.Id);
-            bool hasPost = desk != null && space.Layout.Check(Premises, desk) == space.WorkstationIssue.None;
-            double target = 58 + Math.Min(10, shared) + (desk?.Def.Morale ?? 0);
+            var post = Premises.SeatOf(person.Id);
+            bool hasPost = post != null && space.Layout.Check(Premises, post) == space.WorkstationIssue.None;
+            double target = 58 + Math.Min(10, shared) + (post == null ? 0 : space.Layout.PostMorale(Premises, post));
             if (!person.IsFounder)
             {
                 target += Math.Clamp((double)((person.Salary - MarketSalary(person)) / MarketSalary(person)) * 40, -12, 12);
@@ -334,8 +338,8 @@ public partial class Campaign
     private void RemovePerson(Person person, string message)
     {
         People.Remove(person);
-        foreach (var desk in Premises.Desks.Where(d => d.AssignedPersonId == person.Id))
-            desk.AssignedPersonId = null;
+        foreach (var seat in Premises.Items.Where(i => i.AssignedPersonId == person.Id))
+            seat.AssignedPersonId = null;
         foreach (var notice in Notices.Where(n => n.Key.EndsWith($":{person.Id}") && n.Target == $"person:{person.Id}"))
             notice.Resolved = true;
         Notify(Severity.Warning, "équipe", message, "", "team");

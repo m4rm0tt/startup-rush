@@ -21,11 +21,11 @@ public partial class Campaign
         Candidates.Remove(candidate);
         People.Add(person);
 
-        var freeDesk = Premises.Desks.FirstOrDefault(d => d.AssignedPersonId == null && space.Layout.Check(Premises, d) == space.WorkstationIssue.None);
-        if (freeDesk != null)
-            freeDesk.AssignedPersonId = person.Id;
+        var freeChair = space.Layout.CompleteWorkstations(Premises).Select(Premises.ChairOf).FirstOrDefault(c => c is { AssignedPersonId: null });
+        if (freeChair != null)
+            freeChair.AssignedPersonId = person.Id;
         string start = candidate.NoticeWorkdays == 0 ? "dès aujourd'hui" : $"le {GameTime.FormatDate(person.StartsAt)}";
-        string post = freeDesk != null ? "Un poste libre lui est attribué." : "Aucun poste complet libre : installe un bureau, une chaise et un ordinateur.";
+        string post = freeChair != null ? "Un poste libre lui est attribué." : "Aucun poste complet libre : installe un bureau, une chaise et un ordinateur.";
         Notify(Severity.Good, "équipe", $"{person.Name} rejoint l'équipe", $"Commence {start}. Salaire {person.Salary:N0} CHF par mois. {post}", $"person:{person.Id}");
         return CommandResult.Success(post);
     }

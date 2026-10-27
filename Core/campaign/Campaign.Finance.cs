@@ -147,8 +147,7 @@ public partial class Campaign
     /// </summary>
     public decimal Valuation()
     {
-        decimal equipment = Premises.Items.Where(i => i.Def.Movable).Sum(i => ResaleValue(i.Def))
-                            + Storage.Sum(s => ResaleValue(space.FurnitureCatalog.Get(s.DefId)));
+        decimal equipment = Premises.Items.Where(i => !i.Included).Sum(i => ResaleValue(i.PaidPrice)) + Storage.Sum(s => ResaleValue(s.PaidPrice));
         decimal net = Ledger.Cash + Ledger.OpenReceivables * 0.9m + equipment + Ledger.DepositHeld - Ledger.OpenBills - Ledger.LoanDebt;
         decimal productProfit = Products.Sum(p => p.History.Skip(Math.Max(0, p.History.Count - 30)).Sum(d => d.Revenue - d.Costs));
         return Math.Round(net + Math.Max(0, productProfit) * 36);

@@ -75,6 +75,12 @@ public class ProjectPanel(int productId) : GamePanel
         else if (product.Queue.Count == 0)
             column.Children.Add(Ui.Button(product.IsLive ? "Préparer une mise à jour" : "Ajouter des composants", () => { Current = Tab.Components; Refresh(); }, "gold"));
 
+        // Le travail du fondateur : au terminal, mot par mot
+        var (canWork, why) = Campaign.CanOpenTerminal(product.Id);
+        column.Children.Add(Ui.Row(8,
+            Ui.Button("Travailler au terminal", () => Screen.OpenTerminal(product.Id), canWork ? "gold" : "", enabled: canWork),
+            Ui.Muted(canWork ? "Tu tapes des mots : chacun fait avancer la tâche en cours." : why, 13)));
+
         if (product.IsLive)
         {
             var stats = new WrapPanel();
@@ -104,7 +110,7 @@ public class ProjectPanel(int productId) : GamePanel
         // Qui travaille dessus
         var team = Campaign.TeamOf(product).ToList();
         column.Children.Add(Ui.Section("Équipe",
-            team.Count == 0 ? Ui.Text("Personne ne travaille dessus.", 14, Palette.Ember) : Ui.Text(string.Join(", ", team.Select(p => p.Name)), 14),
+            team.Count == 0 ? Ui.Text("Aucun employé dessus : c'est toi qui travailles, au terminal.", 14, Palette.Ember) : Ui.Text(string.Join(", ", team.Select(p => p.Name)), 14),
             product.IsLive ? Ui.Muted($"{Campaign.UpkeepShare(product):P0} de leur temps va au support et à la maintenance (Réglages → Entretien).", 12) : null));
 
         // Détails facultatifs

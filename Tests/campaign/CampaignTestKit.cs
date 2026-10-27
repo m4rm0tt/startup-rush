@@ -1,6 +1,7 @@
 using Core.campaign;
 using Core.products;
 using Core.space;
+using Core.team;
 
 namespace Tests.campaign;
 
@@ -19,22 +20,46 @@ public static class CampaignTestKit
         return product!;
     }
 
-    /// <summary>Joue jusqu'à ce que la file du projet soit vide (au plus 120 jours).</summary>
+    /// <summary>Le fondateur tape au plus « max » mots justes, à vitesse normale, sur ce projet. Renvoie le nombre tapé.</summary>
+    public static int TypeWords(Campaign campaign, Product product, int max)
+    {
+        int typed = 0;
+        while (typed < max && campaign.OpenTerminal(product.Id).Ok)
+        {
+            while (typed < max && campaign.Terminal is { Finished: false } session)
+            {
+                Assert.That(campaign.SubmitWord(session.Word, session.Word.Length / 4.0).Correct, Is.True);
+                typed++;
+            }
+            campaign.CloseTerminal();
+        }
+        return typed;
+    }
+
+    /// <summary>
+    /// Joue jusqu'à ce que la file du projet soit vide (au plus 120 jours) : chaque jour, le fondateur tape au terminal,
+    /// puis la journée passe (les employés éventuels travaillent tout seuls).
+    /// </summary>
     public static void FinishQueue(Campaign campaign, Product product)
     {
         for (int i = 0; i < 120 && product.Queue.Count > 0; i++)
+        {
+            TypeWords(campaign, product, 200);
             campaign.AdvanceDays(1);
+        }
         Assert.That(product.Queue, Is.Empty, "la file aurait dû se vider");
     }
 
-    /// <summary>Installe un poste complet (bureau, chaise, PC) à l'emplacement donné.</summary>
-    public static PlacedItem AddWorkstation(Campaign campaign, int x, int y, string computer = "pc")
+    /// <summary>Embauche le meilleur développeur disponible, présent dès aujourd'hui, et lui installe un poste complet.</summary>
+    public static Person HireDeveloper(Campaign campaign)
     {
-        var desk = new PlacedItem { Id = campaign.NewId(), DefId = "desk", X = x, Y = y };
-        campaign.Premises.Items.Add(desk);
-        campaign.Premises.Items.Add(new PlacedItem { Id = campaign.NewId(), DefId = "chair", X = x, Y = y - 1 });
-        campaign.Premises.Items.Add(new PlacedItem { Id = campaign.NewId(), DefId = computer, X = x, Y = y, HostId = desk.Id });
-        campaign.InvalidateLayout();
-        return desk;
+        campaign.Ledger.Cash += 10_000;
+        var candidate = campaign.Candidates.OrderByDescending(c => c.Person.Skill(Discipline.Code)).First();
+        candidate.NoticeWorkdays = 0;
+        Assert.That(campaign.Hire(candidate.Person.Id).Ok, Is.True);
+        var post = campaign.InstallWorkstation(buy: true);
+        Assert.That(post, Is.Not.Null, "pas la place d'un poste");
+        campaign.Seat(candidate.Person, post!);
+        return candidate.Person;
     }
 }

@@ -133,3 +133,35 @@ public class ProgressAndTeamTest
         Assert.That(campaign.Notices.Count(n => n.Key == "outage:1"), Is.EqualTo(2), "un nouveau problème après résolution");
     }
 }
+
+public class AppearanceTest
+{
+    [Test]
+    public void RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook()
+    {
+        var campaign = Campaign.New("Test", "Alex", "Studio", FounderProfile.Developer, 5,
+            new Core.team.Appearance { Base = "player_f", Hair = "hair_bun", HairRamp = "hair_auburn", Skin = "skin_deep" });
+        var random = new SimRandom(11);
+        var bases = new HashSet<string>();
+        var hairs = new HashSet<string>();
+        for (int i = 0; i < 400; i++)
+        {
+            var look = Core.team.Recruitment.Generate(random, 0, i, 0).Person.Appearance;
+            Assert.That(Core.space.Pack.Asset(look.Base).Kind, Is.EqualTo("character_base"), look.Base);
+            Assert.That(Core.space.Pack.Asset(look.Hair).Kind, Is.EqualTo("character_hair"), look.Hair);
+            Assert.That(Core.team.Appearance.HairRamps, Does.Contain(look.HairRamp));
+            Assert.That(Core.team.Appearance.Skins, Does.Contain(look.Skin));
+            bases.Add(look.Base);
+            hairs.Add(look.Hair);
+        }
+        Assert.That(bases, Has.Count.EqualTo(10), "les dix bases d'employés apparaissent");
+        Assert.That(hairs, Has.Count.EqualTo(6), "les six coiffures apparaissent");
+
+        var reloaded = Core.persistence.SaveStore.Deserialize(Core.persistence.SaveStore.Serialize(campaign));
+        Assert.That(reloaded.Founder.Appearance.Base, Is.EqualTo("player_f"));
+        Assert.That(reloaded.Founder.Appearance.Hair, Is.EqualTo("hair_bun"));
+        Assert.That(campaign.WorkRate(campaign.Founder, Core.team.Discipline.Code),
+            Is.EqualTo(Campaign.New("Test", "Alex", "Studio", FounderProfile.Developer, 5).WorkRate(campaign.Founder, Core.team.Discipline.Code)),
+            "l'apparence ne change rien à la simulation");
+    }
+}

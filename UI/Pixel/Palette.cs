@@ -4,8 +4,7 @@ using Avalonia.Media;
 namespace UI.Pixel;
 
 /// <summary>
-/// La palette Endesga 32 : toute la scène est ramenée à ces 32 couleurs,
-/// et l'interface n'en utilise pas d'autres. C'est ce qui donne un style cohérent.
+/// Les couleurs de l'interface (thème « Papier » du pack) et l'ancienne palette Endesga 32, gardée pour les couleurs de projet.
 /// </summary>
 public static class Palette
 {
@@ -17,22 +16,26 @@ public static class Palette
         0x262b44, 0x181425, 0xff0044, 0x68386c, 0xb55088, 0xf6757a, 0xe8b796, 0xc28569,
     ];
 
-    public static readonly IBrush Ink = Brush("#181425");
-    public static readonly IBrush Night = Brush("#262b44");
-    public static readonly IBrush Slate = Brush("#3a4466");
-    public static readonly IBrush Steel = Brush("#5a6988");
-    public static readonly IBrush Fog = Brush("#8b9bb4");
-    public static readonly IBrush Cloud = Brush("#c0cbdc");
-    public static readonly IBrush Snow = Brush("#ffffff");
-    public static readonly IBrush Gold = Brush("#feae34");
-    public static readonly IBrush Lemon = Brush("#fee761");
-    public static readonly IBrush Leaf = Brush("#63c74d");
-    public static readonly IBrush Forest = Brush("#3e8948");
-    public static readonly IBrush Blood = Brush("#e43b44");
-    public static readonly IBrush Sky = Brush("#0099db");
-    public static readonly IBrush Ice = Brush("#2ce8f5");
-    public static readonly IBrush Plum = Brush("#b55088");
-    public static readonly IBrush Ember = Brush("#f77622");
+    // Thème « Papier » du pack (assets/hud/theme_tokens.json). Les noms viennent de l'ancienne interface sombre et gardent
+    // leur rôle : Snow = texte principal (encre), Fog = texte discret, Night/Slate/Steel = papiers de plus en plus foncés,
+    // Gold/Lemon = accents (soleil, sarcelle), Leaf/Ember/Blood/Sky = succès, attention, danger, information.
+    public static readonly IBrush Ink = Brush("#2b2128");
+    public static readonly IBrush Night = Brush("#efe4cc");
+    public static readonly IBrush Slate = Brush("#dccdb1");
+    public static readonly IBrush Steel = Brush("#c2ae94");
+    public static readonly IBrush Fog = Brush("#6f5f5d");
+    public static readonly IBrush Cloud = Brush("#4a3a42");
+    public static readonly IBrush Snow = Brush("#2b2128");
+    public static readonly IBrush Gold = Brush("#c9922e");
+    public static readonly IBrush Lemon = Brush("#275a66");
+    public static readonly IBrush Leaf = Brush("#437d40");
+    public static readonly IBrush Forest = Brush("#437d40");
+    public static readonly IBrush Blood = Brush("#a23a34");
+    public static readonly IBrush Sky = Brush("#4670a6");
+    public static readonly IBrush Ice = Brush("#357c82");
+    public static readonly IBrush Plum = Brush("#8f3d39");
+    public static readonly IBrush Ember = Brush("#c05843");
+    public static readonly IBrush Paper = Brush("#fbf5e6");
 
     public static readonly IBrush Wine = Brush("#a22633");
     public static readonly IBrush Navy = Brush("#124e89");

@@ -51,7 +51,7 @@ public static class Recruitment
             {
                 Id = id,
                 Name = RandomName(random),
-                Look = random.Next(0, 5),
+                Appearance = Appearance.Random(random),
                 Skills = skills,
                 Salary = salary,
                 Morale = 72,

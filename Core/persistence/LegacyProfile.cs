@@ -55,6 +55,9 @@ public class Settings
     /// <summary>Les nuits et week-ends passent plus vite quand personne n'est au bureau.</summary>
     public bool FastNights { get; set; } = true;
 
+    /// <summary>Accessibilité : l'entreprise se met en pause pendant la saisie au terminal (le rendement par mot ne change pas).</summary>
+    public bool PauseDuringTerminal { get; set; }
+
     public bool MigratedFromLegacy { get; set; }
 
     /// <summary>Petites aides déjà lues (une phrase à la première ouverture d'un outil).</summary>

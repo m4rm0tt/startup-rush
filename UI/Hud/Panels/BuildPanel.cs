@@ -5,6 +5,7 @@ using Avalonia.Layout;
 using Core.campaign;
 using Core.space;
 using UI.Game;
+using UI.Iso;
 using UI.Pixel;
 
 namespace UI.Hud.Panels;
@@ -26,21 +27,23 @@ public class BuildPanel : GamePanel
             string what = tool.MovingItemId != null ? $"Déplacer : {def.Name}" : tool.StoredId != null ? $"Poser depuis les cartons : {def.Name}" : $"Poser : {def.Name} ({def.Price:N0} CHF)";
             column.Children.Add(Ui.Card(Ui.Column(4,
                 Ui.Text(what, 16, Palette.Gold, bold: true),
-                Ui.Muted(def.OnDesk ? "Clique sur un bureau." : def.Kind == FurnitureKind.Desk
-                    ? "Clique sur une case libre : la case au-dessus (pointillés) reste pour la chaise."
-                    : "Clique sur une case libre. Vert : possible, rouge : impossible."),
-                Ui.Muted("Clic droit ou Échap pour arrêter."),
+                Ui.Muted(def.Attached ? "Clique sur un bureau ou un meuble qui peut le recevoir : il prend le premier emplacement libre."
+                    : def.Kind == FurnitureKind.Desk
+                        ? "Clique sur une case libre : la case en pointillés, devant, reste libre pour s'asseoir."
+                        : "Clique sur une case libre. Vert : possible, rouge : impossible."),
+                Ui.Muted(def.Attached ? "Clic droit ou Échap pour arrêter." : "R : tourner. Clic droit ou Échap pour arrêter."),
                 Ui.Button("Arrêter", () => Session.SetTool(null))), Palette.Gold));
         }
 
         // Postes de travail
-        var desks = premises.Desks.ToList();
-        int complete = desks.Count(d => Layout.Check(premises, d) == WorkstationIssue.None);
+        var posts = premises.Workstations.ToList();
+        int complete = posts.Count(p => Layout.Check(premises, p) == WorkstationIssue.None);
         var stations = Ui.Column(4);
-        foreach (var desk in desks)
+        foreach (var post in posts)
         {
-            var issue = Layout.Check(premises, desk);
-            var owner = desk.AssignedPersonId is int id ? Campaign.FindPerson(id)?.Name : null;
+            var desk = post.Desk;
+            var issue = Layout.Check(premises, post);
+            var owner = premises.ChairOf(post)?.AssignedPersonId is int id ? Campaign.FindPerson(id)?.Name : null;
             var line = Ui.Row(Ui.Icon(issue == WorkstationIssue.None ? "check" : "warning", 18),
                 Ui.Text($"{(owner ?? "Libre")} — {Layout.Describe(issue)}", 14, issue == WorkstationIssue.None ? Palette.Cloud : Palette.Ember));
             var button = new Button { Content = line, Padding = new Thickness(4, 2) };
@@ -48,18 +51,20 @@ public class BuildPanel : GamePanel
             button.Click += (_, _) => Session.Select(SelectionKind.Item, desk.Id);
             stations.Children.Add(button);
         }
-        if (desks.Count == 0)
+        if (posts.Count == 0)
             stations.Children.Add(Ui.Muted("Aucun bureau."));
         int people = Campaign.People.Count;
         column.Children.Add(Ui.Section($"Postes : {complete} complet(s) pour {people} personne(s)", stations,
-            Ui.Muted("Un poste = un bureau, une chaise juste derrière, un ordinateur dessus, et un accès libre. Clique un bureau pour l'attribuer.")));
+            Ui.Muted("Un poste = un bureau, une chaise, un ordinateur (un portable, ou une tour avec écran et clavier) et une case libre devant. Clique un bureau pour l'attribuer.")));
 
         // Catalogue
-        foreach (var group in FurnitureCatalog.Buyable.Concat([FurnitureCatalog.Get("laptop")]).Where(d => d.Price > 0).GroupBy(d => d.Kind switch
+        foreach (var group in FurnitureCatalog.Buyable.GroupBy(d => d.Kind switch
                  {
-                     FurnitureKind.Desk or FurnitureKind.Chair or FurnitureKind.Computer => "Postes de travail",
-                     FurnitureKind.Coffee or FurnitureKind.Sofa => "Pauses",
+                     FurnitureKind.Desk or FurnitureKind.Chair => "Bureaux et chaises",
+                     FurnitureKind.Laptop or FurnitureKind.Tower or FurnitureKind.Monitor or FurnitureKind.Keyboard => "Informatique",
+                     FurnitureKind.Coffee or FurnitureKind.Lounge or FurnitureKind.Kitchen => "Pauses",
                      FurnitureKind.Whiteboard or FurnitureKind.Bookshelf => "Organisation",
+                     FurnitureKind.Personal => "Objets personnels",
                      _ => "Ambiance"
                  }))
         {
@@ -81,7 +86,7 @@ public class BuildPanel : GamePanel
                 var place = Ui.Button("Poser", () => Session.SetTool(new BuildTool(def.Id, StoredId: item.Id)), "green");
                 Grid.SetColumn(place, 1);
                 grid.Children.Add(place);
-                decimal value = Campaign.ResaleValue(def);
+                decimal value = Campaign.ResaleValue(item.PaidPrice);
                 var sell = Ui.Button(value > 0 ? $"Vendre {value:N0}" : "Jeter", () => Run(Campaign.SellStored(item.Id)), "red");
                 Grid.SetColumn(sell, 2);
                 sell.Margin = new Thickness(4, 0, 0, 0);
@@ -92,16 +97,17 @@ public class BuildPanel : GamePanel
         }
 
         column.Children.Add(Ui.Section("Locaux",
-            Ui.Muted($"{premises.Name} : {premises.Width} × {premises.Height} cases, loyer {(premises.Rent > 0 ? Ui.Chf(premises.Rent) : "compris dans ta rémunération")}."),
+            Ui.Muted($"{premises.Name} : {premises.Width} × {premises.Height} cases, {premises.Workstations.Count()} poste(s) installé(s), loyer {(premises.Rent > 0 ? Ui.Chf(premises.Rent) : "compris dans ta rémunération")}."),
             Ui.Button("Voir les locaux à louer", () => Open(new PremisesPanel()))));
         return column;
     }
 
     private Control CatalogButton(FurnitureDef def)
     {
-        var image = Atlas.Cropped(def.Id);
+        var image = PackLibrary.Thumbnail(def.Id);
+        double scale = System.Math.Min(48.0 / image.PixelSize.Width, 40.0 / image.PixelSize.Height);
         var content = Ui.Column(2,
-            image != null ? Ui.Image(image, 48, 40) : null,
+            Ui.Image(image, image.PixelSize.Width * System.Math.Min(1, scale), image.PixelSize.Height * System.Math.Min(1, scale)),
             Ui.Text(def.Name, 13, Palette.Snow, wrap: true),
             Ui.Number($"{def.Price:N0} CHF", 16, Campaign.Ledger.CanSpend(def.Price) ? Palette.Lemon : Palette.Blood));
         content.Width = 96;
@@ -112,7 +118,8 @@ public class BuildPanel : GamePanel
         button.Classes.Add("tab");
         if (selected)
             button.Classes.Add("selected");
-        ToolTip.SetTip(button, $"{def.Name} — {def.Effect} Emprise : {def.Width} × {def.Height} case(s).");
+        var cells = Premises.Footprint(def, 0, 0, def.Pack.DefaultFacing).Count();
+        ToolTip.SetTip(button, def.Attached ? $"{def.Name} — {def.Effect} Se pose sur un meuble." : $"{def.Name} — {def.Effect} Emprise : {cells} case(s).");
         button.Click += (_, _) =>
         {
             Session.SetTool(selected ? null : new BuildTool(def.Id));
@@ -129,8 +136,8 @@ public class PremisesPanel : GamePanel
 
     public override Control Build()
     {
-        var column = Ui.Column(10, Ui.Muted("En déménageant, tous tes meubles partent dans les cartons : rien n'est perdu ni à racheter. " +
-                                            "La garantie du local actuel est rendue, celle du nouveau est bloquée."));
+        var column = Ui.Column(10, Ui.Muted("En déménageant, tout ton matériel part dans les cartons : rien n'est perdu ni à racheter. Ce qui est livré " +
+                                            "avec un local (cuisine, rangements) y reste. La garantie du local actuel est rendue, celle du nouveau est bloquée."));
         foreach (var listing in RealEstate.Listings)
         {
             bool current = listing.Id == Campaign.Premises.ListingId;
@@ -138,7 +145,7 @@ public class PremisesPanel : GamePanel
             var card = Ui.Column(4,
                 Ui.Row(Ui.Text(listing.Name, 17, Palette.Snow, bold: true), current ? Ui.Tag("ICI", Palette.Leaf) : null),
                 Ui.Muted(listing.Description),
-                Ui.Pair("Surface", $"{listing.Width} × {listing.Height} cases"),
+                Ui.Pair("Surface", $"{listing.Plan.Width} × {listing.Plan.Depth} cases"),
                 Ui.Pair("Loyer mensuel", listing.Rent > 0 ? Ui.Chf(listing.Rent) : "compris"),
                 Ui.Pair("Garantie", Ui.Chf(listing.Deposit)),
                 current ? null : Ui.Pair("À payer pour emménager", Ui.Chf(upfront - refund), Campaign.Ledger.CanSpend(upfront - refund) ? Palette.Lemon : Palette.Blood),

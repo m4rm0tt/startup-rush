@@ -27,14 +27,38 @@ public class Assignment
     public bool Is(AssignmentKind kind, int targetId) => Kind == kind && TargetId == targetId;
 }
 
+/// <summary>
+/// L'apparence d'une personne, en couches du pack : une base (fondateur ou employé), une coiffure, une teinte de cheveux
+/// et de peau. Tirée une fois à la création, puis sauvegardée. Elle ne change rien aux compétences ni à la simulation.
+/// </summary>
+public class Appearance
+{
+    public static readonly string[] Hairs = ["hair_short_crop", "hair_side_part", "hair_curly_top", "hair_long_straight", "hair_bun", "hair_bob"];
+    public static readonly string[] HairRamps = ["hair_black", "hair_brown", "hair_auburn", "hair_blond", "hair_gray"];
+    public static readonly string[] Skins = ["skin_light", "skin_medium", "skin_deep"];
+
+    public string Base { get; set; } = "employee_m_01";
+    public string Hair { get; set; } = "hair_short_crop";
+    public string HairRamp { get; set; } = "hair_brown";
+    public string Skin { get; set; } = "skin_light";
+
+    /// <summary>Une apparence au hasard pour une recrue (cheveux gris rares).</summary>
+    public static Appearance Random(campaign.SimRandom random) => new()
+    {
+        Base = $"employee_{(random.Chance(0.5) ? 'f' : 'm')}_0{random.Next(1, 6)}",
+        Hair = random.Pick(Hairs),
+        HairRamp = random.Chance(0.1) ? "hair_gray" : random.Pick(HairRamps[..4]),
+        Skin = random.Pick(Skins),
+    };
+}
+
 public class Person
 {
     public int Id { get; set; }
     public string Name { get; set; } = "";
     public bool IsFounder { get; set; }
 
-    /// <summary>Apparence (un des personnages de la planche Pixel Office).</summary>
-    public int Look { get; set; }
+    public Appearance Appearance { get; set; } = new();
 
     public Dictionary<Discipline, double> Skills { get; set; } = new();
     public decimal Salary { get; set; }

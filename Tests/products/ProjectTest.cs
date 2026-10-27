@@ -104,6 +104,7 @@ public class ProjectTest
         var product = NewProject(campaign, "core");
         campaign.SetMarketing(product.Id, 800);
         FinishQueue(campaign, product);
+        campaign.AdvanceDays(20); // trois semaines de promotion avant la sortie
         double wishlist = product.Wishlist;
         decimal cash = campaign.Ledger.Cash;
 
@@ -185,12 +186,13 @@ public class ProjectTest
         var product = NewProject(campaign);
         FinishQueue(campaign, product);
         campaign.Launch(product.Id);
+        HireDeveloper(campaign);
         product.Users = 400;
         product.Bugs = 6;
 
         campaign.AdvanceDays(30);
 
-        Assert.That(product.Bugs, Is.LessThan(6), "le fondateur corrige tout seul quand il n'y a rien d'autre à faire");
+        Assert.That(product.Bugs, Is.LessThan(6), "l'équipe corrige toute seule quand il n'y a rien d'autre à faire");
         Assert.That(product.SupportBacklog, Is.LessThan(product.History[^1].Tickets * 2 + 1));
     }
 

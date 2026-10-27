@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Core.campaign;
 using Core.team;
+using UI.Iso;
 using UI.Pixel;
 
 namespace UI.Hud.Panels;
@@ -39,8 +40,7 @@ public class TeamPanel : GamePanel
         {
             var p = candidate.Person;
             var row = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto") };
-            if (Atlas.Cropped($"person{p.Look % 5}") is { } look)
-                row.Children.Add(Ui.Image(look, look.SourceRect.Width * 1.5, look.SourceRect.Height * 1.5));
+            row.Children.Add(Ui.Image(Portraits.Of(p.Appearance), 48, 48));
             var info = Ui.Column(0, Ui.Text($"{p.Name} · {p.Title}", 14, Palette.Snow, bold: true),
                 Ui.Muted($"{p.Salary:N0} CHF/mois{(candidate.NoticeWorkdays > 0 ? $" · arrive dans {candidate.NoticeWorkdays} j" : "")}", 12));
             info.Margin = new Thickness(8, 0);
@@ -61,7 +61,7 @@ public class TeamPanel : GamePanel
     {
         var p = candidate.Person;
         decimal after = Campaign.MonthlyFixedCosts + p.Salary - Campaign.RecurringRevenue30;
-        bool free = Campaign.Premises.Desks.Any(d => d.AssignedPersonId == null && Core.space.Layout.Check(Campaign.Premises, d) == Core.space.WorkstationIssue.None);
+        bool free = Core.space.Layout.CompleteWorkstations(Campaign.Premises).Any(p => Campaign.Premises.ChairOf(p)?.AssignedPersonId == null);
         string detail = $"+{p.Salary:N0} CHF par mois. " +
                         (after > 0 ? $"Tu dépenseras alors {after:N0} CHF de plus que tes revenus chaque mois." : "Tes revenus couvrent encore tes dépenses.") +
                         (free ? "" : " Il faudra lui installer un poste.");
@@ -70,10 +70,9 @@ public class TeamPanel : GamePanel
 
     private Control PersonCard(Person person)
     {
-        var look = Atlas.Cropped($"person{person.Look % 5}");
         string state = Campaign.OnVacation(person) ? "En congé" : person.TrainingDiscipline != null ? "En formation" : person.StartsAt > Campaign.Minute ? $"Arrive le {GameTime.FormatDate(person.StartsAt)}" : "";
         var header = Ui.Row(10,
-            look != null ? Ui.Image(look, look.SourceRect.Width * 2, look.SourceRect.Height * 2) : null,
+            Ui.Image(Portraits.Of(person.Appearance), 64, 64),
             Ui.Column(2,
                 Ui.Row(6, Ui.Text(person.Name, 16, Palette.Snow, bold: true, wrap: false), state != "" ? Ui.Tag(state, Palette.Sky) : null,
                     person.LeavesAt != null ? Ui.Tag("Veut partir", Palette.Blood) : null),

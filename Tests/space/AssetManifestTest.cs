@@ -1,54 +1,56 @@
-using System.Text.Json;
 using Core.space;
 
 namespace Tests.space;
 
-/// <summary>Le manifeste de l'atlas (produit par tools/build_assets.py) doit couvrir le catalogue avec les mêmes emprises.</summary>
+/// <summary>Le moteur lit le pack embarqué : chaque meuble jouable y existe, et chaque plan de location donne un local valide.</summary>
 public class AssetManifestTest
 {
-    private static string Root
-    {
-        get
-        {
-            var dir = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
-            while (dir != null && !File.Exists(Path.Combine(dir.FullName, "StartupRush.sln")))
-                dir = dir.Parent;
-            return dir!.FullName;
-        }
-    }
-
     [Test]
-    public void EveryFurnitureHasASpriteWithTheSameFootprint()
+    public void EveryPlayableFurnitureIsAPackAssetWithItsGeometry()
     {
-        string path = Path.Combine(Root, "UI", "Assets", "Sprites", "furniture.json");
-        using var document = JsonDocument.Parse(File.ReadAllText(path));
-        var manifest = document.RootElement;
-
         foreach (var def in FurnitureCatalog.All)
         {
-            Assert.That(manifest.TryGetProperty(def.Id, out var entry), Is.True, $"sprite manquant : {def.Id}");
-            var footprint = entry.GetProperty("footprint");
-            Assert.That((footprint[0].GetInt32(), footprint[1].GetInt32()), Is.EqualTo((def.Width, def.Height)), $"emprise de {def.Id}");
-            Assert.That(entry.GetProperty("w").GetInt32(), Is.GreaterThan(0));
+            Assert.That(Pack.Has(def.Id), Is.True, $"absent du pack : {def.Id}");
+            Assert.That(def.Pack.Facings, Is.Not.Empty, def.Id);
+            if (def.Kind == FurnitureKind.Desk)
+                Assert.That(def.Pack.Facing(def.Pack.DefaultFacing).Sockets.Keys.Any(s => s.StartsWith("chair")), Is.True, $"{def.Id} : pas de chaise");
+            if (def.Kind is FurnitureKind.Chair or FurnitureKind.Laptop or FurnitureKind.Tower or FurnitureKind.Monitor or FurnitureKind.Keyboard)
+                Assert.That(def.Attached, Is.True, $"{def.Id} devrait s'accrocher à un bureau");
         }
-        for (int i = 0; i < 5; i++)
-            Assert.That(manifest.TryGetProperty($"person{i}", out _), Is.True);
-        Assert.That(File.Exists(Path.Combine(Root, "UI", "Assets", "Sprites", "furniture.png")), Is.True);
     }
 
     [Test]
-    public void TheStartingApartmentIsAValidLayout()
+    public void EveryRentalPlanBecomesAValidPremises()
+    {
+        int id = 1;
+        foreach (var listing in RealEstate.Listings)
+        {
+            var premises = RealEstate.Create(listing, () => id++);
+            var occupied = new HashSet<Cell>();
+            foreach (var item in premises.Floor)
+                foreach (var cell in premises.Footprint(item))
+                {
+                    Assert.That(premises.InBounds(cell), Is.True, $"{listing.Id} : {item.DefId} hors du local");
+                    Assert.That(occupied.Add(cell), Is.True, $"{listing.Id} : chevauchement en {cell}");
+                }
+            Assert.That(occupied, Does.Not.Contain(premises.Entrance), $"{listing.Id} : entrée bloquée");
+            foreach (var child in premises.Items.Where(i => i.HostId != null))
+            {
+                var host = premises.Find(child.HostId!.Value)!;
+                Assert.That(Layout.CanAttach(premises, child.Def, host, child.Socket!, child.Id).Ok, Is.True, $"{listing.Id} : {child.DefId} → {child.Socket}");
+            }
+        }
+    }
+
+    [Test]
+    public void TheStartingBedroomGivesTheFounderACompleteWorkstation()
     {
         var campaign = Core.campaign.Campaign.New("Test", "Alex", "Studio", Core.campaign.FounderProfile.Developer, 1);
-        var premises = campaign.Premises;
+        var post = campaign.Premises.SeatOf(campaign.Founder.Id);
 
-        Assert.That(Layout.CompleteWorkstations(premises).Count(), Is.EqualTo(1));
-        var occupied = new HashSet<Cell>();
-        foreach (var item in premises.Items)
-            foreach (var cell in premises.Footprint(item))
-            {
-                Assert.That(premises.InBounds(cell), Is.True, item.DefId);
-                Assert.That(occupied.Add(cell), Is.True, $"chevauchement en {cell}");
-            }
+        Assert.That(campaign.Premises.PlanId, Is.EqualTo("room_bedroom_start"));
+        Assert.That(post, Is.Not.Null);
+        Assert.That(Layout.Check(campaign.Premises, post!), Is.EqualTo(WorkstationIssue.None));
+        Assert.That(campaign.Premises.Items.Any(i => i.DefId == "bed_single" && i.Included), Is.True);
     }
 }

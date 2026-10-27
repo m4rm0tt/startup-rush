@@ -108,7 +108,7 @@ public static class Ui
 
     public static Control Bar(double fraction, IBrush? color = null, double height = 8, double width = double.NaN)
     {
-        var track = new Border { Background = Palette.Ink, Height = height, Width = width, MinWidth = 40 };
+        var track = new Border { Background = Palette.Slate, Height = height, Width = width, MinWidth = 40 };
         var fill = new Border
         {
             Background = color ?? Palette.Leaf,

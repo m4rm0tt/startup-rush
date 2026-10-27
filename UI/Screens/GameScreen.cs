@@ -36,12 +36,17 @@ public class GameScreen : UserControl, IScreen
     private readonly ContentControl _panelBody = new();
     private readonly ContentControl _inspector = new() { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom };
     private readonly StackPanel _toasts = new() { Spacing = 6, Width = 380, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, 60, 10, 0) };
-    private readonly Grid _modalLayer = new() { IsVisible = false, Background = new SolidColorBrush(Color.Parse("#a0181425")) };
+    private readonly Grid _modalLayer = new() { IsVisible = false, Background = new SolidColorBrush(Color.Parse("#962b2128")) };
     private readonly ContentControl _modalHost = new() { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
     private readonly StackPanel _toolbar = new() { Orientation = Orientation.Horizontal, Spacing = 4 };
 
     private readonly List<GamePanel> _stack = new();
     private Action? _modalClose;
+
+    // Terminal du fondateur : un calque à part (le temps continue), et la vitesse d'avant à restaurer
+    private readonly ContentControl _terminalLayer = new() { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 0, 90) };
+    private TerminalView? _terminal;
+    private (int Speed, bool Paused) _beforeTerminal;
     private bool _pauseMenu;
     private double _refreshTimer;
     private double _hudTimer;
@@ -85,6 +90,7 @@ public class GameScreen : UserControl, IScreen
         _hud.Children.Add(_panelFrame);
         _hud.Children.Add(_toasts);
 
+        _hud.Children.Add(_terminalLayer);
         _modalLayer.Children.Add(_modalHost);
         _modalLayer.PointerPressed += (_, e) => e.Handled = true; // aucun clic ne traverse
         _hud.Children.Add(_modalLayer);
@@ -126,6 +132,9 @@ public class GameScreen : UserControl, IScreen
     {
         Session.Update(deltaTime);
         Scene.Tick(deltaTime);
+        _terminal?.Tick();
+        if (_terminal != null && Session.Campaign.Terminal == null)
+            CloseTerminal();
 
         while (Session.NewNotices.Count > 0)
         {
@@ -230,7 +239,7 @@ public class GameScreen : UserControl, IScreen
         grid.Children.Add(right);
         _topBar.Content = new Border
         {
-            Background = new SolidColorBrush(Color.Parse("#e6262b44")),
+            Background = new SolidColorBrush(Color.Parse("#f0fbf5e6")),
             BorderBrush = Palette.Slate,
             BorderThickness = new Thickness(0, 0, 0, 2),
             Child = grid,
@@ -248,9 +257,76 @@ public class GameScreen : UserControl, IScreen
         ("Finances", "money", Key.F, () => new FinancePanel()),
     ];
 
+    /// <summary>Le premier projet du portefeuille sur lequel le fondateur peut travailler au terminal, ou null.</summary>
+    private Core.products.Product? TerminalTarget() =>
+        Session.Campaign.Products.OrderBy(p => p.Priority).FirstOrDefault(p => Session.Campaign.CanOpenTerminal(p.Id).Ok);
+
+    /// <summary>
+    /// Ouvre le terminal sur un projet. Pendant la saisie, l'entreprise tourne à vitesse normale (ou se met en pause, si le
+    /// réglage d'accessibilité est choisi) ; à la fermeture, la vitesse et la pause d'avant reviennent exactement.
+    /// </summary>
+    public void OpenTerminal(int productId)
+    {
+        if (_terminal != null)
+            return;
+        var result = Session.Campaign.OpenTerminal(productId);
+        if (!result.Ok)
+        {
+            Toast(result.Message, false);
+            return;
+        }
+        _beforeTerminal = (Session.Speed, Session.PausedByPlayer);
+        ClosePanels();
+        Session.ClearSelection();
+        Session.SetSpeed(1);
+        _terminal = new TerminalView(Session, CloseTerminal, () =>
+        {
+            int id = Session.Campaign.Terminal?.ProductId ?? productId;
+            Session.Campaign.CloseTerminal();
+            CloseTerminal(restore: false);
+            OpenTerminal(id);
+        });
+        _terminalLayer.Content = _terminal;
+        UpdateAutoPause();
+        BuildToolbar();
+        Avalonia.Threading.Dispatcher.UIThread.Post(() => _terminal?.FocusInput());
+    }
+
+    public void CloseTerminal() => CloseTerminal(restore: true);
+
+    public TerminalView? Terminal => _terminal;
+
+    private void CloseTerminal(bool restore)
+    {
+        Session.Campaign.CloseTerminal();
+        _terminal = null;
+        _terminalLayer.Content = null;
+        if (restore)
+            Session.Restore(_beforeTerminal.Speed, _beforeTerminal.Paused);
+        UpdateAutoPause();
+        BuildToolbar();
+    }
+
     private void BuildToolbar()
     {
         _toolbar.Children.Clear();
+        // Le bouton du travail actif : le fondateur ne développe que par là
+        var target = TerminalTarget();
+        var work = new Button
+        {
+            Content = Ui.Row(6, Ui.Image(UI.Iso.PackLibrary.Icon("icon_terminal", target != null ? "#fbf5e6" : "#9c8878"), 24, 24),
+                Ui.Column(0, Ui.Text("Travailler", 15, null, wrap: false), Ui.Muted("Entrée", 11))),
+            Padding = new Thickness(10, 4, 12, 8),
+            IsEnabled = target != null && _terminal == null,
+        };
+        work.Classes.Add("gold");
+        work.Click += (_, _) =>
+        {
+            if (TerminalTarget() is { } product)
+                OpenTerminal(product.Id);
+        };
+        ToolTip.SetTip(work, target != null ? $"Travailler au terminal sur {target.Name} (Entrée)" : "Rien à faire au terminal : crée un projet ou mets un composant en file.");
+        _toolbar.Children.Add(work);
         foreach (var (label, icon, key, create) in Tools)
         {
             string badge = label == "Développement" && Session.Campaign.DevPoints > 0 ? $" ({Session.Campaign.DevPoints})" : "";
@@ -389,6 +465,8 @@ public class GameScreen : UserControl, IScreen
             reason = "menu";
         else if (_modalLayer.IsVisible)
             reason = "confirmation";
+        else if (_terminal != null && Session.Settings.PauseDuringTerminal)
+            reason = "saisie";
         else if (Session.Settings.PauseInLargeMenus && _stack.LastOrDefault() is { Large: true } large)
             reason = large.Title.ToLowerInvariant();
         Session.AutoPause = reason;
@@ -598,6 +676,32 @@ public class GameScreen : UserControl, IScreen
         }
         if (_modalLayer.IsVisible)
             return false;
+        // Pendant la saisie, aucun raccourci : les touches reviennent au terminal
+        if (_terminal != null)
+        {
+            if (key == Key.Enter && !_terminal.HandleEnter())
+                _terminal.FocusInput();
+            else if (key != Key.Enter)
+                _terminal.FocusInput();
+            return true;
+        }
+        if (key == Key.Enter && TerminalTarget() is { } product)
+        {
+            OpenTerminal(product.Id);
+            return true;
+        }
+        if (key == Key.R && Session.Tool != null)
+        {
+            Session.RotateTool();
+            return true;
+        }
+        if (key == Key.R && Session.SelectionKind == SelectionKind.Item)
+        {
+            var rotated = Session.Campaign.Rotate(Session.SelectionId);
+            if (!rotated.Ok)
+                Toast(rotated.Message, false);
+            return true;
+        }
 
         switch (key)
         {
@@ -644,6 +748,11 @@ public class GameScreen : UserControl, IScreen
     /// <summary>Échap ferme la couche la plus haute : fenêtre modale, outil, menu, sélection ; sinon ouvre la pause.</summary>
     private void Escape()
     {
+        if (_terminal != null)
+        {
+            CloseTerminal();
+            return;
+        }
         if (_modalLayer.IsVisible)
         {
             if (Session.Campaign.Status != CampaignStatus.Liquidated)

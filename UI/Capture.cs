@@ -14,6 +14,7 @@ using Core.products;
 using Core.space;
 using Core.team;
 using UI.Audio;
+using UI.Game;
 using UI.Hud.Panels;
 using UI.Screens;
 
@@ -65,14 +66,30 @@ public static class Capture
         report.Add($"{name}.png : {size.Width}×{size.Height}");
     }
 
+    /// <summary>Le fondateur tape au plus « max » mots justes, à vitesse normale, sur ce projet (comme les bots).</summary>
+    private static int TypeDay(Campaign campaign, Product product, int max)
+    {
+        int typed = 0;
+        while (typed < max && campaign.OpenTerminal(product.Id).Ok)
+        {
+            while (typed < max && campaign.Terminal is { Finished: false } session)
+            {
+                campaign.SubmitWord(session.Word, session.Word.Length / 4.0);
+                typed++;
+            }
+            campaign.CloseTerminal();
+        }
+        return typed;
+    }
+
     private static async Task Script(MainWindow window, string folder, List<string> report)
     {
         report.Add($"Audio : {Sfx.LoadedSounds} sons et {Sfx.LoadedTracks} musiques chargés depuis le build.");
-        report.Add($"Atlas : {UI.Pixel.Atlas.Sprites.Count} sprites dans furniture.json.");
+        report.Add($"Pack : {System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames().Count(n => n.StartsWith("pack/"))} ressources embarquées (sprites, masques, manifeste, plans).");
         await Wait(1);
         await Shot(window, folder, "01_menu_principal", report);
 
-        // Début de partie : l'appartement, aucun projet
+        // Début de partie : la chambre, aucun projet
         var campaign = Campaign.New("Capture", "Alex", "Studio Léman", FounderProfile.Developer, 2027);
         window.Store.Save(campaign, SaveKind.Manual, "Début");
         var game = window.StartGame(campaign, null);
@@ -86,18 +103,31 @@ public static class Capture
         await Shot(window, folder, "04_nouveau_projet", report);
         game.ClosePanels();
 
-        // Premier projet : développement automatique
+        // Premier projet : le fondateur travaille au terminal, mot par mot
         var (_, app) = campaign.CreateProject("", "freelances", RevenueModel.Subscription);
-        campaign.Advance(4 * 60);
+        campaign.Advance(60);
+        game.Session.TogglePause();
+        game.OpenTerminal(app!.Id);
+        await Wait(0.5);
+        for (int i = 0; i < 9 && campaign.Terminal is { Finished: false } session; i++)
+            campaign.SubmitWord(session.Word, session.Word.Length / 4.0);
+        game.Terminal?.SetInput(campaign.Terminal!.Word[..3]);
+        game.Terminal?.Repaint();
+        await Shot(window, folder, "05_terminal", report);
+        game.CloseTerminal();
+        game.Session.TogglePause();
         game.OpenRoot(new ProjectsPanel());
-        game.PushPanel(new ProjectPanel(app!.Id));
-        await Shot(window, folder, "05_projet_en_developpement", report);
+        game.PushPanel(new ProjectPanel(app.Id));
+        await Shot(window, folder, "05b_projet_en_developpement", report);
         game.ClosePanels();
         await Shot(window, folder, "06_scene_travail", report);
-        int days = 0;
+        int days = 0, words = 9;
         while (app.Queue.Count > 0 && days++ < 90)
+        {
+            words += TypeDay(campaign, app, 120);
             campaign.AdvanceDays(1);
-        report.Add($"Premier projet prêt en {days} jours (fondateur seul, sans aucune affectation manuelle).");
+        }
+        report.Add($"Premier projet prêt en {days} jours et {words} mots au terminal (fondateur seul, sans employé).");
         game.OpenRoot(new ProjectsPanel());
         await Shot(window, folder, "07_pret_a_sortir", report);
         campaign.Launch(app.Id);
@@ -138,8 +168,11 @@ public static class Capture
         while (!GameTime.IsWorkday(advanced.Minute))
             advanced.AdvanceDays(1);
         advanced.Advance(10 * 60 + 15 - GameTime.MinuteOfDay(advanced.Minute));
-        foreach (var (def, x, y) in new[] { ("plant", 15, 0), ("plant", 0, 9), ("coffee", 13, 0), ("sofa", 10, 0) })
-            advanced.BuyAndPlace(def, x, y);
+        foreach (string def in new[] { "plant_floor_medium", "plant_floor_tall", "sofa", "whiteboard_mobile" })
+            if (advanced.FindSpot(FurnitureCatalog.Get(def)) is var (x, y, f))
+                advanced.BuyAndPlace(def, x, y, f);
+        if (advanced.Premises.Desks.FirstOrDefault() is { } desk)
+            advanced.BuyAndAttach("mug", desk.Id);
         report.Add($"Campagne avancée : {GameTime.FormatDate(advanced.Minute)}, {advanced.People.Count} personnes, {advanced.Premises.Name}, argent {advanced.Ledger.Cash:N0}, " +
                    $"{advanced.Products.Count(p => p.IsLive)} projets en ligne, {advanced.Unlocked.Count} nœuds, {pilot.Actions} décisions en 16 mois.");
         window.Store.Save(advanced, SaveKind.Manual, "Avancée");
@@ -157,6 +190,15 @@ public static class Capture
             await Shot(window, folder, name, report);
             later.ClosePanels();
         }
+        // Aménagement : poser un bureau, fantôme orienté sur une case libre
+        later.OpenRoot(new BuildPanel());
+        later.Session.SetTool(new BuildTool("desk_simple", Facing: "sw"));
+        if (advanced.FindSpot(FurnitureCatalog.Get("desk_simple")) is var (gx, gy, _))
+            later.Scene.SetHover(new Cell(gx, gy));
+        await Shot(window, folder, "18b_amenagement_pose", report);
+        later.Session.SetTool(null);
+        later.Scene.SetHover(null);
+        later.ClosePanels();
         if (advanced.Staff.FirstOrDefault() is { } someone)
         {
             later.OpenRoot(new TeamPanel());

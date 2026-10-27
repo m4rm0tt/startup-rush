@@ -24,13 +24,19 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!-- Polices pixel sous licence SIL OFL : la licence est livrée avec le jeu -->
-        <AvaloniaResource Include="Assets\Fonts\*.ttf" />
-        <None Include="Assets\Fonts\*.txt" CopyToOutputDirectory="PreserveNewest" />
-        <!-- Images, sons et musiques tirés des packs de assets/ par tools/build_assets.py (voir ASSET_USAGE.md) -->
-        <AvaloniaResource Include="Assets\Sprites\*.png;Assets\Sprites\*.json" />
-        <AvaloniaResource Include="Assets\Ui\**\*.png" />
+        <!-- Sons et musiques tirés des packs de assets/ par tools/build_assets.py (voir ASSET_USAGE.md) ; les images viennent du pack original, plus bas -->
         <AvaloniaResource Include="Assets\Audio\**\*.wav;Assets\Audio\**\*.ogg" />
         <None Include="..\THIRD_PARTY_NOTICES.md" Link="THIRD_PARTY_NOTICES.md" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Pack original (assets/StartupRushOriginalAssets) : sprites, masques, manifeste et plans, embarqués dans l'exécutable.
+             Lus par UI/Iso/PackLibrary.cs ; aucun chemin de développement dans le jeu livré. -->
+        <EmbeddedResource Include="..\assets\StartupRushOriginalAssets\manifest.json" LogicalName="pack/manifest.json" />
+        <EmbeddedResource Include="..\assets\StartupRushOriginalAssets\rooms\*.json" LogicalName="pack/rooms/%(Filename)%(Extension)" />
+        <EmbeddedResource Include="..\assets\StartupRushOriginalAssets\assets\**\*.png" LogicalName="pack/assets/%(RecursiveDir)%(Filename)%(Extension)" />
+        <EmbeddedResource Include="..\assets\StartupRushOriginalAssets\masks\**\*.png" LogicalName="pack/masks/%(RecursiveDir)%(Filename)%(Extension)" />
+        <!-- Polices originales du pack (StartupRush Pixel et Mono) -->
+        <AvaloniaResource Include="..\assets\StartupRushOriginalAssets\assets\fonts\*.ttf" Link="Assets\Fonts\%(Filename)%(Extension)" />
     </ItemGroup>
 </Project>

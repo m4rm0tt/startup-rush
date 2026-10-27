@@ -10,6 +10,7 @@ namespace Core.campaign;
 /// Le temps qui passe, minute par minute. Chacun s'installe à son poste en arrivant, travaille tout seul sur son projet
 /// (ou sur le projet prioritaire en automatique) et enchaîne design, développement et tests sans réaffectation.
 /// Sur un projet en ligne, une part du temps va automatiquement au support et à la maintenance.
+/// Le fondateur, lui, ne développe que par le terminal (Campaign.Terminal.cs) ; le reste du temps il répond au support.
 /// </summary>
 public partial class Campaign
 {
@@ -62,7 +63,7 @@ public partial class Campaign
         bool workday = GameTime.IsWorkday(Minute);
 
         var crowd = new Dictionary<int, (int Count, bool Lead)>();
-        foreach (var p in People.Where(p => p.Activity == Activity.Working))
+        foreach (var p in People.Where(p => p.Activity == Activity.Working && !p.IsFounder))
         {
             int key = CurrentProject(p)?.Id ?? 0;
             var current = crowd.GetValueOrDefault(key);
@@ -107,16 +108,16 @@ public partial class Campaign
     /// <summary>S'installe à son poste s'il est complet, sinon attend près de l'entrée (personnages assis, pas de déplacements).</summary>
     private void TakePlace(Person person)
     {
-        var desk = Premises.DeskOf(person.Id);
-        if (desk != null && Layout.Check(Premises, desk) == WorkstationIssue.None)
+        var post = Premises.SeatOf(person.Id);
+        if (post != null && Layout.Check(Premises, post) == WorkstationIssue.None)
         {
-            person.Position = Premises.SeatCell(desk);
+            person.Position = Premises.SeatCell(post);
             person.Activity = Activity.Working;
             return;
         }
-        person.Position = NearbyFreeCell(Premises.Entrance.Offset(0, -2), person.Id) ?? Premises.Entrance;
+        person.Position = NearbyFreeCell(Premises.Entrance, person.Id) ?? Premises.Entrance;
         person.Activity = Activity.Idle;
-        person.Status = desk == null ? "Pas de poste de travail" : Layout.Describe(Layout.Check(Premises, desk));
+        person.Status = post == null ? "Pas de poste de travail" : Layout.Describe(Layout.Check(Premises, post));
     }
 
     private Cell? NearbyFreeCell(Cell around, int salt)
@@ -141,10 +142,17 @@ public partial class Campaign
         person.Assignment.Kind == AssignmentKind.Project ? FindProduct(person.Assignment.TargetId) : AutoTarget();
 
     /// <summary>Points de travail par minute de cette personne à son poste.</summary>
+    /// <summary>Production du poste de la personne (0 sans ordinateur), écrans en plus compris.</summary>
+    public double StationOutput(Person person)
+    {
+        var post = Premises.SeatOf(person.Id);
+        if (post == null || Premises.ComputerOf(post)?.Def is not { } computer)
+            return 0;
+        return computer.Output * (1 + Layout.ScreenBonus(Premises, post));
+    }
+
     public double WorkRate(Person person, Discipline discipline, int teamSize = 1, bool lead = false)
     {
-        var desk = Premises.DeskOf(person.Id);
-        var computer = desk == null ? null : Premises.ComputerOn(desk)?.Def;
         double skill = 0.4 + person.Skill(discipline) * 0.012;
         double energy = person.Energy >= 40 ? 1 : 0.6 + person.Energy / 100;
         double morale = 0.85 + person.Morale / 100 * 0.3;
@@ -153,13 +161,13 @@ public partial class Campaign
                    + (IsUnlocked("bigteam") ? 2 : 0);
         double coordination = teamSize <= free ? 1 : 1 / (1 + Tuning.Work.CoordinationLossPerExtraPerson * (teamSize - free));
         double tools = IsUnlocked("ai_tools") ? 1.1 : 1;
-        return Tuning.Work.PointsPerHourAtLevel50 * skill * (computer?.Output ?? 0) * energy * morale * overtime * coordination * tools / 60;
+        return Tuning.Work.PointsPerHourAtLevel50 * skill * StationOutput(person) * energy * morale * overtime * coordination * tools / 60;
     }
 
     public double WorkQuality(Person person, Discipline discipline)
     {
-        var desk = Premises.DeskOf(person.Id);
-        var computer = desk == null ? null : Premises.ComputerOn(desk)?.Def;
+        var post = Premises.SeatOf(person.Id);
+        var computer = post == null ? null : Premises.ComputerOf(post)?.Def;
         double quality = 0.3 + person.Skill(discipline) * 0.006 + (computer?.Quality ?? 0) + (person.Morale - 50) / 1000
                          + (IsUnlocked("quality_lab") ? 0.05 : 0);
         if (person.Energy < 40)
@@ -171,10 +179,16 @@ public partial class Campaign
 
     private void DoWork(Person person, int teamSize, bool lead)
     {
-        var desk = Premises.DeskOf(person.Id)!;
-        var chair = Premises.ChairAt(Premises.SeatCell(desk))?.Def;
+        var post = Premises.SeatOf(person.Id)!;
+        var chair = Premises.ChairOf(post)?.Def;
         double drain = GameTime.Hour(Minute) >= Tuning.Work.DayEndHour ? Tuning.Work.EnergyPerOvertimeHour : Tuning.Work.EnergyPerHour;
         person.Energy = Math.Max(0, person.Energy - drain * (chair?.EnergyDrain ?? 1) / 60);
+
+        if (person.IsFounder)
+        {
+            FounderTime(person);
+            return;
+        }
 
         var product = CurrentProject(person);
         if (product == null)
@@ -207,6 +221,30 @@ public partial class Campaign
         }
     }
 
+    /// <summary>
+    /// Le fondateur à son poste hors terminal : il répond aux utilisateurs du projet en ligne qui en a le plus besoin.
+    /// Il ne développe pas, ne corrige pas de bug et ne termine aucun composant tout seul.
+    /// </summary>
+    private void FounderTime(Person founder)
+    {
+        founder.CurrentWorkItemId = null;
+        if (Terminal != null)
+        {
+            founder.Status = "Au terminal";
+            return;
+        }
+        var product = Products.Where(p => p.IsLive && p.SupportBacklog > 1).OrderByDescending(p => p.SupportBacklog).FirstOrDefault();
+        if (product == null)
+        {
+            founder.Status = Products.Any(p => p.Queue.Count > 0) ? "Disponible : ouvre le terminal pour travailler" : "Disponible";
+            return;
+        }
+        double points = WorkRate(founder, Discipline.Support);
+        product.SupportDone += points;
+        founder.PointsThisWeek += points;
+        founder.Status = $"{product.Name} : répond aux utilisateurs";
+    }
+
     /// <summary>Entretien : répondre aux utilisateurs et corriger les bugs, en alternance quand les deux sont nécessaires.</summary>
     private void DoUpkeep(Person person, Product product, int teamSize, bool lead)
     {
@@ -226,7 +264,7 @@ public partial class Campaign
     }
 
     /// <summary>La prochaine tâche prête du projet, dans l'ordre de la file, de préférence dans la spécialité de la personne.</summary>
-    private WorkItem? PickWork(Person person, Product product)
+    internal WorkItem? PickWork(Person person, Product product)
     {
         if (person.CurrentWorkItemId is int current && FindWork(current) is { Done: false } kept && kept.OwnerId == product.Id && IsReady(kept))
             return kept;
@@ -250,7 +288,7 @@ public partial class Campaign
 
     public bool IsReady(WorkItem item) => item.DependsOn.All(id => FindWork(id) is not { Done: false });
 
-    private void OnWorkItemDone(Product product, WorkItem item)
+    internal void OnWorkItemDone(Product product, WorkItem item)
     {
         var queued = product.Queue.FirstOrDefault(q => q.Id == item.ModuleId);
         if (queued != null && queued.WorkItemIds.All(id => FindWork(id) is not { Done: false }))

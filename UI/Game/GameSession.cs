@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Core.campaign;
 using Core.persistence;
 using UI.Audio;
@@ -9,8 +10,8 @@ namespace UI.Game;
 /// <summary>Ce qui est sélectionné dans la scène.</summary>
 public enum SelectionKind { None, Item, Person }
 
-/// <summary>L'outil d'aménagement actif : acheter un modèle, poser un objet des cartons, ou déplacer un objet.</summary>
-public record BuildTool(string DefId, int? StoredId = null, int? MovingItemId = null);
+/// <summary>L'outil d'aménagement actif : acheter un modèle, poser un objet des cartons, ou déplacer un objet, dans une orientation.</summary>
+public record BuildTool(string DefId, int? StoredId = null, int? MovingItemId = null, string? Facing = null);
 
 /// <summary>
 /// La partie en cours côté interface : la campagne, le rythme du temps, les sauvegardes automatiques,
@@ -92,6 +93,13 @@ public class GameSession
         PausedByPlayer = false;
     }
 
+    /// <summary>Remet exactement la vitesse et la pause d'avant (fermeture du terminal).</summary>
+    public void Restore(int speed, bool paused)
+    {
+        Speed = Math.Clamp(speed, 1, Speeds.Length - 1);
+        PausedByPlayer = paused;
+    }
+
     public void TogglePause()
     {
         PausedByPlayer = !PausedByPlayer;
@@ -152,6 +160,16 @@ public class GameSession
     }
 
     public void ClearSelection() => Select(SelectionKind.None, 0);
+
+    /// <summary>Tourne l'objet à poser vers son orientation suivante (touche R).</summary>
+    public void RotateTool()
+    {
+        if (Tool == null)
+            return;
+        var facings = Core.space.FurnitureCatalog.Get(Tool.DefId).Pack.Facings.Keys.ToList();
+        int index = facings.IndexOf(Tool.Facing ?? facings[0]);
+        SetTool(Tool with { Facing = facings[(index + 1) % facings.Count] });
+    }
 
     public void SetTool(BuildTool? tool)
     {

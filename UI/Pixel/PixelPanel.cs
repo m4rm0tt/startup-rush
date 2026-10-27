@@ -10,8 +10,11 @@ namespace UI.Pixel;
 /// les coins restent nets, les bords et le centre s'étirent. Un pixel du cadre vaut
 /// deux unités d'interface, quelle que soit la taille du panneau.
 /// </summary>
-public class PixelPanel : Decorator
+public class PixelPanel : Decorator, Avalonia.Rendering.ICustomHitTest
 {
+    /// <summary>Tout le cadre capte la souris : un clic sur un menu n'atteint jamais la scène derrière.</summary>
+    public bool HitTest(Point point) => Skin != "none" && new Rect(Bounds.Size).Contains(point);
+
     private const int Slice = 6;   // pixels de chaque bord de l'image source
     private const double Unit = 2; // unités d'interface par pixel du cadre
 
@@ -65,7 +68,7 @@ public class PixelPanel : Decorator
         if (Skin == "none" || size.Width < 2 * Slice * Unit || size.Height < 2 * Slice * Unit)
             return;
 
-        var image = Sprites.Skin(Skin);
+        var image = Atlas.Skin(Skin);
         using (context.PushRenderOptions(new RenderOptions { BitmapInterpolationMode = BitmapInterpolationMode.None }))
             DrawNineSlice(context, image, size);
 

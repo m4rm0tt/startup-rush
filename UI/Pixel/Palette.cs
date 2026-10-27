@@ -1,6 +1,5 @@
 using System;
 using Avalonia.Media;
-using Core.roguelike;
 
 namespace UI.Pixel;
 
@@ -35,23 +34,19 @@ public static class Palette
     public static readonly IBrush Plum = Brush("#b55088");
     public static readonly IBrush Ember = Brush("#f77622");
 
-    public static IBrush Rarity(Rarity rarity) => rarity switch
-    {
-        Core.roguelike.Rarity.Common => Cloud,
-        Core.roguelike.Rarity.Rare => Sky,
-        Core.roguelike.Rarity.Epic => Plum,
-        Core.roguelike.Rarity.Legendary => Gold,
-        _ => Blood
-    };
+    public static readonly IBrush Wine = Brush("#a22633");
+    public static readonly IBrush Navy = Brush("#124e89");
+    public static readonly IBrush Teal = Brush("#265c42");
+    public static readonly IBrush Sand = Brush("#ead4aa");
+    public static readonly IBrush Rust = Brush("#be4a2f");
+    public static readonly IBrush Brown = Brush("#733e39");
 
-    public static string RarityName(Rarity rarity) => rarity switch
+    /// <summary>Une couleur de la palette par son indice (0 à 31).</summary>
+    public static Color At(int index)
     {
-        Core.roguelike.Rarity.Common => "COMMUN",
-        Core.roguelike.Rarity.Rare => "RARE",
-        Core.roguelike.Rarity.Epic => "ÉPIQUE",
-        Core.roguelike.Rarity.Legendary => "LÉGENDAIRE",
-        _ => "MALÉDICTION"
-    };
+        uint c = Colors[Math.Clamp(index, 0, Colors.Length - 1)];
+        return Color.FromRgb((byte)(c >> 16), (byte)(c >> 8), (byte)c);
+    }
 
     public static IBrush Brush(string hex) => new SolidColorBrush(Color.Parse(hex));
 

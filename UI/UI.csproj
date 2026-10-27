@@ -28,7 +28,7 @@
         <AvaloniaResource Include="Assets\Fonts\*.ttf" />
         <None Include="Assets\Fonts\*.txt" CopyToOutputDirectory="PreserveNewest" />
         <!-- Images, sons et musiques tirés des packs de assets/ par tools/build_assets.py (voir ASSET_USAGE.md) -->
-        <AvaloniaResource Include="Assets\Sprites\*.png" />
+        <AvaloniaResource Include="Assets\Sprites\*.png;Assets\Sprites\*.json" />
         <AvaloniaResource Include="Assets\Ui\**\*.png" />
         <AvaloniaResource Include="Assets\Audio\**\*.wav;Assets\Audio\**\*.ogg" />
         <None Include="..\THIRD_PARTY_NOTICES.md" Link="THIRD_PARTY_NOTICES.md" CopyToOutputDirectory="PreserveNewest" />

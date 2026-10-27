@@ -11,11 +11,10 @@ namespace UI.Audio;
 
 public enum Sound
 {
-    Click, Hover, Select, Offer, Coin, Cash, Buy, Bill, Error, Card, CardPlace, Shuffle,
-    Crit, LevelUp, Alarm, Unpaid, Event, PauseIn, PauseOut, Victory, Defeat
+    Click, Select, Notify, Coin, Cash, Place, Bill, Error, Milestone, Launch, Alarm, Unpaid, Event, PauseIn, PauseOut, Defeat
 }
 
-public enum Music { None, Menu, Run, Crisis }
+public enum Music { None, Menu, Work, Crisis }
 
 /// <summary>
 /// Joue les bruitages et la musique (fichiers des packs, voir ASSET_USAGE.md) via un mélangeur NAudio.
@@ -29,38 +28,40 @@ public static class Sfx
     private const float SoundLevel = 0.5f;
     private const float MusicLevel = 0.32f;
 
-    // Fichier et volume relatif de chaque son, dosés pour que le travail répété reste discret
+    // Fichier et volume relatif de chaque son
     private static readonly Dictionary<Sound, (string File, float Volume)> SoundFiles = new()
     {
-        [Sound.Click] = ("work.wav", 0.35f),
-        [Sound.Hover] = ("hover.wav", 0.3f),
+        [Sound.Click] = ("work.wav", 0.4f),
         [Sound.Select] = ("select.wav", 0.7f),
-        [Sound.Offer] = ("offer.wav", 0.25f),
+        [Sound.Notify] = ("offer.wav", 0.35f),
         [Sound.Coin] = ("coin.wav", 0.6f),
         [Sound.Cash] = ("cash.wav", 0.7f),
-        [Sound.Buy] = ("buy.wav", 0.7f),
-        [Sound.Bill] = ("bill.wav", 0.6f),
+        [Sound.Place] = ("buy.wav", 0.7f),
+        [Sound.Bill] = ("bill.wav", 0.5f),
         [Sound.Error] = ("error.wav", 0.6f),
-        [Sound.Card] = ("card_fan.ogg", 0.9f),
-        [Sound.CardPlace] = ("card_place.ogg", 0.9f),
-        [Sound.Shuffle] = ("card_shuffle.ogg", 0.9f),
-        [Sound.Crit] = ("crit.wav", 0.55f),
-        [Sound.LevelUp] = ("levelup.wav", 0.8f),
+        [Sound.Milestone] = ("levelup.wav", 0.8f),
+        [Sound.Launch] = ("victory.wav", 0.85f),
         [Sound.Alarm] = ("alarm.wav", 0.6f),
         [Sound.Unpaid] = ("unpaid.wav", 0.8f),
-        [Sound.Event] = ("event.wav", 0.7f),
+        [Sound.Event] = ("event.wav", 0.6f),
         [Sound.PauseIn] = ("pause_in.wav", 0.6f),
         [Sound.PauseOut] = ("pause_out.wav", 0.6f),
-        [Sound.Victory] = ("victory.wav", 0.9f),
         [Sound.Defeat] = ("defeat.wav", 0.8f),
     };
 
     private static readonly Dictionary<Music, string[]> MusicFiles = new()
     {
         [Music.Menu] = ["menu.ogg"],
-        [Music.Run] = ["run1.ogg", "run2.ogg"], // les deux thèmes alternent pour ne pas lasser
+        [Music.Work] = ["work1.ogg", "work2.ogg"], // les deux thèmes alternent pour ne pas lasser
         [Music.Crisis] = ["crisis.ogg"],
     };
+
+    /// <summary>Sons réellement chargés (vérifié au lancement et par la capture de contrôle).</summary>
+    public static int LoadedSounds => Sounds.Count;
+    public static int LoadedTracks => Tracks.Count;
+
+    /// <summary>Derniers sons déclenchés (pour vérifier qu'ils partent au bon moment).</summary>
+    public static readonly List<Sound> Played = new();
 
     private static WaveOutEvent? _output;
     private static MixingSampleProvider? _mixer;
@@ -122,6 +123,12 @@ public static class Sfx
         if (Volatile.Read(ref _voices) >= MaxVoices || LastPlayed.TryGetValue(sound, out var last) && (now - last).TotalSeconds < MinRepeatDelay)
             return;
         LastPlayed[sound] = now;
+        lock (Played)
+        {
+            Played.Add(sound);
+            if (Played.Count > 50)
+                Played.RemoveAt(0);
+        }
 
         float gain = volume * SoundFiles[sound].Volume * SoundLevel * (float)SoundVolume;
         _mixer.AddMixerInput(new OneShotProvider(samples, _mixer.WaveFormat, gain));

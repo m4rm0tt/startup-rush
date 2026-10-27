@@ -1,10 +1,8 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Core.meta;
-using Core.states;
+using Core.persistence;
 using UI.Audio;
-using UI.ViewModels;
 
 namespace UI;
 
@@ -19,14 +17,21 @@ public partial class App : Application
     {
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            // Le profil (lingots, déblocages, records) est sauvegardé dans le dossier de l'utilisateur
-            var store = new ProfileStore(ProfileStore.DefaultPath);
-            var machine = new GameStateMachine(profile: store.Load(), saveProfile: store.Save);
+            // Réglages communs à toutes les campagnes ; au premier lancement, les volumes de l'ancien profil sont repris
+            var settings = Settings.Load(Settings.DefaultPath, LegacyProfile.DefaultPath);
+            if (settings.MigratedFromLegacy)
+                settings.Save(Settings.DefaultPath);
 
             Sfx.Init();
-            Settings.Init(machine.Profile.Settings, machine.SaveProfile);
+            Sfx.MusicVolume = settings.MusicVolume;
+            Sfx.SoundVolume = settings.SoundVolume;
             desktop.Exit += (_, _) => Sfx.Shutdown();
-            desktop.MainWindow = new MainWindow(machine);
+
+            var store = new SaveStore(Program.SaveRoot ?? SaveStore.DefaultRoot);
+            var window = new MainWindow(store, settings, Program.SaveRoot != null ? System.IO.Path.Combine(Program.SaveRoot, "settings.json") : Settings.DefaultPath);
+            desktop.MainWindow = window;
+            if (Program.CaptureFolder != null)
+                Capture.Run(window, Program.CaptureFolder);
         }
 
         base.OnFrameworkInitializationCompleted();

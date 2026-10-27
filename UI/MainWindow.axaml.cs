@@ -4,97 +4,107 @@ using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Media;
 using Avalonia.Threading;
-using Core.states;
+using Core.campaign;
+using Core.persistence;
 using UI.Audio;
-using UI.ViewModels;
-using UI.Views;
+using UI.Game;
+using UI.Screens;
 
 namespace UI;
 
 /// <summary>
-/// La boucle de jeu : un minuteur d'environ 60 images/s mesure le vrai temps écoulé,
-/// fait avancer la machine à états, anime l'écran courant et joue les effets (secousse, flash, fondu).
+/// La fenêtre et la boucle : un minuteur d'environ 60 images/s mesure le vrai temps écoulé et le donne à l'écran courant.
+/// Elle porte aussi la navigation entre écrans, les réglages et le dossier des sauvegardes.
 /// </summary>
 public partial class MainWindow : Window
 {
-    private readonly GameStateMachine _machine;
     private readonly DispatcherTimer _timer;
     private readonly Stopwatch _stopWatch = new();
-    private readonly Random _random = new();
-    private readonly TranslateTransform _shake = new();
     private readonly HashSet<Key> _heldKeys = new();
-    private double _shakeStrength;
 
-    public MainWindow(GameStateMachine machine)
+    public SaveStore Store { get; }
+    public Settings Settings { get; }
+    public string SettingsPath { get; }
+
+    public MainWindow() : this(new SaveStore(SaveStore.DefaultRoot), new Settings(), Settings.DefaultPath)
+    {
+    }
+
+    public MainWindow(SaveStore store, Settings settings, string settingsPath)
     {
         InitializeComponent();
-
-        _machine = machine;
-        _machine.StateChanged += OnStateChanged;
-        Root.RenderTransform = _shake;
-        Juice.ShakeRequested += strength => _shakeStrength = Math.Max(_shakeStrength, strength);
-        Juice.FlashRequested += color =>
-        {
-            FlashLayer.Fill = new SolidColorBrush(color);
-            FlashLayer.Opacity = Settings.ReduceEffects ? 0.12 : 0.35;
-        };
-
-        _machine.ChangeState(new MenuState(_machine));
+        Store = store;
+        Settings = settings;
+        SettingsPath = settingsPath;
 
         _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
         _timer.Tick += OnTimerTick;
+        Closing += OnClosing;
         Closed += (_, _) => _timer.Stop();
-        // En tunnel : le jeu voit les touches avant les boutons, Espace ne « clique » jamais un bouton
+        // En tunnel : le jeu voit les touches avant les contrôles (sauf la saisie de texte)
         AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Tunnel);
-        AddHandler(KeyUpEvent, OnKeyUp, RoutingStrategies.Tunnel);
+        AddHandler(KeyUpEvent, (_, e) => _heldKeys.Remove(e.Key), RoutingStrategies.Tunnel);
 
+        ShowTitle();
         _stopWatch.Start();
         _timer.Start();
+    }
+
+    public IScreen? Current => ScreenHost.Content as IScreen;
+
+    public void SaveSettings()
+    {
+        Settings.Save(SettingsPath);
+        Sfx.MusicVolume = Settings.MusicVolume;
+        Sfx.SoundVolume = Settings.SoundVolume;
+    }
+
+    private void Show(Control screen, Music music)
+    {
+        Current?.Leave();
+        ScreenHost.Content = screen;
+        FadeLayer.Opacity = 1;
+        Sfx.PlayMusic(music);
+        _heldKeys.Clear();
+    }
+
+    public void ShowTitle(string? message = null) => Show(new TitleScreen(this, message), Music.Menu);
+
+    public void ShowNewCampaign() => Show(new NewCampaignScreen(this), Music.Menu);
+
+    public void ShowLoad() => Show(new LoadScreen(this), Music.Menu);
+
+    public void ShowSettings(Action back) => Show(new SettingsScreen(this, back), Music.Menu);
+
+    public GameScreen StartGame(Campaign campaign, string? savePath, string? message = null)
+    {
+        var screen = new GameScreen(this, new GameSession(campaign, Store, Settings, savePath));
+        Show(screen, Music.Work);
+        if (!string.IsNullOrEmpty(message))
+            screen.Toast(message, true);
+        return screen;
     }
 
     private void OnTimerTick(object? sender, EventArgs e)
     {
         double deltaTime = _stopWatch.Elapsed.TotalSeconds;
         _stopWatch.Restart();
-
-        _machine.Update(deltaTime);
-        (ScreenHost.Content as IGameScreen)?.Tick(deltaTime);
-        AnimateEffects(deltaTime);
+        Current?.Tick(deltaTime);
+        FadeLayer.Opacity = Math.Max(0, FadeLayer.Opacity - deltaTime * 4);
     }
 
-    private void AnimateEffects(double deltaTime)
+    private void OnClosing(object? sender, WindowClosingEventArgs e)
     {
-        // La secousse s'amortit vite, sur des positions entières pour rester « pixel »
-        _shakeStrength = Math.Max(0, _shakeStrength - deltaTime * 40);
-        _shake.X = Math.Round((_random.NextDouble() * 2 - 1) * _shakeStrength);
-        _shake.Y = Math.Round((_random.NextDouble() * 2 - 1) * _shakeStrength);
-
-        FlashLayer.Opacity = Math.Max(0, FlashLayer.Opacity - deltaTime * 1.5);
-        FadeLayer.Opacity = Math.Max(0, FadeLayer.Opacity - deltaTime * 3);
+        // Fermer la fenêtre en pleine partie : on sauvegarde l'état exact pour pouvoir reprendre
+        if (Current is GameScreen game)
+            game.Session.Save(SaveKind.Quick);
+        Current?.Leave();
     }
-
-    private void OnStateChanged(IGameState state)
-    {
-        Sfx.PlayMusic(state is PlayingState ? Music.Run : Music.Menu);
-        _heldKeys.Clear();
-        ScreenHost.Content = state switch
-        {
-            MenuState menu => new MenuView(menu),
-            PlayingState playing => new PlayingView(playing),
-            GameOverState gameOver => new GameOverView(gameOver),
-            _ => null
-        };
-        FadeLayer.Opacity = 1;
-    }
-
-    private void OnKeyUp(object? sender, KeyEventArgs e) => _heldKeys.Remove(e.Key);
 
     private void OnKeyDown(object? sender, KeyEventArgs e)
     {
-        // Une touche maintenue ne compte qu'une fois : le rythme ne dépend pas de la répétition du clavier
-        if (!_heldKeys.Add(e.Key))
+        if (!_heldKeys.Add(e.Key) && e.Key is not (Key.Left or Key.Right or Key.Up or Key.Down or Key.W or Key.A or Key.S or Key.D))
         {
             e.Handled = e.Source is not TextBox;
             return;
@@ -107,11 +117,11 @@ public partial class MainWindow : Window
             return;
         }
 
-        // On laisse les champs de texte recevoir leurs lettres
+        // Les champs de texte gardent leurs touches, sauf Échap
         if (e.Source is TextBox && e.Key != Key.Escape)
             return;
 
-        if (ScreenHost.Content is IGameScreen screen && screen.HandleKey(e.Key))
+        if (Current?.HandleKey(e.Key, e.KeyModifiers) == true)
             e.Handled = true;
     }
 }

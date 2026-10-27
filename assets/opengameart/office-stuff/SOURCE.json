@@ -1,0 +1,48 @@
+{
+  "id": "office-stuff",
+  "title": "Office Stuff",
+  "author": "MSavioti",
+  "category": "Décoration bureau",
+  "usage": "Six petits PNG : tableaux, graphiques et scènes de réunion.",
+  "source_url": "https://opengameart.org/content/office-stuff",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/opengameart/office-stuff",
+  "downloads": [
+    {
+      "file": "arch_chart.png",
+      "sha256": "ab52e7e0dc9c7d4a1672896b69cfbd856b603b69508a7f7c727f745d7d415b39",
+      "bytes": 478
+    },
+    {
+      "file": "product_validation.png",
+      "sha256": "8e42228bb03792eb7e725bdd569bb9f732f1438932702b529e8e7a6c1a28a49e",
+      "bytes": 578
+    },
+    {
+      "file": "risk_chart.png",
+      "sha256": "9ef40eb8bababe93a15a4d50b8702f0e9314939ba20467e35ffda467b3d69d17",
+      "bytes": 453
+    },
+    {
+      "file": "resources_planning.png",
+      "sha256": "f9b8dafeb8c8e35fb65283d879057528f958f39e31c694d5bdc798d9ebec693b",
+      "bytes": 661
+    },
+    {
+      "file": "woman_office.png",
+      "sha256": "83f8de3f3a1f347cac4e286c27a20d637cb57e943240ee4f00312a3b85ad4496",
+      "bytes": 488
+    },
+    {
+      "file": "meeting_office.png",
+      "sha256": "1587162d18ce2c8cf664367c172e38a0e6933d132d38713951d5e831489c43d4",
+      "bytes": 771
+    }
+  ],
+  "status": "downloaded",
+  "priority": "Complément",
+  "caveat": "Affiches murales ou icônes ; pas un tileset complet de bureau.",
+  "file_count_excluding_source_json": 7,
+  "uncompressed_bytes_excluding_source_json": 3602
+}

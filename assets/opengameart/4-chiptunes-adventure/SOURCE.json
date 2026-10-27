@@ -1,0 +1,28 @@
+{
+  "id": "4-chiptunes-adventure",
+  "title": "4 Chiptunes Adventure",
+  "author": "SubspaceAudio / Juhani Junkala",
+  "category": "Musique",
+  "usage": "Quatre compositions chiptune, avec versions OGG et WAV.",
+  "source_url": "https://opengameart.org/content/4-chiptunes-adventure",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/opengameart/4-chiptunes-adventure",
+  "downloads": [
+    {
+      "file": "Juhani Junkala [Chiptune Adventures] OGG.zip",
+      "sha256": "9c9547e184a6daef0cddf9eff5b8c42b357a9a0d2c8f2b5a01aa95154b85edef",
+      "bytes": 8103420
+    },
+    {
+      "file": "Juhani Junkala [Chiptune Adventures] WAV.zip",
+      "sha256": "edc6d8a6e48d1449b9f0f44e0fc30f79b2c0124bc6f53eaa0e46050526175a38",
+      "bytes": 32145935
+    }
+  ],
+  "status": "downloaded",
+  "priority": "Prioritaire",
+  "caveat": "Les deux formats sont des doublons musicaux : neuf compositions au total avec le pack Action, pas treize.",
+  "file_count_excluding_source_json": 10,
+  "uncompressed_bytes_excluding_source_json": 41704140
+}

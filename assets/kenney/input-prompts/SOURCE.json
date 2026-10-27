@@ -1,0 +1,19 @@
+{
+  "id": "input-prompts",
+  "title": "Input Prompts",
+  "author": "Kenney",
+  "source_url": "https://kenney.nl/assets/input-prompts",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/kenney/input-prompts",
+  "file_count": 4667,
+  "download_sha256": "ac2fcf599080b0f3ba2d174c9474db6df1a0e96ff0662580e2da79a122ab78a1",
+  "download_bytes": 5070075,
+  "status": "downloaded",
+  "priority": "Réserve",
+  "category": "Commandes",
+  "usage": "Grande bibliothèque de touches/manettes et variantes.",
+  "caveat": "Préférer les deux packs pixel. Les milliers de fichiers comprennent des variantes/formats, pas autant de concepts uniques.",
+  "file_count_excluding_source_json": 4667,
+  "uncompressed_bytes_excluding_source_json": 5960296
+}

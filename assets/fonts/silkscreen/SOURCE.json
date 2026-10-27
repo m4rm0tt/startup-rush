@@ -1,0 +1,16 @@
+{
+  "id": "silkscreen",
+  "title": "Silkscreen",
+  "author": "Jason Kottke",
+  "source_url": "https://github.com/google/fonts/tree/main/ofl/silkscreen",
+  "license": "OFL-1.1",
+  "verified": "2026-10-26",
+  "path": "assets/fonts/silkscreen",
+  "status": "downloaded",
+  "priority": "Alternative",
+  "category": "Police UI",
+  "usage": "Silkscreen Regular ; accents français vérifiés.",
+  "caveat": "Alternative pour libellés et petits titres. Conserver OFL.txt.",
+  "file_count_excluding_source_json": 3,
+  "uncompressed_bytes_excluding_source_json": 37823
+}

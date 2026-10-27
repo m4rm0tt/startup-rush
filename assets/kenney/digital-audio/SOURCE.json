@@ -1,0 +1,19 @@
+{
+  "id": "digital-audio",
+  "title": "Digital Audio",
+  "author": "Kenney",
+  "source_url": "https://kenney.nl/assets/digital-audio",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/kenney/digital-audio",
+  "file_count": 67,
+  "download_sha256": "24e6ce28b76a6d8c89cff4d331e0965ff5c3de8a73c612028e9d363cc64e4f06",
+  "download_bytes": 990367,
+  "status": "downloaded",
+  "priority": "Complément",
+  "category": "Bruitages numériques",
+  "usage": "Bips et effets synthétiques numériques.",
+  "caveat": "Erreurs, alertes, bug en production ; sélectionner après écoute.",
+  "file_count_excluding_source_json": 67,
+  "uncompressed_bytes_excluding_source_json": 1064630
+}

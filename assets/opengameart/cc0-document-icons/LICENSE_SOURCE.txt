@@ -1,0 +1,4 @@
+CC0-1.0
+Source: https://opengameart.org/content/cc0-document-icons
+Checked: 2026-10-26
+Keep included upstream notices.

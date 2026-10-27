@@ -1,0 +1,19 @@
+{
+  "id": "roguelike-characters",
+  "title": "Roguelike Characters",
+  "author": "Kenney",
+  "source_url": "https://kenney.nl/assets/roguelike-characters",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/kenney/roguelike-characters",
+  "file_count": 8,
+  "download_sha256": "05c4c0af7326584cfffbbb196571eb9e102981d2033e90e225c5ba8da8771284",
+  "download_bytes": 63243,
+  "status": "downloaded",
+  "priority": "Réserve",
+  "category": "Personnages",
+  "usage": "Bibliothèque de petits personnages dans des atlas.",
+  "caveat": "À adapter à des employés contemporains ; aucune garantie de portraits des quatre fondateurs.",
+  "file_count_excluding_source_json": 8,
+  "uncompressed_bytes_excluding_source_json": 63617
+}

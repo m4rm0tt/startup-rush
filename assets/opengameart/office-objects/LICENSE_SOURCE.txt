@@ -1,0 +1,5 @@
+Asset license: CC0-1.0
+Author: malek elsady
+Source: https://opengameart.org/content/office-objects
+Checked: 2026-10-26
+License: https://creativecommons.org/publicdomain/zero/1.0/

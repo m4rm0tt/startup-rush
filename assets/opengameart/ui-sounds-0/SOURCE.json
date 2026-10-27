@@ -1,0 +1,23 @@
+{
+  "id": "ui-sounds-0",
+  "title": "UI Sounds",
+  "author": "HaelDB",
+  "category": "Bruitages UI",
+  "usage": "Sons d’erreur, acceptation, notification et attention.",
+  "source_url": "https://opengameart.org/content/ui-sounds-0",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/opengameart/ui-sounds-0",
+  "downloads": [
+    {
+      "file": "ui_sounds.zip",
+      "sha256": "441a5e0200a879a38ef53596252670522f2ad761528e3fa28a2a6d92be93634d",
+      "bytes": 2805236
+    }
+  ],
+  "status": "downloaded",
+  "priority": "Réserve",
+  "caveat": "Alternative de notifications, pas à empiler avec toutes les autres banques.",
+  "file_count_excluding_source_json": 12,
+  "uncompressed_bytes_excluding_source_json": 3295086
+}

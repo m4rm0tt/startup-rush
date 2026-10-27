@@ -1,0 +1,16 @@
+{
+  "id": "cc0-document-icons",
+  "title": "CC0 Document Icons",
+  "author": "AntumDeluge; upstream credits included",
+  "source_url": "https://opengameart.org/content/cc0-document-icons",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/opengameart/cc0-document-icons",
+  "usage": "Icônes de papiers, documents et calendrier, plusieurs familles.",
+  "status": "downloaded",
+  "priority": "Complément",
+  "category": "Contrats et factures",
+  "caveat": "Choisir les documents modernes ; conserver les notices amont déjà dans les archives.",
+  "file_count_excluding_source_json": 59,
+  "uncompressed_bytes_excluding_source_json": 271703
+}

@@ -1,0 +1,16 @@
+{
+  "id": "vt323",
+  "title": "VT323",
+  "author": "Peter Hull",
+  "source_url": "https://github.com/google/fonts/tree/main/ofl/vt323",
+  "license": "OFL-1.1",
+  "verified": "2026-10-26",
+  "path": "assets/fonts/vt323",
+  "status": "downloaded",
+  "priority": "Prioritaire",
+  "category": "Police texte",
+  "usage": "VT323 ; accents français vérifiés.",
+  "caveat": "Texte et chiffres à taille suffisante ; tester le rendu Avalonia. Conserver OFL.txt.",
+  "file_count_excluding_source_json": 3,
+  "uncompressed_bytes_excluding_source_json": 158010
+}

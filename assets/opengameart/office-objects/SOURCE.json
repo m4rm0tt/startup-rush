@@ -1,0 +1,23 @@
+{
+  "id": "office-objects",
+  "title": "Office objects",
+  "author": "malek elsady",
+  "category": "Mobilier",
+  "usage": "Ordinateur, horloge, tableau et accessoires sur une planche PNG.",
+  "source_url": "https://opengameart.org/content/office-objects",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/opengameart/office-objects",
+  "downloads": [
+    {
+      "file": "new_piskel.png",
+      "sha256": "3a0deb9075c20116b9b212f29c728aaca1b027278567c442ba2874e6ed58b572",
+      "bytes": 8880
+    }
+  ],
+  "status": "downloaded",
+  "priority": "Complément",
+  "caveat": "Petits sprites épars ; découpe et retouches nécessaires.",
+  "file_count_excluding_source_json": 2,
+  "uncompressed_bytes_excluding_source_json": 9059
+}

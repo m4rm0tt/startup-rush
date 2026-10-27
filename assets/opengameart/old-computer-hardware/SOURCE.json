@@ -1,0 +1,23 @@
+{
+  "id": "old-computer-hardware",
+  "title": "Old Computer Hardware",
+  "author": "edomin",
+  "category": "Matériel rétro",
+  "usage": "Composants, cartes et périphériques, séparés et en atlas.",
+  "source_url": "https://opengameart.org/content/old-computer-hardware",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/opengameart/old-computer-hardware",
+  "downloads": [
+    {
+      "file": "old_computer_hardware.zip",
+      "sha256": "0e28d4c0a62a92590479a303b7a8682015d08fe3ffc460cde14e1d76eb56a114",
+      "bytes": 47585
+    }
+  ],
+  "status": "downloaded",
+  "priority": "Complément",
+  "caveat": "Utile pour les premiers upgrades ; références historiques/marques à neutraliser pour les objets génériques.",
+  "file_count_excluding_source_json": 38,
+  "uncompressed_bytes_excluding_source_json": 41579
+}

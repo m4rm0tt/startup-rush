@@ -1,0 +1,23 @@
+{
+  "id": "rpg-portraits",
+  "title": "RPG portraits",
+  "author": "Buch",
+  "category": "Portraits",
+  "usage": "Neuf portraits 32×32 en trois variantes de couleur.",
+  "source_url": "https://opengameart.org/content/rpg-portraits",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/opengameart/rpg-portraits",
+  "downloads": [
+    {
+      "file": "rpgportraits.png",
+      "sha256": "234ccba32fcc80dbea00e6257dc29127d0e2e0f89f0336eb5c1ff691bacc4ff1",
+      "bytes": 21125
+    }
+  ],
+  "status": "downloaded",
+  "priority": "Réserve",
+  "caveat": "Fantasy : seulement comme base modifiable pour les employés. Les fondateurs doivent rester reconnaissables et contemporains.",
+  "file_count_excluding_source_json": 2,
+  "uncompressed_bytes_excluding_source_json": 21295
+}

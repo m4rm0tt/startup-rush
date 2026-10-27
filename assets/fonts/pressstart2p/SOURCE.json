@@ -1,0 +1,16 @@
+{
+  "id": "pressstart2p",
+  "title": "Press Start 2P",
+  "author": "CodeMan38",
+  "source_url": "https://github.com/google/fonts/tree/main/ofl/pressstart2p",
+  "license": "OFL-1.1",
+  "verified": "2026-10-26",
+  "path": "assets/fonts/pressstart2p",
+  "status": "downloaded",
+  "priority": "Prioritaire",
+  "category": "Police titres",
+  "usage": "Press Start 2P ; accents français vérifiés dans le TTF fourni.",
+  "caveat": "Titres courts ; police large qui devient fatigante en petits paragraphes. Conserver OFL.txt.",
+  "file_count_excluding_source_json": 3,
+  "uncompressed_bytes_excluding_source_json": 123289
+}

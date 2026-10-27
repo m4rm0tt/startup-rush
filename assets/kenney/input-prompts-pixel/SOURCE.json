@@ -1,0 +1,17 @@
+{
+  "id": "input-prompts-pixel",
+  "title": "Input Prompts Pixel",
+  "author": "Kenney",
+  "source_url": "https://kenney.nl/assets/input-prompts-pixel",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/kenney/input-prompts-pixel",
+  "download_sha256": "64478174064b77e9c0ebb8271fd38af598cec922650157ce1e564df1272575cc",
+  "status": "downloaded",
+  "priority": "Prioritaire",
+  "category": "Commandes pixel",
+  "usage": "Glyphes clavier/souris et contrôles en 16 px.",
+  "caveat": "Espace, Entrée, R, Échap, F11 et choix 1-4 ; garder les images nettes.",
+  "file_count_excluding_source_json": 823,
+  "uncompressed_bytes_excluding_source_json": 211117
+}

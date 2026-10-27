@@ -1,0 +1,17 @@
+{
+  "id": "input-prompts-pixel-1-bit",
+  "title": "Input Prompts Pixel 1 Bit",
+  "author": "Kenney",
+  "source_url": "https://kenney.nl/assets/input-prompts-pixel-1-bit",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/kenney/input-prompts-pixel-1-bit",
+  "download_sha256": "c3389d26a51636370efc912710865c7e9ba25564868bbcb59ec3160fcddef1ad",
+  "status": "downloaded",
+  "priority": "Alternative",
+  "category": "Commandes pixel",
+  "usage": "Version monochrome des glyphes en 16 px.",
+  "caveat": "Alternative teintable ; ne pas compter ses variantes comme de nouvelles fonctionnalités.",
+  "file_count_excluding_source_json": 1641,
+  "uncompressed_bytes_excluding_source_json": 305200
+}

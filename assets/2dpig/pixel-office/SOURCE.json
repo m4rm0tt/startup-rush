@@ -1,0 +1,17 @@
+{
+  "id": "pixel-office",
+  "title": "Pixel Office Asset Pack",
+  "author": "2dPig",
+  "source_url": "https://2dpig.itch.io/pixel-office",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/2dpig/pixel-office",
+  "download_sha256": "62e9aaea59dfd967e2f5c51bd3466fe3a1222c1b1ca8f19c0de4385c40ca5ce5",
+  "status": "downloaded",
+  "priority": "Prioritaire",
+  "category": "Bureau et équipe",
+  "usage": "Sprites de bureau, personnages, petits animaux et sources Aseprite.",
+  "caveat": "Découper les objets et harmoniser perspective/palette. Ne pas coller la scène exemple comme fond final.",
+  "file_count_excluding_source_json": 8,
+  "uncompressed_bytes_excluding_source_json": 56544
+}

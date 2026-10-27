@@ -1,0 +1,23 @@
+{
+  "id": "5-chiptunes-action",
+  "title": "5 Chiptunes Action",
+  "author": "SubspaceAudio / Juhani Junkala",
+  "category": "Musique",
+  "usage": "Cinq compositions chiptune en boucle.",
+  "source_url": "https://opengameart.org/content/5-chiptunes-action",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/opengameart/5-chiptunes-action",
+  "downloads": [
+    {
+      "file": "5 Action Chiptunes By Juhani Junkala.zip",
+      "sha256": "ea189990c0fb9a700187ccc740eda72400341a082305a163867467d96346460d",
+      "bytes": 49639688
+    }
+  ],
+  "status": "downloaded",
+  "priority": "Prioritaire",
+  "caveat": "Plus énergiques ; sélectionner celles qui ne fatiguent pas sur une longue run.",
+  "file_count_excluding_source_json": 7,
+  "uncompressed_bytes_excluding_source_json": 50257492
+}

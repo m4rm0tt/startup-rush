@@ -1,0 +1,19 @@
+{
+  "id": "game-icons-expansion",
+  "title": "Game Icons Expansion",
+  "author": "Kenney",
+  "source_url": "https://kenney.nl/assets/game-icons-expansion",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/kenney/game-icons-expansion",
+  "file_count": 810,
+  "download_sha256": "477471e820b9d8443878da0193d99506419da76ad897031531cdcca240f5672f",
+  "download_bytes": 2008440,
+  "status": "downloaded",
+  "priority": "Réserve",
+  "category": "Icônes",
+  "usage": "Compléments de symboles et commandes.",
+  "caveat": "Même avertissement : cohérence graphique avant quantité.",
+  "file_count_excluding_source_json": 810,
+  "uncompressed_bytes_excluding_source_json": 7341873
+}

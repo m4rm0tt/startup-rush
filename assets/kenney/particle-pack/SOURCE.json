@@ -1,0 +1,19 @@
+{
+  "id": "particle-pack",
+  "title": "Particle Pack",
+  "author": "Kenney",
+  "source_url": "https://kenney.nl/assets/particle-pack",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/kenney/particle-pack",
+  "file_count": 195,
+  "download_sha256": "b631d4b07f7002549fdcf155f01141ad482f79f3440e4e301eed49ce5f1d8958",
+  "download_bytes": 15001764,
+  "status": "downloaded",
+  "priority": "Réserve",
+  "category": "Effets",
+  "usage": "Textures de particules, étincelles, fumée et lumières.",
+  "caveat": "Ce pack n’est pas du pixel art strict : utiliser seulement après conversion contrôlée ou créer les particules pixel originales.",
+  "file_count_excluding_source_json": 195,
+  "uncompressed_bytes_excluding_source_json": 15222316
+}

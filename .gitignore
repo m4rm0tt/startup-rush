@@ -26,3 +26,8 @@ Desktop.ini
 # Packages
 /packages/
 *.nupkg
+# Archives lourdes (> 100 Mo, refusées par GitHub)
+STARTUPRUSH_ASSETS_ET_PROMPT.zip
+
+# Claude Code (local)
+.claude/settings.local.json

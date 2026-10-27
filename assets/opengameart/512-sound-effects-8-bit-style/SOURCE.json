@@ -1,0 +1,23 @@
+{
+  "id": "512-sound-effects-8-bit-style",
+  "title": "512 Sound Effects",
+  "author": "SubspaceAudio / Juhani Junkala",
+  "category": "Bruitages rétro",
+  "usage": "Banque de 512 effets synthétiques rétro.",
+  "source_url": "https://opengameart.org/content/512-sound-effects-8-bit-style",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/opengameart/512-sound-effects-8-bit-style",
+  "downloads": [
+    {
+      "file": "The Essential Retro Video Game Sound Effects Collection [512 sounds].zip",
+      "sha256": "6d4519229c6e2c9e09502cd4967940052f68664140549a467615b56bdfd1d031",
+      "bytes": 20582855
+    }
+  ],
+  "status": "downloaded",
+  "priority": "Prioritaire",
+  "caveat": "Achats, critiques, argent, alertes, cartes et fins de run. Écoute et sélection indispensables.",
+  "file_count_excluding_source_json": 514,
+  "uncompressed_bytes_excluding_source_json": 27183535
+}

@@ -1,0 +1,16 @@
+{
+  "id": "pixelifysans",
+  "title": "Pixelify Sans",
+  "author": "Stefie Justprince",
+  "source_url": "https://github.com/google/fonts/tree/main/ofl/pixelifysans",
+  "license": "OFL-1.1",
+  "verified": "2026-10-26",
+  "path": "assets/fonts/pixelifysans",
+  "status": "downloaded",
+  "priority": "Alternative",
+  "category": "Police UI",
+  "usage": "Pixelify Sans variable ; accents français vérifiés.",
+  "caveat": "Vérifier la prise en charge du fichier variable dans le projet. Conserver OFL.txt.",
+  "file_count_excluding_source_json": 3,
+  "uncompressed_bytes_excluding_source_json": 84587
+}

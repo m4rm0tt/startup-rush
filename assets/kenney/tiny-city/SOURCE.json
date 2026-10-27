@@ -1,0 +1,19 @@
+{
+  "id": "tiny-city",
+  "title": "Tiny City",
+  "author": "Kenney",
+  "source_url": "https://kenney.nl/assets/tiny-city",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/kenney/tiny-city",
+  "file_count": 141,
+  "download_sha256": "c20fa416e2eddeb4597da59dd15e321a58ce0a1797a9f84d39d2eb7305ffcf47",
+  "download_bytes": 89484,
+  "status": "downloaded",
+  "priority": "Complément",
+  "category": "Extérieurs modernes",
+  "usage": "Tuiles de ville moderne 16×16.",
+  "caveat": "Intérêt pour progression urbaine et bâtiments de l’Empire ; ne pas changer la caméra du jeu.",
+  "file_count_excluding_source_json": 141,
+  "uncompressed_bytes_excluding_source_json": 71138
+}

@@ -1,0 +1,19 @@
+{
+  "id": "roguelike-modern-city",
+  "title": "Roguelike Modern City",
+  "author": "Kenney",
+  "source_url": "https://kenney.nl/assets/roguelike-modern-city",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/kenney/roguelike-modern-city",
+  "file_count": 1044,
+  "download_sha256": "2a3f36b1bc3a3d1cb4b9da051c493d163c493fe54adc66e78e76b3fb4abcfc56",
+  "download_bytes": 519937,
+  "status": "downloaded",
+  "priority": "Complément",
+  "category": "Extérieurs",
+  "usage": "Ville moderne, façades, véhicules et accessoires urbains.",
+  "caveat": "Réserve pour vues extérieures composées ; ne pas placer une carte top-down derrière la fenêtre.",
+  "file_count_excluding_source_json": 1044,
+  "uncompressed_bytes_excluding_source_json": 371095
+}

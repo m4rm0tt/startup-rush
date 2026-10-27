@@ -1,0 +1,19 @@
+{
+  "id": "tiny-town",
+  "title": "Tiny Town",
+  "author": "Kenney",
+  "source_url": "https://kenney.nl/assets/tiny-town",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/kenney/tiny-town",
+  "file_count": 141,
+  "download_sha256": "9768692dccff1d706408a5aedd6ca4f6cd1409506cbc84cb2f862919764be977",
+  "download_bytes": 182243,
+  "status": "downloaded",
+  "priority": "Réserve",
+  "category": "Extérieurs",
+  "usage": "Petite bibliothèque de bâtiments et environnement.",
+  "caveat": "Plus village que startup ; retouches nécessaires et perspective à respecter.",
+  "file_count_excluding_source_json": 141,
+  "uncompressed_bytes_excluding_source_json": 163379
+}

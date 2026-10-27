@@ -1,0 +1,19 @@
+{
+  "id": "game-icons",
+  "title": "Game Icons",
+  "author": "Kenney",
+  "source_url": "https://kenney.nl/assets/game-icons",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/kenney/game-icons",
+  "file_count": 434,
+  "download_sha256": "7a86d8d58e0b851e22004b3c70bf90b003632bbf9ac633424daa3bb17d9e7e4e",
+  "download_bytes": 1045980,
+  "status": "downloaded",
+  "priority": "Réserve",
+  "category": "Icônes",
+  "usage": "Icônes génériques en plusieurs formats et variantes.",
+  "caveat": "À rasteriser/adapter si besoin ; éviter le mélange vectoriel lisse et pixel art.",
+  "file_count_excluding_source_json": 434,
+  "uncompressed_bytes_excluding_source_json": 4070719
+}

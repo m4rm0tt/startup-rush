@@ -1,0 +1,19 @@
+{
+  "id": "ui-audio",
+  "title": "Ui Audio",
+  "author": "Kenney",
+  "source_url": "https://kenney.nl/assets/ui-audio",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/kenney/ui-audio",
+  "file_count": 55,
+  "download_sha256": "946fc23a63d535d693eb31b2eabb80c8c28d6351e2186b344ceb71b2cb1d5eb6",
+  "download_bytes": 411949,
+  "status": "downloaded",
+  "priority": "Prioritaire",
+  "category": "Bruitages UI",
+  "usage": "Clics, survols, interrupteurs et interactions.",
+  "caveat": "Choisir une seule famille sonore et limiter le nombre de sons par clic.",
+  "file_count_excluding_source_json": 55,
+  "uncompressed_bytes_excluding_source_json": 487437
+}

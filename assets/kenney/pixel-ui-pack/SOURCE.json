@@ -1,0 +1,19 @@
+{
+  "id": "pixel-ui-pack",
+  "title": "Pixel Ui Pack",
+  "author": "Kenney",
+  "source_url": "https://kenney.nl/assets/pixel-ui-pack",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/kenney/pixel-ui-pack",
+  "file_count": 40,
+  "download_sha256": "b76f2f60f2be76eb8e66511038fa4d48faec11e638316fa37d06084878cdf0c7",
+  "download_bytes": 141881,
+  "status": "downloaded",
+  "priority": "Prioritaire",
+  "category": "Interface",
+  "usage": "Panneaux, boutons, bordures et variantes 9-slice.",
+  "caveat": "Choisir une famille de panneaux ; adapter au HUD sombre et garder les états survol/appui.",
+  "file_count_excluding_source_json": 40,
+  "uncompressed_bytes_excluding_source_json": 184253
+}

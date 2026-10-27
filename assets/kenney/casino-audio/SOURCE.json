@@ -1,0 +1,19 @@
+{
+  "id": "casino-audio",
+  "title": "Casino Audio",
+  "author": "Kenney",
+  "source_url": "https://kenney.nl/assets/casino-audio",
+  "license": "CC0-1.0",
+  "verified": "2026-10-26",
+  "path": "assets/kenney/casino-audio",
+  "file_count": 58,
+  "download_sha256": "f36250766ac5bc378c13708ddf12a23a8e54a3251f8d482c7536e51b5dbafa18",
+  "download_bytes": 876839,
+  "status": "downloaded",
+  "priority": "Complément",
+  "category": "Bruitages cartes",
+  "usage": "Cartes, jetons et interactions de casino.",
+  "caveat": "Tirages et événements ; sons organiques à doser pour rester cohérent avec le chiptune.",
+  "file_count_excluding_source_json": 58,
+  "uncompressed_bytes_excluding_source_json": 955950
+}

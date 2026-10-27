@@ -57,7 +57,7 @@ public record ComponentDef(
 {
     public double CodeShare => 1 - DesignShare - TestShare;
 
-    /// <summary>Matières ajoutées à chaque unité fabriquée, par niveau (composants matériels).</summary>
+    /// <summary>Matières ajoutées à chaque unité fabriquée (composants matériels), quel que soit le niveau.</summary>
     public Dictionary<string, int> Bom { get; init; } = new();
 
     /// <summary>Le composant Performances ne vaut rien en soi : il réduit la charge des serveurs.</summary>
@@ -105,37 +105,37 @@ public static class ProductCatalog
         new("board", "Cartes et kits", "computer", "Des cartes électroniques et kits embarqués, vendus à l'unité.",
             [RevenueModel.Purchase],
             new() { [Need.Productivity] = 0.35, [Need.Durability] = 0.25, [Need.Trust] = 0.2, [Need.Power] = 0.2 },
-            TrialRate: 0.03, ChurnFactor: 0.6, WordOfMouthFactor: 1.4, TicketFactor: 0.7, ["firmware", "sensors"], UnlockNode: "res_boards")
+            TrialRate: 0.06, ChurnFactor: 0.6, WordOfMouthFactor: 1.4, TicketFactor: 0.7, ["firmware", "sensors"], UnlockNode: "res_boards")
         { Hardware = true, Bom = new() { ["carte"] = 1, ["kit"] = 2 } },
         new("pc", "PC assemblés", "computer", "Des ordinateurs montés, configurés et testés chez toi.",
             [RevenueModel.Purchase],
             new() { [Need.Power] = 0.4, [Need.Durability] = 0.25, [Need.Trust] = 0.2, [Need.Fun] = 0.15 },
-            TrialRate: 0.012, ChurnFactor: 0.5, WordOfMouthFactor: 1.2, TicketFactor: 0.8, ["cpu_tier", "cooling"], UnlockNode: "res_pc")
+            TrialRate: 0.025, ChurnFactor: 0.5, WordOfMouthFactor: 1.2, TicketFactor: 0.8, ["cpu_tier", "cooling"], UnlockNode: "res_pc")
         { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["puce"] = 1, ["memoire"] = 2 } },
         new("laptop", "Ordinateurs portables", "computer", "Des portables : autonomie, finesse et puissance à arbitrer.",
             [RevenueModel.Purchase],
             new() { [Need.Portability] = 0.4, [Need.Power] = 0.25, [Need.Durability] = 0.2, [Need.Trust] = 0.15 },
-            TrialRate: 0.01, ChurnFactor: 0.5, WordOfMouthFactor: 1.2, TicketFactor: 0.9, ["battery", "cpu_tier"], UnlockNode: "res_laptop")
+            TrialRate: 0.02, ChurnFactor: 0.5, WordOfMouthFactor: 1.2, TicketFactor: 0.9, ["battery", "cpu_tier"], UnlockNode: "res_laptop")
         { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["puce"] = 1, ["memoire"] = 1, ["kit"] = 4 } },
         new("server_hw", "Serveurs et NAS", "computer", "Des serveurs et stockages pour les entreprises.",
             [RevenueModel.Purchase],
             new() { [Need.Durability] = 0.4, [Need.Power] = 0.3, [Need.Productivity] = 0.3 },
-            TrialRate: 0.01, ChurnFactor: 0.4, WordOfMouthFactor: 0.8, TicketFactor: 1.0, ["redundancy", "cpu_tier"], UnlockNode: "res_server")
+            TrialRate: 0.02, ChurnFactor: 0.4, WordOfMouthFactor: 0.8, TicketFactor: 1.0, ["redundancy", "cpu_tier"], UnlockNode: "res_server")
         { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["puce"] = 2, ["memoire"] = 4 } },
         new("gpu_card", "Cartes graphiques", "bolt", "Des GPU : puce, mémoire et carte, assemblés et testés.",
             [RevenueModel.Purchase],
             new() { [Need.Power] = 0.5, [Need.Durability] = 0.25, [Need.Trust] = 0.25 },
-            TrialRate: 0.012, ChurnFactor: 0.6, WordOfMouthFactor: 1.5, TicketFactor: 0.7, ["cpu_tier", "cooling"], UnlockNode: "res_gpu")
+            TrialRate: 0.025, ChurnFactor: 0.6, WordOfMouthFactor: 1.5, TicketFactor: 0.7, ["cpu_tier", "cooling"], UnlockNode: "res_gpu")
         { Hardware = true, Bom = new() { ["gpu"] = 1 } },
         new("printer3d", "Imprimantes 3D", "gem", "Des imprimantes 3D pour les makers et les écoles.",
             [RevenueModel.Purchase],
             new() { [Need.Productivity] = 0.4, [Need.Durability] = 0.3, [Need.Trust] = 0.3 },
-            TrialRate: 0.015, ChurnFactor: 0.5, WordOfMouthFactor: 1.6, TicketFactor: 1.0, ["print_head", "enclosure"], UnlockNode: "res_printer")
+            TrialRate: 0.03, ChurnFactor: 0.5, WordOfMouthFactor: 1.6, TicketFactor: 1.0, ["print_head", "enclosure"], UnlockNode: "res_printer")
         { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["kit"] = 6 } },
         new("network", "Équipements réseau", "wifi", "Routeurs et switches pour les petites entreprises.",
             [RevenueModel.Purchase],
             new() { [Need.Durability] = 0.35, [Need.Productivity] = 0.35, [Need.Power] = 0.3 },
-            TrialRate: 0.02, ChurnFactor: 0.4, WordOfMouthFactor: 1.0, TicketFactor: 0.9, ["connectivity", "firmware"], UnlockNode: "res_network")
+            TrialRate: 0.04, ChurnFactor: 0.4, WordOfMouthFactor: 1.0, TicketFactor: 0.9, ["connectivity", "firmware"], UnlockNode: "res_network")
         { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["kit"] = 2 } },
     ];
 

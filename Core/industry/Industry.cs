@@ -85,9 +85,9 @@ public static class IndustryCatalog
 
     public static readonly IReadOnlyList<SalesChannel> Channels =
     [
-        new("direct", "Vente directe", "Commandes reçues sur ton site : peu de visibilité, aucune commission.", 0.35, 0, 4, 0, null),
-        new("shop", "Boutique en ligne", "Une vraie boutique : bien plus visible, 4 % de frais et 150 CHF par mois.", 1.0, 0.04, 60, 150, "online_shop"),
-        new("distributors", "Distributeurs", "Les revendeurs : très visibles et gros volumes, mais 25 % de commission.", 1.6, 0.25, 500, 0, "distributors"),
+        new("direct", "Vente directe", "Commandes reçues sur ton site : peu de visibilité, aucune commission.", 0.5, 0, 4, 0, null),
+        new("shop", "Boutique en ligne", "Une vraie boutique : bien plus visible, 4 % de frais et 150 CHF par mois.", 1.2, 0.04, 60, 150, "online_shop"),
+        new("distributors", "Distributeurs", "Les revendeurs : très visibles et gros volumes, mais 25 % de commission.", 2.0, 0.25, 500, 0, "distributors"),
     ];
 
     /// <summary>Capacité de stockage d'un objet (unités) : racks, palettes, bacs, étagères.</summary>
@@ -136,13 +136,16 @@ public static class IndustryCatalog
     public static string ItemName(string item, Func<int, Product?> find) =>
         item.StartsWith("p:") && int.TryParse(item[2..], out int id) ? find(id)?.Name ?? "Produit" : IsMaterial(item) ? Material(item).Name : item;
 
-    /// <summary>La nomenclature d'une unité de ce produit : celle de sa famille, plus ce qu'ajoutent ses composants (par niveau).</summary>
+    /// <summary>
+    /// La nomenclature d'une unité de ce produit : celle de sa famille, plus ce qu'ajoute chaque composant présent (le niveau
+    /// améliore la qualité, pas la quantité de matières).
+    /// </summary>
     public static Dictionary<string, int> Bom(Product product)
     {
         var bom = new Dictionary<string, int>(product.Archetype.Bom);
         foreach (var component in product.Components.Where(c => c.Level > 0))
             foreach (var (item, qty) in component.Def.Bom)
-                bom[item] = bom.GetValueOrDefault(item) + qty * component.Level;
+                bom[item] = bom.GetValueOrDefault(item) + qty;
         bom["carton"] = 1;
         return bom;
     }

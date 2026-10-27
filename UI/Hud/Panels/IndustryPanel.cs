@@ -91,6 +91,7 @@ public class IndustryPanel : GamePanel
                 Ui.Muted($"Étapes : {string.Join(" → ", route.Steps.Select(IndustryCatalog.StepName))}. Par unité : {string.Join(", ", route.Inputs.Select(kv => $"{kv.Value} × {IndustryCatalog.Material(kv.Key).Name}"))}.", 12),
                 ok ? null : Ui.Text("Ligne incomplète : " + why, 13, Palette.Ember),
                 Ui.Row(6, Ui.Button(order.Paused ? "Reprendre" : "Pause", () => Run(Campaign.SetOrder(order.Id, !order.Paused))),
+                    Ui.Button("Réserves pour cet ordre", () => Run(Campaign.SupplyOrder(order.Id)), "", tip: "Réserve automatique de chaque matière pour 25 unités, sous le plafond mensuel."),
                     Ui.Button("Arrêter", () => Run(Campaign.CancelOrder(order.Id)), "red")))));
         }
 

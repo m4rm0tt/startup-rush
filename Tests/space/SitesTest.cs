@@ -140,4 +140,18 @@ public class SitesTest
         var again = SaveStore.Deserialize(SaveStore.Serialize(campaign));
         Assert.That(SaveStore.SerializeState(again), Is.EqualTo(SaveStore.SerializeState(campaign)), "aller-retour fidèle au format 4");
     }
+
+    [Test]
+    public void SeatingSomeoneOnAnotherSiteUsesThatSitesChair()
+    {
+        var campaign = Rich();
+        campaign.Unlocked.Add("multisite");
+        var dev = HireDeveloper(campaign);
+        Assert.That(campaign.RentSite("small").Ok, Is.True);
+        var post = campaign.InstallWorkstation(buy: true)!;
+        var office = campaign.Premises;
+        campaign.ViewSite(campaign.Headquarters.Id);
+        campaign.Seat(dev, post);
+        Assert.That(campaign.PostOf(dev).Site, Is.EqualTo(office), "le poste est au bureau, même vu depuis la chambre");
+    }
 }

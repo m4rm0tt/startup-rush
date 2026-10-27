@@ -34,6 +34,12 @@ public static class Strategies
             SelfHostAbove = 40_000,
             TreeOrder = ["advanced", "multisite", "server_room", "cloud_m", "cloud_offers", "search_ads", "optimization", "hiring", "loyalty"],
         },
+        new("materiel", "Comme plusieurs_petits, puis le matériel dès 35 000 CHF : un atelier, la recherche « Conception de cartes », une carte pour les makers fabriquée sur une ligne d'assemblage, vendue en ligne.")
+        {
+            Projects = [("freelances", null), ("casual", null), ("smb", null)], ProjectInterval = 75, Marketing = 200, MaxStaff = 2,
+            HardwareAbove = 35_000, HardwareSegment = "makers",
+            TreeOrder = ["advanced", "multisite", "hardware", "online_shop", "cloud_m", "search_ads", "optimization", "hiring", "loyalty"],
+        },
         new("marketing_excessif", "Erreur : 6 000 CHF de marketing par mois dès la sortie d'une petite application.")
         {
             Projects = [("freelances", null)], Marketing = 6_000, MaxStaff = 0, Recover = false, Borrow = false,

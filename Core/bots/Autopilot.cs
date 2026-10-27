@@ -33,6 +33,14 @@ public record Strategy(string Name, string Description)
     /// projets et vend en offre cloud ce qui reste.
     /// </summary>
     public decimal SelfHostAbove { get; init; }
+
+    /// <summary>
+    /// Se lance dans le matériel au-delà de cette trésorerie (0 : jamais) : un atelier, un établi et un chercheur, puis un
+    /// produit de ce public, une ligne d'assemblage, un opérateur, des réserves automatiques et un stock cible.
+    /// </summary>
+    public decimal HardwareAbove { get; init; }
+
+    public string HardwareSegment { get; init; } = "makers";
     public decimal PreLaunchMarketing { get; init; }
     public int MaxStaff { get; init; }
     public decimal HireAbove { get; init; } = 30_000;
@@ -88,6 +96,7 @@ public class Autopilot(Strategy strategy)
             RunProject(campaign, product);
         Tree(campaign);
         Infrastructure(campaign);
+        Hardware(campaign);
         Hiring(campaign);
         if (Strategy.Recover)
             Recovery(campaign);
@@ -250,6 +259,91 @@ public class Autopilot(Strategy strategy)
         foreach (var kind in new[] { CloudKind.Storage, CloudKind.Hosting })
             if (campaign.CloudOffers.All(o => o.Kind != kind) && campaign.IsUnlocked("cloud_offers"))
                 Act(campaign.OpenCloudOffer(kind));
+    }
+
+    private void Hardware(Campaign campaign)
+    {
+        if (Strategy.HardwareAbove <= 0 || !campaign.IsUnlocked("hardware") || !campaign.IsUnlocked("multisite"))
+            return;
+        var shop = campaign.Sites.FirstOrDefault(s => s.ListingId == "hw_workshop");
+        var type = ProductCatalog.Type(ProductCatalog.Segment(Strategy.HardwareSegment).TypeId);
+        string research = type.UnlockNode!;
+        if (shop == null)
+        {
+            if (campaign.Ledger.Cash < Strategy.HardwareAbove || campaign.Solvency.State != SolvencyState.Healthy)
+                return;
+            var home = campaign.SiteId;
+            Act(campaign.RentSite("hw_workshop"));
+            shop = campaign.Premises;
+            if (shop.ListingId == "hw_workshop")
+            {
+                Act(campaign.InstallLayout("assembly"));
+                if (campaign.FindSpot(FurnitureCatalog.Get("workbench_electronics")) is var (x, y, f) && campaign.BuyAndPlace("workbench_electronics", x, y, f).Ok)
+                {
+                    var bench = shop.Items.Last();
+                    foreach (string tool in new[] { "chair_office", "oscilloscope", "soldering_station" })
+                        Act(campaign.BuyAndAttach(tool, bench.Id));
+                }
+                if (campaign.FindSpot(FurnitureCatalog.Get("storage_rack_industrial")) is var (rx, ry, rf))
+                    Act(campaign.BuyAndPlace("storage_rack_industrial", rx, ry, rf));
+            }
+            campaign.ViewSite(home);
+            Act(campaign.StartResearch(research));
+        }
+        // Une personne à la recherche (assise à l'établi), puis comme opérateur une fois la famille débloquée
+        var bench0 = shop.Workstations.FirstOrDefault(p => p.Desk.DefId == "workbench_electronics");
+        var worker = campaign.Staff.OrderBy(p => p.Id).FirstOrDefault();
+        if (worker == null || bench0 == null)
+            return;
+        if (!campaign.IsUnlocked(research))
+        {
+            if (worker.Assignment.Kind != Core.team.AssignmentKind.Research)
+            {
+                campaign.Seat(worker, bench0);
+                Act(campaign.AssignTo(worker.Id, Core.team.AssignmentKind.Research));
+            }
+            return;
+        }
+        var product = campaign.Products.FirstOrDefault(p => p.IsHardware);
+        if (product == null)
+        {
+            var (result, created) = campaign.CreateProject("", Strategy.HardwareSegment, RevenueModel.Purchase);
+            Act(result);
+            if (created != null)
+                while (campaign.Products.OrderBy(p => p.Priority).First().Id != created.Id && campaign.MoveProject(created.Id, -1).Ok)
+                {
+                }
+            if (worker.Assignment.Kind == Core.team.AssignmentKind.Research)
+                Act(campaign.Assign(worker.Id, 0));
+            return;
+        }
+        if (!product.IsLive)
+        {
+            if (product.Queue.Count == 0 && campaign.CanLaunch(product))
+            {
+                Act(campaign.LaunchWith(product.Id, 0.5));
+                _marketed.Add(product.Id);
+                Act(campaign.SetMarketing(product.Id, Strategy.Marketing));
+            }
+            return;
+        }
+        if (worker.Assignment.Kind != Core.team.AssignmentKind.Production)
+        {
+            Act(campaign.AssignTo(worker.Id, Core.team.AssignmentKind.Production, shop.Id));
+            foreach (var (item, qty) in Core.industry.IndustryCatalog.Bom(product))
+                Act(campaign.SetReserve(shop.Id, item, qty * 25));
+            Act(campaign.SetProcurementCap(4_000));
+            Act(campaign.CreateOrder(shop.Id, $"product:{product.Id}", OrderMode.TargetStock, 30));
+        }
+        // Une marge d'au moins 30 % : le prix suit le coût des matières, qui monte avec les composants
+        decimal cost = Core.industry.IndustryCatalog.UnitCost(product);
+        if (product.Price < cost * 1.45m)
+            Act(campaign.SetPrice(product.Id, Math.Ceiling(cost * 1.5m)));
+        // La nomenclature change avec les améliorations : les réserves suivent
+        foreach (var order in campaign.Orders.Where(o => o.SiteId == shop.Id))
+            campaign.SupplyOrder(order.Id);
+        if (campaign.IsUnlocked("online_shop") && !product.SalesChannels.Contains("shop"))
+            Act(campaign.SetChannel(product.Id, "shop", true));
     }
 
     private void Hiring(Campaign campaign)

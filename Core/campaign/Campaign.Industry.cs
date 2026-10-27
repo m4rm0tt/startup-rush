@@ -180,6 +180,17 @@ public partial class Campaign
         return CommandResult.Success();
     }
 
+    /// <summary>Règle les réserves de toutes les matières d'un ordre pour « units » unités (une nomenclature peut changer).</summary>
+    public CommandResult SupplyOrder(int orderId, int units = 25)
+    {
+        var order = Orders.FirstOrDefault(o => o.Id == orderId);
+        if (order == null || RouteOf(order) is not { } route)
+            return CommandResult.Fail("Ordre inconnu.");
+        foreach (var (item, qty) in route.Inputs)
+            SetReserve(order.SiteId, item, qty * units);
+        return CommandResult.Success($"Réserves réglées pour {units} unités de {route.Name}.");
+    }
+
     public CommandResult SetProcurementCap(decimal cap)
     {
         ProcurementCap = Math.Max(0, cap);
@@ -221,13 +232,16 @@ public partial class Campaign
                 Notify(Severity.Warning, "production", $"Livraison en attente : {site.Name}", "Plus de place dans le stock : ajoute des racks ou des palettes.", "industry", key: $"stockfull:{site.Id}");
         }
 
-        foreach (var reserve in Reserves.ToList())
+        // La matière la plus en manque d'abord ; chacune ne prend que sa part de la place libre (pas d'interblocage)
+        foreach (var reserve in Reserves.OrderBy(r => (StockAt(r.SiteId, r.Item) + InTransit(r.SiteId, r.Item)) / (double)Math.Max(1, r.Target)).ToList())
         {
             var site = FindSite(reserve.SiteId);
             if (site == null)
                 continue;
             int missing = reserve.Target - StockAt(site.Id, reserve.Item) - InTransit(site.Id, reserve.Item);
-            int room = StockFree(site) - Purchases.Where(p => p.SiteId == site.Id).Sum(p => p.Qty);
+            double share = reserve.Target / (double)Math.Max(1, Reserves.Where(r => r.SiteId == site.Id).Sum(r => r.Target));
+            int free = StockFree(site) - Purchases.Where(p => p.SiteId == site.Id).Sum(p => p.Qty);
+            int room = Math.Min(free, Math.Max(1, (int)(StorageCapacity(site) * share) - StockAt(site.Id, reserve.Item) - InTransit(site.Id, reserve.Item)));
             var material = IndustryCatalog.Material(reserve.Item);
             int byCap = (int)Math.Floor((ProcurementCap - ProcurementSpent) / material.Price);
             int qty = Math.Min(missing, Math.Min(room, byCap));
@@ -243,6 +257,19 @@ public partial class Campaign
             Purchases.Add(new Purchase { Id = NewId(), SiteId = site.Id, Item = reserve.Item, Qty = qty, Cost = cost, Auto = true, ArrivesAt = GameTime.StartOfDay(Day + material.LeadDays) });
         }
         StressTested.Clear();
+
+        // Une matière qui manque à un ordre, sans réserve ni achat en route : on le dit (une seule alerte par ordre)
+        foreach (var order in Orders.Where(o => !o.Paused && Remaining(o) > 0))
+        {
+            var route = RouteOf(order);
+            var missing = route?.Inputs.Keys.FirstOrDefault(item => StockAt(order.SiteId, item) < route.Inputs[item]
+                && InTransit(order.SiteId, item) == 0 && Reserves.All(r => r.SiteId != order.SiteId || r.Item != item));
+            if (route != null && missing != null)
+                Notify(Severity.Warning, "production", $"{route.Name} : il manque {IndustryCatalog.Material(missing).Name}",
+                    "Ni stock, ni achat en route, ni réserve automatique : règle les réserves de l'ordre.", "industry", key: $"missing:{order.Id}");
+            else
+                Resolve($"missing:{order.Id}");
+        }
     }
 
     // ------------------------------------------------------------------ Ordres

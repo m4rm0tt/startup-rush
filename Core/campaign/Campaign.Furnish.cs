@@ -89,7 +89,9 @@ public partial class Campaign
     {
         foreach (var other in Sites.SelectMany(s => s.Items).Where(i => i.AssignedPersonId == person.Id))
             other.AssignedPersonId = null;
-        if (Premises.ChairOf(post) is { } chair)
+        // Le poste peut être sur un autre site que celui qu'on regarde
+        var site = Sites.FirstOrDefault(s => s.Items.Contains(post.Desk)) ?? Premises;
+        if (site.ChairOf(post) is { } chair)
             chair.AssignedPersonId = person.Id;
     }
 

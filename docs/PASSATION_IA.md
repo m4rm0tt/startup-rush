@@ -47,8 +47,8 @@ UI.exe --capture <dossier>                                       # parcours scri
 ```
 
 Menu de test en jeu : **F12** (argent, points, tout débloquer, finir le travail en file, embaucher, énergie, stock,
-avancer le temps, payer les dettes). Code : , . Chaque usage
-marque la campagne (, sauvegardé).
+avancer le temps, payer les dettes). Code : `Core/campaign/Campaign.Cheats.cs`, `UI/Hud/Panels/CheatPanel.cs`. Chaque usage
+marque la campagne (`CheatsUsed`, sauvegardé).
 
 Pièges connus :
 - L'utilisateur garde souvent le jeu ouvert (`UI.exe`) : il verrouille `UI/bin` et `UI/obj`. Ne pas le tuer. Compiler dans un

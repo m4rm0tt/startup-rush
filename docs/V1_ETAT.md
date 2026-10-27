@@ -25,20 +25,20 @@ Ce fichier sert à reprendre le travail : il dit ce qui existe vraiment dans le 
 | Création rapide d'un projet (type, public, composants, prix proposés) | fait | `Core/campaign/Campaign.Products.cs` (`CreateProject`), `UI/Hud/Panels/ProjectsPanel.cs` | Nouvelles familles (outils métier, API, XR, IA, matériel) |
 | Composants à niveaux, dépendances, coût de suivi | fait | `Core/products/ProductCatalog.cs`, `Core/products/Design.cs` | Composants jeu demandés (moteur, menu, inventaire…), icônes `project_components` |
 | Design → développement → tests automatiques par les employés | fait | `Core/campaign/Campaign.Time.cs` (`PickWork`, `DoWork`) | Étendre aux tâches de recherche, fabrication, IA |
-| Le fondateur ne produit plus en passif | absent | `DoWork` traite le fondateur comme les autres | Exclure le fondateur de la production ; lui laisser le support automatique |
-| Terminal de saisie mot par mot | absent | — | Lot 2 : session, budget de travail borné, temps cohérent, raccourcis neutralisés |
+| Le fondateur ne produit plus en passif | **fait (lot 2)** | `Campaign.Time.cs` (`FounderTime`) : support seulement, hors terminal | — |
+| Terminal de saisie mot par mot | **fait (lot 2)** | `Core/campaign/Campaign.Terminal.cs`, `UI/Hud/TerminalView.cs`, `UI/Screens/GameScreen.cs` | Améliorations du terminal dans l'arbre (lot 3), saisie simplifiée d'accessibilité |
 | Mini-jeux de grosses actions et délégation | absent | — | Lot 3 |
 | Avis causaux avec lien vers le levier | partiel | `Core/products/Reviews.cs` | Causes matériel (rupture, défauts, délai), cloud, IA |
 | Prix, marketing, souhaits, entretien, hébergement plafonné | fait | `Campaign.Products.cs` (`SetPrice`, `SetMarketing`, `AdjustHosting`), `Core/products/Market.cs` | Relier à l'infrastructure interne |
 | Équipe : recrutement, horaires, congés, formation, augmentation | fait | `Core/campaign/Campaign.Team.cs`, `Core/team/` | Métiers nouveaux (opérateur, chercheur), apparences du pack |
 | Arbre de développement sur vrais jalons | partiel | `Core/progress/DevTree.cs` (17 nœuds, 5 branches), `Campaign.Daily.cs` (`AwardUsers`, `CheckMilestones`) | Sous-branches, Outils du boss, matériel, industrie, IA, cloud, recherche |
 | Finances et faillite progressive | fait | `Core/finance/Ledger.cs`, `Core/finance/Solvency.cs`, `Campaign.Daily.cs` (`UpdateSolvency`) | Charges énergie, matières, calcul externe ; détail par site |
-| Sauvegardes nommées, automatiques, atomiques, migration | partiel | `Core/persistence/SaveStore.cs` (format 2), `Core/persistence/Migration.cs` (1 → 2) | Format 3 : sites, fondateur actif, apparences, nouvelles activités ; migration 2 → 3 |
-| Mobilier utile et plafonné | partiel | `Core/space/Furniture.cs` (19 meubles), `Core/space/Layout.cs` | Catalogue du pack (55 meubles, 25 décorations), indicateurs regroupés par site |
-| Plusieurs sites visitables, vue commune | absent | Un seul `Premises` dans `Campaign` | Lot 4 |
-| Rendu isométrique, ancres, tri topologique, ombres, couches | absent | `UI/Scene/SceneCanvas.cs` (grille de dessus) | Lot 2 : porter le compositeur de référence du pack |
-| HUD Papier, polices du pack, curseurs | absent | `UI/Pixel/`, `UI/Hud/Ui.cs` | Lot 2 |
-| Personnages en couches, coiffures, peaux | absent | `Person.Look` (5 personnages Pixel Office) | Lot 2 : apparence sauvegardée, tirée à la création |
+| Sauvegardes nommées, automatiques, atomiques, migration | **format 3 (lot 2)** | `SaveStore.cs` (format 3), `Migration.cs` (1 → 2), `MigrationV2.cs` (2 → 3), copie `.v<format>.json` | Sites multiples et nouvelles activités (format 4, lot 4) |
+| Mobilier utile et plafonné | partiel | `Core/space/Furniture.cs` (38 IDs du pack jouables), `Core/space/Layout.cs` (ambiance plafonnée, objets personnels, écrans, lit) | Le reste du mobilier et de la décoration, indicateurs regroupés par site |
+| Plusieurs sites visitables, vue commune | absent | Un seul `Premises` dans `Campaign`, sur un plan du pack (chambre, petit bureau, bureau moyen, open space) | Lot 4 |
+| Rendu isométrique, ancres, tri topologique, ombres, couches | **fait (lot 2)** | `UI/Iso/PackImages.cs`, `UI/Iso/RoomRenderer.cs` (portage du compositeur), `UI/Scene/SceneCanvas.cs` | Objets muraux posés par le joueur, estompage des objets hauts |
+| HUD Papier, polices du pack, curseurs | partiel (lot 2) | `UI/Pixel/PixelPanel.cs` (9-slice du pack), `UI/Pixel/Palette.cs`, `UI/App.axaml`, `UI/Pixel/Icons.cs` | Curseurs, onglets, cartes, listes, cases à cocher du pack ; police à régler (taille non multiple de 12) |
+| Personnages en couches, coiffures, peaux | **fait (lot 2)** | `Core/team/Person.cs` (`Appearance`), `UI/Iso/Portraits.cs`, choix à la nouvelle campagne | Recoloration des tenues |
 | Matériel, usine, stocks, approvisionnement, canaux de vente | absent | — | Lot 5 |
 | Infrastructure interne, racks, énergie, refroidissement, offres cloud | absent | — | Lot 4 |
 | IA simulée | absent | — | Lot 6 |
@@ -53,13 +53,53 @@ Le pack fournit un compositeur C# de référence (`assets/StartupRushOriginalAss
 | Lot | Contenu | État |
 |---|---|---|
 | 1 | Audit, protection des sauvegardes, registre de couverture | **fait** : pack et spécification versionnés, registre de 586 lignes (570 IDs, 10 plans, 6 modules), contrôle statique, cette matrice. Les sauvegardes actuelles sont déjà atomiques avec copie `.bak` ; la migration vers le format 3 arrive avec le lot 2. |
-| 2 | Chambre avec les nouveaux assets, HUD, création de projet, terminal du boss, premier lancement, avis, sauvegarde et reprise | à faire |
+| 2 | Chambre avec les nouveaux assets, HUD, création de projet, terminal du boss, premier lancement, avis, sauvegarde et reprise | **fait**, voir ci-dessous |
 | 3 | Employés automatiques, délégation, mini-jeux sans spam, arbre et confort utiles | à faire |
 | 4 | Multisite, réseau, racks, hébergement interne et externe, offres cloud | à faire |
 | 5 | Recherche, prototypage, gamme matérielle, flux d'usine, stocks, approvisionnement, canaux de vente | à faire |
 | 6 | IA simulées, studio, XR, calcul avancé et quantique | à faire |
 | 7 | Couverture de tous les IDs, équilibrage, performance, accessibilité, migrations, candidat de sortie | à faire |
 
+## Lot 2 : ce qui a été fait
+
+- **Moteur** : le pack est embarqué dans `Core` (`Core/space/Pack.cs` : emprises, accès et sockets par orientation, plans de
+  pièces). Le local devient un plan du pack : objets orientés, enfants accrochés aux sockets (chaise, écran, clavier, tour,
+  objets de bureau), postes définis par bureau et socket de chaise (un bench en a trois), objets livrés avec le local
+  (`Included`), revente à la moitié du prix réellement payé. Rotation (touche R). `Campaign.Furnish.cs` installe un poste
+  complet avec les cartons puis, si on l'accepte, des achats (bots, migration, déménagement).
+- **Fondateur** : plus de production passive ; présent à son poste, il répond au support des projets en ligne. Il produit
+  par le terminal : 24 mots par session, rendement borné (`Tuning.Terminal`), vitesse de frappe plafonnée (×0,85 à ×1,2),
+  aucune pénalité pour une faute, énergie dépensée par mot, pas de travail la nuit ni en congé, une seule session à la
+  fois, mots tirés d'un hasard séparé (la simulation reste reproductible). Quand rien n'est en file, le terminal sert à la
+  maintenance d'un projet en ligne (borné à ce qu'il reste à corriger). Le lit de la chambre donne +10 d'énergie la nuit.
+- **Temps** : pendant la saisie, l'entreprise tourne à vitesse normale ; à la fermeture, la vitesse et la pause d'avant
+  reviennent. Un réglage d'accessibilité met l'entreprise en pause pendant la saisie. La vraie pause arrête la saisie.
+  Aucun raccourci pendant la frappe ; Espace ou Entrée valident, sans répétition si on maintient la touche.
+- **Rendu** : portage du compositeur de référence du pack (`UI/Iso`), image de la pièce recomposée seulement quand le local
+  ou les présences changent ; bulles d'activité avec les icônes du pack ; mode aménagement avec fantôme orienté, cases
+  d'accès en pointillés, accroche aux bureaux.
+- **Interface** : cadres 9-slice et états du pack, jetons de couleur « Papier », polices StartupRush Pixel et Mono, icônes
+  du pack, portraits en couches, apparence du fondateur au choix. Les anciens sprites, cadres et polices ne sont plus livrés.
+- **Sauvegardes** : format 3, migration du format 2 (local → plan correspondant, meubles → équivalents du pack au prix payé,
+  dans les cartons, puis un poste pour chacun sans aucun achat ; apparences ; copie `.v2.json` gardée).
+- **Équilibrage** : effort des composants inchangé (×2,2) ; le premier projet demande environ 380 à 450 mots. Les bots tapent
+  30 mots par jour ouvré. `BALANCE_REPORT.md` est régénéré.
+
+Vérifié : 81 tests (dont terminal, fondateur sans production, sockets, rotation, lit, écrans, migration 2 → 3, apparences),
+la campagne d'équilibrage, et le parcours `--capture` dans le vrai jeu sous Windows 11 (25 écrans, rechargement identique).
+Captures : `docs/captures/`.
+
+Limites connues du lot 2 :
+
+- Taille de la police pixel : le jeu garde ses tailles de texte, qui ne sont pas toujours des multiples de 12 ; quelques textes
+  sont un peu flous. À régler avec le reste du HUD.
+- Sur la capture de la campagne avancée, on compte moins de personnages assis que de postes complets : à vérifier (personne
+  en congé ou en formation, ou personnage masqué par un meuble).
+- Équilibrage : « marketing excessif » ne fait plus faillite que 2 fois sur 5 (5 sur 5 avant) ; à reprendre au lot 7.
+- Pas encore de mini-jeux, de délégation ni d'améliorations du terminal dans l'arbre (lot 3). Un seul site (lot 4).
+- Le dossier `docs/Startup_Rush_Dossier.pdf` décrit encore la version 2.1 (vue de dessus, fondateur automatique).
+
 ## Couverture du registre
 
-586 lignes, **0 validée**. Une ligne passe à « validé » seulement quand elle nomme un consommateur réel dans le jeu, son fichier de définition et un scénario de test qui vérifie une conséquence (avant/après pour un objet de gameplay, action et état pour un contrôle d'interface). Le contrôle `AssetRegistryTest` est statique : il vérifie les IDs et les fichiers cités, pas les effets.
+586 lignes : **36 validées**, 96 partielles (branchées sans test d'effet, ou vérifiées seulement en capture), 454 non
+implémentées (dont les décors des plans, affichés mais sans fonction pour l'instant). Une ligne passe à « validé » seulement quand elle nomme un consommateur réel dans le jeu, son fichier de définition et un scénario de test qui vérifie une conséquence (avant/après pour un objet de gameplay, action et état pour un contrôle d'interface). Le contrôle `AssetRegistryTest` est statique : il vérifie les IDs et les fichiers cités, pas les effets.

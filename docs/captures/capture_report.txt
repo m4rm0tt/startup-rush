@@ -1,21 +1,22 @@
 Audio : 16 sons et 4 musiques chargés depuis le build.
-Atlas : 25 sprites dans furniture.json.
+Pack : 2429 ressources embarquées (sprites, masques, manifeste, plans).
 01_menu_principal.png : 1600×900
 02_appartement_debut.png : 1600×900
 03_portefeuille_vide.png : 1600×900
 04_nouveau_projet.png : 1600×900
-05_projet_en_developpement.png : 1600×900
+05_terminal.png : 1600×900
+05b_projet_en_developpement.png : 1600×900
 06_scene_travail.png : 1600×900
-Premier projet prêt en 21 jours (fondateur seul, sans aucune affectation manuelle).
+Premier projet prêt en 4 jours et 445 mots au terminal (fondateur seul, sans employé).
 07_pret_a_sortir.png : 1600×900
-50 jours après la sortie : 94 utilisateurs, 43 payants, revenus 30 j 374 CHF, argent 18 000 → 14 101.
+50 jours après la sortie : 92 utilisateurs, 42 payants, revenus 30 j 382 CHF, argent 18 000 → 14 278.
 Avis principal : « Rien ne me donne envie de revenir. » → component:messaging
 08_avis.png : 1600×900
 09_atelier_composants.png : 1600×900
 10_reglages_projet.png : 1600×900
 11_apercu_projet.png : 1600×900
 Rechargement identique : True
-Campagne avancée : 28.04.2028, 4 personnes, Petit bureau, Flon, argent 12 347, 3 projets en ligne, 8 nœuds, 72 décisions en 16 mois.
+Campagne avancée : 28.04.2028, 5 personnes, Bureau d'équipe, Malley, argent 17 600, 3 projets en ligne, 8 nœuds, 84 décisions en 16 mois.
 12_campagne_avancee.png : 1600×900
 13_portefeuille.png : 1600×900
 14_equipe.png : 1600×900
@@ -23,13 +24,14 @@ Campagne avancée : 28.04.2028, 4 personnes, Petit bureau, Flon, argent 12 347
 16_finances.png : 1600×900
 17_journal.png : 1600×900
 18_amenagement.png : 1600×900
+18b_amenagement_pose.png : 1600×900
 19_fiche_personne.png : 1600×900
 20_petite_fenetre.png : 960×540
-21_1080p.png : 1920×1061
+21_1080p.png : 1920×1080
 22_pause.png : 1600×900
 23_faillite.png : 1600×900
-Faillite : Liquidated le 15.06.2027, sauvegardes conservées : 1
+Faillite : Liquidated le 17.03.2027, sauvegardes conservées : 1
 24_nouvelle_partie.png : 1600×900
 25_charger.png : 1600×900
-Sons déclenchés : PauseIn, Notify, Milestone
-Sauvegardes de capture : C:\Users\pb86ydy\AppData\Local\Temp\StartupRushCapture\6742597ed1f448abb468f9b3435e4f68
+Sons déclenchés : PauseIn, Notify, PauseOut, Milestone
+Sauvegardes de capture : dossier temporaire (StartupRushCapture), supprimable

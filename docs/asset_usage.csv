@@ -1,31 +1,31 @@
 id,categorie,nom,role_prevu,consommateur,fichier_definition,deblocage,indicateur_ou_interaction,etat,scenario_test
-wall_corner_inner,architecture,Angle interieur (coin du fond),Raccorder sans trou les murs du fond des pièces louées.,,,,,non implémenté,
+wall_corner_inner,architecture,Angle interieur (coin du fond),Raccorder sans trou les murs du fond des pièces louées.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
 wall_corner_outer,architecture,Angle saillant (retour),Fermer correctement les retours saillants de cloisons/pièces.,,,,,non implémenté,
-wall_door,architecture,Mur avec porte,Point d'accès à la pièce ; contrôle d'accessibilité logique des postes sans animation de marche.,,,,,non implémenté,
-wall_end,architecture,Terminaison de mur (chant visible),Terminer les murs visibles et éviter les raccords ouverts dans le rendu des plans.,,,,,non implémenté,
+wall_door,architecture,Mur avec porte,Point d'accès à la pièce ; contrôle d'accessibilité logique des postes sans animation de marche.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
+wall_end,architecture,Terminaison de mur (chant visible),Terminer les murs visibles et éviter les raccords ouverts dans le rendu des plans.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
 wall_opening,architecture,Mur avec ouverture (passage),Passage ouvert entre zones compatibles ; continuité d'accès logique.,,,,,non implémenté,
-wall_plain,architecture,Mur plein,"Fermer les pièces prédéfinies et porter couleurs, motifs et objets muraux ; structure de la zone.",,,,,non implémenté,
-wall_window,architecture,Mur avec fenetre,Fenêtre d'une case : lisibilité de la pièce et contribution plafonnée à l'ambiance lumineuse.,,,,,non implémenté,
-wall_window_wide,architecture,Mur avec grande fenetre (2 cases),Grande ouverture sur deux cases : même fonction de lumière/ambiance avec une emprise différente.,,,,,non implémenté,
-employee_f_01,characters,Employe (presentation feminine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.",,,,,non implémenté,
-employee_f_02,characters,Employe (presentation feminine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.",,,,,non implémenté,
-employee_f_03,characters,Employe (presentation feminine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.",,,,,non implémenté,
-employee_f_04,characters,Employe (presentation feminine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.",,,,,non implémenté,
-employee_f_05,characters,Employe (presentation feminine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.",,,,,non implémenté,
-employee_m_01,characters,Employe (presentation masculine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.",,,,,non implémenté,
-employee_m_02,characters,Employe (presentation masculine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.",,,,,non implémenté,
-employee_m_03,characters,Employe (presentation masculine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.",,,,,non implémenté,
-employee_m_04,characters,Employe (presentation masculine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.",,,,,non implémenté,
-employee_m_05,characters,Employe (presentation masculine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.",,,,,non implémenté,
-hair_bob,characters,Coiffure bob,"Couche de coiffure pour personnaliser les personnages compatibles, couleur/choix sauvegardés.",,,,,non implémenté,
-hair_bun,characters,Coiffure bun,"Couche de coiffure pour personnaliser les personnages compatibles, couleur/choix sauvegardés.",,,,,non implémenté,
-hair_curly_top,characters,Coiffure curly top,"Couche de coiffure pour personnaliser les personnages compatibles, couleur/choix sauvegardés.",,,,,non implémenté,
-hair_long_straight,characters,Coiffure long straight,"Couche de coiffure pour personnaliser les personnages compatibles, couleur/choix sauvegardés.",,,,,non implémenté,
-hair_short_crop,characters,Coiffure short crop,"Couche de coiffure pour personnaliser les personnages compatibles, couleur/choix sauvegardés.",,,,,non implémenté,
-hair_side_part,characters,Coiffure side part,"Couche de coiffure pour personnaliser les personnages compatibles, couleur/choix sauvegardés.",,,,,non implémenté,
-player_f,characters,Avatar joueur (presentation feminine),"Représentation du fondateur choisi, apparence personnalisable persistante sans différence statistique liée à la présentation.",,,,,non implémenté,
-player_m,characters,Avatar joueur (presentation masculine),"Représentation du fondateur choisi, apparence personnalisable persistante sans différence statistique liée à la présentation.",,,,,non implémenté,
-access_point,computers,Point d'acces Wi-Fi (mural),Couverture réseau des équipements sans fil d'une zone.,,,,,non implémenté,
+wall_plain,architecture,Mur plein,"Fermer les pièces prédéfinies et porter couleurs, motifs et objets muraux ; structure de la zone.",Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
+wall_window,architecture,Mur avec fenetre,Fenêtre d'une case : lisibilité de la pièce et contribution plafonnée à l'ambiance lumineuse.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
+wall_window_wide,architecture,Mur avec grande fenetre (2 cases),Grande ouverture sur deux cases : même fonction de lumière/ambiance avec une emprise différente.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
+employee_f_01,characters,Employe (presentation feminine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+employee_f_02,characters,Employe (presentation feminine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+employee_f_03,characters,Employe (presentation feminine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+employee_f_04,characters,Employe (presentation feminine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+employee_f_05,characters,Employe (presentation feminine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+employee_m_01,characters,Employe (presentation masculine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+employee_m_02,characters,Employe (presentation masculine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+employee_m_03,characters,Employe (presentation masculine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+employee_m_04,characters,Employe (presentation masculine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+employee_m_05,characters,Employe (presentation masculine),"Base visuelle des employés, métiers et portraits persistants ; présentation sans bonus/malus statistique.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+hair_bob,characters,Coiffure bob,"Couche de coiffure pour personnaliser les personnages compatibles, couleur/choix sauvegardés.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+hair_bun,characters,Coiffure bun,"Couche de coiffure pour personnaliser les personnages compatibles, couleur/choix sauvegardés.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+hair_curly_top,characters,Coiffure curly top,"Couche de coiffure pour personnaliser les personnages compatibles, couleur/choix sauvegardés.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+hair_long_straight,characters,Coiffure long straight,"Couche de coiffure pour personnaliser les personnages compatibles, couleur/choix sauvegardés.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+hair_short_crop,characters,Coiffure short crop,"Couche de coiffure pour personnaliser les personnages compatibles, couleur/choix sauvegardés.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+hair_side_part,characters,Coiffure side part,"Couche de coiffure pour personnaliser les personnages compatibles, couleur/choix sauvegardés.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+player_f,characters,Avatar joueur (presentation feminine),"Représentation du fondateur choisi, apparence personnalisable persistante sans différence statistique liée à la présentation.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+player_m,characters,Avatar joueur (presentation masculine),"Représentation du fondateur choisi, apparence personnalisable persistante sans différence statistique liée à la présentation.","Apparence des personnes : scène, portraits, nouvelle campagne",Core/team/Person.cs;UI/Iso/RoomRenderer.cs;UI/Iso/Portraits.cs,dès le départ,"présentation seulement, aucun effet statistique",validé,Tests/campaign/ProgressAndTeamTest.cs : RecruitsAndFoundersUseOnlyPackLayersAndKeepTheirLook
+access_point,computers,Point d'acces Wi-Fi (mural),Couverture réseau des équipements sans fil d'une zone.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 capture_device,computers,Boitier de capture,"Capacité de capture de démonstrations, jeux et campagne vidéo.",,,,,non implémenté,
 console_test_kit,computers,Kit de test console generique,"Tests de compatibilité d'une gamme de jeux console simulée, qualité/accès à ce canal de jeu.",,,,,non implémenté,
 device_test_rack,computers,Poste de test mobile,"Tests d'applications mobiles sur plusieurs profils simulés, réduction de défauts de compatibilité.",,,,,non implémenté,
@@ -33,28 +33,28 @@ docking_station,computers,Station d'accueil,Étendre la compatibilité des péri
 fiber_box,computers,Boitier fibre (mural),"Accès réseau plus performant du site, débit externe amélioré avec coût annoncé.",,,,,non implémenté,
 graphics_tablet,computers,Tablette graphique,Capacité spécialisée de design/contenu graphique.,,,,,non implémenté,
 headset_stand,computers,Casque sur support,"Confort de concentration/audio-test du poste, contribution plafonnée.",,,,,non implémenté,
-keyboard_mouse,computers,Clavier et souris,Entrée de travail d'un poste desktop ; doit être comptée par l'ensemble et non rachetée involontairement.,,,,,non implémenté,
+keyboard_mouse,computers,Clavier et souris,Entrée de travail d'un poste desktop ; doit être comptée par l'ensemble et non rachetée involontairement.,"Aménagement (achat, pose, sockets), simulation du travail",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"poste complet (chaise, tour, écran, clavier)",validé,Tests/space/LayoutTest.cs : ADeskNeedsAChairAComputerAndScreensToBeAWorkstation
 laptop_gaming,computers,Portable puissant,"Portable puissant adapté jeu/test, consommation/coût supérieurs ; gamme vendable.",,,,,non implémenté,
-laptop_old,computers,Portable ancien,"Machine initiale limitée, terminal et travail de base ; produit d'entrée de gamme si pertinent.",,,,,non implémenté,
-laptop_pro,computers,Portable professionnel,"Poste mobile professionnel, efficacité dev/bureautique et gamme matérielle correspondante.",,,,,non implémenté,
-laptop_standard,computers,Portable standard,Machine généraliste portable à rendement intermédiaire et faible emprise.,,,,,non implémenté,
+laptop_old,computers,Portable ancien,"Machine initiale limitée, terminal et travail de base ; produit d'entrée de gamme si pertinent.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"production ×0,85",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+laptop_pro,computers,Portable professionnel,"Poste mobile professionnel, efficacité dev/bureautique et gamme matérielle correspondante.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"production ×1,05, qualité +0,02",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+laptop_standard,computers,Portable standard,Machine généraliste portable à rendement intermédiaire et faible emprise.,"Aménagement (achat, pose, sockets), simulation du travail",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),poste complet par portable ; exclusion écran/clavier,validé,Tests/space/LayoutTest.cs : ALaptopReplacesTheScreenAndKeyboard
 mini_pc,computers,Mini-PC,"Poste compact ou petite offre matérielle, faible consommation et emprise.",,,,,non implémenté,
-monitor_arm_second,computers,Module de deuxieme ecran (bras),"Attache de second écran, amélioration limitée du poste sans créer de CPU.",,,,,non implémenté,
-monitor_basic,computers,Ecran simple,"Affichage de base du poste, condition d'un poste desktop utilisable.",,,,,non implémenté,
-monitor_large,computers,Grand ecran,"Amélioration plafonnée du confort/productivité d'affichage, contre coût et emprise.",,,,,non implémenté,
+monitor_arm_second,computers,Module de deuxieme ecran (bras),"Attache de second écran, amélioration limitée du poste sans créer de CPU.","Aménagement (achat, pose, sockets), simulation du travail",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"production +3 % par écran, plafond 6 % par poste",validé,Tests/campaign/WorkTest.cs : ExtraScreensHelpAPostUpToACap
+monitor_basic,computers,Ecran simple,"Affichage de base du poste, condition d'un poste desktop utilisable.","Aménagement (achat, pose, sockets), simulation du travail",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"poste complet (chaise, tour, écran, clavier)",validé,Tests/space/LayoutTest.cs : ADeskNeedsAChairAComputerAndScreensToBeAWorkstation
+monitor_large,computers,Grand ecran,"Amélioration plafonnée du confort/productivité d'affichage, contre coût et emprise.","Aménagement (achat, pose, sockets), simulation du travail",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"production +3 % par écran, plafond 6 % par poste",validé,Tests/campaign/WorkTest.cs : ExtraScreensHelpAPostUpToACap
 monitor_ultrawide,computers,Ecran ultralarge incurve,"Affichage spécialisé travail multivue, bonus plafonné et compatibilité de support.",,,,,non implémenté,
-network_cabinet,computers,Baie de rangement technique,Rangement/organisation d'équipements réseau et points d'attache compatibles.,,,,,non implémenté,
+network_cabinet,computers,Baie de rangement technique,Rangement/organisation d'équipements réseau et points d'attache compatibles.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 network_switch_desk,computers,Switch de bureau,Extension de capacité réseau locale pour postes et petites installations.,,,,,non implémenté,
-printer_mfp,computers,Imprimante multifonction,"Service de prototypage papier/documentation et organisation, abstrait sans impression réelle.",,,,,non implémenté,
+printer_mfp,computers,Imprimante multifonction,"Service de prototypage papier/documentation et organisation, abstrait sans impression réelle.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 router,computers,Routeur,Passerelle réseau du site et plafond de connectivité des services.,,,,,non implémenté,
-speakerphone,computers,Pieuvre de conference,Équipement de réunion/coordination intersites sans déplacement obligatoire.,,,,,non implémenté,
-tower_office,computers,Tour bureautique,"Machine de bureau standard pour tâches légères/support, coût d'exploitation modéré.",,,,,non implémenté,
-tower_used,computers,Tour d'occasion,"Tour économique d'occasion pour premier salarié, rapport coût/puissance distinct.",,,,,non implémenté,
-videoconf_bar,computers,Barre de visioconference,"Capacité de réunion multisite plus importante, associée à une salle équipée.",,,,,non implémenté,
+speakerphone,computers,Pieuvre de conference,Équipement de réunion/coordination intersites sans déplacement obligatoire.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+tower_office,computers,Tour bureautique,"Machine de bureau standard pour tâches légères/support, coût d'exploitation modéré.","Aménagement (achat, pose, sockets), simulation du travail",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"poste complet (chaise, tour, écran, clavier)",validé,Tests/space/LayoutTest.cs : ADeskNeedsAChairAComputerAndScreensToBeAWorkstation
+tower_used,computers,Tour d'occasion,"Tour économique d'occasion pour premier salarié, rapport coût/puissance distinct.","Aménagement (achat, pose, sockets), simulation du travail",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"production du poste (×0,85 / ×1,10, qualité)",validé,Tests/campaign/WorkTest.cs : BetterComputersHelpWithDiminishingReturns
+videoconf_bar,computers,Barre de visioconference,"Capacité de réunion multisite plus importante, associée à une salle équipée.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 webcam,computers,Webcam,Capacité de collaboration à distance et création de contenu simple.,,,,,non implémenté,
 workstation_compute,computers,Poste de calcul avance,"Poste de calcul avancé pour recherche/prototypage, consommation et capacités distinctes.",,,,,non implémenté,
-workstation_creative,computers,Station creative,"Station spécialisée design/contenu/studio, rendement ciblé.",,,,,non implémenté,
-workstation_dev,computers,Station de developpement,"Station spécialisée développement, rendement ciblé et coût explicite.",,,,,non implémenté,
+workstation_creative,computers,Station creative,"Station spécialisée design/contenu/studio, rendement ciblé.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+workstation_dev,computers,Station de developpement,"Station spécialisée développement, rendement ciblé et coût explicite.","Aménagement (achat, pose, sockets), simulation du travail",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"production du poste (×0,85 / ×1,10, qualité)",validé,Tests/campaign/WorkTest.cs : BetterComputersHelpWithDiminishingReturns
 workstation_gpu,computers,Station GPU / IA,"Poste de prototypage/entraînement IA et tâches GPU, capacité GPU réservée réellement.",,,,,non implémenté,
 xr_headset_stand,computers,Casque XR sur support,Prototypage/test XR et représentation de la gamme de kits XR.,,,,,non implémenté,
 cursor_action,cursors,Clic / action,Survol d'une action cliquable disponible.,,,,,non implémenté,
@@ -69,101 +69,101 @@ cursor_resize_h,cursors,Redimensionner (horizontal),Redimensionnement horizontal
 cursor_resize_v,cursors,Redimensionner (vertical),Redimensionnement vertical réel d'un panneau ou séparateur prévu.,,,,,non implémenté,
 cursor_select,cursors,Sélection (main),"Sélection d'objet, carte ou personnage.",,,,,non implémenté,
 cursor_text,cursors,Saisie de texte,"Saisie dans noms, recherches et terminal.",,,,,non implémenté,
-award_plaque,decoration,Plaque de reussite,"Récompense visuelle d'un jalon obtenu, contribue à la fierté sans réattribuer les points du jalon.",,,,,non implémenté,
+award_plaque,decoration,Plaque de reussite,"Récompense visuelle d'un jalon obtenu, contribue à la fierté sans réattribuer les points du jalon.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 books_stack,decoration,Pile de livres,Ressource de lecture au poste ; contribution plafonnée au groupe formation/ambiance.,,,,,non implémenté,
 bottle,decoration,Bouteille d'eau,Confort personnel du poste ; appartient au même groupe plafonné que les autres accessoires de pause.,,,,,non implémenté,
 cable_organizer,decoration,Rangement de cables,"Organisation du poste, réduit une part plafonnée de la surcharge d'équipements.",,,,,non implémenté,
-clock_wall,decoration,Horloge murale,Repère horaire affichant le temps de jeu et contribution visuelle d'organisation.,,,,,non implémenté,
+clock_wall,decoration,Horloge murale,Repère horaire affichant le temps de jeu et contribution visuelle d'organisation.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 figurine_robot,decoration,Petite figurine robot,Personnalisation et ambiance au poste ; petit effet de bien-être plafonné.,,,,,non implémenté,
-idea_sketch,decoration,Croquis d'idee punaise,"Idée affichée, contribution plafonnée à la collaboration/design.",,,,,non implémenté,
-moving_box,decoration,Cartons de demenagement,Représentation de l'inventaire emballé lors de déménagement ; accès à son contenu réel.,,,,,non implémenté,
-mug,decoration,Tasse,"Confort personnel du poste, personnalisation ; pas de bonus infini avec plusieurs tasses.",,,,,non implémenté,
+idea_sketch,decoration,Croquis d'idee punaise,"Idée affichée, contribution plafonnée à la collaboration/design.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+moving_box,decoration,Cartons de demenagement,Représentation de l'inventaire emballé lors de déménagement ; accès à son contenu réel.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+mug,decoration,Tasse,"Confort personnel du poste, personnalisation ; pas de bonus infini avec plusieurs tasses.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"moral du poste +0,5 (plafonné à 1)",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
 notebook,decoration,Carnet et stylo,Support d'organisation/design personnel ; contribution au groupe coordination.,,,,,non implémenté,
 paper_stack,decoration,Pile de papiers,Support d'administration/planification visuelle ; contribution partagée d'organisation.,,,,,non implémenté,
-photo_abstract,decoration,Photo abstraite encadree,Ambiance murale et personnalisation du site.,,,,,non implémenté,
-plant_floor_medium,decoration,Plante en pot (moyenne),"Ambiance/bien-être d'une zone, couverture moyenne.",,,,,non implémenté,
-plant_floor_tall,decoration,Grande plante (ficus lyre),"Ambiance/bien-être d'une zone, emprise/couverture différente de la plante moyenne.",,,,,non implémenté,
-plant_succulent,decoration,Succulente de bureau,Petit bonus plafonné d'ambiance au poste ; nécessite un support compatible.,,,,,non implémenté,
+photo_abstract,decoration,Photo abstraite encadree,Ambiance murale et personnalisation du site.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+plant_floor_medium,decoration,Plante en pot (moyenne),"Ambiance/bien-être d'une zone, couverture moyenne.","Aménagement (achat, pose, sockets), simulation du travail",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),moral d'ambiance plafonné (6),validé,Tests/space/LayoutTest.cs : AmbianceHasDiminishingReturns
+plant_floor_tall,decoration,Grande plante (ficus lyre),"Ambiance/bien-être d'une zone, emprise/couverture différente de la plante moyenne.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),ambiance +1 (plafonnée),partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+plant_succulent,decoration,Succulente de bureau,Petit bonus plafonné d'ambiance au poste ; nécessite un support compatible.,"Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"ambiance +0,5 (plafonnée)",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
 plant_trailing,decoration,Plante retombante (etagere),"Ambiance via une étagère/support compatible, personnalisation sans occuper une case supplémentaire au sol.",,,,,non implémenté,
-poster_project,decoration,Affiche de projet fictif (fusee),"Affichage de l'identité d'un projet, fierté/attachement de l'équipe plafonnés.",,,,,non implémenté,
-poster_schematic,decoration,Schema technique (plan bleu),"Ambiance technique et ressource de conception, contribution au groupe design/formation.",,,,,non implémenté,
+poster_project,decoration,Affiche de projet fictif (fusee),"Affichage de l'identité d'un projet, fierté/attachement de l'équipe plafonnés.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+poster_schematic,decoration,Schema technique (plan bleu),"Ambiance technique et ressource de conception, contribution au groupe design/formation.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 retro_message,decoration,Petit ecran retro (invite),Écran de message du poste avec état réel/prochaine action ; personnalisation d'ambiance.,,,,,non implémenté,
-rubber_duck_debug,decoration,Canard de debogage,"Accessoire de concentration/débogage, petit effet plafonné sur le suivi des bugs du poste.",,,,,non implémenté,
-side_project,decoration,Mini-projet personnel (platine),"Prototype personnel exposé, ambiance créative et inspiration plafonnées.",,,,,non implémenté,
+rubber_duck_debug,decoration,Canard de debogage,"Accessoire de concentration/débogage, petit effet plafonné sur le suivi des bugs du poste.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"moral du poste +0,5",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+side_project,decoration,Mini-projet personnel (platine),"Prototype personnel exposé, ambiance créative et inspiration plafonnées.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"moral du poste +0,5",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
 snack_bowl,decoration,Bol de snacks,"Confort de pause local, service agrégé limité par les employés couverts.",,,,,non implémenté,
-sticky_notes,decoration,Notes adhesives (mur),"Visualisation d'idées et organisation du poste, contribution au groupe coordination.",,,,,non implémenté,
+sticky_notes,decoration,Notes adhesives (mur),"Visualisation d'idées et organisation du poste, contribution au groupe coordination.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 storage_boxes,decoration,Boites de rangement,"Rangement de petits équipements et organisation, avec capacité définie.",,,,,non implémenté,
-trophy_project,decoration,Trophee de projet,"Trophée de projet réussi, souvenir persistant et fierté plafonnée.",,,,,non implémenté,
-floor_carpet,floors,Moquette,Revêtement textile personnalisable ; contribution au traitement acoustique plafonné du bureau.,,,,,non implémenté,
-floor_carpet_tiles,floors,Dalles de moquette,"Revêtement textile modulaire d'open space ; même famille acoustique, rendu distinct.",,,,,non implémenté,
-floor_concrete,floors,Beton cire,Revêtement de zone industrielle compatible avec les charges des machines.,,,,,non implémenté,
-floor_edge,floors,Bord avant de dalle (coupe),"Bord visible de la dalle des locaux, assemblé selon la limite du plan.",,,,,non implémenté,
-floor_edge_corner,floors,Coin avant de dalle,Raccord d'angle des bords de dalle sans chevauchement.,,,,,non implémenté,
+trophy_project,decoration,Trophee de projet,"Trophée de projet réussi, souvenir persistant et fierté plafonnée.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"ambiance +0,5",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+floor_carpet,floors,Moquette,Revêtement textile personnalisable ; contribution au traitement acoustique plafonné du bureau.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
+floor_carpet_tiles,floors,Dalles de moquette,"Revêtement textile modulaire d'open space ; même famille acoustique, rendu distinct.",Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
+floor_concrete,floors,Beton cire,Revêtement de zone industrielle compatible avec les charges des machines.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
+floor_edge,floors,Bord avant de dalle (coupe),"Bord visible de la dalle des locaux, assemblé selon la limite du plan.",Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
+floor_edge_corner,floors,Coin avant de dalle,Raccord d'angle des bords de dalle sans chevauchement.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
 floor_marking,floors,Marquage au sol (atelier),"Marquage des zones de production, accès machines et emplacements logistiques.",,,,,non implémenté,
-floor_parquet,floors,Parquet a batons (vannerie),Revêtement de bureau/domestique contribuant à l'ambiance de la zone.,,,,,non implémenté,
+floor_parquet,floors,Parquet a batons (vannerie),Revêtement de bureau/domestique contribuant à l'ambiance de la zone.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
 floor_raised,floors,Faux plancher technique,Zone de plancher technique permettant une organisation câbles/refroidissement en salle serveur.,,,,,non implémenté,
 floor_raised_vent,floors,Faux plancher perfore (soufflage),"Élément ventilé du plancher technique contribuant à la distribution du froid de la zone, sans créer de froid.",,,,,non implémenté,
 floor_threshold,floors,Seuil de transition (barre laiton),Seuil de passage entre types de sol/zones ; lecture de l'accès.,,,,,non implémenté,
-floor_tile_ceramic,floors,Carrelage,Revêtement des sanitaires et kitchenette ; identification des zones de service.,,,,,non implémenté,
+floor_tile_ceramic,floors,Carrelage,Revêtement des sanitaires et kitchenette ; identification des zones de service.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
 floor_vinyl,floors,Vinyle mouchete,"Revêtement polyvalent d'atelier ou bureau, entretien agrégé standard.",,,,,non implémenté,
-floor_wood_planks,floors,Plancher bois (lames),Revêtement de chambre et détente ; personnalisation d'ambiance.,,,,,non implémenté,
-font_startuprush_mono,fonts,StartupRush Mono,"Saisie mot par mot, journal technique simulé et chiffres à alignement fixe.",,,,,non implémenté,
-font_startuprush_pixel,fonts,StartupRush Pixel,"Texte courant du HUD, menus et libellés ; métriques/accents réellement utilisés et testés.",,,,,non implémenté,
-armchair,furniture,Fauteuil,Place de détente contribuant à la récupération agrégée des employés.,,,,,non implémenté,
-bed_single,furniture,Lit simple,Récupération du fondateur dans la chambre hors session de travail ; usage sans animation.,,,,,non implémenté,
-bookcase,furniture,Bibliotheque,Ressources de formation : aide plafonnée à l'efficacité des formations du site.,,,,,non implémenté,
-chair_budget,furniture,Chaise economique,"Assise économique valide pour un poste, confort de base.",,,,,non implémenté,
-chair_ergonomic,furniture,Chaise ergonomique,"Assise longue durée, amélioration plafonnée du confort et de la fatigue.",,,,,non implémenté,
-chair_meeting,furniture,Chaise de reunion,Place valide de réunion/formation ; ne crée pas à elle seule un poste de développement.,,,,,non implémenté,
-chair_office,furniture,Chaise de bureau,"Assise de travail standard, confort supérieur à la chaise économique.",,,,,non implémenté,
+floor_wood_planks,floors,Plancher bois (lames),Revêtement de chambre et détente ; personnalisation d'ambiance.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
+font_startuprush_mono,fonts,StartupRush Mono,"Saisie mot par mot, journal technique simulé et chiffres à alignement fixe.",Interface,UI/Pixel/PixelPanel.cs;UI/Hud/TerminalView.cs;UI/App.axaml,dès le départ,police du terminal et des chiffres,partiel,vérifié sur les captures du vrai jeu (01 à 25) ; pas de test automatisé d'interface
+font_startuprush_pixel,fonts,StartupRush Pixel,"Texte courant du HUD, menus et libellés ; métriques/accents réellement utilisés et testés.",Interface,UI/Pixel/PixelPanel.cs;UI/Hud/TerminalView.cs;UI/App.axaml,dès le départ,police de l'interface,partiel,vérifié sur les captures du vrai jeu (01 à 25) ; pas de test automatisé d'interface
+armchair,furniture,Fauteuil,Place de détente contribuant à la récupération agrégée des employés.,"Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),pauses +5,partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+bed_single,furniture,Lit simple,Récupération du fondateur dans la chambre hors session de travail ; usage sans animation.,"Aménagement (achat, pose, sockets), simulation du travail",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),récupération nocturne du fondateur +10,validé,Tests/space/LayoutTest.cs : TheFounderBedHelpsRecoveryOvernight
+bookcase,furniture,Bibliotheque,Ressources de formation : aide plafonnée à l'efficacité des formations du site.,"Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),formations +15 % (2 au plus),partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+chair_budget,furniture,Chaise economique,"Assise économique valide pour un poste, confort de base.","Aménagement (achat, pose, sockets), simulation du travail",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"poste complet (chaise, tour, écran, clavier)",validé,Tests/space/LayoutTest.cs : ADeskNeedsAChairAComputerAndScreensToBeAWorkstation
+chair_ergonomic,furniture,Chaise ergonomique,"Assise longue durée, amélioration plafonnée du confort et de la fatigue.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),fatigue −20 %,partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+chair_meeting,furniture,Chaise de reunion,Place valide de réunion/formation ; ne crée pas à elle seule un poste de développement.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+chair_office,furniture,Chaise de bureau,"Assise de travail standard, confort supérieur à la chaise économique.","Aménagement (achat, pose, sockets), simulation du travail",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),poste complet par portable ; exclusion écran/clavier,validé,Tests/space/LayoutTest.cs : ALaptopReplacesTheScreenAndKeyboard
 coat_rack,furniture,Porte-manteau,"Accueil des effets personnels, confort de base du site.",,,,,non implémenté,
-coffee_machine,furniture,Machine a cafe,Service de pause café : récupération/moral agrégés et coût de fonctionnement simple.,,,,,non implémenté,
-desk_compact,furniture,Bureau compact,Poste économique de la chambre : petite emprise et attaches limitées.,,,,,non implémenté,
-desk_corner,furniture,Bureau d'angle,Poste en L offrant davantage d'attaches/accessoires contre une plus grande emprise.,,,,,non implémenté,
-desk_long,furniture,Bureau long (bench),"Bench à configurer selon les sockets réels ; accessoires/écrans supplémentaires, sans inventer de sièges non prévus.",,,,,non implémenté,
-desk_simple,furniture,Bureau simple,"Poste de travail standard : bureau, ordinateur et siège compatibles.",,,,,non implémenté,
-desk_tech,furniture,Bureau technique renforce,Poste opérateur renforcé compatible avec atelier/labo et accessoires techniques.,,,,,non implémenté,
+coffee_machine,furniture,Machine a cafe,Service de pause café : récupération/moral agrégés et coût de fonctionnement simple.,"Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"pauses +12 d'énergie, 1 pour 8",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+desk_compact,furniture,Bureau compact,Poste économique de la chambre : petite emprise et attaches limitées.,"Aménagement (achat, pose, sockets), simulation du travail",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"emprise, case d'accès réservée, passage",validé,Tests/space/LayoutTest.cs : FurnitureCannotOverlapLeaveTheRoomOrBlockAccess
+desk_corner,furniture,Bureau d'angle,Poste en L offrant davantage d'attaches/accessoires contre une plus grande emprise.,"Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),moral du poste +2,partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+desk_long,furniture,Bureau long (bench),"Bench à configurer selon les sockets réels ; accessoires/écrans supplémentaires, sans inventer de sièges non prévus.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),3 postes (portables),partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+desk_simple,furniture,Bureau simple,"Poste de travail standard : bureau, ordinateur et siège compatibles.","Aménagement (achat, pose, sockets), simulation du travail",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"poste complet (chaise, tour, écran, clavier)",validé,Tests/space/LayoutTest.cs : ADeskNeedsAChairAComputerAndScreensToBeAWorkstation
+desk_tech,furniture,Bureau technique renforce,Poste opérateur renforcé compatible avec atelier/labo et accessoires techniques.,"Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),moral du poste +3,partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
 display_case,furniture,Presentoir vitre,Présentation de prototypes/trophées ; fierté d'équipe et support d'objet.,,,,,non implémenté,
-dresser,furniture,Commode,"Rangement domestique, contribution plafonnée au confort de la chambre.",,,,,non implémenté,
-filing_cabinet,furniture,Classeur a tiroirs,Organisation administrative agrégée ; facilite coordination sans documents à remplir.,,,,,non implémenté,
-fridge,furniture,Refrigerateur,Stockage/service de repas du coin cuisine ; complète la capacité de pause.,,,,,non implémenté,
-kitchen_counter,furniture,Element de cuisine,Support utile de kitchenette pour appareils et capacité de repas.,,,,,non implémenté,
-kitchen_sink,furniture,Evier,"Service d'hygiène de la kitchenette, complète son niveau de confort.",,,,,non implémenté,
+dresser,furniture,Commode,"Rangement domestique, contribution plafonnée au confort de la chambre.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"ambiance +0,5",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+filing_cabinet,furniture,Classeur a tiroirs,Organisation administrative agrégée ; facilite coordination sans documents à remplir.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+fridge,furniture,Refrigerateur,Stockage/service de repas du coin cuisine ; complète la capacité de pause.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+kitchen_counter,furniture,Element de cuisine,Support utile de kitchenette pour appareils et capacité de repas.,"Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),socket pour machine à café / micro-ondes,partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+kitchen_sink,furniture,Evier,"Service d'hygiène de la kitchenette, complète son niveau de confort.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 kitchen_wall_cabinet,furniture,Placard haut de cuisine,Capacité de rangement de la kitchenette et support mural prévu.,,,,,non implémenté,
 lamp_ceiling,furniture,Luminaire suspendu,Éclairage général d'une zone ; ne bloque pas la circulation au sol.,,,,,non implémenté,
-lamp_desk,furniture,Lampe de bureau,"Éclairage local du poste, contribution plafonnée au confort visuel.",,,,,non implémenté,
-lamp_floor,furniture,Lampadaire,Éclairage de la zone détente/bureau ; couverture de confort visuel.,,,,,non implémenté,
-locker,furniture,Casiers,"Rangement personnel d'atelier/usine, confort proportionné aux employés couverts.",,,,,non implémenté,
+lamp_desk,furniture,Lampe de bureau,"Éclairage local du poste, contribution plafonnée au confort visuel.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"ambiance +0,5",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+lamp_floor,furniture,Lampadaire,Éclairage de la zone détente/bureau ; couverture de confort visuel.,"Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"ambiance +0,5",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+locker,furniture,Casiers,"Rangement personnel d'atelier/usine, confort proportionné aux employés couverts.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 microwave,furniture,Micro-ondes,Équipement de repas contribuant à la qualité du coin pause si installé avec un support compatible.,,,,,non implémenté,
-nightstand,furniture,Table de chevet,Support compatible de lampe/objets personnels dans la chambre ; complète le confort domestique.,,,,,non implémenté,
-partition_acoustic,furniture,Separation acoustique,Réduire la surcharge de bruit d'open space/studio avec couverture limitée.,,,,,non implémenté,
-partition_glass,furniture,Vitrage interieur,"Séparer visuellement les zones, contribuer à leur organisation et conserver transparence.",,,,,non implémenté,
-partition_glass_door,furniture,Vitrage interieur avec porte,Passage logique dans une séparation de verre ; accès de la zone préservé.,,,,,non implémenté,
-partition_low,furniture,Cloison basse,"Délimiter les zones et améliorer modérément la concentration, sans isoler tout le local.",,,,,non implémenté,
+nightstand,furniture,Table de chevet,Support compatible de lampe/objets personnels dans la chambre ; complète le confort domestique.,"Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"ambiance +0,25",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+partition_acoustic,furniture,Separation acoustique,Réduire la surcharge de bruit d'open space/studio avec couverture limitée.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+partition_glass,furniture,Vitrage interieur,"Séparer visuellement les zones, contribuer à leur organisation et conserver transparence.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+partition_glass_door,furniture,Vitrage interieur avec porte,Passage logique dans une séparation de verre ; accès de la zone préservé.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+partition_low,furniture,Cloison basse,"Délimiter les zones et améliorer modérément la concentration, sans isoler tout le local.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 pedestal_drawer,furniture,Caisson a roulettes,"Organisation d'un poste ou support de rangement selon les sockets, effet plafonné.",,,,,non implémenté,
-planning_board,furniture,Tableau de planning mural,Support visuel des priorités réelles et contribution plafonnée à la coordination d'équipe.,,,,,non implémenté,
-presentation_screen,furniture,Ecran de presentation sur pied,"Support de formation, démonstration et réunions ; contenu dynamique cohérent avec le contexte.",,,,,non implémenté,
+planning_board,furniture,Tableau de planning mural,Support visuel des priorités réelles et contribution plafonnée à la coordination d'équipe.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+presentation_screen,furniture,Ecran de presentation sur pied,"Support de formation, démonstration et réunions ; contenu dynamique cohérent avec le contexte.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 reception_desk,furniture,Banque d'accueil,Capacité d'accueil/organisation du site ; améliore l'efficacité des canaux professionnels de manière plafonnée.,,,,,non implémenté,
-recycling_station,furniture,Bacs de tri,"Service de tri de site, organisation/réduction plafonnée d'une part des coûts de déchets.",,,,,non implémenté,
-rug_large,furniture,Grand tapis,"Traitement de sol décoratif/acoustique de plus grande couverture, non cumulable sans limite.",,,,,non implémenté,
-rug_small,furniture,Tapis,"Traitement de sol décoratif/acoustique local, sous les ombres selon le manifeste.",,,,,non implémenté,
-shelf_metal,furniture,Etagere metallique,Capacité de stockage de petits équipements/cartons compatible avec les attaches prévues.,,,,,non implémenté,
+recycling_station,furniture,Bacs de tri,"Service de tri de site, organisation/réduction plafonnée d'une part des coûts de déchets.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+rug_large,furniture,Grand tapis,"Traitement de sol décoratif/acoustique de plus grande couverture, non cumulable sans limite.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+rug_small,furniture,Tapis,"Traitement de sol décoratif/acoustique local, sous les ombres selon le manifeste.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"ambiance +0,5",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+shelf_metal,furniture,Etagere metallique,Capacité de stockage de petits équipements/cartons compatible avec les attaches prévues.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 sideboard_low,furniture,Meuble bas,"Support pour imprimante, café et décoration ; capacité réelle d'accueil des objets compatibles.",,,,,non implémenté,
-sofa,furniture,Canape,"Places de détente supplémentaires, récupération/moral plafonnés par l'occupation.",,,,,non implémenté,
-table_coffee,furniture,Table basse,Compléter un coin détente avec places compatibles ; pas un bureau productif.,,,,,non implémenté,
+sofa,furniture,Canape,"Places de détente supplémentaires, récupération/moral plafonnés par l'occupation.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"pauses +8, moral +2",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+table_coffee,furniture,Table basse,Compléter un coin détente avec places compatibles ; pas un bureau productif.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 table_collab,furniture,Table de travail collective,Postes de collaboration selon attaches réelles ; coordination de design/prototypage.,,,,,non implémenté,
-table_meeting_large,furniture,Grande table de reunion,Capacité de coordination/formation d'une équipe plus importante ; effet limité par les places.,,,,,non implémenté,
-table_meeting_small,furniture,Petite table de reunion (ronde),"Capacité de coordination/formation d'une petite équipe, si sièges compatibles.",,,,,non implémenté,
+table_meeting_large,furniture,Grande table de reunion,Capacité de coordination/formation d'une équipe plus importante ; effet limité par les places.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+table_meeting_small,furniture,Petite table de reunion (ronde),"Capacité de coordination/formation d'une petite équipe, si sièges compatibles.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 toilet,furniture,WC,"Capacité sanitaire de base du site, besoin agrégé sans déplacements ni mini-jeu.",,,,,non implémenté,
 toilet_stall,furniture,Cabine sanitaire,"Intimité/organisation du sanitaire, à associer à un WC et un accès valide.",,,,,non implémenté,
-trash_bin,furniture,Poubelle,"Couverture simple de propreté/confort, sans corvée de vidage.",,,,,non implémenté,
-vending_drinks,furniture,Distributeur de boissons,"Capacité automatique de boissons pour sites plus fréquentés, coût agrégé annoncé.",,,,,non implémenté,
-vending_snacks,furniture,Distributeur de snacks,Capacité automatique de collation ; récupération sans gestion de chaque paquet.,,,,,non implémenté,
+trash_bin,furniture,Poubelle,"Couverture simple de propreté/confort, sans corvée de vidage.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),"ambiance +0,25",partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+vending_drinks,furniture,Distributeur de boissons,"Capacité automatique de boissons pour sites plus fréquentés, coût agrégé annoncé.",Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+vending_snacks,furniture,Distributeur de snacks,Capacité automatique de collation ; récupération sans gestion de chaque paquet.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 wardrobe_office,furniture,Armoire,Rangement de site : contribution à l'organisation et au confort.,,,,,non implémenté,
 washbasin,furniture,Lavabo,"Hygiène du module sanitaire, contribue à la qualité du service.",,,,,non implémenté,
-water_cooler,furniture,Fontaine a eau,Service d'eau pour les employés couverts ; confort sans recharge manuelle.,,,,,non implémenté,
-whiteboard_mobile,furniture,Tableau blanc mobile,"Capacité de collaboration/design et formation, selon personnel présent.",,,,,non implémenté,
-window_blinds,furniture,Stores de fenetre,Contrôle visuel/lumineux d'une fenêtre compatible ; confort et réglage d'ambiance.,,,,,non implémenté,
+water_cooler,furniture,Fontaine a eau,Service d'eau pour les employés couverts ; confort sans recharge manuelle.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
+whiteboard_mobile,furniture,Tableau blanc mobile,"Capacité de collaboration/design et formation, selon personnel présent.","Aménagement (achat, pose, sockets), simulation",Core/space/Furniture.cs;Core/space/Layout.cs,dès le départ (catalogue),coordination +1 personne (2 au plus),partiel,effet codé ; pas de test d'effet dédié (placement couvert par AssetManifestTest)
+window_blinds,furniture,Stores de fenetre,Contrôle visuel/lumineux d'une fenêtre compatible ; confort et réglage d'ambiance.,Affiché dans un local loué (décor du plan),UI/Iso/RoomRenderer.cs,avec le local,aucun effet pour l'instant,non implémenté,affichage seulement : une fonction reste à coder
 hud_badge_accent,hud,Badge accent,Mise en avant d'une action conseillée ou d'un point de progression.,,,,,non implémenté,
 hud_badge_count,hud,Pastille compteur,Nombre réel de tâches/alertes/éléments filtrés.,,,,,non implémenté,
 hud_badge_danger,hud,Badge danger,"Impayé, échéance critique ou arrêt menaçant, avec texte/symbole.",,,,,non implémenté,
@@ -172,11 +172,11 @@ hud_badge_neutral,hud,Badge neutral,"État neutre : brouillon, disponible ou en 
 hud_badge_success,hud,Badge success,État valide/résolu/publication réussie.,,,,,non implémenté,
 hud_badge_warning,hud,Badge warning,Capacité proche du plafond ou problème récupérable.,,,,,non implémenté,
 hud_banner,hud,Bandeau,Résumé prioritaire d'un problème majeur ou jalon dans la vue concernée.,,,,,non implémenté,
-hud_button_destructive,hud,Bouton destructif,Arrêt/vente/suppression avec conséquence et confirmation si nécessaire.,,,,,non implémenté,
+hud_button_destructive,hud,Bouton destructif,Arrêt/vente/suppression avec conséquence et confirmation si nécessaire.,Interface,UI/Pixel/PixelPanel.cs;UI/Hud/TerminalView.cs;UI/App.axaml,dès le départ,boutons de revente et de licenciement,partiel,vérifié sur les captures du vrai jeu (01 à 25) ; pas de test automatisé d'interface
 hud_button_icon,hud,Bouton icone,Commande compacte avec nom accessible et info-bulle.,,,,,non implémenté,
 hud_button_icon_small,hud,Petit bouton icone (barre de titre),"Petite commande de ligne, par exemple réordonner une tâche ou ouvrir un détail.",,,,,non implémenté,
-hud_button_primary,hud,Bouton principal,"Action principale contextuelle, états survol/pressé/focus/désactivé fonctionnels.",,,,,non implémenté,
-hud_button_secondary,hud,Bouton secondaire,"Action secondaire non destructive, par exemple voir les détails.",,,,,non implémenté,
+hud_button_primary,hud,Bouton principal,"Action principale contextuelle, états survol/pressé/focus/désactivé fonctionnels.",Interface,UI/Pixel/PixelPanel.cs;UI/Hud/TerminalView.cs;UI/App.axaml,dès le départ,boutons d'action principale,partiel,vérifié sur les captures du vrai jeu (01 à 25) ; pas de test automatisé d'interface
+hud_button_secondary,hud,Bouton secondaire,"Action secondaire non destructive, par exemple voir les détails.",Interface,UI/Pixel/PixelPanel.cs;UI/Hud/TerminalView.cs;UI/App.axaml,dès le départ,boutons,partiel,vérifié sur les captures du vrai jeu (01 à 25) ; pas de test automatisé d'interface
 hud_button_text,hud,Bouton texte,Lien d'action discret vers les explications ou un réglage.,,,,,non implémenté,
 hud_card,hud,Carte produit / projet,Carte de projet/site/produit avec données et interaction.,,,,,non implémenté,
 hud_chart_axis_h,hud,Axe horizontal,"Axe temporel des courbes, libellés correspondant à la période affichée.",,,,,non implémenté,
@@ -206,8 +206,8 @@ hud_menu_separator,hud,Séparateur de menu,Séparer commandes ordinaires et acti
 hud_modal,hud,Fenêtre modale,Surface modale d'une décision ponctuelle avec fermeture et gestion de focus.,,,,,non implémenté,
 hud_money_chip,hud,Puce trésorerie,Trésorerie ou coût en CHF avec fréquence explicite.,,,,,non implémenté,
 hud_notification,hud,Notification,Ligne de journal liée à une vraie cause et action de résolution.,,,,,non implémenté,
-hud_panel_inset,hud,"Zone en creux (liste, graphique)",Bloc intérieur d'indicateurs ou prévisualisation de tâche.,,,,,non implémenté,
-hud_panel_main,hud,Panneau principal,"Surface des panneaux principaux Projets, Équipe, Aménagement, arbre et Finances.",,,,,non implémenté,
+hud_panel_inset,hud,"Zone en creux (liste, graphique)",Bloc intérieur d'indicateurs ou prévisualisation de tâche.,Interface,UI/Pixel/PixelPanel.cs;UI/Hud/TerminalView.cs;UI/App.axaml,dès le départ,encarts,partiel,vérifié sur les captures du vrai jeu (01 à 25) ; pas de test automatisé d'interface
+hud_panel_main,hud,Panneau principal,"Surface des panneaux principaux Projets, Équipe, Aménagement, arbre et Finances.",Interface,UI/Pixel/PixelPanel.cs;UI/Hud/TerminalView.cs;UI/App.axaml,dès le départ,cadre des menus,partiel,vérifié sur les captures du vrai jeu (01 à 25) ; pas de test automatisé d'interface
 hud_panel_secondary,hud,Panneau secondaire,"Détails secondaires de projet/site, hiérarchie visuelle.",,,,,non implémenté,
 hud_pattern_cell,hud,Pastille de motif,Cellule répétée de fond des zones/grilles de prévisualisation.,,,,,non implémenté,
 hud_popover,hud,Popover,"Détails temporaires d'une jauge, allocation ou ressource au clic.",,,,,non implémenté,
@@ -254,16 +254,16 @@ hud_window,hud,Fenêtre (cadre + barre de titre),Fenêtre de gestion redimension
 icon_access,hud,Accès,Commande/indicateur : accès logique et compatibilité de zone/poste.,,,,,non implémenté,
 icon_ai,hud,IA,Commande/indicateur : familles de projets IA et ressources de modèle.,,,,,non implémenté,
 icon_assembly,hud,Assemblage,Commande/indicateur : phase et poste d’assemblage matériel.,,,,,non implémenté,
-icon_assignment,hud,Affectation,Commande/indicateur : affectation d’un employé ou du travail actif.,,,,,non implémenté,
+icon_assignment,hud,Affectation,Commande/indicateur : affectation d’un employé ou du travail actif.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_back,hud,Retour,Commande/indicateur : retour au niveau précédent de navigation.,,,,,non implémenté,
 icon_bell,hud,Notifications,Commande/indicateur : journal des problèmes et bonnes nouvelles regroupés.,,,,,non implémenté,
 icon_budget,hud,Budget,Commande/indicateur : plafond d’approvisionnement/hébergement/marketing.,,,,,non implémenté,
 icon_bug,hud,Bogue,Commande/indicateur : défauts et suivi correctif réellement calculés.,,,,,non implémenté,
-icon_calendar,hud,Calendrier,Commande/indicateur : date et horaires/congés/formation.,,,,,non implémenté,
+icon_calendar,hud,Calendrier,Commande/indicateur : date et horaires/congés/formation.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_cancel,hud,Annuler,Commande/indicateur : annuler une saisie ou action réversible.,,,,,non implémenté,
 icon_caret_down,hud,Déroulant,Commande/indicateur : ouvrir une liste et ses options.,,,,,non implémenté,
-icon_cash,hud,Trésorerie,Commande/indicateur : trésorerie disponible de l’entreprise.,,,,,non implémenté,
-icon_chart_line,hud,Courbe,"Commande/indicateur : tendance de ventes, audience ou résultat.",,,,,non implémenté,
+icon_cash,hud,Trésorerie,Commande/indicateur : trésorerie disponible de l’entreprise.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
+icon_chart_line,hud,Courbe,"Commande/indicateur : tendance de ventes, audience ou résultat.",Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_chevron_down,hud,Chevron bas,Commande/indicateur : déplier les détails d’une section.,,,,,non implémenté,
 icon_chevron_left,hud,Chevron gauche,Commande/indicateur : navigation précédente dans un catalogue/graphe.,,,,,non implémenté,
 icon_chevron_right,hud,Chevron droit,Commande/indicateur : navigation suivante dans un catalogue/graphe.,,,,,non implémenté,
@@ -271,7 +271,7 @@ icon_chevron_up,hud,Chevron haut,Commande/indicateur : replier les détails d’
 icon_client,hud,Client,"Commande/indicateur : public/clientèle agrégée des produits, sans mission client.",,,,,non implémenté,
 icon_close,hud,Fermer,Commande/indicateur : fermer un panneau en restaurant le focus.,,,,,non implémenté,
 icon_cloud,hud,Nuage,Commande/indicateur : offres hébergées et location de ressources externes.,,,,,non implémenté,
-icon_code,hud,Code,Commande/indicateur : travail du terminal et phase de développement.,,,,,non implémenté,
+icon_code,hud,Code,Commande/indicateur : travail du terminal et phase de développement.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_comp_admin,hud,Administration,"Pictogramme compact de comp_admin dans listes, dépendances et résumés ; même fonction réelle que la carte correspondante.",,,,,non implémenté,
 icon_comp_api,hud,API,"Pictogramme compact de comp_api dans listes, dépendances et résumés ; même fonction réelle que la carte correspondante.",,,,,non implémenté,
 icon_comp_auth,hud,Compte / connexion,"Pictogramme compact de comp_auth dans listes, dépendances et résumés ; même fonction réelle que la carte correspondante.",,,,,non implémenté,
@@ -279,7 +279,7 @@ icon_comp_automation,hud,Automatisation,"Pictogramme compact de comp_automation 
 icon_comp_catalog,hud,Catalogue,"Pictogramme compact de comp_catalog dans listes, dépendances et résumés ; même fonction réelle que la carte correspondante.",,,,,non implémenté,
 icon_comp_engine,hud,Moteur,"Pictogramme compact de comp_engine dans listes, dépendances et résumés ; même fonction réelle que la carte correspondante.",,,,,non implémenté,
 icon_comp_feed,hud,Fil de contenu,"Pictogramme compact de comp_feed dans listes, dépendances et résumés ; même fonction réelle que la carte correspondante.",,,,,non implémenté,
-icon_comp_game_menu,hud,Menu de jeu,"Pictogramme compact de comp_game_menu dans listes, dépendances et résumés ; même fonction réelle que la carte correspondante.",,,,,non implémenté,
+icon_comp_game_menu,hud,Menu de jeu,"Pictogramme compact de comp_game_menu dans listes, dépendances et résumés ; même fonction réelle que la carte correspondante.",Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_comp_infrastructure,hud,Infrastructure,"Pictogramme compact de comp_infrastructure dans listes, dépendances et résumés ; même fonction réelle que la carte correspondante.",,,,,non implémenté,
 icon_comp_integration,hud,Intégration,"Pictogramme compact de comp_integration dans listes, dépendances et résumés ; même fonction réelle que la carte correspondante.",,,,,non implémenté,
 icon_comp_inventory,hud,Inventaire,"Pictogramme compact de comp_inventory dans listes, dépendances et résumés ; même fonction réelle que la carte correspondante.",,,,,non implémenté,
@@ -303,64 +303,64 @@ icon_cpu,hud,CPU,Commande/indicateur : capacité CPU et recettes de processeurs.
 icon_debt,hud,Dette,Commande/indicateur : dette et échéances de remboursement.,,,,,non implémenté,
 icon_delete,hud,Supprimer,Commande/indicateur : suppression/arrêt avec confirmation contextualisée.,,,,,non implémenté,
 icon_dependency,hud,Dépendance,Commande/indicateur : prérequis de technologie/composant.,,,,,non implémenté,
-icon_deploy,hud,Déployer,Commande/indicateur : mise en service et mini-jeu de déploiement.,,,,,non implémenté,
-icon_design,hud,Design,Commande/indicateur : phase de conception et capacité de design.,,,,,non implémenté,
+icon_deploy,hud,Déployer,Commande/indicateur : mise en service et mini-jeu de déploiement.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
+icon_design,hud,Design,Commande/indicateur : phase de conception et capacité de design.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_drag_grip,hud,Poignee,Commande/indicateur : réordonner les priorités de file.,,,,,non implémenté,
 icon_edit,hud,Modifier,"Commande/indicateur : modifier un nom, réglage ou configuration.",,,,,non implémenté,
-icon_energy,hud,Énergie,Commande/indicateur : énergie des employés ou capacité électrique avec libellé explicite.,,,,,non implémenté,
-icon_error,hud,Erreur,Commande/indicateur : erreur d’action/saisie et motif compréhensible.,,,,,non implémenté,
+icon_energy,hud,Énergie,Commande/indicateur : énergie des employés ou capacité électrique avec libellé explicite.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
+icon_error,hud,Erreur,Commande/indicateur : erreur d’action/saisie et motif compréhensible.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_expense,hud,Dépense,Commande/indicateur : charges mensuelles ou coût de lot.,,,,,non implémenté,
 icon_external,hud,Ouvrir à part,"Commande/indicateur : ressource externe ou lien de documentation explicite, jamais ouverture cachée.",,,,,non implémenté,
 icon_eye,hud,Afficher,Commande/indicateur : visiter un site/prévisualiser un objet.,,,,,non implémenté,
 icon_filter,hud,Filtres,"Commande/indicateur : filtrer le portefeuille, les stocks ou le catalogue.",,,,,non implémenté,
-icon_furnish,hud,Aménagement,Commande/indicateur : ouvrir le catalogue d’aménagement.,,,,,non implémenté,
+icon_furnish,hud,Aménagement,Commande/indicateur : ouvrir le catalogue d’aménagement.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_gpu,hud,GPU,Commande/indicateur : calcul GPU et cartes graphiques de produit.,,,,,non implémenté,
 icon_help,hud,Aide,Commande/indicateur : aide contextuelle et commandes consultables.,,,,,non implémenté,
-icon_home,hud,Logement,Commande/indicateur : retour à la scène principale/site courant.,,,,,non implémenté,
-icon_idea,hud,Idée,Commande/indicateur : nouvelle création et projet de recherche.,,,,,non implémenté,
+icon_home,hud,Logement,Commande/indicateur : retour à la scène principale/site courant.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
+icon_idea,hud,Idée,Commande/indicateur : nouvelle création et projet de recherche.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_income,hud,Recette,Commande/indicateur : recettes réellement encaissées.,,,,,non implémenté,
 icon_info,hud,Information,Commande/indicateur : explication facultative sans urgence.,,,,,non implémenté,
-icon_invoice,hud,Facture,Commande/indicateur : facture réelle avec échéance et état de paiement.,,,,,non implémenté,
-icon_link,hud,Liaison,"Commande/indicateur : connexion de graphe, allocation ou machine compatible.",,,,,non implémenté,
+icon_invoice,hud,Facture,Commande/indicateur : facture réelle avec échéance et état de paiement.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
+icon_link,hud,Liaison,"Commande/indicateur : connexion de graphe, allocation ou machine compatible.",Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_load,hud,Charger,Commande/indicateur : charger une campagne existante.,,,,,non implémenté,
 icon_loan,hud,Prêt,Commande/indicateur : détails d’un prêt existant et coût annoncé.,,,,,non implémenté,
-icon_lock,hud,Verrouiller,Commande/indicateur : élément verrouillé avec raison et conditions.,,,,,non implémenté,
-icon_mail,hud,Messages,"Commande/indicateur : support/réponses aux avis, notamment tâche automatique du boss libre.",,,,,non implémenté,
-icon_maintenance,hud,Maintenance,Commande/indicateur : part d’entretien et capacité de suivi des projets.,,,,,non implémenté,
+icon_lock,hud,Verrouiller,Commande/indicateur : élément verrouillé avec raison et conditions.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
+icon_mail,hud,Messages,"Commande/indicateur : support/réponses aux avis, notamment tâche automatique du boss libre.",Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
+icon_maintenance,hud,Maintenance,Commande/indicateur : part d’entretien et capacité de suivi des projets.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_manufacturing,hud,Fabrication,Commande/indicateur : ordre de fabrication et lignes industrielles.,,,,,non implémenté,
-icon_marketing,hud,Marketing,Commande/indicateur : budget/canal de visibilité du produit.,,,,,non implémenté,
+icon_marketing,hud,Marketing,Commande/indicateur : budget/canal de visibilité du produit.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_memory,hud,Mémoire,Commande/indicateur : capacité RAM et modules mémoire.,,,,,non implémenté,
 icon_minus,hud,Retirer,Commande/indicateur : réduire une valeur ou retirer un élément réversible.,,,,,non implémenté,
-icon_monitor,hud,Écran,Commande/indicateur : affichage et état d’un poste de travail.,,,,,non implémenté,
+icon_monitor,hud,Écran,Commande/indicateur : affichage et état d’un poste de travail.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_more,hud,Plus d’actions,Commande/indicateur : actions secondaires repliées d’une ligne/carte.,,,,,non implémenté,
 icon_move,hud,Déplacement,Commande/indicateur : déplacer un objet dans une pièce ou réorganiser un site.,,,,,non implémenté,
 icon_nav_menu,hud,Menu,Commande/indicateur : navigation compacte des panneaux secondaires.,,,,,non implémenté,
-icon_network,hud,Réseau,Commande/indicateur : débit et capacité réseau du site.,,,,,non implémenté,
+icon_network,hud,Réseau,Commande/indicateur : débit et capacité réseau du site.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_occupancy,hud,Occupation,Commande/indicateur : postes/capacité d’espace occupés.,,,,,non implémenté,
-icon_office,hud,Bureau,Commande/indicateur : catalogue et fiche d’un bureau loué.,,,,,non implémenté,
+icon_office,hud,Bureau,Commande/indicateur : catalogue et fiche d’un bureau loué.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_packaging,hud,Emballage,Commande/indicateur : emballage et disponibilité à l’expédition.,,,,,non implémenté,
 icon_pause,hud,Pause,Commande/indicateur : pause du temps et suspension d’une tâche.,,,,,non implémenté,
-icon_pc,hud,PC,Commande/indicateur : gammes PC et configuration de poste.,,,,,non implémenté,
+icon_pc,hud,PC,Commande/indicateur : gammes PC et configuration de poste.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_place,hud,Placement,Commande/indicateur : placer/valider un équipement dans la pièce.,,,,,non implémenté,
-icon_plus,hud,Ajouter,Commande/indicateur : ajouter un composant/ordre ou créer un projet.,,,,,non implémenté,
-icon_price,hud,Prix,Commande/indicateur : prix de vente et comparaison au public.,,,,,non implémenté,
+icon_plus,hud,Ajouter,Commande/indicateur : ajouter un composant/ordre ou créer un projet.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
+icon_price,hud,Prix,Commande/indicateur : prix de vente et comparaison au public.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_product,hud,Produit,Commande/indicateur : produit matériel commercialisé et ses versions.,,,,,non implémenté,
 icon_profit,hud,Bénéfice,Commande/indicateur : résultat réel et marge de produit.,,,,,non implémenté,
-icon_project,hud,Projet,Commande/indicateur : portefeuille et identité d’une création.,,,,,non implémenté,
+icon_project,hud,Projet,Commande/indicateur : portefeuille et identité d’une création.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_publish,hud,Publier,Commande/indicateur : lancer une version prête sur son marché.,,,,,non implémenté,
-icon_quality,hud,Qualité,Commande/indicateur : qualité mesurée d’un projet/lot/prototype.,,,,,non implémenté,
+icon_quality,hud,Qualité,Commande/indicateur : qualité mesurée d’un projet/lot/prototype.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_quantum,hud,Quantique,"Commande/indicateur : recherche, capacité et services quantiques spécialisés.",,,,,non implémenté,
 icon_rack,hud,Baie,"Commande/indicateur : racks, emplacements en U et compatibilité de modules.",,,,,non implémenté,
 icon_receivable,hud,Créance,"Commande/indicateur : recettes attendues des canaux avec versement différé, distinctes de la trésorerie.",,,,,non implémenté,
 icon_recruit,hud,Recruter,Commande/indicateur : recrutement avec impact financier.,,,,,non implémenté,
 icon_refresh,hud,Actualiser,Commande/indicateur : nouvelle estimation/rafraîchissement d’une liste autorisée.,,,,,non implémenté,
-icon_retention,hud,Rétention,Commande/indicateur : rétention mesurée du public.,,,,,non implémenté,
-icon_risk,hud,Risque,Commande/indicateur : marge de risque financier/capacité expliquée.,,,,,non implémenté,
+icon_retention,hud,Rétention,Commande/indicateur : rétention mesurée du public.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
+icon_risk,hud,Risque,Commande/indicateur : marge de risque financier/capacité expliquée.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_rotate,hud,Rotation,"Commande/indicateur : rotation d’objet vers une orientation du manifeste, jamais rotation de caméra.",,,,,non implémenté,
 icon_salary,hud,Salaire,Commande/indicateur : salaire récurrent et augmentation simple.,,,,,non implémenté,
 icon_save,hud,Sauvegarder,Commande/indicateur : sauvegarder une campagne avec confirmation de résultat.,,,,,non implémenté,
 icon_search,hud,Recherche,Commande/indicateur : recherche dans les listes et catalogues.,,,,,non implémenté,
-icon_security,hud,Sécurité,Commande/indicateur : niveau de confiance/sécurité du produit ou site.,,,,,non implémenté,
+icon_security,hud,Sécurité,Commande/indicateur : niveau de confiance/sécurité du produit ou site.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_sell,hud,Revente,Commande/indicateur : revendre un équipement ou ouvrir un canal de vente.,,,,,non implémenté,
 icon_server,hud,Serveur,Commande/indicateur : ressource serveur et hébergement de produits.,,,,,non implémenté,
 icon_settings,hud,Réglages,Commande/indicateur : réglages du jeu et préférences du terminal.,,,,,non implémenté,
@@ -368,26 +368,26 @@ icon_sort,hud,Trier,Commande/indicateur : tri d’une liste et ordre des priorit
 icon_speed_1,hud,Vitesse 1,Commande/indicateur : premier niveau de vitesse de simulation.,,,,,non implémenté,
 icon_speed_2,hud,Vitesse 2,Commande/indicateur : niveau intermédiaire de vitesse.,,,,,non implémenté,
 icon_speed_3,hud,Vitesse 3,Commande/indicateur : niveau rapide de vitesse.,,,,,non implémenté,
-icon_star,hud,Favori,Commande/indicateur : favori de catalogue/projet ou note utilisateur selon le libellé.,,,,,non implémenté,
+icon_star,hud,Favori,Commande/indicateur : favori de catalogue/projet ou note utilisateur selon le libellé.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_statistics,hud,Statistiques,Commande/indicateur : détails chiffrés facultatifs de l’activité.,,,,,non implémenté,
 icon_stock,hud,Stock,"Commande/indicateur : stock disponible, réservé, en production et transit.",,,,,non implémenté,
 icon_storage,hud,Stockage,Commande/indicateur : capacité de stockage informatique ou physique clairement distinguée.,,,,,non implémenté,
-icon_subscription,hud,Abonnement,Commande/indicateur : revenu récurrent des applications compatibles.,,,,,non implémenté,
-icon_success,hud,Succès,Commande/indicateur : action ou jalon réellement réussi.,,,,,non implémenté,
-icon_support,hud,Support,Commande/indicateur : charge et résolution du suivi utilisateur.,,,,,non implémenté,
+icon_subscription,hud,Abonnement,Commande/indicateur : revenu récurrent des applications compatibles.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
+icon_success,hud,Succès,Commande/indicateur : action ou jalon réellement réussi.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
+icon_support,hud,Support,Commande/indicateur : charge et résolution du suivi utilisateur.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_team,hud,Équipe,Commande/indicateur : équipe et capacités disponibles.,,,,,non implémenté,
-icon_terminal,hud,Terminal,Commande/indicateur : ouvrir le travail actif du boss.,,,,,non implémenté,
-icon_test,hud,Test,Commande/indicateur : phase de test/validation d’un projet.,,,,,non implémenté,
+icon_terminal,hud,Terminal,Commande/indicateur : ouvrir le travail actif du boss.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
+icon_test,hud,Test,Commande/indicateur : phase de test/validation d’un projet.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_test_station,hud,Contrôle,Commande/indicateur : banc de test matériel/XR/mobile.,,,,,non implémenté,
-icon_time,hud,Temps,Commande/indicateur : durée et estimation de travail avec hypothèses.,,,,,non implémenté,
+icon_time,hud,Temps,Commande/indicateur : durée et estimation de travail avec hypothèses.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_training,hud,Formation,Commande/indicateur : formation avec coût et absence annoncés.,,,,,non implémenté,
-icon_trophy,hud,Trophée,Commande/indicateur : jalons obtenus et récompenses visuelles persistantes.,,,,,non implémenté,
+icon_trophy,hud,Trophée,Commande/indicateur : jalons obtenus et récompenses visuelles persistantes.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_unavailable,hud,Indisponible,Commande/indicateur : indisponibilité avec cause/action possible.,,,,,non implémenté,
 icon_unlock,hud,Déverrouiller,Commande/indicateur : déblocage d’une capacité par l’arbre.,,,,,non implémenté,
-icon_user,hud,Utilisateur,Commande/indicateur : fiche d’une personne ou individu agrégé du public.,,,,,non implémenté,
-icon_users,hud,Utilisateurs,Commande/indicateur : audience/effectif selon le libellé de la vue.,,,,,non implémenté,
+icon_user,hud,Utilisateur,Commande/indicateur : fiche d’une personne ou individu agrégé du public.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
+icon_users,hud,Utilisateurs,Commande/indicateur : audience/effectif selon le libellé de la vue.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 icon_version,hud,Version,Commande/indicateur : version publiée et mise à jour en préparation.,,,,,non implémenté,
-icon_warning,hud,Avertissement,Commande/indicateur : problème récupérable nécessitant une décision.,,,,,non implémenté,
+icon_warning,hud,Avertissement,Commande/indicateur : problème récupérable nécessitant une décision.,Interface (icônes des menus et bulles de la scène),UI/Pixel/Icons.cs;UI/Scene/SceneCanvas.cs,dès le départ,pictogramme d'une action ou d'une activité,partiel,vérifié sur les captures du vrai jeu ; pas de test automatisé
 aoi_inspection,industry_future,Inspection optique automatique,"Contrôle optique d'une série, réduit les défauts qui atteignent l'étape suivante.",,,,,non implémenté,
 assembly_cell_robotic,industry_future,Cellule d'assemblage robotisee,Assemblage automatisé plus rapide sur recettes compatibles ; exige capacité et supervision.,,,,,non implémenté,
 assembly_station_manual,industry_future,Poste d'assemblage manuel,Assemblage par opérateur de sous-ensembles puis produits matériels.,,,,,non implémenté,
@@ -527,18 +527,18 @@ ups_floor,servers,Onduleur au sol,"Capacité de continuité électrique d'une zo
 term_cursor_bar,terminal,Curseur barre (saisie),Curseur de saisie normal dans le terminal du boss.,,,,,non implémenté,
 term_cursor_block,terminal,Curseur bloc (cellule 6x12),Curseur en mode cellule/navigation de l'historique ou préférence d'affichage documentée.,,,,,non implémenté,
 term_cursor_underline,terminal,Curseur souligne,Alternative de curseur sélectionnable dans les préférences du terminal.,,,,,non implémenté,
-term_frame,terminal,Terminal : cadre + barre de titre,"Cadre du terminal complet du boss, contenant une vraie saisie de jeu.",,,,,non implémenté,
+term_frame,terminal,Terminal : cadre + barre de titre,"Cadre du terminal complet du boss, contenant une vraie saisie de jeu.",Interface,UI/Pixel/PixelPanel.cs;UI/Hud/TerminalView.cs;UI/App.axaml,dès le départ,cadre du terminal,partiel,vérifié sur les captures du vrai jeu (01 à 25) ; pas de test automatisé d'interface
 term_input,terminal,Champ de commande,"Champ de saisie du mot courant, focus et validation fonctionnels.",,,,,non implémenté,
 term_mark_error,terminal,Marqueur de ligne : Erreur,"Faute de saisie locale ou action invalide, sans exécution de commande réelle.",,,,,non implémenté,
-term_mark_info,terminal,Marqueur de ligne : Information,"Information de contexte, rendement et consignes courtes.",,,,,non implémenté,
+term_mark_info,terminal,Marqueur de ligne : Information,"Information de contexte, rendement et consignes courtes.",Interface,UI/Pixel/PixelPanel.cs;UI/Hud/TerminalView.cs;UI/App.axaml,dès le départ,statistiques de la session,partiel,vérifié sur les captures du vrai jeu (01 à 25) ; pas de test automatisé d'interface
 term_mark_ok,terminal,Marqueur de ligne : Succès,Validation réussie d'un mot ou d'une étape réellement effectuée.,,,,,non implémenté,
-term_mark_prompt,terminal,Marqueur de ligne : Invite,Ligne du mot attendu / invite de travail simulée.,,,,,non implémenté,
+term_mark_prompt,terminal,Marqueur de ligne : Invite,Ligne du mot attendu / invite de travail simulée.,Interface,UI/Pixel/PixelPanel.cs;UI/Hud/TerminalView.cs;UI/App.axaml,dès le départ,étape en cours,partiel,vérifié sur les captures du vrai jeu (01 à 25) ; pas de test automatisé d'interface
 term_mark_running,terminal,Marqueur de ligne : En cours,Tâche ou phase de session active et encore en cours.,,,,,non implémenté,
 term_mark_warning,terminal,Marqueur de ligne : Avertissement,Contrainte de tâche/capacité ou changement de contexte nécessitant attention.,,,,,non implémenté,
 term_progress_cap_left,terminal,Segment de progression (crochet gauche),Extrémités de la barre segmentée de travail/calibration.,,,,,non implémenté,
 term_progress_cap_right,terminal,Segment de progression (crochet droit),Extrémités de la barre segmentée de travail/calibration.,,,,,non implémenté,
-term_progress_empty,terminal,Segment de progression (vide),Cellule vide de la barre de progression de travail actif.,,,,,non implémenté,
-term_progress_full,terminal,Segment de progression (plein),"Cellule pleine de progression, bornée au total de la tâche.",,,,,non implémenté,
+term_progress_empty,terminal,Segment de progression (vide),Cellule vide de la barre de progression de travail actif.,Interface,UI/Pixel/PixelPanel.cs;UI/Hud/TerminalView.cs;UI/App.axaml,dès le départ,mots restants,partiel,vérifié sur les captures du vrai jeu (01 à 25) ; pas de test automatisé d'interface
+term_progress_full,terminal,Segment de progression (plein),"Cellule pleine de progression, bornée au total de la tâche.",Interface,UI/Pixel/PixelPanel.cs;UI/Hud/TerminalView.cs;UI/App.axaml,dès le départ,mots validés de la session,partiel,vérifié sur les captures du vrai jeu (01 à 25) ; pas de test automatisé d'interface
 term_progress_half,terminal,Segment de progression (moitie),Cellule partiellement remplie représentant une fraction réelle de progression.,,,,,non implémenté,
 term_scroll_thumb,terminal,Défilement sombre (curseur),Poignée de défilement de l'historique du terminal.,,,,,non implémenté,
 term_scroll_track,terminal,Défilement sombre (piste),"Piste de l'historique de session/supervision, qui devient défilant quand nécessaire.",,,,,non implémenté,
@@ -561,24 +561,24 @@ vfx_tile_invalid,vfx,Placement invalide,Placement/connexion refusé et motif aff
 vfx_tile_selected,vfx,Case selectionnee,Case/zone sélectionnée dans aménagement ou flux industriel.,,,,,non implémenté,
 vfx_tile_valid,vfx,Placement valide,"Placement/connexion valide, accompagné d'une indication non uniquement colorée.",,,,,non implémenté,
 vfx_work,vfx,Travail en cours (engrenage),Indicateur discret de travail d'un poste/machine actif.,,,,,non implémenté,
-pattern_acoustic,wall_patterns,Panneaux acoustiques,Traitement acoustique mural ; contribution plafonnée à la concentration/qualité du studio.,,,,,non implémenté,
-pattern_brick,wall_patterns,Brique interieure,"Habillage d'atelier/startup ; identité visuelle et ambiance partagée, sans multiplicateur unique.",,,,,non implémenté,
+pattern_acoustic,wall_patterns,Panneaux acoustiques,Traitement acoustique mural ; contribution plafonnée à la concentration/qualité du studio.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
+pattern_brick,wall_patterns,Brique interieure,"Habillage d'atelier/startup ; identité visuelle et ambiance partagée, sans multiplicateur unique.",Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
 pattern_concrete,wall_patterns,Beton banche,Habillage industriel/technique ; lecture des zones et personnalisation.,,,,,non implémenté,
-pattern_paint,wall_patterns,Peinture unie,Habillage mural recolorable du local ; personnalisation de son identité.,,,,,non implémenté,
+pattern_paint,wall_patterns,Peinture unie,Habillage mural recolorable du local ; personnalisation de son identité.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
 pattern_stripes,wall_patterns,Bandes verticales,Habillage signalétique de zone ; identification des espaces et ambiance.,,,,,non implémenté,
-pattern_two_tone,wall_patterns,Deux tons + cimaise,Habillage à deux tons ; personnalisation des locaux et repères de zone.,,,,,non implémenté,
-pattern_wallpaper,wall_patterns,Papier peint discret,Habillage domestique de la chambre et des espaces détente ; ambiance.,,,,,non implémenté,
+pattern_two_tone,wall_patterns,Deux tons + cimaise,Habillage à deux tons ; personnalisation des locaux et repères de zone.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
+pattern_wallpaper,wall_patterns,Papier peint discret,Habillage domestique de la chambre et des espaces détente ; ambiance.,Rendu isométrique des locaux,UI/Iso/RoomRenderer.cs,avec le local,"structure de la pièce (sol, murs, motifs)",partiel,"rendu vérifié sur les captures 02, 05, 12 du vrai jeu ; pas de test automatisé"
 pattern_wood_panels,wall_patterns,Lambris bois,Habillage chaleureux de réunion/détente ; contribution plafonnée à l'ambiance.,,,,,non implémenté,
 room_advanced_lab,room,Laboratoire avancé (zone de calcul quantique),"Recherches avancées et installation quantique, contraintes froid/calcul/énergie.",,,,,non implémenté,
-room_bedroom_start,room,Chambre de départ,"Départ et identité domestique du fondateur, premiers projets/terminal et petite équipe.",,,,,non implémenté,
+room_bedroom_start,room,Chambre de départ,"Départ et identité domestique du fondateur, premiers projets/terminal et petite équipe.",Locaux à louer (un site à la fois au lot 2),Core/space/RealEstate.cs;Core/space/Pack.cs,location,"taille, entrée, objets livrés, postes",validé,Tests/space/AssetManifestTest.cs : TheStartingBedroomGivesTheFounderACompleteWorkstation
 room_datacenter,room,Datacenter,"Capacités d’hébergement, GPU/stockage et services commerciaux à grande échelle.",,,,,non implémenté,
 room_factory_hall,room,Hall de fabrication et d'assemblage (étape future),"Lignes connectées de fabrication, buffers, emballage et stockage.",,,,,non implémenté,
 room_hq_floor,room,Plateau de siège,"Siège de grande équipe et coordination des sites, sans créer une seconde société.",,,,,non implémenté,
 room_hw_workshop,room,Atelier de prototypage et de test matériel,"Prototypes, validation et assemblage de petites séries matérielles.",,,,,non implémenté,
-room_office_medium,room,Bureau moyen,Bureau d’équipe intermédiaire avec fonctions de confort/coordination.,,,,,non implémenté,
-room_open_space,room,Grand open space,"Plateau d’équipe important, arbitrage densité/confort et spécialisation.",,,,,non implémenté,
+room_office_medium,room,Bureau moyen,Bureau d’équipe intermédiaire avec fonctions de confort/coordination.,Locaux à louer (un site à la fois au lot 2),Core/space/RealEstate.cs;Core/space/Pack.cs,location,"taille, entrée, objets livrés, postes",validé,Tests/space/AssetManifestTest.cs : EveryRentalPlanBecomesAValidPremises
+room_open_space,room,Grand open space,"Plateau d’équipe important, arbitrage densité/confort et spécialisation.",Locaux à louer (un site à la fois au lot 2),Core/space/RealEstate.cs;Core/space/Pack.cs,location,"taille, entrée, objets livrés, postes",validé,Tests/space/AssetManifestTest.cs : EveryRentalPlanBecomesAValidPremises
 room_server_compact,room,Salle serveur compacte,Première installation de serveur/rack et supervision locale.,,,,,non implémenté,
-room_startup_small,room,Petit bureau / atelier de startup,"Premier local supplémentaire de petite équipe/atelier léger, coût accessible.",,,,,non implémenté,
+room_startup_small,room,Petit bureau / atelier de startup,"Premier local supplémentaire de petite équipe/atelier léger, coût accessible.",Locaux à louer (un site à la fois au lot 2),Core/space/RealEstate.cs;Core/space/Pack.cs,location,"taille, entrée, objets livrés, postes",validé,Tests/space/LayoutTest.cs : MovingKeepsOwnedEquipmentLeavesWhatCameWithThePlaceAndChargesTheDepositOnce
 module_kitchenette,room_module,,Ensemble de services de repas/hydratation avec capacité de confort définie.,,,,,non implémenté,
 module_lounge,room_module,,Capacité de détente/récupération et ambiance.,,,,,non implémenté,
 module_meeting_room,room_module,,"Capacité de formation/coordination, dont intersites si équipée.",,,,,non implémenté,

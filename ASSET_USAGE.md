@@ -1,5 +1,25 @@
 # Utilisation des assets
 
+**Depuis le lot 2 de la V1, tout ce qui se voit vient du pack original `assets/StartupRushOriginalAssets`** (v1.0.0) :
+pièces, mobilier, informatique, personnages, HUD « Papier », icônes, terminal et polices. Le registre ID par ID est
+[`docs/asset_usage.csv`](docs/asset_usage.csv) (état : validé, partiel, non implémenté) ; l'avancement est dans
+[`docs/V1_ETAT.md`](docs/V1_ETAT.md).
+
+- **Moteur** : `Core/Core.csproj` embarque `manifest.json` et `rooms/*.json` ; `Core/space/Pack.cs` en lit les emprises,
+  accès, sockets et plans.
+- **Interface** : `UI/UI.csproj` embarque `assets/**/*.png`, `masks/**/*.png`, le manifeste et les plans ; `UI/Iso/PackImages.cs`
+  décode chaque PNG une fois, recolore par masque et garde le résultat en cache ; `UI/Iso/RoomRenderer.cs` assemble les pièces
+  comme le compositeur de référence du pack (projection 2:1, tri topologique, ombres communes à 30 %, couches, sockets,
+  personnages en couches). Les polices StartupRush Pixel et Mono sont des ressources Avalonia.
+- **Aucun chemin de développement** dans le jeu livré : tout est dans l'exécutable.
+- **Sons et musiques** : inchangés (Juhani Junkala, CC0), produits par `tools/build_assets.py`. La partie images et polices de
+  ce script ne sert plus : ses sorties (anciens sprites, cadres Kenney, polices Press Start 2P, VT323, Pixelify Sans) ne sont
+  plus livrées.
+
+---
+
+## Version précédente (tycoon 2.1), pour mémoire
+
 Ce document dit ce que le jeu utilise vraiment dans le dossier `assets/` (les packs originaux, jamais modifiés), comment ces fichiers arrivent dans le jeu, et ce qui est dessiné à la main. Le placement de chaque meuble (emprise, ancrage, interactions) est dans `FURNITURE_MANIFEST.md`.
 
 - **Originaux** : `assets/` à la racine, non versionné dans git (176 Mo). Les licences et `SOURCE.json` de chaque pack y restent.

@@ -18,7 +18,8 @@ Boucle : **créer une idée → choisir ses composants → l'équipe les dévelo
 |---|---|---|
 | Argent ⚙️ | 18 000 CHF, découvert de 2 000 | Sans prestations, il faut de quoi sortir un premier projet et voir ses résultats. |
 | Dépenses fixes ⚙️ | 2 160 CHF/mois (ta rémunération de 2 000, logement compris, plus 160 de services) | Environ 8 mois d'autonomie sans aucun revenu. |
-| Premier projet | 3 composants de départ, environ 3 semaines pour le fondateur seul | Mesuré : 21 jours dans le parcours de capture, 23 jours (médiane) dans le bilan. |
+| Lieu | Ta chambre (plan `room_bedroom_start` du pack) : lit, rangements, bureau compact, vieille tour, écran simple | 3 bureaux au plus. Le lit donne +10 d'énergie la nuit au fondateur. |
+| Premier projet | 3 composants de départ, environ 380 à 450 mots au terminal pour le fondateur seul | Mesuré : 445 mots (4 jours de jeu) dans le parcours de capture, sortie au jour 22 (médiane) dans le bilan. |
 | Points de développement | 1 | Un premier choix dans l'arbre tout de suite. |
 
 ## 3. Projets
@@ -49,11 +50,33 @@ Chaque type propose 2 ou 3 publics (taille, prix habituel, sensibilité au prix)
 - Après la sortie, chaque amélioration terminée est une **mise à jour** : la version augmente, des curieux reviennent, et une notification regroupée est envoyée.
 - Fermer un projet arrête ses coûts et ses revenus.
 
-## 4. Automatismes
+## 4. Le fondateur et son terminal
+
+✅ Le fondateur représente le joueur : **il ne développe plus tout seul**. Présent à son poste, il répond seulement au support
+des projets en ligne. Son travail productif passe par le terminal (bouton **Travailler**, touche Entrée).
+
+| Règle | Valeur ⚙️ (`Tuning.Terminal`) |
+|---|---|
+| Un mot validé | 0,25 point × compétence × poste × vitesse × énergie (borné à ce qui reste de la tâche) |
+| Vitesse de frappe | ×0,85 en dessous de 1,5 caractère/s, ×1,2 au-dessus de 6,5 ; entre les deux, linéaire |
+| Session | 24 mots (20 à 45 secondes), on en enchaîne une autre aussitôt ; arrêt possible à tout instant, rien de validé ne se perd |
+| Faute | Rien ne se perd ni ne se gagne ; le mot reste affiché |
+| Énergie | −0,35 par mot ; sous 40, le rendement baisse |
+| Horaires | De 7 h à 23 h, ni en congé ni en formation, avec un poste complet |
+| File vide | Sur un projet en ligne, les mots corrigent les bugs (borné à ce qui reste à corriger) |
+
+Les mots sont courts, sans accent, tirés d'un hasard séparé de la simulation (le jeu reste reproductible avec sa graine).
+Le terminal est entièrement simulé : rien n'est exécuté sur l'ordinateur du joueur.
+
+Pendant la saisie, l'entreprise tourne à vitesse normale ; à la fermeture, la vitesse et la pause d'avant reviennent. Un
+réglage d'accessibilité met l'entreprise en pause pendant la saisie, sans changer le rendement d'un mot. Aucun raccourci
+n'agit pendant la frappe ; Espace ou Entrée valident, sans répétition si on maintient la touche.
+
+## 5. Automatismes
 
 | Ce qui est automatique | Règle | Ce que le joueur règle |
 |---|---|---|
-| Qui travaille sur quoi | En « Auto » (par défaut), chacun travaille sur le **premier projet du portefeuille qui a du travail en file**, sinon sur l'entretien du premier projet en ligne. | L'ordre du portefeuille (◀ ▶), ou fixer une personne sur un projet. |
+| Qui travaille sur quoi | En « Auto » (par défaut), chaque **employé** travaille sur le **premier projet du portefeuille qui a du travail en file**, sinon sur l'entretien du premier projet en ligne. Le fondateur, lui, passe par le terminal. | L'ordre du portefeuille (◀ ▶), ou fixer une personne sur un projet. |
 | Enchaînement des tâches | Design, puis développement, puis tests, par composant, dans l'ordre de la file, de préférence dans la spécialité de chacun. Tout le monde peut tout faire (plus lentement hors de sa spécialité) : un projet n'est jamais bloqué faute d'une compétence. | Rien. |
 | Support et maintenance | Sur un projet en ligne, une part fixe du temps de son équipe y va : ⚙️ Peu 10 %, Normal 25 %, Prioritaire 45 %. Moitié support, moitié corrections quand les deux sont nécessaires. Quand il n'y a rien à développer, tout le temps y passe. | Le niveau d'entretien. |
 | Serveurs | Par défaut, la plus petite offre débloquée qui tient la charge (75 % au plus), **sans dépasser un plafond mensuel visible** (⚙️ 400 CHF par défaut). Une alerte prévient si le plafond empêche de suivre. | Le plafond, ou le mode manuel. |
@@ -61,7 +84,7 @@ Chaque type propose 2 ou 3 publics (taille, prix habituel, sensibilité au prix)
 
 L'automatisation **ne recrute pas, ne loue pas, n'emprunte pas et n'augmente aucun budget** : ces décisions restent au joueur.
 
-## 5. Avis des utilisateurs
+## 6. Avis des utilisateurs
 
 Les avis viennent des **facteurs réels de la simulation**, calculés sur la dernière semaine :
 
@@ -77,7 +100,7 @@ Les avis viennent des **facteurs réels de la simulation**, calculés sur la der
 
 Au plus 3 tendances négatives et 2 positives, avec la part des avis concernés. Quelques avis datés s'ajoutent chaque semaine (24 gardés au plus). Ce ne sont pas des commandes : on ne doit rien à personne. La note sur 5 vient de la satisfaction de la dernière semaine.
 
-## 6. Arbre de développement
+## 7. Arbre de développement
 
 Une seule monnaie : les **points de développement**. Ils ne servent qu'à la campagne en cours et ne se transmettent pas d'une campagne à l'autre.
 
@@ -100,7 +123,7 @@ Une seule monnaie : les **points de développement**. Ils ne servent qu'à la ca
 
 Chaque nœud a un effet réel, testé ou visible dans la simulation. Aucune branche n'en exclut une autre et rien n'est irréversible. Les outils de base (application, jeu, composants niveaux 1 et 2, réseaux sociaux, hébergement mutualisé et Cloud S) sont disponibles dès le départ.
 
-## 7. Équipe
+## 8. Équipe
 
 - **Recrutement** : quelques profils par semaine (spécialité, niveau, coût mensuel). La confirmation affiche le coût et l'effet sur le budget mensuel.
 - **Affectation** : Auto ou un projet. Une personne ne travaille que sur un projet à la fois (testé).
@@ -111,26 +134,26 @@ Chaque nœud a un effet réel, testé ou visible dans la simulation. Aucune bran
 - **Moral** : conditions de travail, salaire par rapport à la référence, impayés. Un moral très bas pendant 10 jours mène à une démission annoncée 10 jours à l'avance (annulée si le moral remonte). Un salaire impayé pendant 14 jours entraîne un départ.
 - **Coordination** ⚙️ : au-delà de 3 personnes sur un projet (6 avec un responsable, +2 avec Grandes équipes, +1 par tableau blanc), chaque personne de trop coûte 12 % d'efficacité.
 
-## 8. Argent
+## 9. Argent
 
 - **Écran Finances** : argent disponible, solde du mois (revenus moins dépenses), principales dépenses et sources de revenus en barres, nombre de jours d'autonomie. Factures, tableaux mois par mois et financements sont dans les détails, repliés.
 - Avant chaque décision qui coûte (recrutement, achat, déménagement, budget) : **coût immédiat et effet mensuel** affichés.
 - **Leviers en cas de difficulté** : baisser le marketing, fermer un projet déficitaire, revendre ou ranger du matériel, réduire l'équipe, déménager plus petit. Aussi un prêt bancaire, limité et sous conditions, un investisseur (une seule levée) et un plan de redressement (un tous les deux ans).
 - **Faillite** ✅ : un solde légèrement négatif ne fait rien. Une facture impayée ouvre la procédure : **impayés** → **mise en demeure** après ⚙️ 20 jours (et 500 CHF au moins) → **faillite** ⚙️ 30 jours plus tard si rien n'est payé. Un compte à rebours est affiché, les alertes sont regroupées (pas de déluge de messages) et la sauvegarde n'est jamais effacée.
 
-## 9. Notifications
+## 10. Notifications
 
 - Trois catégories : **à traiter**, **bonnes nouvelles**, **infos**.
 - Un problème qui se répète est regroupé (« ×3 »). Une fois réglé, il passe en « réglé » et quitte la liste à traiter (testé).
 - Seuls les bonnes nouvelles et les nouveaux problèmes apparaissent en bulles. Les infos restent dans le journal.
 
-## 10. Découverte
+## 11. Découverte
 
 - Pas de tutoriel. Une phrase d'aide apparaît à la première ouverture des Projets, de l'atelier, de l'équipe et de l'arbre, avec un bouton « Compris ».
 - Un portefeuille vide affiche une grande carte « Créer ton premier projet ».
 - Un nœud débloqué fait apparaître sa nouveauté à l'endroit naturel : type dans « Nouveau projet », composant dans l'atelier, canal dans Réglages, offre dans Serveurs.
 
-## 11. Marché (inchangé dans son principe)
+## 12. Marché (inchangé dans son principe)
 
 Le marché suit un modèle en un pas par jour :
 - l'attrait (couverture des besoins × bugs × performances) détermine la part face aux concurrents ;

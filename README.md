@@ -1,6 +1,6 @@
 # Startup Rush
 
-**Un tycoon de la tech en pixel art, pour Windows.** Tu démarres dans ton appartement de Prilly avec tes économies et un vieux portable. Tu crées tes propres applications et tes jeux, tu choisis leurs composants, ton équipe les développe toute seule, tu lis les avis de tes utilisateurs et tu fais grandir ton empire. La partie est longue et sauvegardée. Elle continue tant que l'argent suit.
+**Un tycoon de la tech en pixel art isométrique, pour Windows.** Tu démarres dans ta chambre de Prilly avec tes économies et une vieille tour. Tu crées tes propres applications et tes jeux, tu choisis leurs composants, tu y travailles toi-même au terminal, puis ton équipe les développe toute seule, tu lis les avis de tes utilisateurs et tu fais grandir ton empire. La partie est longue et sauvegardée. Elle continue tant que l'argent suit.
 
 ![Le portefeuille de projets](docs/captures/13_portefeuille.png)
 
@@ -14,7 +14,7 @@ Au lancement : **Continuer**, **Charger**, **Nouvelle partie**, **Réglages**, *
 ## En deux minutes
 
 1. **Projets → Créer ton premier projet** : choisis Application ou Jeu, puis un public. C'est tout.
-2. Ton équipe (au début, toi) développe les composants toute seule. Après environ trois semaines de jeu : **Lancer !**
+2. Au début, c'est toi qui travailles : **Travailler** (Entrée) ouvre le terminal, tu tapes les mots qui s'affichent, chacun fait avancer la tâche en cours. Environ 400 mots plus tard : **Lancer !** Ensuite, tes employés développent tout seuls.
 3. Les utilisateurs arrivent. L'onglet **Avis** dit ce qui leur plaît et ce qui manque ; **Améliorer** t'emmène au bon composant.
 4. Les succès rapportent des **points de développement** : de nouveaux types de projets, des serveurs plus gros, des canaux marketing, une équipe plus efficace.
 5. Surveille l'argent en haut à droite. Embaucher, déménager ou dépenser en marketing trop tôt peut te mettre en faillite.
@@ -34,6 +34,8 @@ Les règles complètes sont dans [DESIGN_SIMULATION.md](DESIGN_SIMULATION.md).
 | Touche ou geste | Action |
 |---|---|
 | Clic gauche | Sélectionner une personne ou un objet ; poser un meuble en aménagement |
+| Entrée | Travailler au terminal (Espace ou Entrée y valident un mot) |
+| R | Tourner le meuble à poser ou le meuble sélectionné |
 | Clic droit | Annuler la pose ; maintenu : déplacer la vue |
 | Molette, + / − | Zoom |
 | Flèches ou WASD | Déplacer la vue (Origine : recentrer) |
@@ -71,5 +73,5 @@ Documents : [DESIGN_SIMULATION.md](DESIGN_SIMULATION.md), [SAVES.md](SAVES.md), 
 - **Testé seulement sur Windows 11 x64**, avec une mise à l'échelle de 100 %.
 - **Équilibrage mesuré par des bots** (voir VALIDATION.md). Le plaisir de jeu n'a pas été validé par des humains.
 - **Sons non écoutés** : ils se chargent et se déclenchent (vérifié), mais je ne les ai pas validés à l'oreille.
-- **Nouveaux assets** : non intégrés. Ils sont produits dans une autre session ; le jeu utilise encore les packs Kenney et Pixel Office.
-- Pas de rotation des meubles. Les domaines matériel et fabrication ne sont pas simulés.
+- **V1 en cours** (voir [docs/V1_ETAT.md](docs/V1_ETAT.md)) : lots 1 et 2 faits (pack original, vue isométrique, HUD « Papier », terminal du fondateur). Pas encore de mini-jeux ni de délégation, un seul site, pas de matériel, d'usine, de datacenter, d'IA ni de recherche.
+- La police pixel est un peu floue à certaines tailles de texte.

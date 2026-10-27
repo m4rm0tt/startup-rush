@@ -112,6 +112,42 @@ Les objets muraux se posent sur les murs du fond (un mur plein ; les stores sur 
 luminaire au plafond ; ni l'un ni l'autre ne prend de case au sol. Le trophée (premier lancement) et la plaque (10 000 CHF par
 mois) arrivent dans les cartons et ne se revendent pas.
 
+## 4 ter. Sites, infrastructure et cloud
+
+✅ Une seule entreprise, plusieurs sites. Le premier est le siège. On ouvre un site de plus (nœud « Plusieurs sites »), on
+déménage le site affiché, on ferme un site sans rien perdre (cartons, garantie rendue, personnes concernées nommées). Regarder un
+site ne change rien : chacun travaille là où est son poste.
+
+| Local ⚙️ | Loyer / mois | Adresses | Électricité, froid, réseau de base | Déblocage |
+|---|---|---|---|---|
+| Ta chambre | compris | Prilly | 3 kW, 0,6 kW, 50 | — |
+| Petit bureau | 2 300 | Flon, Ouchy, Morges | 8, 1,5, 50 | — |
+| Bureau d'équipe | 5 400 | Malley, Ecublens | 15, 2, 100 | — |
+| Grand open space | 12 500 | Renens, Nyon | 30, 3, 200 | — |
+| Siège (60 postes) | 26 000 | Lausanne-Gare | 60, 5, 400 | Plusieurs sites |
+| Salle serveur | 1 800 | Crissier, Bussigny | 12 (+30 armoire), 0 (+24 climatiseur), 300 (+1 000 fibre) | Salle serveur |
+| Datacenter | 16 000 | Gland, Yverdon | 40 (+60), 0 (+48 et rangées), 2 000 | Datacenter |
+
+Infrastructure ⚙️ (`Core/space/Furniture.cs`, `Core/space/Infrastructure.cs`) :
+- Une baie (8U ou 20U) reçoit des modules en U ; il lui faut un **switch**. Serveur 1U : 16 unités d'hébergement ; calcul 2U :
+  40 de calcul et 8 d'hébergement ; nœuds de calcul : 64 ; GPU 4U : 10 ; stockage 2U : 48 To ; tiroir de disques : +96 To avec
+  un stockage 2U dans la même baie. Serveur tour : 8 unités sans baie.
+- Ce qu'un site fournit est limité par l'**électricité** (puissance distribuable), le **froid** (chaleur évacuée ; sinon au
+  plus 30 %), le **réseau** (2 de débit par unité d'hébergement) et le **câblage** (−10 % sans brassage ni passe-câbles :
+  2 points par baie). Chaque limite est affichée avec sa raison.
+- **Incidents** : 3 % par jour pour un site équipé, réduits par les onduleurs (jusqu'à −90 %) et la supervision (÷2) ; un
+  incident coupe la moitié de la capacité du site pour la journée.
+- **Électricité** : 0,25 CHF/kWh, facturée avec le mois (catégorie « Électricité et réseau »), plus l'abonnement fibre.
+
+✅ Ordre d'usage : tes projets hébergés en interne d'abord (ordre du portefeuille, 25 % de marge), une réserve réglable, puis les
+offres cloud. Une même unité n'est jamais promise deux fois. Un projet en interne déborde chez l'hébergeur pour ce qui ne tient
+pas, sans dépasser son plafond.
+
+Offres cloud ⚙️ (`Core/campaign/Campaign.Cloud.cs`) : hébergement (14 CHF par unité et par mois), stockage (9 CHF/To),
+calcul (9), GPU (120). La demande va vers une cible : taille du marché × renommée × prix (élasticité 1,6) × fiabilité (−6 % par
+jour de coupure sur 30 jours) × sécurité (+25 % avec une cage complète) ; une offre saturée perd des clients. Chaque offre
+explique ce qui la fait monter ou baisser (« trop cher », « plus de place », « des coupures », « fiable »).
+
 ## 5. Automatismes
 
 | Ce qui est automatique | Règle | Ce que le joueur règle |
@@ -160,6 +196,7 @@ Une seule monnaie : les **points de développement**. Ils ne servent qu'à la ca
 | Infrastructure | Cloud M (1), Optimisation −15 % de charge (1), Cloud L et cluster (2) |
 | Commercial | Moteurs de recherche (1), Lancements événementiels (1), Salons et presse (2), Fidélisation −15 % d'abandon (2) |
 | Innovation | Laboratoire qualité +0,05 (2), Assistants de code +10 % de production (3) |
+| Lot 4 | Plusieurs sites (Organisation, 1), Salle serveur (Infrastructure, 1), Haute densité (2), Datacenter (3), Offres cloud (Commercial, 2), Calcul à la demande (2) |
 
 Chaque nœud a un effet réel, testé ou visible dans la simulation. Aucune branche n'en exclut une autre et rien n'est irréversible. Les outils de base (application, jeu, composants niveaux 1 et 2, réseaux sociaux, hébergement mutualisé et Cloud S) sont disponibles dès le départ.
 

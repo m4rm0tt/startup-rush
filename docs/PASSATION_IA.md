@@ -41,9 +41,9 @@
 
 ```
 dotnet build StartupRush.sln
-dotnet test Tests/Tests.csproj                                   # 102 tests à la fin du lot 3
+dotnet test Tests/Tests.csproj                                   # 115 tests à la fin du lot 4
 dotnet test Tests/Tests.csproj --filter Name=WriteBalanceReport  # réécrit BALANCE_REPORT.md (bots, ~1 min)
-UI.exe --capture <dossier>                                       # parcours scripté dans le vrai jeu, 28 captures + rapport
+UI.exe --capture <dossier>                                       # parcours scripté dans le vrai jeu, 32 captures + rapport
 ```
 
 Pièges connus :
@@ -100,7 +100,8 @@ Pièges connus :
   ce qui a été branché. `Tests/space/AssetRegistryTest.cs` vérifie les IDs et que chaque ligne validée cite des fichiers
   existants (contrôle **statique**, à présenter comme tel).
 - À la fin du lot 2 : 36 validées, 96 partielles, 454 non implémentées. À la fin du lot 3 : 59 validées, 124 partielles,
-  403 non implémentées (`tools/registry_lot3.py`).
+  403 non implémentées (`tools/registry_lot3.py`). À la fin du lot 4 : 77 validées, 142 partielles, 367 non implémentées
+  (`tools/registry_lot4.py`).
 
 ## 7. Où on en est
 
@@ -116,9 +117,23 @@ Voir le tableau des lots de `docs/V1_ETAT.md` et la section « Lot 3 » ci-desso
 - Objets muraux : `PlacedItem.Wall` (« left »/« right ») ; `Premises.Floor` les exclut, `Premises.WallItems` les liste ; la case
   (0, v) vise le mur de gauche, (u, 0) celui de droite, le coin se départage par l'orientation. Le décor mural des plans vient
   maintenant du local (plus du JSON du plan) ; les anciennes sauvegardes le reçoivent une fois au chargement.
-- Ordre conseillé ensuite : lot 4 (plusieurs sites : `Campaign.Premises` devient une liste de sites, `SiteComfort` par site,
-  format de sauvegarde 4 + migration ; salle serveur, racks, réseau, hébergement interne et offres cloud), puis lots 5 à 7.
-  Reste du lot 3 reporté : mini-jeux matériel/IA/quantique (lots 5-6), fonction de `moving_box`.
+- Reste du lot 3 reporté : mini-jeux matériel/IA/quantique (lots 5-6), fonction de `moving_box`.
+
+## 9. Lot 4 et la suite
+
+- Lot 4 fait : voir « Lot 4 » dans `docs/V1_ETAT.md` et §4 ter de `DESIGN_SIMULATION.md`. Format de sauvegarde **4**.
+- **Sites** : `Campaign.Sites` (le premier = siège), `Campaign.SiteId` = site **affiché** ; `Campaign.Premises` est une
+  propriété calculée (non sérialisée) qui renvoie/remplace le site affiché : les commandes d'aménagement agissent sur lui.
+  **Dans la simulation, ne jamais utiliser `Premises`** : passer par `PostOf(person)` / `SiteOf(person)` (site du poste, siège
+  sinon), `SiteComfort(site)`, `SiteInfra(site)`, `Sites` pour les sommes (loyers, matériel). Fichier : `Campaign.Sites.cs`.
+- **Infrastructure** : `Core/space/Infrastructure.cs` (`Infrastructure.Of(site)` → `InfraSummary`, raisons dans `Issues`) ;
+  modules de baie = `PlacedItem` accrochés avec `Socket = "slot:<i>"` (`Layout.CanSlot`, `FreeSocket`) ; dessinés par
+  `RoomRenderer.Attach`. Répartition chaque nuit dans `Campaign.Infra.cs` (`RunInfrastructure`), offres dans `Campaign.Cloud.cs`.
+- Les plans `room_hw_workshop`, `room_factory_hall`, `room_advanced_lab` ne sont pas encore à louer (lots 5 et 6) ; leurs
+  machines sont des décors. Le calcul et les GPU ne servent qu'aux offres cloud tant que l'IA et la recherche n'existent pas.
+- Ordre conseillé ensuite : lot 5 (recherche et prototypage, gamme matérielle, atelier et usine avec flux, stocks,
+  approvisionnement sous plafond, canaux de vente ; format 5), puis lot 6 (IA simulées sur le calcul/GPU du lot 4, studio, XR,
+  quantique), puis lot 7.
 - Points à vérifier signalés au lot 2 (toujours ouverts) : personnages assis moins nombreux que les postes sur la capture de
   la campagne avancée ; police pixel floue à certaines tailles ; « marketing excessif » trop peu puni (2/5 faillites).
 - Piège d'outillage : certains heredocs bash avec des apostrophes françaises échouent (« unexpected EOF ») ; écrire les scripts

@@ -26,7 +26,8 @@ JSON, une seule ligne :
   "Campaign": { ...tout l'état... } }
 ```
 
-- **Versionné** : `Format` vaut 2 (projets à composants). Un fichier d'un format plus récent est refusé avec un message, sans être touché. Un fichier au format 1 est converti au chargement (voir plus bas).
+- **Versionné** : `Format` vaut 4 (plusieurs sites, lot 4). Un fichier d'un format plus récent est refusé avec un message, sans être touché. Les formats 1, 2 et 3 sont convertis au chargement, l'original étant copié en `.v<format>.json` (voir plus bas).
+- **Format 3 → 4** (`Core/persistence/MigrationV3.cs`) : le local devient le premier site (`Sites`, `SiteId`), son adresse est reprise de son nom, les loyers déjà facturés restent marqués pour ce site (aucun loyer payé deux fois). Vérifié sur une vraie sauvegarde du jeu (`Tests/fixtures/campaign_v3.json`, test `AFormat3SaveBecomesTheFirstSiteWithoutPayingRentTwice`). Nouveaux champs du format 4 : sites, offres cloud, hébergement interne des projets, incidents des 30 derniers jours, réserve d'hébergement.
 - **Résumé** lisible sans charger la campagne (liste des sauvegardes : nom, date de jeu, entreprise, situation, trésorerie, dernière écriture).
 - **Campagne complète** : minute de jeu, état du générateur aléatoire (`Random.State`), compteur d'identifiants (`NextId`), local et meubles (positions, attributions), cartons, personnes (compétences, énergie, moral, affectation, horaire, congés, formation, augmentations, préavis), candidats, projets (type, public, prix, couleur, ordre, composants et leur qualité, file d'améliorations, version, entretien, serveurs automatiques et plafond, marketing, liste de souhaits, marché, avis, historique de 400 jours), tâches avec leur avancement, concurrents, comptes (trésorerie, mouvements, factures, dettes, prêts, totaux mensuels, coûts courus), situation financière, notifications (regroupements et résolutions), événements déjà traités, jalons, points et nœuds de l'arbre, accomplissements déjà récompensés.
 - Les propriétés calculées ne sont pas écrites.
@@ -75,5 +76,5 @@ L'ancien éditeur de pages n'existe plus. Les titres, textes, dispositions et pa
 
 ## Limites
 
-- Seul le passage du format 1 au format 2 existe. Chaque nouveau format devra ajouter le sien.
+- Chaque format a son passage : 1 → 2 (`Migration.cs`), 2 → 3 (`MigrationV2.cs`), 3 → 4 (`MigrationV3.cs`). Chaque nouveau format devra ajouter le sien.
 - Les sauvegardes ne sont pas chiffrées ni signées : on peut les modifier à la main.

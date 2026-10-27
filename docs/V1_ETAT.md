@@ -28,19 +28,19 @@ Ce fichier sert à reprendre le travail : il dit ce qui existe vraiment dans le 
 | Le fondateur ne produit plus en passif | **fait (lot 2)** | `Campaign.Time.cs` (`FounderTime`) : support seulement, hors terminal | — |
 | Terminal de saisie mot par mot | **fait (lot 2)** | `Core/campaign/Campaign.Terminal.cs`, `UI/Hud/TerminalView.cs`, `UI/Screens/GameScreen.cs` | Améliorations du terminal dans l'arbre (lot 3), saisie simplifiée d'accessibilité |
 | Mini-jeux de grosses actions et délégation | **fait (lot 3)** pour le logiciel | `Core/campaign/Campaign.Launch.cs`, `UI/Hud/LaunchView.cs` | Mini-jeux matériel, IA, quantique (lots 5 et 6) |
-| Avis causaux avec lien vers le levier | partiel | `Core/products/Reviews.cs` | Causes matériel (rupture, défauts, délai), cloud, IA |
-| Prix, marketing, souhaits, entretien, hébergement plafonné | fait | `Campaign.Products.cs` (`SetPrice`, `SetMarketing`, `AdjustHosting`), `Core/products/Market.cs` | Relier à l'infrastructure interne |
+| Avis causaux avec lien vers le levier | partiel | `Core/products/Reviews.cs` ; offres cloud : `Campaign.CloudTrends` (prix, saturation, coupures) | Causes matériel (rupture, défauts, délai), IA |
+| Prix, marketing, souhaits, entretien, hébergement plafonné | **fait (lot 4)** | `Campaign.Products.cs` (`AdjustHosting` : externe, ou interne avec débordement sous le plafond), `Core/products/Market.cs` (`Product.Capacity`) | — |
 | Équipe : recrutement, horaires, congés, formation, augmentation | fait | `Core/campaign/Campaign.Team.cs`, `Core/team/` | Métiers nouveaux (opérateur, chercheur), apparences du pack |
 | Arbre de développement sur vrais jalons | partiel | `Core/progress/DevTree.cs` (25 nœuds, 6 branches dont « Outils du boss »), `Campaign.Daily.cs` (`AwardUsers`, `CheckMilestones`) | Sous-branches matériel, industrie, IA, cloud, recherche |
-| Finances et faillite progressive | fait | `Core/finance/Ledger.cs`, `Core/finance/Solvency.cs`, `Campaign.Daily.cs` (`UpdateSolvency`) | Charges énergie, matières, calcul externe ; détail par site |
-| Sauvegardes nommées, automatiques, atomiques, migration | **format 3 (lot 2)** | `SaveStore.cs` (format 3), `Migration.cs` (1 → 2), `MigrationV2.cs` (2 → 3), copie `.v<format>.json` | Sites multiples et nouvelles activités (format 4, lot 4) |
+| Finances et faillite progressive | fait | `Core/finance/Ledger.cs` (catégories `Cloud`, `Energy`), `Core/finance/Solvency.cs`, `Campaign.Daily.cs` | Matières (lot 5) ; détail du résultat par site |
+| Sauvegardes nommées, automatiques, atomiques, migration | **format 4 (lot 4)** | `SaveStore.cs` (format 4), `Migration.cs` (1 → 2), `MigrationV2.cs` (2 → 3), `MigrationV3.cs` (3 → 4), copie `.v<format>.json` | Nouvelles activités des lots 5 et 6 |
 | Mobilier utile et plafonné | **fait (lot 3)** pour le bureau | `Core/space/Furniture.cs` (89 IDs du pack jouables), `Core/space/Layout.cs` (`Comfort` : 8 indicateurs plafonnés avec couverture), synthèse dans `UI/Hud/Panels/BuildPanel.cs` | `moving_box` ; mobilier des ateliers, labos et salles techniques (lots 4 à 6) ; synthèse multisite (lot 4) |
-| Plusieurs sites visitables, vue commune | absent | Un seul `Premises` dans `Campaign`, sur un plan du pack (chambre, petit bureau, bureau moyen, open space) | Lot 4 |
+| Plusieurs sites visitables, vue commune | **fait (lot 4)** | `Campaign.Sites`, `Campaign.SiteId` (vue), `Core/campaign/Campaign.Sites.cs`, `Core/space/RealEstate.cs` (parc d'offres), `UI/Hud/Panels/SitesPanel.cs` | Ateliers, usine, laboratoire (lots 5 et 6) ; transferts entre sites avec délai (lot 5, pour les stocks) |
 | Rendu isométrique, ancres, tri topologique, ombres, couches | **fait (lots 2 et 3)** | `UI/Iso/PackImages.cs`, `UI/Iso/RoomRenderer.cs` (portage du compositeur ; objets muraux et plafond depuis le local réel), `UI/Scene/SceneCanvas.cs` | Estompage des objets hauts |
 | HUD Papier, polices du pack, curseurs | partiel (lot 2) | `UI/Pixel/PixelPanel.cs` (9-slice du pack), `UI/Pixel/Palette.cs`, `UI/App.axaml`, `UI/Pixel/Icons.cs` | Curseurs, onglets, cartes, listes, cases à cocher du pack ; police à régler (taille non multiple de 12) |
 | Personnages en couches, coiffures, peaux | **fait (lot 2)** | `Core/team/Person.cs` (`Appearance`), `UI/Iso/Portraits.cs`, choix à la nouvelle campagne | Recoloration des tenues |
 | Matériel, usine, stocks, approvisionnement, canaux de vente | absent | — | Lot 5 |
-| Infrastructure interne, racks, énergie, refroidissement, offres cloud | absent | — | Lot 4 |
+| Infrastructure interne, racks, énergie, refroidissement, offres cloud | **fait (lot 4)** | `Core/space/Infrastructure.cs`, `Core/campaign/Campaign.Infra.cs`, `Core/campaign/Campaign.Cloud.cs`, `UI/Hud/Panels/CloudPanel.cs` | Usage du calcul et des GPU par l'IA et la recherche (lots 5 et 6) ; quantique (lot 6) |
 | IA simulée | absent | — | Lot 6 |
 | Recherche, laboratoires, studio, XR, quantique | absent | — | Lots 5 et 6 |
 | Bots d'équilibrage et rapport | partiel | `Core/bots/`, `Tests/balance/` (terminal, délégation, mots tapés mesurés) | Nouvelles branches (lots 4 à 6) |
@@ -55,7 +55,7 @@ Le pack fournit un compositeur C# de référence (`assets/StartupRushOriginalAss
 | 1 | Audit, protection des sauvegardes, registre de couverture | **fait** : pack et spécification versionnés, registre de 586 lignes (570 IDs, 10 plans, 6 modules), contrôle statique, cette matrice. Les sauvegardes actuelles sont déjà atomiques avec copie `.bak` ; la migration vers le format 3 arrive avec le lot 2. |
 | 2 | Chambre avec les nouveaux assets, HUD, création de projet, terminal du boss, premier lancement, avis, sauvegarde et reprise | **fait**, voir ci-dessous |
 | 3 | Employés automatiques, délégation, mini-jeux sans spam, arbre et confort utiles | **fait**, voir « Lot 3 » (mini-jeux matériel, IA et quantique avec les lots 5 et 6) |
-| 4 | Multisite, réseau, racks, hébergement interne et externe, offres cloud | à faire |
+| 4 | Multisite, réseau, racks, hébergement interne et externe, offres cloud | **fait**, voir « Lot 4 » |
 | 5 | Recherche, prototypage, gamme matérielle, flux d'usine, stocks, approvisionnement, canaux de vente | à faire |
 | 6 | IA simulées, studio, XR, calcul avancé et quantique | à faire |
 | 7 | Couverture de tous les IDs, équilibrage, performance, accessibilité, migrations, candidat de sortie | à faire |
@@ -137,7 +137,41 @@ Reste (reporté aux lots suivants, avec leur contexte) :
 - `moving_box` : montrer les cartons dans la scène et ouvrir leur contenu (décor sans fonction pour l'instant).
 - Mobilier des ateliers, laboratoires et salles techniques, synthèse multisite : lots 4 à 6.
 
+## Lot 4 : ce qui a été fait, ce qui reste
+
+Testé par `Tests/space/SitesTest.cs` et `Tests/space/InfrastructureTest.cs` ; vu sur les captures 26 à 28 du vrai jeu.
+
+- **Sites** : `Campaign.Sites` (le premier est le siège) et `Campaign.SiteId` (le site affiché, un choix de vue). Louer en plus
+  (nœud « Plusieurs sites »), déménager le site affiché, fermer un site (garantie rendue, matériel en cartons, personnes sans
+  poste nommées ; le dernier site ne se ferme pas). Le parc de locations est défini par données : 7 types de locaux, plusieurs
+  adresses chacun ; une offre louée disparaît des offres. Salle serveur et datacenter : sites techniques (climatisation,
+  armoires électriques, fibre, chemins de câbles et cage livrés ; baies et serveurs du plan = aperçu) ; siège jusqu'à 60 postes.
+- **Simulation par site** : chaque personne travaille sur le site de son poste (confort, pauses, coordination de ce site) ; le
+  site affiché ne change rien (test : deux campagnes identiques regardant deux sites différents donnent le même état).
+- **Format 4** : `MigrationV3` fait du local le premier site, reprend l'adresse depuis le nom et marque les loyers déjà facturés
+  pour ce site ; fixture réelle `Tests/fixtures/campaign_v3.json` (une sauvegarde écrite par le jeu au format 3).
+- **Infrastructure** (`Infrastructure.Of`) : modules en U dans les baies (fiche `fits` et emplacements du pack), switch
+  obligatoire, tiroir de disques avec contrôleur ; capacités hébergement, calcul, GPU, stockage ; électricité (base du local +
+  armoires), froid (base + climatiseurs ; baie haute densité −20 %, obturateurs −3 % chacun, 9 % au plus), réseau (2 par unité
+  d'hébergement), câblage (−10 % sans organisation), onduleurs et supervision contre les incidents (3 % par jour au plus), cage
+  (confiance des offres). Les climatiseurs consomment selon la chaleur. Électricité à 0,25 CHF/kWh, facturée avec le mois.
+- **Hébergement interne** : chaque nuit, les projets « sur tes serveurs » reçoivent leur part dans l'ordre du portefeuille
+  (avec 25 % de marge), une réserve réglable reste libre, puis les offres cloud. Ce qui ne tient pas déborde chez l'hébergeur,
+  sous le plafond du projet (0 : jamais).
+- **Offres cloud** : hébergement, stockage (nœud « Offres cloud »), calcul et GPU (« Calcul à la demande ») ; prix et réserve
+  réglables ; demande agrégée (taille du marché, renommée, prix, coupures des 30 derniers jours, sécurité) ; une réservation qui
+  ne tient plus est réduite avec un avertissement ; causes lisibles avec leur levier ; +2 points à 1 000 CHF sur 30 jours.
+- **Bots** : « hebergement_maison » (0 faillite sur 5 ; 77 865 CHF médian contre 191 938 sans salle serveur sur 18 mois).
+
+Limites et suite :
+- À petite échelle, la salle serveur se rembourse lentement (bilan ci-dessus) : à réévaluer au lot 7 avec l'IA et la recherche,
+  qui consommeront le calcul et les GPU (aujourd'hui seulement vendus).
+- Pas de câblage fil à fil ni de zones dans une pièce : l'organisation et la sécurité sont des scores plafonnés par site.
+- Le datacenter et le siège n'ont pas de test dédié (même code que la salle serveur et les bureaux).
+- `moving_box` toujours sans fonction ; mini-jeux matériel/IA/quantique avec les lots 5 et 6.
+
 ## Couverture du registre
 
-586 lignes : **59 validées**, 124 partielles (branchées sans test d'effet, ou vérifiées seulement en capture), 403 non
-implémentées (dont les décors des plans, affichés mais sans fonction pour l'instant). Lot 3 : `tools/registry_lot3.py`. Une ligne passe à « validé » seulement quand elle nomme un consommateur réel dans le jeu, son fichier de définition et un scénario de test qui vérifie une conséquence (avant/après pour un objet de gameplay, action et état pour un contrôle d'interface). Le contrôle `AssetRegistryTest` est statique : il vérifie les IDs et les fichiers cités, pas les effets.
+586 lignes : **77 validées**, 142 partielles (branchées sans test d'effet, ou vérifiées seulement en capture), 367 non
+implémentées (dont les décors des plans, affichés mais sans fonction pour l'instant). Lot 3 : `tools/registry_lot3.py` ;
+lot 4 : `tools/registry_lot4.py`. Une ligne passe à « validé » seulement quand elle nomme un consommateur réel dans le jeu, son fichier de définition et un scénario de test qui vérifie une conséquence (avant/après pour un objet de gameplay, action et état pour un contrôle d'interface). Le contrôle `AssetRegistryTest` est statique : il vérifie les IDs et les fichiers cités, pas les effets.

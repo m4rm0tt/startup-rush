@@ -184,6 +184,40 @@ public static class Capture
         advancedGame.ClosePanels();
         await Shot(window, folder, "12_1080p", report, 1920, 1080);
 
+        // Les autres menus, pour la documentation
+        if (advanced.Products.FirstOrDefault() is { } shown)
+        {
+            advancedGame.OpenRoot(new ProductsPanel());
+            await Shot(window, folder, "m_produits_liste", report);
+            var operations = new ProductPanel(shown.Id);
+            advancedGame.PushPanel(operations);
+            SetTab(operations, 3);
+            advancedGame.RefreshPanel();
+            await Shot(window, folder, "m_produit_exploitation", report);
+            advancedGame.ClosePanels();
+        }
+        foreach (var (name, open) in new (string, Func<Hud.GamePanel>)[]
+                 {
+                     ("m_projets", () => new ProjectsPanel()), ("m_entreprise", () => new CompanyPanel()),
+                     ("m_marche", () => new MarketPanel()), ("m_journal", () => new NoticesPanel()),
+                     ("m_amenagement", () => new BuildPanel()), ("m_locaux", () => new PremisesPanel()),
+                 })
+        {
+            advancedGame.OpenRoot(open());
+            await Shot(window, folder, name, report);
+            advancedGame.ClosePanels();
+        }
+        if (advanced.Staff.FirstOrDefault() is { } someone)
+        {
+            advancedGame.OpenRoot(new TeamPanel());
+            advancedGame.PushPanel(new PersonPanel(someone.Id));
+            await Shot(window, folder, "m_fiche_personne", report);
+            advancedGame.ClosePanels();
+            advancedGame.Session.Select(Game.SelectionKind.Person, someone.Id);
+            await Shot(window, folder, "m_selection_personne", report);
+            advancedGame.Session.ClearSelection();
+        }
+
         advancedGame.HandleKey(Avalonia.Input.Key.Escape, Avalonia.Input.KeyModifiers.None);
         await Shot(window, folder, "13_pause", report);
         advancedGame.HandleKey(Avalonia.Input.Key.Escape, Avalonia.Input.KeyModifiers.None);
@@ -200,10 +234,16 @@ public static class Capture
         await Wait(1.5);
         await Shot(window, folder, "14_liquidation", report);
         report.Add($"Défaite : {doomed.Status}, sauvegardes de la campagne encore présentes : {window.Store.List(doomed.Id).Count}");
+        lost.Leave();
+        window.ShowNewCampaign();
+        await Shot(window, folder, "m_nouvelle_partie", report);
+        window.ShowLoad();
+        await Shot(window, folder, "m_charger", report);
+        window.ShowSettings(() => { });
+        await Shot(window, folder, "m_reglages", report);
         lock (Sfx.Played)
             report.Add("Sons déclenchés (derniers) : " + string.Join(", ", Sfx.Played.Distinct()));
         report.Add("Sauvegardes de capture : " + window.Store.Root);
-        lost.Leave();
     }
 
     private static void SetTab(ProductPanel panel, int tab)

@@ -22,6 +22,12 @@ public static class Strategies
         {
             Projects = [("casual", null)], Marketing = 300, MaxStaff = 1,
         },
+        new("delegation", "Comme plusieurs_petits, mais le fondateur arrête de taper dès la première embauche : l'équipe développe, lance et prépare les petites mises à jour.")
+        {
+            Projects = [("freelances", null), ("casual", null), ("smb", null)], ProjectInterval = 75, Marketing = 200, MaxStaff = 2,
+            StopTypingWithStaff = 1, Delegate = true,
+            TreeOrder = ["advanced", "delegation", "hiring", "procedures", "cloud_m", "automation", "optimization", "loyalty"],
+        },
         new("marketing_excessif", "Erreur : 6 000 CHF de marketing par mois dès la sortie d'une petite application.")
         {
             Projects = [("freelances", null)], Marketing = 6_000, MaxStaff = 0, Recover = false, Borrow = false,

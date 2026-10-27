@@ -84,6 +84,12 @@ public static class Tuning
         public const double SlowCharsPerSecond = 1.5;
 
         public const double FastCharsPerSecond = 6.5;
+        /// <summary>Production au terminal à distance (Supervision à distance), sans poste complet : celle d'un vieux portable.</summary>
+        public const double RemoteOutput = 0.85;
+
+        /// <summary>Saisie simplifiée (accessibilité) : lettres écrites par seconde avant que le mot puisse être validé.</summary>
+        public const double AssistedCharsPerSecond = 3;
+
         public const double SlowFactor = 0.85;
         public const double FastFactor = 1.2;
 

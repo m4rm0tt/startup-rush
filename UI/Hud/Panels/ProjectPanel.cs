@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -75,10 +76,25 @@ public class ProjectPanel(int productId) : GamePanel
         else if (product.Queue.Count == 0)
             column.Children.Add(Ui.Button(product.IsLive ? "Préparer une mise à jour" : "Ajouter des composants", () => { Current = Tab.Components; Refresh(); }, "gold"));
 
-        // Délégation des lancements (arbre « Outils du boss »)
-        if (Campaign.IsUnlocked("delegation"))
-            column.Children.Add(Ui.Row(8, Ui.Muted("Lancements :", 13),
-                Ui.Choice([(false, "Je les lance"), (true, "Déléguer par défaut")], Campaign.DelegateLaunches, v => { Campaign.DelegateLaunches = v; Refresh(); })));
+        // Les grosses actions : me les proposer, ne pas me déranger, ou les déléguer (arbre « Outils du boss »)
+        if (!product.IsLive)
+        {
+            int mode = Campaign.DelegateLaunches && Campaign.IsUnlocked("delegation") ? 2 : Campaign.ProposeBigActions ? 0 : 1;
+            var modes = new List<(int, string)> { (0, "Me les proposer"), (1, "Ne pas me déranger") };
+            if (Campaign.IsUnlocked("delegation"))
+                modes.Add((2, "Déléguer par défaut"));
+            column.Children.Add(Ui.Row(8, Ui.Muted("Lancements :", 13), Ui.Choice(modes, mode, v =>
+            {
+                Campaign.ProposeBigActions = v == 0;
+                Campaign.DelegateLaunches = v == 2;
+                Refresh();
+            })));
+        }
+
+        // Automatisation avancée : l'équipe prépare seule les petites mises à jour
+        if (product.IsLive && Campaign.IsUnlocked("automation"))
+            column.Children.Add(Ui.Row(8, Ui.Muted("Petites mises à jour :", 13),
+                Ui.Choice([(true, "Préparées par l'équipe"), (false, "Je les choisis")], Campaign.AutoImprove, v => { Campaign.AutoImprove = v; Refresh(); })));
 
         // Le travail du fondateur : au terminal, mot par mot
         var (canWork, why) = Campaign.CanOpenTerminal(product.Id);

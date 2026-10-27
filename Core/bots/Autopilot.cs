@@ -21,6 +21,12 @@ public record Strategy(string Name, string Description)
 
     /// <summary>Mots tapés au terminal par jour ouvré (moins d'une minute de saisie : l'équivalent de l'ancien fondateur seul).</summary>
     public int WordsPerDay { get; init; } = 30;
+
+    /// <summary>Le fondateur arrête de taper dès qu'il a autant d'employés (0 : il tape toujours).</summary>
+    public int StopTypingWithStaff { get; init; }
+
+    /// <summary>Délègue dès que l'arbre le permet : lancements par un employé, petites mises à jour préparées par l'équipe.</summary>
+    public bool Delegate { get; init; }
     public decimal PreLaunchMarketing { get; init; }
     public int MaxStaff { get; init; }
     public decimal HireAbove { get; init; } = 30_000;
@@ -44,9 +50,13 @@ public class Autopilot(Strategy strategy)
     public Strategy Strategy { get; } = strategy;
     private long _lastProjectDay = -10_000;
     private int _created;
+    private readonly HashSet<int> _marketed = new();
 
     /// <summary>Nombre de décisions prises (pour mesurer la quantité d'actions routinières).</summary>
     public int Actions { get; private set; }
+
+    /// <summary>Mots tapés au terminal depuis le début (pour mesurer le travail de saisie demandé).</summary>
+    public int Words { get; private set; }
 
     public void Play(Campaign campaign, int days)
     {
@@ -107,12 +117,24 @@ public class Autopilot(Strategy strategy)
         {
             if (product.Queue.Count == 0 && campaign.CanLaunch(product))
             {
-                Act(campaign.Launch(product.Id));
-                Act(campaign.SetMarketing(product.Id, Strategy.Marketing));
+                // En délégation, un employé le lancera demain matin ; sinon on lance soi-même
+                if (Strategy.Delegate && campaign.CanDelegateLaunch(product).Ok)
+                    campaign.DelegateLaunches = true;
+                else if (campaign.Launch(product.Id).Ok)
+                {
+                    Actions++;
+                    _marketed.Add(product.Id);
+                    Act(campaign.SetMarketing(product.Id, Strategy.Marketing));
+                }
             }
             return;
         }
+        if (_marketed.Add(product.Id))
+            Act(campaign.SetMarketing(product.Id, Strategy.Marketing));
         if (product.Queue.Count > 0)
+            return;
+        // L'automatisation avancée prépare elle-même les petites mises à jour (le lundi) : on la laisse faire
+        if (Strategy.Delegate && campaign.IsUnlocked("automation") && campaign.Staff.Any())
             return;
 
         // Une amélioration à la fois : d'après les avis, sinon ce qui manque le plus
@@ -216,6 +238,8 @@ public class Autopilot(Strategy strategy)
     /// </summary>
     private void Type(Campaign campaign)
     {
+        if (Strategy.StopTypingWithStaff > 0 && campaign.Staff.Count() >= Strategy.StopTypingWithStaff)
+            return;
         int words = Strategy.WordsPerDay;
         while (words > 0)
         {
@@ -226,6 +250,7 @@ public class Autopilot(Strategy strategy)
             {
                 campaign.SubmitWord(session.Word, session.Word.Length / 4.0);
                 words--;
+                Words++;
             }
             campaign.CloseTerminal();
         }

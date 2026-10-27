@@ -41,6 +41,56 @@ public partial class Campaign
     /// <summary>Les projets prêts sortent tout seuls, lancés par un employé (si la délégation est débloquée).</summary>
     public bool DelegateLaunches { get; set; }
 
+    /// <summary>
+    /// « Me proposer les grosses actions » : un projet prêt est annoncé par une bulle qui ouvre le lancement. Sinon, il attend
+    /// discrètement dans le portefeuille (le journal le note). Dans les deux cas, plusieurs projets prêts font une seule annonce.
+    /// </summary>
+    public bool ProposeBigActions { get; set; } = true;
+
+    /// <summary>Clé de l'annonce regroupée des projets prêts à sortir.</summary>
+    public const string ReadyKey = "ready";
+
+    /// <summary>Les projets prêts à sortir : file vide et assez de composants terminés.</summary>
+    public IEnumerable<Product> ReadyToLaunch => Products.Where(p => !p.IsLive && p.Queue.Count == 0 && CanLaunch(p));
+
+    /// <summary>
+    /// Annonce les projets prêts, en une seule sollicitation : la même annonce se met à jour au lieu de s'empiler. Rien
+    /// n'est annoncé quand un employé va les lancer demain matin (déléguer par défaut, quelqu'un de présent). « quiet » :
+    /// seulement remettre à jour l'annonce existante (après un lancement), sans en créer ni la marquer non lue.
+    /// </summary>
+    private void ProposeLaunches(bool quiet = false)
+    {
+        var ready = ReadyToLaunch.ToList();
+        if (ready.Count == 0)
+        {
+            Resolve(ReadyKey);
+            return;
+        }
+        if (DelegateLaunches && IsUnlocked("delegation") && ready.All(p => CanDelegateLaunch(p).Ok))
+            return;
+        string title = ready.Count == 1 ? $"{ready[0].Name} est prêt à sortir" : $"{ready.Count} projets prêts à sortir";
+        string detail = ready.Count == 1 ? "Lance-le quand tu veux : un court mini-jeu peut réduire les bugs de la sortie."
+            : string.Join(", ", ready.Select(p => p.Name)) + " : lance-les quand tu veux.";
+        var existing = Notices.LastOrDefault(n => n.Key == ReadyKey && !n.Resolved);
+        if (existing != null)
+        {
+            // Une seule annonce : on la met à jour sans relancer de bulle
+            existing.Title = title;
+            existing.Detail = detail;
+            existing.Target = ready.Count == 1 ? $"launch:{ready[0].Id}" : "projects";
+            if (!quiet)
+            {
+                existing.Minute = Minute;
+                existing.Read = false;
+            }
+            return;
+        }
+        if (quiet)
+            return;
+        Notify(ProposeBigActions ? Severity.Good : Severity.Info, "projet", title, detail,
+            ready.Count == 1 ? $"launch:{ready[0].Id}" : "projects", key: ReadyKey);
+    }
+
     private static readonly string[] DeploySteps =
         ["Sauvegarder les données", "Migrer la base", "Mettre en ligne", "Vérifier le service", "Annoncer la sortie"];
 
@@ -123,12 +173,39 @@ public partial class Campaign
         return result;
     }
 
+    /// <summary>Automatisation avancée : l'équipe prépare seule les petites mises à jour (réglable).</summary>
+    public bool AutoImprove { get; set; } = true;
+
+    /// <summary>
+    /// Chaque lundi, avec l'Automatisation avancée : sur chaque projet en ligne dont la file est vide, l'équipe met en file
+    /// la petite amélioration que demandent les avis (sinon le besoin le plus mal couvert). Il faut au moins un employé :
+    /// c'est du travail payé de l'équipe, pas du fondateur. Une seule annonce regroupée.
+    /// </summary>
+    private void AutoImproveProjects()
+    {
+        if (!AutoImprove || !IsUnlocked("automation") || !Staff.Any())
+            return;
+        var queued = new List<string>();
+        foreach (var product in Products.Where(p => p.IsLive && p.Queue.Count == 0).ToList())
+        {
+            string? component = Reviews.Trends(product, Minute, IsUnlocked).FirstOrDefault(t => !t.Positive && t.Link.StartsWith("component:"))?.Link["component:".Length..]
+                                ?? Design.WeakestNeed(product, IsUnlocked).Fix?.Id;
+            if (component != null && QueueComponent(product.Id, component).Ok)
+                queued.Add($"{product.Name} : {ProductCatalog.Component(component).Name}");
+        }
+        if (queued.Count > 0)
+            Notify(Severity.Info, "projet", queued.Count == 1 ? "Une mise à jour préparée par l'équipe" : $"{queued.Count} mises à jour préparées par l'équipe",
+                string.Join(" · ", queued), "projects", key: "autoimprove");
+    }
+
     /// <summary>Chaque matin : en mode « déléguer par défaut », les projets prêts (file vide) sortent tout seuls.</summary>
     private void AutoLaunch()
     {
         if (!DelegateLaunches || !IsUnlocked("delegation"))
             return;
-        foreach (var product in Products.Where(p => !p.IsLive && p.Queue.Count == 0 && CanLaunch(p)).ToList())
+        foreach (var product in ReadyToLaunch.ToList())
             DelegateLaunch(product.Id);
+        // Personne de présent pour lancer : le joueur en est prévenu (une seule annonce)
+        ProposeLaunches();
     }
 }

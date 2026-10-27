@@ -139,9 +139,18 @@ public class GameScreen : UserControl, IScreen
         while (Session.NewNotices.Count > 0)
         {
             var notice = Session.NewNotices.Dequeue();
-            // Les bulles ne montrent que ce qui compte : bonnes nouvelles et problèmes, une seule fois par problème
-            if (notice.Severity != Severity.Info && notice.Count == 1)
+            // Les bulles ne montrent que ce qui compte : bonnes nouvelles et problèmes, une seule fois par problème.
+            // Une proposition de grosse action attend la fin de la saisie : rien n'interrompt le terminal.
+            if (notice.Key == Campaign.ReadyKey && _terminal != null)
+                _deferred.Add(notice);
+            else if (notice.Severity != Severity.Info && notice.Count == 1)
                 ToastNotice(notice);
+        }
+        if (_terminal == null && _deferred.Count > 0)
+        {
+            foreach (var notice in _deferred.Where(n => !n.Resolved).Distinct())
+                ToastNotice(notice);
+            _deferred.Clear();
         }
         UpdateToasts(deltaTime);
 
@@ -484,6 +493,9 @@ public class GameScreen : UserControl, IScreen
 
     private readonly List<(Control Control, double Age)> _toastAges = new();
 
+    /// <summary>Propositions arrivées pendant la saisie au terminal, montrées à sa fermeture.</summary>
+    private readonly List<Notice> _deferred = new();
+
     public void Toast(string message, bool ok) => AddToast(Ui.Text(message, 15, ok ? Palette.Snow : Palette.Lemon), ok ? null : Palette.Ember, null);
 
     private void ToastNotice(Notice notice)
@@ -547,7 +559,12 @@ public class GameScreen : UserControl, IScreen
         int id = parts.Length > 1 && int.TryParse(parts[1], out int value) ? value : 0;
         switch (parts[0])
         {
-            case "product" when Session.Campaign.FindProduct(id) != null:
+            case "launch" when Session.Campaign.FindProduct(id) is { } ready && Session.Campaign.CanLaunch(ready) && _terminal == null:
+                OpenRoot(new ProjectsPanel());
+                PushPanel(new ProjectPanel(id));
+                LaunchView.Show(this, id);
+                break;
+            case "product" or "launch" when Session.Campaign.FindProduct(id) != null:
                 OpenRoot(new ProjectsPanel());
                 PushPanel(new ProjectPanel(id));
                 break;

@@ -17,7 +17,7 @@ public class BalanceReportTest
     public record RunResult(
         string Strategy, ulong Seed, bool Liquidated, int DaysPlayed, decimal FinalCash, decimal MinCash, int MonthsInTrouble,
         decimal Income, int FirstLaunchDay, int FirstRevenueDay, int ProfitableMonthDay, int Staff, double Users, decimal Revenue30,
-        int Points, int Unlocked, int Actions, string Premises, decimal[] CashByQuarter);
+        int Points, int Unlocked, int Actions, int Words, string Premises, decimal[] CashByQuarter);
 
     public static RunResult Play(Strategy strategy, ulong seed, int months = Months)
     {
@@ -51,7 +51,7 @@ public class BalanceReportTest
         return new RunResult(strategy.Name, seed, campaign.Status == CampaignStatus.Liquidated, (int)campaign.Day,
             Math.Round(campaign.Ledger.Cash), Math.Round(minCash), trouble, Math.Round(income), firstLaunch, firstRevenue, profitable,
             campaign.Staff.Count(), Math.Round(campaign.Products.Sum(p => p.Users)), Math.Round(campaign.RecurringRevenue30),
-            spent + campaign.DevPoints, campaign.Unlocked.Count, pilot.Actions, campaign.Premises.Name, quarters.ToArray());
+            spent + campaign.DevPoints, campaign.Unlocked.Count, pilot.Actions, pilot.Words, campaign.Premises.Name, quarters.ToArray());
     }
 
     [Test, Explicit("Long : écrit BALANCE_REPORT.md")]
@@ -74,8 +74,8 @@ public class BalanceReportTest
         md.AppendLine();
         md.AppendLine("## Résumé");
         md.AppendLine();
-        md.AppendLine("| Stratégie | Faillites | Argent final (médiane) | Pire creux | 1re sortie (jour, méd.) | 1er mois bénéficiaire (jour, méd.) | Revenus des projets / mois (méd.) | Utilisateurs (méd.) | Points gagnés (méd.) | Décisions sur 18 mois (méd.) |");
-        md.AppendLine("|---|---|---|---|---|---|---|---|---|---|");
+        md.AppendLine("| Stratégie | Faillites | Argent final (médiane) | Pire creux | 1re sortie (jour, méd.) | 1er mois bénéficiaire (jour, méd.) | Revenus des projets / mois (méd.) | Utilisateurs (méd.) | Points gagnés (méd.) | Décisions sur 18 mois (méd.) | Mots tapés (méd.) |");
+        md.AppendLine("|---|---|---|---|---|---|---|---|---|---|---|");
         foreach (var group in results.GroupBy(r => r.Strategy))
         {
             var list = group.ToList();
@@ -83,7 +83,8 @@ public class BalanceReportTest
                           $"{Med(list.Where(r => r.FirstLaunchDay >= 0).Select(r => r.FirstLaunchDay), v => v.ToString())} | " +
                           $"{Med(list.Where(r => r.ProfitableMonthDay >= 0).Select(r => r.ProfitableMonthDay), v => v.ToString())} ({list.Count(r => r.ProfitableMonthDay >= 0)}/{list.Count}) | " +
                           $"{Med(list.Select(r => r.Revenue30), v => v.ToString("N0"))} | {Med(list.Select(r => r.Users), v => v.ToString("N0"))} | " +
-                          $"{Med(list.Select(r => r.Points), v => v.ToString())} | {Med(list.Select(r => r.Actions), v => v.ToString())} |");
+                          $"{Med(list.Select(r => r.Points), v => v.ToString())} | {Med(list.Select(r => r.Actions), v => v.ToString())} | " +
+                          $"{Med(list.Select(r => r.Words), v => v.ToString("N0"))} |");
         }
         md.AppendLine();
         md.AppendLine("## Façons de jouer");

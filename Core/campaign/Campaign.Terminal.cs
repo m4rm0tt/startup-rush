@@ -61,13 +61,14 @@ public partial class Campaign
         var founder = Founder;
         if (OnVacation(founder))
             return (false, "Tu es en congé.");
-        if (founder.TrainingDiscipline != null)
+        bool remote = IsUnlocked("boss_remote");
+        if (founder.TrainingDiscipline != null && !remote)
             return (false, "Tu es en formation.");
         int hour = GameTime.Hour(Minute);
         if (hour < Tuning.Terminal.FirstHour || hour >= Tuning.Terminal.LastHour)
             return (false, $"Il est tard : le terminal rouvre à {Tuning.Terminal.FirstHour} h.");
         var post = Premises.SeatOf(founder.Id);
-        if (post == null || space.Layout.Check(Premises, post) != space.WorkstationIssue.None)
+        if (!remote && (post == null || space.Layout.Check(Premises, post) != space.WorkstationIssue.None))
             return (false, "Il te faut un poste complet (bureau, chaise, ordinateur).");
         var product = FindProduct(productId);
         if (product == null)
@@ -111,11 +112,19 @@ public partial class Campaign
         Terminal = null;
     }
 
+    /// <summary>Production du fondateur au terminal : son poste, ou à distance au moins celle d'un vieux portable.</summary>
+    private double TerminalOutput(Person founder)
+    {
+        double station = StationOutput(founder);
+        return IsUnlocked("boss_remote") ? Math.Max(station, Tuning.Terminal.RemoteOutput) : station;
+    }
+
     /// <summary>
     /// Valide un mot. « seconds » : temps passé depuis que le mot est apparu (mesuré par l'interface en temps réel).
     /// Juste : une part bornée de travail va à la prochaine tâche prête du projet ; une faute ne coûte rien.
+    /// « assisted » : saisie simplifiée d'accessibilité (le mot s'écrit tout seul) : le rendement est celui de la frappe lente.
     /// </summary>
-    public WordResult SubmitWord(string typed, double seconds)
+    public WordResult SubmitWord(string typed, double seconds, bool assisted = false)
     {
         var session = Terminal;
         if (session == null || session.Finished)
@@ -137,7 +146,7 @@ public partial class Campaign
         var discipline = item?.Discipline ?? Discipline.Code;
 
         double chars = session.Word.Length / Math.Max(0.2, seconds);
-        double speed = chars <= Tuning.Terminal.SlowCharsPerSecond ? Tuning.Terminal.SlowFactor
+        double speed = assisted || chars <= Tuning.Terminal.SlowCharsPerSecond ? Tuning.Terminal.SlowFactor
             : chars >= Tuning.Terminal.FastCharsPerSecond ? Tuning.Terminal.FastFactor
             : Tuning.Terminal.SlowFactor + (Tuning.Terminal.FastFactor - Tuning.Terminal.SlowFactor)
               * (chars - Tuning.Terminal.SlowCharsPerSecond) / (Tuning.Terminal.FastCharsPerSecond - Tuning.Terminal.SlowCharsPerSecond);
@@ -145,7 +154,7 @@ public partial class Campaign
         double energy = founder.Energy >= 40 ? 1 : 0.6 + founder.Energy / 100;
         double tools = (IsUnlocked("ai_tools") ? 1.1 : 1) * (IsUnlocked("boss_speed") ? 1.15 : 1)
                        * (discipline == Discipline.Test && IsUnlocked("boss_tests") ? 1.3 : 1);
-        double points = Tuning.Terminal.PointsPerWord * skill * StationOutput(founder) * speed * energy * tools;
+        double points = Tuning.Terminal.PointsPerWord * skill * TerminalOutput(founder) * speed * energy * tools;
 
         if (item != null)
         {

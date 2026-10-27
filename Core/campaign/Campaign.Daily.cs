@@ -24,7 +24,10 @@ public partial class Campaign
         if (date.Day == 25)
             IssuePayroll();
         if (date.DayOfWeek == DayOfWeek.Monday)
+        {
             StartWeek();
+            AutoImproveProjects();
+        }
 
         CollectInvoices();
         PayDueBills();

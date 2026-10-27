@@ -43,6 +43,8 @@ public static class DevTree
         new("boss_macros", "Outils du boss", "Macros", "screen", "Sessions de 32 mots au lieu de 24 (même rendement par mot).", 2, "boss_comfort"),
         new("delegation", "Outils du boss", "Délégation des lancements", "people", "Un employé peut lancer à ta place, sans mini-jeu ; mode « déléguer par défaut ».", 2),
         new("procedures", "Outils du boss", "Procédures de publication", "rocket", "Un lancement délégué obtient la moitié du meilleur bonus de stabilité.", 2, "delegation"),
+        new("boss_remote", "Outils du boss", "Supervision à distance", "wifi", "Le terminal s'ouvre aussi loin de ton poste ou pendant une formation (rendement d'un vieux portable).", 2, "delegation"),
+        new("automation", "Outils du boss", "Automatisation avancée", "hand", "Chaque lundi, l'équipe met elle-même en file la petite amélioration que demandent les avis d'un projet en ligne.", 3, "procedures"),
     ];
 
     public static DevNode Node(string id) => Nodes.First(n => n.Id == id);

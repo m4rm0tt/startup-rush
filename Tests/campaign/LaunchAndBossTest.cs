@@ -100,4 +100,103 @@ public class LaunchAndBossTest
         fast.OpenTerminal(fastProject.Id);
         Assert.That(fast.Terminal!.Length, Is.EqualTo(Tuning.Terminal.WordsPerSessionWithMacros));
     }
+
+    [Test]
+    public void ReadyProjectsMakeASingleGroupedProposal()
+    {
+        var campaign = NewCampaign();
+        var first = Ready(campaign);
+        var second = Ready(campaign, "casual");
+
+        var proposals = campaign.Notices.Where(n => n.Key == Campaign.ReadyKey && !n.Resolved).ToList();
+        Assert.That(proposals, Has.Count.EqualTo(1), "une seule sollicitation pour deux projets prêts");
+        Assert.That(proposals[0].Title, Does.Contain("2 projets"));
+        Assert.That(proposals[0].Severity, Is.EqualTo(Severity.Good), "proposée par une bulle");
+
+        Assert.That(campaign.Launch(first.Id).Ok, Is.True);
+        Assert.That(proposals[0].Resolved, Is.False);
+        Assert.That(proposals[0].Title, Does.Contain(second.Name));
+        Assert.That(campaign.Launch(second.Id).Ok, Is.True);
+        Assert.That(proposals[0].Resolved, Is.True, "plus rien à lancer");
+    }
+
+    [Test]
+    public void TheBigActionPreferenceAndDelegationKeepTheGameQuiet()
+    {
+        var quiet = NewCampaign();
+        quiet.ProposeBigActions = false;
+        Ready(quiet);
+        Assert.That(quiet.Notices.Single(n => n.Key == Campaign.ReadyKey).Severity, Is.EqualTo(Severity.Info), "dans le journal seulement");
+
+        var delegated = NewCampaign();
+        delegated.Unlocked.Add("delegation");
+        delegated.DelegateLaunches = true;
+        HireDeveloper(delegated);
+        var product = NewProject(delegated);
+        FinishQueue(delegated, product);
+        Assert.That(delegated.Notices.Any(n => n.Key == Campaign.ReadyKey && !n.Resolved && !product.IsLive), Is.False,
+            "un employé s'en charge : rien à proposer");
+        delegated.AdvanceDays(1);
+        Assert.That(product.IsLive, Is.True);
+    }
+
+    [Test]
+    public void RemoteSupervisionOpensTheTerminalAwayFromTheDesk()
+    {
+        var campaign = NewCampaign();
+        var product = NewProject(campaign);
+        campaign.Premises.Items.RemoveAll(i => i.DefId == "tower_used");
+        campaign.InvalidateLayout();
+        Assert.That(campaign.CanOpenTerminal(product.Id).Ok, Is.False, "sans ordinateur");
+
+        campaign.Unlocked.Add("boss_remote");
+        Assert.That(campaign.CanOpenTerminal(product.Id).Ok, Is.True);
+        campaign.OpenTerminal(product.Id);
+        var word = campaign.SubmitWord(campaign.Terminal!.Word, campaign.Terminal.Word.Length / 4.0);
+        campaign.CloseTerminal();
+
+        var reference = NewCampaign();
+        var other = NewProject(reference);
+        reference.OpenTerminal(other.Id);
+        double withTower = reference.SubmitWord(reference.Terminal!.Word, reference.Terminal.Word.Length / 4.0).Points;
+        Assert.That(word.Points, Is.EqualTo(withTower).Within(1e-9), "à distance : le rendement d'un vieux portable (la vieille tour aussi : ×0,85)");
+        Assert.That(word.Points, Is.GreaterThan(0));
+    }
+
+    [Test]
+    public void AssistedTypingYieldsTheSlowRateWhateverTheSpeed()
+    {
+        double Word(bool assisted, double seconds)
+        {
+            var c = NewCampaign();
+            var p = NewProject(c);
+            c.OpenTerminal(p.Id);
+            return c.SubmitWord(c.Terminal!.Word, seconds, assisted).Points;
+        }
+        double slow = Word(false, 30);
+        Assert.That(Word(true, 0.1), Is.EqualTo(slow).Within(1e-9), "valider vite ne rapporte pas plus");
+        Assert.That(Word(false, 0.1), Is.GreaterThan(slow), "une vraie frappe rapide rapporte davantage");
+    }
+
+    [Test]
+    public void AdvancedAutomationQueuesSmallUpdatesWithAPaidTeam()
+    {
+        Campaign Live(bool unlocked, bool staff)
+        {
+            var c = NewCampaign();
+            var p = Ready(c);
+            Assert.That(c.Launch(p.Id).Ok, Is.True);
+            if (unlocked)
+                c.Unlocked.UnionWith(["delegation", "procedures", "automation"]);
+            if (staff)
+                HireDeveloper(c);
+            // Jusqu'au lundi suivant (au plus 7 jours), sans rien faire
+            for (int d = 0; d < 7 && p.Queue.Count == 0; d++)
+                c.AdvanceDays(1);
+            return c;
+        }
+        Assert.That(Live(true, true).Products.Single().Queue, Is.Not.Empty, "l'équipe a préparé une mise à jour");
+        Assert.That(Live(false, true).Products.Single().Queue, Is.Empty, "sans le nœud");
+        Assert.That(Live(true, false).Products.Single().Queue, Is.Empty, "le fondateur seul ne travaille pas en secret");
+    }
 }

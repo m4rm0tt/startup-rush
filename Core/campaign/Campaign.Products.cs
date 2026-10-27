@@ -138,6 +138,7 @@ public partial class Campaign
         }
         product.LastForecast = Market.Forecast(product, Competitors, 0);
         Resolve($"ready:{product.Id}");
+        ProposeLaunches(quiet: true);
         Notify(Severity.Good, "projet", $"{product.Name} est sorti !",
             buyers > 0 ? $"{buyers:N0} joueurs l'ont acheté le premier jour." : "Les premiers utilisateurs arrivent.", $"product:{product.Id}");
         return CommandResult.Success();
@@ -177,9 +178,7 @@ public partial class Campaign
             Notify(Severity.Good, "projet", $"{product.Name} : mise à jour {product.Version}", $"{what} est en ligne.", $"product:{product.Id}", key: $"update:{product.Id}");
         }
         else if (product.Queue.Count == 0)
-        {
-            Notify(Severity.Info, "projet", $"{product.Name} est prêt à sortir", "Lance-le quand tu veux.", $"product:{product.Id}", key: $"ready:{product.Id}");
-        }
+            ProposeLaunches();
     }
 
     /// <summary>Termine les améliorations dont tout le travail est déjà fait (après une migration, par exemple).</summary>

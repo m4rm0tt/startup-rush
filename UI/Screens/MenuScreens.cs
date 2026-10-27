@@ -337,7 +337,11 @@ public class SettingsScreen : MenuScreen
             Ui.Choice([(true, "Accélérés ×8"), (false, "Vitesse normale")], s.FastNights, v => Change(() => s.FastNights = v)),
             Ui.Text("Pendant la saisie au terminal (accessibilité)", 14, Palette.Fog),
             Ui.Choice([(false, "L'entreprise continue"), (true, "L'entreprise attend")], s.PauseDuringTerminal, v => Change(() => s.PauseDuringTerminal = v)),
-            Ui.Muted("Le rendement d'un mot ne dépend jamais du temps qui passe : ce réglage change seulement ce qui arrive pendant que tu tapes.", 13));
+            Ui.Muted("Le rendement d'un mot ne dépend jamais du temps qui passe : ce réglage change seulement ce qui arrive pendant que tu tapes.", 13),
+            Ui.Text("Saisie au terminal (accessibilité)", 14, Palette.Fog),
+            Ui.Choice([(false, "Je tape les mots"), (true, "Saisie simplifiée")], s.SimplifiedTyping, v => Change(() => s.SimplifiedTyping = v)),
+            Ui.Muted("Saisie simplifiée : le mot s'écrit tout seul et Entrée le valide. Chaque mot rapporte comme une frappe lente (×0,85) : " +
+                     "moins qu'une frappe rapide, assez pour mener la campagne.", 13));
         if (back != null)
             column.Children.Add(Ui.Button("Retour", back));
         return column;

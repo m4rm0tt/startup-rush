@@ -44,6 +44,9 @@ public class TerminalView : UserControl
 
     private Campaign Campaign => _session.Campaign;
 
+    /// <summary>Saisie simplifiée (réglage d'accessibilité) : le mot s'écrit tout seul, Entrée le valide.</summary>
+    private bool Assisted => _session.Settings.SimplifiedTyping;
+
     public TerminalView(GameSession session, Action close, Action again)
     {
         _session = session;
@@ -66,6 +69,7 @@ public class TerminalView : UserControl
                 _keyDown = false;
         };
         _input.TextChanged += (_, _) => Paint();
+        _input.IsReadOnly = Assisted;
 
         foreach (var block in new[] { _word, _stage, _stats, _status })
         {
@@ -136,7 +140,10 @@ public class TerminalView : UserControl
         string typed = _input.Text ?? "";
         if (typed.Trim().Length == 0)
             return;
-        var result = Campaign.SubmitWord(typed, _shown.Elapsed.TotalSeconds);
+        // En saisie simplifiée, on valide seulement un mot entièrement écrit
+        if (Assisted && typed != Campaign.Terminal.Word)
+            return;
+        var result = Campaign.SubmitWord(typed, _shown.Elapsed.TotalSeconds, Assisted);
         Sfx.Play(result.Correct ? Sound.Click : Sound.Error);
         if (result.Correct)
         {
@@ -150,6 +157,14 @@ public class TerminalView : UserControl
     public void Tick()
     {
         bool running = _session.Running || _session.AutoPause == "saisie";
+        if (Assisted && running && Campaign.Terminal is { Finished: false } session)
+        {
+            // Le mot s'écrit lettre après lettre, au rythme réglé : la validation reste un geste du joueur
+            int letters = Math.Min(session.Word.Length, (int)(_shown.Elapsed.TotalSeconds * Tuning.Terminal.AssistedCharsPerSecond));
+            string shown = session.Word[..letters];
+            if (_input.Text != shown)
+                _input.Text = shown;
+        }
         if (running != _wasRunning)
         {
             _wasRunning = running;
@@ -200,6 +215,7 @@ public class TerminalView : UserControl
             bool paused = !_session.Running && _session.AutoPause != "saisie";
             _status.Text = paused ? "Jeu en pause : la saisie reprendra avec le temps."
                 : _session.AutoPause == "saisie" ? "L'entreprise est en pause pendant la saisie (réglage d'accessibilité)."
+                : Assisted ? "Saisie simplifiée : le mot s'écrit tout seul, Entrée le valide (rendement de la frappe lente). Échap : fermer."
                 : "L'entreprise continue à vitesse normale. Espace ou Entrée : valider. Échap : fermer (le travail validé reste acquis).";
             _status.Foreground = paused ? Warn : Dim;
             _actions.Children.Add(Ui.Button("Fermer", _close));

@@ -58,6 +58,12 @@ public class Settings
     /// <summary>Accessibilité : l'entreprise se met en pause pendant la saisie au terminal (le rendement par mot ne change pas).</summary>
     public bool PauseDuringTerminal { get; set; }
 
+    /// <summary>
+    /// Accessibilité : saisie simplifiée. Le mot s'écrit tout seul au terminal, Entrée le valide ; le rendement est celui de la
+    /// frappe lente. Désactivée par défaut : le terminal reste un jeu de saisie.
+    /// </summary>
+    public bool SimplifiedTyping { get; set; }
+
     public bool MigratedFromLegacy { get; set; }
 
     /// <summary>Petites aides déjà lues (une phrase à la première ouverture d'un outil).</summary>

@@ -172,10 +172,10 @@ public class TerminalView : UserControl
         _word.Text = session.Finished ? "—" : session.Word;
         _word.Foreground = typed.Length == 0 ? Text : matching ? Ok : Error;
         _stage.Text = session.Stage;
-        _stats.Text = $"{session.WordsTyped}/{Tuning.Terminal.WordsPerSession} mots · {session.Points:0.0} pts · rendement {session.LastYield * 100:0} % · fautes {session.Errors}";
+        _stats.Text = $"{session.WordsTyped}/{session.Length} mots · {session.Points:0.0} pts · rendement {session.LastYield * 100:0} % · fautes {session.Errors}";
 
         _segments.Children.Clear();
-        for (int i = 0; i < Tuning.Terminal.WordsPerSession; i++)
+        for (int i = 0; i < session.Length; i++)
             _segments.Children.Add(new Image
             {
                 Source = PackLibrary.Thumbnail(i < session.WordsTyped ? "term_progress_full" : "term_progress_empty"),

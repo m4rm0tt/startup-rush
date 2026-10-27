@@ -10,7 +10,7 @@ public record DevNode(string Id, string Branch, string Name, string Icon, string
 /// </summary>
 public static class DevTree
 {
-    public static readonly string[] Branches = ["Création", "Organisation", "Infrastructure", "Commercial", "Innovation"];
+    public static readonly string[] Branches = ["Création", "Organisation", "Infrastructure", "Commercial", "Innovation", "Outils du boss"];
 
     public static readonly IReadOnlyList<DevNode> Nodes =
     [
@@ -35,6 +35,14 @@ public static class DevTree
 
         new("quality_lab", "Innovation", "Laboratoire qualité", "check", "+0,05 de qualité sur tout le travail.", 2),
         new("ai_tools", "Innovation", "Assistants de code", "computer", "+10 % de production pour toute l'équipe.", 3, "quality_lab"),
+
+        // Outils du boss : le terminal, puis la délégation (Campaign.Terminal.cs, Campaign.Launch.cs)
+        new("boss_speed", "Outils du boss", "Raccourcis clavier", "bolt", "Chaque mot du terminal rapporte 15 % de travail en plus.", 1),
+        new("boss_comfort", "Outils du boss", "Clavier confortable", "heart", "Le terminal fatigue 40 % moins par mot.", 1),
+        new("boss_tests", "Outils du boss", "Tests assistés", "check", "Au terminal, les mots de tests rapportent 30 % de plus.", 2, "boss_speed"),
+        new("boss_macros", "Outils du boss", "Macros", "screen", "Sessions de 32 mots au lieu de 24 (même rendement par mot).", 2, "boss_comfort"),
+        new("delegation", "Outils du boss", "Délégation des lancements", "people", "Un employé peut lancer à ta place, sans mini-jeu ; mode « déléguer par défaut ».", 2),
+        new("procedures", "Outils du boss", "Procédures de publication", "rocket", "Un lancement délégué obtient la moitié du meilleur bonus de stabilité.", 2, "delegation"),
     ];
 
     public static DevNode Node(string id) => Nodes.First(n => n.Id == id);

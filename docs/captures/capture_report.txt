@@ -9,7 +9,9 @@ Pack : 2429 ressources embarquées (sprites, masques, manifeste, plans).
 06_scene_travail.png : 1600×900
 Premier projet prêt en 4 jours et 445 mots au terminal (fondateur seul, sans employé).
 07_pret_a_sortir.png : 1600×900
-50 jours après la sortie : 92 utilisateurs, 42 payants, revenus 30 j 382 CHF, argent 18 000 → 14 278.
+07b_lancement.png : 1600×900
+Mini-jeu de lancement : « Remets les étapes du déploiement dans l'ordre. » (5 éléments), joué parfaitement.
+50 jours après la sortie : 93 utilisateurs, 43 payants, revenus 30 j 384 CHF, argent 18 000 → 14 280.
 Avis principal : « Rien ne me donne envie de revenir. » → component:messaging
 08_avis.png : 1600×900
 09_atelier_composants.png : 1600×900

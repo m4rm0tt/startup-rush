@@ -105,6 +105,14 @@ Pièges connus :
 
 Voir le tableau des lots de `docs/V1_ETAT.md` et la section « Lot 3 » ci-dessous (complétée par le dernier modèle).
 
-## 8. Lot 3 (en cours au moment de cette passation)
+## 8. Lot 3 et la suite
 
-Voir la fin de ce fichier : ce qui a été fait, ce qui reste.
+- Lot 3 en partie fait : voir « Lot 3 : ce qui a été fait, ce qui reste » dans `docs/V1_ETAT.md`. Fichiers clés :
+  `Core/campaign/Campaign.Launch.cs`, `UI/Hud/LaunchView.cs`, branche « Outils du boss » de `Core/progress/DevTree.cs`,
+  tests `Tests/campaign/LaunchAndBossTest.cs`. 86 tests passent à cette passation.
+- Ordre conseillé ensuite : finir le lot 3 (préférence des grosses actions, bots qui délèguent, confort du pack), puis lot 4
+  (plusieurs sites : `Campaign.Premises` devient une liste de sites, format de sauvegarde 4 + migration), lots 5 à 7.
+- Points à vérifier signalés au lot 2 : personnages assis moins nombreux que les postes sur la capture de la campagne
+  avancée ; police pixel floue à certaines tailles ; « marketing excessif » trop peu puni (2/5 faillites).
+- Avant chaque commit : `dotnet test Tests/Tests.csproj`, le parcours `--capture` pour tout changement visible, mise à jour
+  de `docs/V1_ETAT.md`, du registre si des assets gagnent une fonction, et de cette passation.

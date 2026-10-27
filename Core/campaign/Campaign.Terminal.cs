@@ -31,7 +31,10 @@ public class TerminalSession
     /// <summary>Pourquoi la session s'est arrêtée toute seule (plus rien à faire, session complète).</summary>
     public string EndReason { get; internal set; } = "";
 
-    public int WordsLeft => Math.Max(0, Tuning.Terminal.WordsPerSession - WordsTyped);
+    /// <summary>Mots de la session (plus avec les macros).</summary>
+    public int Length { get; init; } = Tuning.Terminal.WordsPerSession;
+
+    public int WordsLeft => Math.Max(0, Length - WordsTyped);
 
     internal SimRandom Words { get; init; } = new(1);
 }
@@ -89,7 +92,12 @@ public partial class Campaign
         if (!ok)
             return CommandResult.Fail(reason);
         TerminalSessions++;
-        Terminal = new TerminalSession { ProductId = productId, Words = new SimRandom(Seed ^ (ulong)TerminalSessions * 0x9E3779B97F4A7C15UL) };
+        Terminal = new TerminalSession
+        {
+            ProductId = productId,
+            Words = new SimRandom(Seed ^ (ulong)TerminalSessions * 0x9E3779B97F4A7C15UL),
+            Length = IsUnlocked("boss_macros") ? Tuning.Terminal.WordsPerSessionWithMacros : Tuning.Terminal.WordsPerSession,
+        };
         Founder.CurrentWorkItemId = null;
         NextWord(Founder);
         return CommandResult.Success();
@@ -135,7 +143,8 @@ public partial class Campaign
               * (chars - Tuning.Terminal.SlowCharsPerSecond) / (Tuning.Terminal.FastCharsPerSecond - Tuning.Terminal.SlowCharsPerSecond);
         double skill = 0.4 + founder.Skill(discipline) * 0.012;
         double energy = founder.Energy >= 40 ? 1 : 0.6 + founder.Energy / 100;
-        double tools = IsUnlocked("ai_tools") ? 1.1 : 1;
+        double tools = (IsUnlocked("ai_tools") ? 1.1 : 1) * (IsUnlocked("boss_speed") ? 1.15 : 1)
+                       * (discipline == Discipline.Test && IsUnlocked("boss_tests") ? 1.3 : 1);
         double points = Tuning.Terminal.PointsPerWord * skill * StationOutput(founder) * speed * energy * tools;
 
         if (item != null)
@@ -159,7 +168,7 @@ public partial class Campaign
             session.Stage = "Maintenance · corrections";
         }
         founder.PointsThisWeek += points;
-        founder.Energy = Math.Max(0, founder.Energy - Tuning.Terminal.EnergyPerWord);
+        founder.Energy = Math.Max(0, founder.Energy - Tuning.Terminal.EnergyPerWord * (IsUnlocked("boss_comfort") ? 0.6 : 1));
         founder.Status = $"Au terminal : {product.Name}";
         session.Points += points;
         session.WordsTyped++;

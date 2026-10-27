@@ -54,7 +54,7 @@ Le pack fournit un compositeur C# de référence (`assets/StartupRushOriginalAss
 |---|---|---|
 | 1 | Audit, protection des sauvegardes, registre de couverture | **fait** : pack et spécification versionnés, registre de 586 lignes (570 IDs, 10 plans, 6 modules), contrôle statique, cette matrice. Les sauvegardes actuelles sont déjà atomiques avec copie `.bak` ; la migration vers le format 3 arrive avec le lot 2. |
 | 2 | Chambre avec les nouveaux assets, HUD, création de projet, terminal du boss, premier lancement, avis, sauvegarde et reprise | **fait**, voir ci-dessous |
-| 3 | Employés automatiques, délégation, mini-jeux sans spam, arbre et confort utiles | à faire |
+| 3 | Employés automatiques, délégation, mini-jeux sans spam, arbre et confort utiles | **en partie**, voir « Lot 3 » |
 | 4 | Multisite, réseau, racks, hébergement interne et externe, offres cloud | à faire |
 | 5 | Recherche, prototypage, gamme matérielle, flux d'usine, stocks, approvisionnement, canaux de vente | à faire |
 | 6 | IA simulées, studio, XR, calcul avancé et quantique | à faire |
@@ -98,6 +98,25 @@ Limites connues du lot 2 :
 - Équilibrage : « marketing excessif » ne fait plus faillite que 2 fois sur 5 (5 sur 5 avant) ; à reprendre au lot 7.
 - Pas encore de mini-jeux, de délégation ni d'améliorations du terminal dans l'arbre (lot 3). Un seul site (lot 4).
 - Le dossier `docs/Startup_Rush_Dossier.pdf` décrit encore la version 2.1 (vue de dessus, fondateur automatique).
+
+## Lot 3 : ce qui a été fait, ce qui reste
+
+Fait (testé par `Tests/campaign/LaunchAndBossTest.cs`, vu sur les captures `07b_lancement` et `15_arbre`) :
+- Branche « Outils du boss » dans l'arbre (`Core/progress/DevTree.cs`) : Raccourcis clavier (+15 % par mot), Clavier
+  confortable (−40 % d'énergie par mot), Tests assistés (mots de tests +30 %), Macros (sessions de 32 mots),
+  Délégation des lancements, Procédures de publication.
+- Mini-jeux du lancement (`Core/campaign/Campaign.Launch.cs`, `UI/Hud/LaunchView.cs`) : application → remettre 5 étapes
+  du déploiement dans l'ordre ; jeu → repérer 3 tests en anomalie sur 8 (les fausses alertes coûtent). Bonus plafonné :
+  jusqu'à −50 % de bugs à la sortie. « Lancer sans jouer » donne le résultat de base. Tirage séparé, reproductible.
+- Délégation : un employé présent lance à ta place (sans bonus, ou la moitié du meilleur avec les procédures) ; mode
+  « déléguer par défaut » (`Campaign.DelegateLaunches`) qui sort chaque matin les projets prêts.
+
+Reste à faire :
+- Mini-jeux matériel, IA et quantique (familles prévues par la spécification, avec les lots 5 et 6).
+- Préférence « me proposer les grosses actions » et regroupement des sollicitations.
+- Supervision à distance et automatisation avancée dans les Outils du boss ; saisie simplifiée d'accessibilité.
+- Confort : les meubles de confort restants du pack (fauteuils, distributeurs, sanitaires, modules) et la synthèse par site.
+- Les bots n'utilisent pas encore ces nœuds ni la délégation : à ajouter aux stratégies, puis refaire le bilan.
 
 ## Couverture du registre
 

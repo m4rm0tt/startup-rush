@@ -72,6 +72,17 @@ Pendant la saisie, l'entreprise tourne à vitesse normale ; à la fermeture, la 
 réglage d'accessibilité met l'entreprise en pause pendant la saisie, sans changer le rendement d'un mot. Aucun raccourci
 n'agit pendant la frappe ; Espace ou Entrée valident, sans répétition si on maintient la touche.
 
+### Lancement et délégation
+
+Le lancement est la grosse action du projet. Un mini-jeu facultatif (application : remettre les étapes du déploiement dans
+l'ordre ; jeu : repérer les tests en anomalie) donne jusqu'à 50 % de bugs en moins à la sortie. Sans jouer, le lancement se
+fait au résultat de base. Les mises à jour ne demandent jamais de mini-jeu.
+
+Branche « Outils du boss » de l'arbre ⚙️ : Raccourcis clavier (1 pt, +15 % par mot), Clavier confortable (1 pt, −40 %
+d'énergie par mot), Tests assistés (2 pts, mots de tests +30 %), Macros (2 pts, sessions de 32 mots), Délégation des
+lancements (2 pts : un employé présent lance à ta place ; mode « déléguer par défaut »), Procédures de publication (2 pts :
+un lancement délégué obtient la moitié du meilleur bonus).
+
 ## 5. Automatismes
 
 | Ce qui est automatique | Règle | Ce que le joueur règle |

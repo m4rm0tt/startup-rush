@@ -55,7 +55,7 @@ public class ProjectsPanel : GamePanel
             progress = Ui.Column(2, Ui.Bar(fraction, Palette.Gold, 8), Ui.Muted($"{product.Queue.Count} en file · {eta}", 12));
         }
         else if (!product.IsLive && Campaign.CanLaunch(product))
-            progress = Ui.Button("Lancer !", () => Run(Campaign.Launch(product.Id)), "gold");
+            progress = Ui.Button("Lancer !", () => LaunchView.Show(Screen, product.Id), "gold");
         else
             progress = Ui.Muted(product.IsLive ? "Rien en file" : "Ajoute des composants", 12);
 

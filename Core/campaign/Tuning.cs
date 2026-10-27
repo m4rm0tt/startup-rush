@@ -77,6 +77,9 @@ public static class Tuning
         /// <summary>Mots d'une session (20 à 45 secondes) ; on peut en enchaîner une autre aussitôt.</summary>
         public const int WordsPerSession = 24;
 
+        /// <summary>Mots d'une session avec les macros (arbre « Outils du boss »).</summary>
+        public const int WordsPerSessionWithMacros = 32;
+
         /// <summary>Vitesse de frappe (caractères par seconde) : lente, normale, rapide, et le bonus au plus.</summary>
         public const double SlowCharsPerSecond = 1.5;
 

@@ -17,6 +17,7 @@ public partial class Campaign
         var date = GameTime.ToDate(Minute);
 
         RunProducts(yesterday, date.DayOfWeek == DayOfWeek.Monday);
+        AutoLaunch();
 
         if (date.Day == 1)
             StartMonth(GameTime.MonthKey(Minute - 1));

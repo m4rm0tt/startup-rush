@@ -130,7 +130,13 @@ public static class Capture
         report.Add($"Premier projet prêt en {days} jours et {words} mots au terminal (fondateur seul, sans employé).");
         game.OpenRoot(new ProjectsPanel());
         await Shot(window, folder, "07_pret_a_sortir", report);
-        campaign.Launch(app.Id);
+        game.ClosePanels();
+        Hud.LaunchView.Show(game, app.Id);
+        await Shot(window, folder, "07b_lancement", report);
+        game.CloseModal();
+        var challenge = campaign.Challenge(app.Id);
+        report.Add($"Mini-jeu de lancement : « {challenge.Rule} » ({challenge.Items.Count} éléments), joué parfaitement.");
+        campaign.LaunchWith(app.Id, challenge.Score(challenge.Answer));
         decimal cashAtLaunch = campaign.Ledger.Cash;
         for (int i = 0; i < 50; i++)
             campaign.AdvanceDays(1);

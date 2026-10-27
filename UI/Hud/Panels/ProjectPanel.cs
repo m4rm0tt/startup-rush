@@ -71,9 +71,14 @@ public class ProjectPanel(int productId) : GamePanel
 
         // L'action principale du moment
         if (!product.IsLive && Campaign.CanLaunch(product) && product.Queue.Count == 0)
-            column.Children.Add(Ui.Button("Lancer le projet", () => Run(Campaign.Launch(product.Id)), "gold big"));
+            column.Children.Add(Ui.Button("Lancer le projet", () => LaunchView.Show(Screen, product.Id), "gold big"));
         else if (product.Queue.Count == 0)
             column.Children.Add(Ui.Button(product.IsLive ? "Préparer une mise à jour" : "Ajouter des composants", () => { Current = Tab.Components; Refresh(); }, "gold"));
+
+        // Délégation des lancements (arbre « Outils du boss »)
+        if (Campaign.IsUnlocked("delegation"))
+            column.Children.Add(Ui.Row(8, Ui.Muted("Lancements :", 13),
+                Ui.Choice([(false, "Je les lance"), (true, "Déléguer par défaut")], Campaign.DelegateLaunches, v => { Campaign.DelegateLaunches = v; Refresh(); })));
 
         // Le travail du fondateur : au terminal, mot par mot
         var (canWork, why) = Campaign.CanOpenTerminal(product.Id);

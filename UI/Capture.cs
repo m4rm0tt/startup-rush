@@ -261,6 +261,73 @@ public static class Capture
         await Shot(window, folder, "28_cloud", report);
         later.ClosePanels();
 
+        // Lot 5 : un atelier, un établi et un chercheur, une ligne d'assemblage et un opérateur, une carte calibrée puis vendue
+        advanced.Ledger.Cash += 120_000;
+        advanced.Unlocked.UnionWith(["hardware", "online_shop"]);
+        advanced.ResearchDone.Add("res_boards");
+        var workshop = advanced.RentSite("hw_workshop");
+        var layout = advanced.InstallLayout("assembly");
+        if (advanced.FindSpot(FurnitureCatalog.Get("workbench_electronics")) is var (bx, by, bf) && advanced.BuyAndPlace("workbench_electronics", bx, by, bf).Ok)
+        {
+            var bench = advanced.Premises.Items.Last();
+            advanced.BuyAndAttach("chair_office", bench.Id);
+            advanced.BuyAndAttach("oscilloscope", bench.Id);
+            advanced.BuyAndAttach("soldering_station", bench.Id);
+            if (advanced.Staff.Skip(1).FirstOrDefault() is { } researcher && advanced.Premises.Workstations.FirstOrDefault(p => p.Desk.Id == bench.Id) is { } post)
+            {
+                advanced.Seat(researcher, post);
+                advanced.AssignTo(researcher.Id, Core.team.AssignmentKind.Research);
+            }
+        }
+        foreach (string lab in new[] { "test_bench_pc", "storage_rack_industrial" })
+            if (advanced.FindSpot(FurnitureCatalog.Get(lab)) is var (lx, ly, lf))
+                advanced.BuyAndPlace(lab, lx, ly, lf);
+        advanced.StartResearch("res_pc");
+        var (_, board) = advanced.CreateProject("", "makers", Core.products.RevenueModel.Purchase);
+        while (advanced.Products.OrderBy(p => p.Priority).First().Id != board!.Id && advanced.MoveProject(board.Id, -1).Ok)
+        {
+        }
+        for (int d = 0; d < 40 && board.Queue.Count > 0; d++)
+            advanced.AdvanceDays(1);
+        later.OpenRoot(new ProjectsPanel());
+        later.PushPanel(new ProjectPanel(board.Id));
+        Hud.LaunchView.Show(later, board.Id);
+        await Shot(window, folder, "29_calibration", report);
+        later.CloseModal();
+        later.ClosePanels();
+        var calibration = advanced.Challenge(board.Id);
+        advanced.LaunchWith(board.Id, calibration.Score(calibration.Answer));
+        if (advanced.Staff.FirstOrDefault() is { } op)
+            advanced.AssignTo(op.Id, Core.team.AssignmentKind.Production, advanced.Premises.Id);
+        foreach (var (item, qty) in Core.industry.IndustryCatalog.Bom(board))
+            advanced.BuyMaterial(advanced.Premises.Id, item, qty * 30);
+        advanced.SetReserve(advanced.Premises.Id, "kit", 100);
+        advanced.SetChannel(board.Id, "shop", true);
+        advanced.CreateOrder(advanced.Premises.Id, $"product:{board.Id}", Core.campaign.OrderMode.TargetStock, 40);
+        advanced.AdvanceDays(14);
+        while (!GameTime.IsWorkday(advanced.Minute))
+            advanced.AdvanceDays(1);
+        advanced.Advance(10 * 60 + 15 - GameTime.MinuteOfDay(advanced.Minute));
+        var week = board.History.TakeLast(7).ToList();
+        report.Add($"Atelier : {workshop.Ok}, ligne : {layout.Message} ; {board.Name} : {board.Produced} fabriquées, stock {advanced.TotalStock($"p:{board.Id}")}, " +
+                   $"{week.Sum(d => d.Sold):0} vendues et {week.Sum(d => d.Lost):0} perdues en 7 j, pannes {board.DefectRate:P1}, " +
+                   $"recherche « Validation de PC » {advanced.Research.FirstOrDefault()?.Progress:0}/{advanced.Research.FirstOrDefault()?.Def.Effort:0}.");
+        later.Scene.ResetCamera();
+        await Wait(0.5);
+        await Shot(window, folder, "30_atelier", report);
+        later.OpenRoot(new BuildPanel());
+        later.PushPanel(new IndustryPanel());
+        await Shot(window, folder, "31_production", report);
+        later.ClosePanels();
+        later.OpenRoot(new TreePanel());
+        later.PushPanel(new ResearchPanel());
+        await Shot(window, folder, "32_recherche", report);
+        later.ClosePanels();
+        later.OpenRoot(new ProjectsPanel());
+        later.PushPanel(new ProjectPanel(board.Id));
+        await Shot(window, folder, "33_materiel", report);
+        later.ClosePanels();
+
         // Faillite : trois embauches sans revenus
         var doomed = Campaign.New("Capture faillite", "Alex", "Studio Perdu", FounderProfile.Designer, 3);
         var reckless = new Autopilot(Strategies.All.First(s => s.Name == "recrutement_precoce"));

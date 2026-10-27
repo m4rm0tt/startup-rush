@@ -8,8 +8,10 @@ namespace Core.campaign;
 /// </summary>
 public record LaunchChallenge(string Kind, string Rule, IReadOnlyList<string> Items, IReadOnlyList<int> Answer)
 {
-    /// <summary>« deploy » : remettre les étapes dans l'ordre. « review » : repérer les tests en anomalie.</summary>
+    /// <summary>« deploy » : remettre les étapes dans l'ordre. « review » : repérer les tests en anomalie. « calibrate » : régler.</summary>
     public bool Ordering => Kind == "deploy";
+
+    public bool Calibration => Kind == "calibrate";
 
     /// <summary>
     /// Score d'une réponse. Déploiement : part des étapes à la bonne place. Recette : anomalies trouvées moins fausses alertes,
@@ -21,6 +23,13 @@ public record LaunchChallenge(string Kind, string Rule, IReadOnlyList<string> It
         {
             int right = Enumerable.Range(0, Math.Min(answer.Count, Answer.Count)).Count(i => answer[i] == Answer[i]);
             return (double)right / Answer.Count;
+        }
+        if (Calibration)
+        {
+            // Pile sur la cible : plein score ; à un cran : la moitié ; au-delà : rien
+            double sum = Enumerable.Range(0, Math.Min(answer.Count, Answer.Count))
+                .Sum(i => Math.Abs(answer[i] - Answer[i]) switch { 0 => 1.0, 1 => 0.5, _ => 0 });
+            return sum / Answer.Count;
         }
         var picked = answer.ToHashSet();
         int found = picked.Count(Answer.Contains), wrong = picked.Count - found;
@@ -98,6 +107,13 @@ public partial class Campaign
     {
         var product = FindProduct(productId) ?? throw new ArgumentException("Projet inconnu.");
         var random = new SimRandom(Seed ^ ((ulong)productId * 0xD1B54A32D192ED03UL) ^ 0x5EED);
+        if (product.IsHardware)
+        {
+            // Calibration de la première série : trois réglages à amener dans leur zone (0 à 10)
+            string[] knobs = ["Couple de vissage", "Température de soudure", "Tension de test"];
+            var targets = knobs.Select(_ => random.Next(2, 9)).ToList();
+            return new LaunchChallenge("calibrate", "Amène chaque réglage sur sa valeur cible (zone verte).", knobs, targets);
+        }
         if (product.ArchetypeId == "game")
         {
             // Huit comptes rendus de test ; trois ne donnent pas le résultat attendu
@@ -137,7 +153,13 @@ public partial class Campaign
         double bonus = Math.Clamp(score, 0, 1);
         double bugs = product.Bugs;
         var result = Launch(productId);
-        if (result.Ok && bonus > 0)
+        if (result.Ok && product.IsHardware)
+        {
+            // Matériel : le réglage profite à la première série (moins de défauts), pas aux bugs du logiciel embarqué
+            product.FirstSeriesLeft = Tuning.Hardware.FirstSeries;
+            product.FirstSeriesScore = bonus;
+        }
+        else if (result.Ok && bonus > 0)
             product.Bugs = Math.Round(bugs * (1 - LaunchBugReduction * bonus), 1);
         return result;
     }

@@ -14,14 +14,42 @@ public class TeamPanel : GamePanel
     public override string Title => "Équipe";
     public override string Context => $"{Campaign.People.Count} personne(s) · {Campaign.Staff.Sum(p => p.Salary):N0} CHF de salaires par mois";
 
-    public static string AssignmentText(Campaign campaign, Person person) =>
-        person.Assignment.Kind == AssignmentKind.Project && campaign.FindProduct(person.Assignment.TargetId) is { } product
-            ? product.Name
-            : campaign.CurrentProject(person) is { } auto ? $"Auto ({auto.Name})" : "Auto";
+    public static string AssignmentText(Campaign campaign, Person person) => person.Assignment.Kind switch
+    {
+        AssignmentKind.Project when campaign.FindProduct(person.Assignment.TargetId) is { } product => product.Name,
+        AssignmentKind.Research => campaign.ResearchFor(campaign.SiteOf(person)) is { } r ? $"Recherche ({r.Def.Name})" : "Recherche",
+        AssignmentKind.Production => $"Production : {campaign.FindSite(person.Assignment.TargetId)?.Name}",
+        _ => campaign.CurrentProject(person) is { } auto ? $"Auto ({auto.Name})" : "Auto",
+    };
 
-    public static WrapPanel AssignmentChoice(Campaign campaign, Person person, System.Action<int> pick) =>
-        Ui.Choice(campaign.Products.OrderBy(p => p.Priority).Select(p => (p.Id, p.Name)).Prepend((0, "Auto")),
-            person.Assignment.Kind == AssignmentKind.Project ? person.Assignment.TargetId : 0, pick);
+    /// <summary>
+    /// Auto, un projet, la recherche (−1) ou la production d'un site qui a des stations (−1000 − site). Les deux derniers
+    /// n'apparaissent qu'avec le matériel.
+    /// </summary>
+    public static WrapPanel AssignmentChoice(Campaign campaign, Person person, System.Action<int> pick)
+    {
+        var options = campaign.Products.OrderBy(p => p.Priority).Select(p => (p.Id, p.Name)).Prepend((0, "Auto")).ToList();
+        if (campaign.IsUnlocked("hardware") && !person.IsFounder)
+        {
+            options.Add((-1, "Recherche"));
+            foreach (var site in campaign.Sites.Where(s => s.Items.Any(i => i.Def.Kind == Core.space.FurnitureKind.Station)))
+                options.Add((-1000 - site.Id, $"Production : {site.Name}"));
+        }
+        int current = person.Assignment.Kind switch
+        {
+            AssignmentKind.Project => person.Assignment.TargetId,
+            AssignmentKind.Research => -1,
+            AssignmentKind.Production => -1000 - person.Assignment.TargetId,
+            _ => 0,
+        };
+        return Ui.Choice(options, current, pick);
+    }
+
+    /// <summary>Applique un choix d'AssignmentChoice.</summary>
+    public static CommandResult ApplyAssignment(Campaign campaign, Person person, int choice) =>
+        choice == -1 ? campaign.AssignTo(person.Id, AssignmentKind.Research)
+        : choice <= -1000 ? campaign.AssignTo(person.Id, AssignmentKind.Production, -1000 - choice)
+        : campaign.Assign(person.Id, choice);
 
     public override Control Build()
     {
@@ -80,7 +108,7 @@ public class TeamPanel : GamePanel
                 Ui.Row(6, Ui.Muted("Énergie", 11), Ui.Bar(person.Energy / 100, person.Energy < 35 ? Palette.Ember : Palette.Leaf, 6, 70),
                     Ui.Muted("Moral", 11), Ui.Bar(person.Morale / 100, person.Morale < 35 ? Palette.Blood : Palette.Sky, 6, 70))));
         var card = Ui.Column(6, header,
-            AssignmentChoice(Campaign, person, id => Run(Campaign.Assign(person.Id, id))),
+            AssignmentChoice(Campaign, person, id => Run(ApplyAssignment(Campaign, person, id))),
             Ui.Row(4,
                 Ui.Button("Congés", () => Screen.Confirm($"Une semaine de congés pour {person.Name} ?", "Absent 5 jours ouvrés (salaire maintenu). Revient en pleine forme, avec un meilleur moral.",
                     "Valider", () => Run(Campaign.Vacation(person.Id)), danger: false), "tab", !Campaign.OnVacation(person) && person.TrainingDiscipline == null),
@@ -112,7 +140,7 @@ public class PersonPanel(int personId) : GamePanel
 
         var column = Ui.Column(8,
             Ui.Section("Travaille sur", Ui.Text(TeamPanel.AssignmentText(Campaign, person), 15, Palette.Lemon),
-                TeamPanel.AssignmentChoice(Campaign, person, id => Run(Campaign.Assign(person.Id, id)))),
+                TeamPanel.AssignmentChoice(Campaign, person, id => Run(TeamPanel.ApplyAssignment(Campaign, person, id)))),
             Ui.Section("Compétences", skills),
             Ui.Section("Horaire", Ui.Choice([(WorkSchedule.Normal, "9 h – 17 h"), (WorkSchedule.Extended, "9 h – 20 h")], person.Schedule, s => Run(Campaign.SetSchedule(person.Id, s))),
                 Ui.Muted("Les soirées produisent un peu plus mais fatiguent et pèsent sur le moral.", 12)));

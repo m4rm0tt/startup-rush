@@ -34,6 +34,16 @@ public partial class Campaign
             Priority = Products.Count == 0 ? 0 : Products.Max(p => p.Priority) + 1,
         };
         Products.Add(product);
+        // Le matériel a ses concurrents, qui n'apparaissent qu'avec le premier projet de ce public
+        if (type.Hardware && Competitors.All(c => c.SegmentId != segment.Id))
+            for (int i = 0, n = Random.Next(1, 3); i < n; i++)
+                Competitors.Add(new Competitor
+                {
+                    Id = NewId(), Name = $"{(new[] { "Volta", "Kobalt", "Neon", "Ferro", "Quartz" })[Random.Next(0, 5)]} {segment.Name}",
+                    SegmentId = segment.Id, Appeal = Math.Round(Random.Range(0.2, 0.34), 2), Price = segment.ReferencePrice,
+                });
+        if (type.Hardware && IsUnlocked("online_shop"))
+            product.SalesChannels.Add("shop");
         foreach (string defId in starters ?? type.Starters)
             QueueComponent(product.Id, defId);
         Notify(Severity.Info, "projet", $"{product.Name} : c'est parti", "L'équipe s'y met toute seule.", $"product:{product.Id}");
@@ -45,6 +55,9 @@ public partial class Campaign
         string[] apps = ["Factura", "Planio", "Notably", "Tempo", "Ledgr", "Fokus"];
         string[] games = ["Pixel Quest", "Lac Rush", "Moon Garden", "Tiny Kingdom", "Sky Courier"];
         string[] other = ["Agora", "Bazar", "Cercle", "Vitrine"];
+        string[] hardware = ["Volute", "Kubik", "Lumen", "Torrent", "Graviton", "Silex"];
+        if (ProductCatalog.Type(typeId).Hardware)
+            return hardware.FirstOrDefault(n => Products.All(p => p.Name != n)) ?? $"Modèle {Products.Count + 1}";
         var pool = typeId == "game" ? games : typeId == "saas" ? apps : other;
         return pool.FirstOrDefault(n => Products.All(p => p.Name != n)) ?? $"Projet {Products.Count + 1}";
     }

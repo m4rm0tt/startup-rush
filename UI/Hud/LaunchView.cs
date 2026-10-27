@@ -22,6 +22,7 @@ public static class LaunchView
         var challenge = campaign.Challenge(productId);
         var order = Enumerable.Range(0, challenge.Items.Count).ToList();
         var picked = new HashSet<int>();
+        var knobs = Enumerable.Repeat(5, challenge.Items.Count).ToList();
         var body = Ui.Column(6);
 
         void Finish(CommandResult result)
@@ -34,6 +35,27 @@ public static class LaunchView
         void Paint()
         {
             body.Children.Clear();
+            if (challenge.Calibration)
+            {
+                // Trois réglages de 0 à 10 : la zone verte est la cible (pile dessus : plein effet ; à un cran : la moitié)
+                for (int k = 0; k < knobs.Count; k++)
+                {
+                    int index = k;
+                    var track = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Spacing = 1 };
+                    for (int v = 0; v <= 10; v++)
+                        track.Children.Add(new Avalonia.Controls.Border
+                        {
+                            Width = 14, Height = 14,
+                            Background = v == knobs[k] ? Palette.Ink : System.Math.Abs(v - challenge.Answer[k]) == 0 ? Palette.Leaf
+                                : System.Math.Abs(v - challenge.Answer[k]) == 1 ? Palette.Lemon : Palette.Slate,
+                        });
+                    body.Children.Add(Ui.Row(6, Ui.Text(challenge.Items[k], 14, Palette.Cloud, wrap: false),
+                        Ui.Button("−", () => { knobs[index] = System.Math.Max(0, knobs[index] - 1); Paint(); }, "tab"),
+                        track,
+                        Ui.Button("+", () => { knobs[index] = System.Math.Min(10, knobs[index] + 1); Paint(); }, "tab")));
+                }
+                return;
+            }
             for (int k = 0; k < order.Count; k++)
             {
                 int index = challenge.Ordering ? order[k] : k;
@@ -65,15 +87,18 @@ public static class LaunchView
             Ui.Title($"Lancer {product.Name}"),
             Ui.Text(challenge.Rule, 15),
             body,
-            Ui.Muted($"Bonus : jusqu'à {Campaign.LaunchBugReduction:P0} de bugs en moins à la sortie. Sans jouer, le lancement se fait au résultat de base.", 13),
+            Ui.Muted(challenge.Calibration
+                ? $"Bonus : jusqu'à 50 % de pannes en moins sur les {Tuning.Hardware.FirstSeries} premières unités. Sans jouer, la série part au réglage de base."
+                : $"Bonus : jusqu'à {Campaign.LaunchBugReduction:P0} de bugs en moins à la sortie. Sans jouer, le lancement se fait au résultat de base.", 13),
             Ui.Row(8,
                 Ui.Button("Valider et lancer", () =>
                 {
                     // Déploiement : l'ordre choisi (indices des étapes présentées) ; recette : les tests cochés
-                    double score = challenge.Score(challenge.Ordering ? order : picked.ToList());
+                    double score = challenge.Score(challenge.Calibration ? knobs : challenge.Ordering ? order : picked.ToList());
                     var result = campaign.LaunchWith(productId, score);
                     if (result.Ok)
-                        screen.Toast($"Mini-jeu : {score:P0} de réussite, {Campaign.LaunchBugReduction * score:P0} de bugs en moins.", true);
+                        screen.Toast(challenge.Calibration ? $"Calibration : {score:P0}, {0.5 * score:P0} de pannes en moins sur la première série."
+                            : $"Mini-jeu : {score:P0} de réussite, {Campaign.LaunchBugReduction * score:P0} de bugs en moins.", true);
                     Finish(result);
                 }, "gold"),
                 Ui.Button("Lancer sans jouer", () => Finish(campaign.LaunchWith(productId, 0))),

@@ -592,6 +592,14 @@ public class GameScreen : UserControl, IScreen
                 OpenRoot(new ProjectsPanel());
                 PushPanel(new CloudPanel());
                 break;
+            case "industry":
+                OpenRoot(new BuildPanel());
+                PushPanel(new IndustryPanel());
+                break;
+            case "research":
+                OpenRoot(new TreePanel());
+                PushPanel(new ResearchPanel());
+                break;
             case "tree" or "company":
                 OpenRoot(new TreePanel());
                 break;

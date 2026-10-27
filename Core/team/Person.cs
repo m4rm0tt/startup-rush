@@ -8,7 +8,8 @@ public enum Discipline { Design, Code, Test, Support }
 /// Ce sur quoi une personne travaille : un projet précis, ou « automatique » (le projet prioritaire du portefeuille).
 /// Une personne ne travaille que sur un projet à la fois.
 /// </summary>
-public enum AssignmentKind { None, Project }
+/// <summary>Projet (TargetId = projet), recherche (file de recherche), production (TargetId = site où l'on est opérateur).</summary>
+public enum AssignmentKind { None, Project, Research, Production }
 
 public enum WorkSchedule { Normal, Extended }
 

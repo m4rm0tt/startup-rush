@@ -26,6 +26,8 @@ public class BuildPanel : GamePanel
         FurnitureKind.Partition => "Cloisons",
         FurnitureKind.Personal => "Objets personnels",
         FurnitureKind.Rack or FurnitureKind.RackModule or FurnitureKind.Server => "Serveurs et baies",
+        FurnitureKind.Lab => "Laboratoire",
+        FurnitureKind.Station or FurnitureKind.Conveyor or FurnitureKind.Warehouse or FurnitureKind.Facility => "Production",
         FurnitureKind.Utility or FurnitureKind.Backup or FurnitureKind.Cabling or FurnitureKind.Supervision => "Énergie et réseau",
         _ => "Ambiance"
     };
@@ -119,7 +121,8 @@ public class BuildPanel : GamePanel
         column.Children.Add(Ui.Section("Sites",
             Ui.Muted($"{premises.Name} : {premises.Width} × {premises.Height} cases, {premises.Workstations.Count()} poste(s) installé(s), loyer {(premises.Rent > 0 ? Ui.Chf(premises.Rent) : "compris dans ta rémunération")}." +
                      (Campaign.Sites.Count > 1 ? $" {Campaign.Sites.Count} sites en tout." : "")),
-            Ui.Button(Campaign.Sites.Count > 1 ? "Tous les sites, locations" : "Locaux à louer", () => Open(new SitesPanel()))));
+            Ui.Row(6, Ui.Button(Campaign.Sites.Count > 1 ? "Tous les sites, locations" : "Locaux à louer", () => Open(new SitesPanel())),
+                Campaign.IsUnlocked("hardware") ? Ui.Button("Production et stocks", () => Open(new IndustryPanel())) : null)));
         return column;
     }
 

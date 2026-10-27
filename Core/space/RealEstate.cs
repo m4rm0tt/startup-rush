@@ -66,6 +66,12 @@ public static class RealEstate
         new("datacenter", "Datacenter",
             "Une salle d'hébergement à grande échelle : deux climatiseurs, deux armoires électriques, cage de sécurité livrés.",
             "room_datacenter", -1, 16_000m, 3, 6_000m, ["Gland", "Yverdon"], "datacenter"),
+        new("hw_workshop", "Atelier matériel",
+            "Un atelier pour la recherche et l'assemblage de petites séries. Ses établis et machines du plan ne sont qu'un aperçu.",
+            "room_hw_workshop", 0, 3_400m, 3, 1_500m, ["Renens-Gare", "Bussigny"], "hardware"),
+        new("factory", "Usine",
+            "Une halle avec salle propre, aspiration, refroidissement, armoires de contrôle et racks livrés ; la ligne du plan est une disposition conseillée.",
+            "room_factory_hall", 0, 14_000m, 3, 5_000m, ["Crissier-Sud", "Aclens"], "industry"),
         new("hq", "Siège",
             "Un étage complet : accueil, cafétéria, sanitaires, salles de réunion et cloisons livrés. Jusqu'à 60 postes.",
             "room_hq_floor", 0, 26_000m, 3, 8_000m, ["Lausanne-Gare"], "multisite"),
@@ -84,7 +90,8 @@ public static class RealEstate
     private static bool IsWorkGear(FurnitureDef def) =>
         def.Kind is FurnitureKind.Desk or FurnitureKind.Chair or FurnitureKind.Laptop or FurnitureKind.Tower or FurnitureKind.Monitor
             or FurnitureKind.Keyboard or FurnitureKind.Personal or FurnitureKind.Coffee or FurnitureKind.Supervision
-            or FurnitureKind.Rack or FurnitureKind.RackModule or FurnitureKind.Server or FurnitureKind.Backup;
+            or FurnitureKind.Rack or FurnitureKind.RackModule or FurnitureKind.Server or FurnitureKind.Backup
+            or FurnitureKind.Lab or FurnitureKind.Station or FurnitureKind.Conveyor;
 
     /// <summary>
     /// Crée le local d'une offre à partir de son plan. Ta chambre est livrée avec tes affaires (lit, bureau, vieille tour) ;

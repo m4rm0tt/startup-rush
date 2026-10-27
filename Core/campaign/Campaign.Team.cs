@@ -62,6 +62,7 @@ public partial class Campaign
             return CommandResult.Fail("Projet inconnu.");
         person.Assignment = projectId == 0 ? Assignment.None : new Assignment { Kind = AssignmentKind.Project, TargetId = projectId };
         person.CurrentWorkItemId = null;
+        person.CurrentWorkItemId = null;
         return CommandResult.Success();
     }
 

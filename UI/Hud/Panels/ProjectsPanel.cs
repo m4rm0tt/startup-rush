@@ -125,7 +125,7 @@ public class NewProjectPanel : GamePanel
             bool chosen = t.Id == _type;
             var content = Ui.Column(4,
                 Ui.Row(8, Ui.Icon(available ? t.Icon : "lock", 28), Ui.Text(t.Name, 16, chosen ? Palette.Ink : available ? Palette.Snow : Palette.Fog, bold: true, wrap: false)),
-                Ui.Text(available ? t.Pitch : $"À débloquer : {Core.progress.DevTree.Node(t.UnlockNode!).Name}", 12, chosen ? Palette.Ink : Palette.Fog));
+                Ui.Text(available ? t.Pitch : $"À débloquer : {Campaign.UnlockName(t.UnlockNode!)}", 12, chosen ? Palette.Ink : Palette.Fog));
             var button = new Button { Content = content, Width = 260, Margin = new Thickness(0, 0, 8, 8), IsEnabled = available, HorizontalContentAlignment = HorizontalAlignment.Left };
             button.Classes.Add("tab");
             if (t.Id == _type)

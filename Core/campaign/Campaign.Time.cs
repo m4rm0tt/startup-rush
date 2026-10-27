@@ -36,6 +36,10 @@ public partial class Campaign
         if (Status != CampaignStatus.Running)
             return;
         UpdatePeople();
+        // Les lignes de production avancent par pas de 10 minutes pendant les heures de travail
+        int hour = GameTime.Hour(Minute);
+        if (Orders.Count > 0 && Minute % 10 == 0 && GameTime.IsWorkday(Minute) && hour >= Tuning.Work.DayStartHour && hour < Tuning.Work.DayEndHour)
+            RunProduction();
     }
 
     /// <summary>À appeler après tout changement d'aménagement.</summary>
@@ -133,6 +137,14 @@ public partial class Campaign
     /// <summary>S'installe à son poste s'il est complet, sinon attend près de l'entrée (personnages assis, pas de déplacements).</summary>
     private void TakePlace(Person person)
     {
+        // Un opérateur est à sa ligne : pas de bureau, les stations sont son poste
+        if (person.Assignment.Kind == AssignmentKind.Production && FindSite(person.Assignment.TargetId) is { } plant)
+        {
+            person.Position = NearbyFreeCell(plant, plant.Entrance, person.Id) ?? plant.Entrance;
+            person.Activity = Activity.Working;
+            person.Status = $"Opérateur : {plant.Name}";
+            return;
+        }
         var (site, post) = PostOf(person);
         if (post != null && Layout.Check(site, post) == WorkstationIssue.None)
         {
@@ -163,8 +175,12 @@ public partial class Campaign
     }
 
     /// <summary>Le projet de la personne : celui où elle est affectée, ou le projet prioritaire en automatique.</summary>
-    public Product? CurrentProject(Person person) =>
-        person.Assignment.Kind == AssignmentKind.Project ? FindProduct(person.Assignment.TargetId) : AutoTarget();
+    public Product? CurrentProject(Person person) => person.Assignment.Kind switch
+    {
+        AssignmentKind.Project => FindProduct(person.Assignment.TargetId),
+        AssignmentKind.None => AutoTarget(),
+        _ => null,
+    };
 
     /// <summary>Production du poste de la personne (0 sans ordinateur), écrans en plus et concentration du local compris.</summary>
     public double StationOutput(Person person)
@@ -211,6 +227,14 @@ public partial class Campaign
         if (person.IsFounder)
         {
             FounderTime(person);
+            return;
+        }
+        if (person.Assignment.Kind == AssignmentKind.Production)
+            return;
+        if (person.Assignment.Kind == AssignmentKind.Research)
+        {
+            person.CurrentWorkItemId = null;
+            DoResearch(person, site);
             return;
         }
 

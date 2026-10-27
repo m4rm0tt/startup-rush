@@ -41,7 +41,7 @@ public record SaveEntry(string Path, SaveKind Kind, string Label, SaveSummary? S
 /// </summary>
 public class SaveStore
 {
-    public const int CurrentFormat = 4;
+    public const int CurrentFormat = 5;
     public const int AutosaveSlots = 3;
 
     private static readonly JsonSerializerOptions Options = new()
@@ -115,6 +115,12 @@ public class SaveStore
         if (format == 3)
         {
             v3 = MigrationV3.FromV3(campaignNode);
+            migrated = true;
+        }
+        // Format 4 → 5 : la recherche, le matériel et la production ne font qu'ajouter des données (valeurs par défaut)
+        if (format == 4)
+        {
+            v3 = "Nouvelles activités disponibles : recherche, matériel et production (rien n'a été converti).";
             migrated = true;
         }
         var campaign = campaignNode.Deserialize<Campaign>(Options) ?? throw new InvalidDataException("Campagne illisible.");

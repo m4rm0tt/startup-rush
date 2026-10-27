@@ -46,7 +46,8 @@ public class TreePanel : GamePanel
 
         return Ui.Column(10,
             Hint("tree", "Les points viennent de vrais succès : un projet qui trouve son public, des paliers d'utilisateurs, un premier mois bénéficiaire."),
-            Ui.Row(10, Ui.Number($"{Campaign.DevPoints}", 32, Palette.Gold), Ui.Muted("point(s) de développement", 14)),
+            Ui.Row(10, Ui.Number($"{Campaign.DevPoints}", 32, Palette.Gold), Ui.Muted("point(s) de développement", 14),
+                Campaign.IsUnlocked("hardware") ? Ui.Button($"Recherche ({Campaign.Research.Count} en cours)", () => Open(new ResearchPanel()), "gold") : null),
             columns,
             Selected(),
             Ui.Section("Jalons", milestones));

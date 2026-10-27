@@ -62,6 +62,39 @@ public class ProjectPanel(int productId) : GamePanel
 
     // ------------------------------------------------------------------ Aperçu
 
+    /// <summary>
+    /// Le matériel : ce qu'une unité coûte en matières et rapporte, le stock de tous les sites, les ventes perdues, le taux de
+    /// pannes, et les canaux de vente (visibilité, commission, capacité). Un bouton ouvre la production.
+    /// </summary>
+    private Control HardwareSection(Product product)
+    {
+        decimal cost = Core.industry.IndustryCatalog.UnitCost(product);
+        var sales = Campaign.SalesOf(product);
+        decimal net = product.Price * (decimal)(1 - sales.Commission) - cost;
+        var week = product.History.TakeLast(7).ToList();
+        var column = Ui.Column(4,
+            Ui.Pair("Coût des matières par unité", $"{cost:N0} CHF ({string.Join(", ", Core.industry.IndustryCatalog.Bom(product).Select(kv => $"{kv.Value} × {Core.industry.IndustryCatalog.Material(kv.Key).Name}"))})"),
+            Ui.Pair("Marge par unité", $"{net:N0} CHF (prix {product.Price:N0}, commission {sales.Commission:P0})", net > 0 ? Palette.Leaf : Palette.Ember),
+            Ui.Pair("Stock vendable", $"{sales.Stock} unité(s)", sales.Stock == 0 ? Palette.Ember : null),
+            Ui.Pair("Ventes 7 jours", $"{week.Sum(d => d.Sold):0} vendues, {week.Sum(d => d.Lost):0} perdues", week.Sum(d => d.Lost) > 0 ? Palette.Ember : null),
+            Ui.Pair("Pannes", product.Produced == 0 ? "rien fabriqué encore" : $"{product.DefectRate:P1} des unités reviennent", product.DefectRate > 0.05 ? Palette.Ember : null),
+            product.FirstSeriesLeft > 0 ? Ui.Muted($"Première série réglée : encore {product.FirstSeriesLeft} unités à {product.FirstSeriesScore:P0} du meilleur réglage.", 12) : null);
+        var channels = new WrapPanel();
+        foreach (var channel in Core.industry.IndustryCatalog.Channels)
+        {
+            bool on = product.SalesChannels.Contains(channel.Id);
+            bool unlocked = channel.UnlockNode == null || Campaign.IsUnlocked(channel.UnlockNode);
+            var button = Ui.Button($"{channel.Name}{(on ? " ✓" : "")}", () => Run(Campaign.SetChannel(product.Id, channel.Id, !on)), on ? "tab selected" : "tab", unlocked,
+                unlocked ? $"{channel.Pitch} Jusqu'à {channel.PerDay:0} ventes par jour." : $"À débloquer dans Développement : {Core.progress.DevTree.Node(channel.UnlockNode!).Name}.");
+            button.Margin = new Thickness(0, 0, 6, 6);
+            channels.Children.Add(button);
+        }
+        column.Children.Add(Ui.Text("Canaux de vente", 13, Palette.Fog));
+        column.Children.Add(channels);
+        column.Children.Add(Ui.Button("Production et stocks", () => Open(new IndustryPanel()), "gold"));
+        return Ui.Section("Fabrication et ventes", column);
+    }
+
     private Control Overview(Product product)
     {
         var column = Ui.Column(10);
@@ -90,6 +123,10 @@ public class ProjectPanel(int productId) : GamePanel
                 Refresh();
             })));
         }
+
+        // Matériel : stock, coût, défauts, canaux de vente, fabrication
+        if (product.IsHardware)
+            column.Children.Add(HardwareSection(product));
 
         // Automatisation avancée : l'équipe prépare seule les petites mises à jour
         if (product.IsLive && Campaign.IsUnlocked("automation"))
@@ -331,6 +368,8 @@ public class ProjectPanel(int productId) : GamePanel
 
         double load = Market.Load(product, Campaign.IsUnlocked("optimization"));
         decimal[] caps = [0, 15, 100, 400, 1_500, 5_000];
+        if (product.IsHardware)
+            load = 0;
         bool ownServers = product.HostingInternal || Campaign.Sites.Any(s => Campaign.SiteInfra(s).Hosting > 0);
         string where = product.HostingInternal
             ? $"Tes serveurs : {product.InternalCapacity:0.#} unité(s)" + (product.OverflowActive ? $" + {product.Hosting.Name} ({product.Hosting.MonthlyCost:N0} CHF/mois)" : "")

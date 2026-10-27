@@ -247,6 +247,18 @@ public class SceneCanvas : Control
     private void DrawBubbles(DrawingContext context)
     {
         int waiting = 0;
+        // Les stations de production : en marche (vert) ou arrêtées, avec leur raison dans la fiche (clic)
+        var stations = Premises.Floor.Where(i => Core.industry.IndustryCatalog.Station(i.DefId) != null).OrderBy(i => i.Id).ToList();
+        if (Campaign.Orders.Any(o => o.SiteId == Premises.Id))
+            foreach (var station in stations)
+            {
+                bool working = Campaign.Flow.TryGetValue(station.Id, out var status) && status.Working;
+                var (sx, sy) = Tile(station.X + 0.5, station.Y + 0.5);
+                var mark = PackLibrary.Icon(working ? "icon_success" : "icon_warning", working ? "#62a04b" : "#c8453d");
+                var at = ToScreen(sx - 8, sy - 56);
+                context.DrawImage(mark, new Rect(0, 0, 16, 16), new Rect(at.X, at.Y, 16 * Scale, 16 * Scale));
+            }
+        int operatorIndex = 0;
         foreach (var person in Campaign.People)
         {
             // Chaque site montre les siens : les autres travaillent ailleurs, la simulation ne dépend pas de la vue
@@ -255,6 +267,12 @@ public class SceneCanvas : Control
             double x, y;
             if (person.Activity == Activity.Working && _room!.Heads.TryGetValue(person.Id, out var head))
                 (x, y) = (head.X, head.Y);
+            else if (person.Assignment.Kind == AssignmentKind.Production && stations.Count > 0)
+            {
+                // Un opérateur est montré à côté d'une station de sa ligne (pas de déplacement animé)
+                var station = stations[operatorIndex++ % stations.Count];
+                (x, y) = Tile(station.X + 0.5, station.Y + 1.2);
+            }
             else
             {
                 var (ex, ey) = Tile(Premises.Entrance.X + 0.5, Premises.Entrance.Y + 0.5);
@@ -265,6 +283,8 @@ public class SceneCanvas : Control
             {
                 Activity.Idle => "icon_warning",
                 Activity.Working when person.IsFounder && Campaign.Terminal != null => "icon_terminal",
+                Activity.Working when person.Assignment.Kind == AssignmentKind.Production => "icon_assignment",
+                Activity.Working when person.Assignment.Kind == AssignmentKind.Research => "icon_idea",
                 Activity.Working when person.Status.Contains("répond") => "icon_support",
                 Activity.Working when person.Status.Contains("maintenance") => "icon_maintenance",
                 Activity.Working when person.CurrentWorkItemId == null => "icon_time",

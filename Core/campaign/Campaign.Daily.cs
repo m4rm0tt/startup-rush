@@ -17,6 +17,9 @@ public partial class Campaign
         var date = GameTime.ToDate(Minute);
 
         RunInfrastructure();
+        RunSupply();
+        PayResearch();
+        ChannelFees();
         RunProducts(yesterday, date.DayOfWeek == DayOfWeek.Monday);
         AutoLaunch();
 
@@ -60,9 +63,13 @@ public partial class Campaign
                 continue;
             }
 
-            AdjustHosting(product);
-            var result = Market.Step(product, new DayInputs(product.SupportDone, Competitors, optimization, IsUnlocked("loyalty")), day);
+            if (!product.IsHardware)
+                AdjustHosting(product);
+            var inputs = new DayInputs(product.SupportDone, Competitors, optimization, IsUnlocked("loyalty")) { Sales = product.IsHardware ? SalesOf(product) : null };
+            var result = Market.Step(product, inputs, day);
             product.SupportDone = 0;
+            if (product.IsHardware)
+                SettleHardware(product, result);
             if (result.Revenue > 0)
             {
                 if (product.Model == RevenueModel.Ads)
@@ -149,6 +156,8 @@ public partial class Campaign
                 {
                     Category.Hosting => $"Hébergement {previousMonth}",
                     Category.Energy => $"Électricité et réseau des sites {previousMonth}",
+                    Category.Research => $"Budget de recherche {previousMonth}",
+                    Category.ChannelFees => $"Frais des canaux de vente {previousMonth}",
                     _ => $"Marketing {previousMonth}"
                 }, category, amount, due10);
         Ledger.Accrued.Clear();

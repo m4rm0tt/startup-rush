@@ -66,6 +66,11 @@ public class ProductDay
     public double DowntimeHours { get; set; }
     public double MarketingReach { get; set; }
     public double Tickets { get; set; }
+
+    /// <summary>Matériel : unités vendues, et ventes perdues faute de stock ou de capacité des canaux.</summary>
+    public double Sold { get; set; }
+
+    public double Lost { get; set; }
 }
 
 /// <summary>
@@ -122,6 +127,25 @@ public class Product
 
     public decimal HostingCap { get; set; } = 400m;
 
+    /// <summary>Matériel : canaux de vente actifs (« direct », « shop », « distributors »).</summary>
+    public HashSet<string> SalesChannels { get; set; } = ["direct"];
+
+    /// <summary>Matériel : part des unités vendues qui reviendront en panne (moyenne glissante de la production).</summary>
+    public double DefectRate { get; set; }
+
+    /// <summary>Matériel : unités fabriquées depuis le début.</summary>
+    public int Produced { get; set; }
+
+    /// <summary>Matériel : demande d'aujourd'hui pas encore devenue une vente entière (on vend des unités, pas des fractions).</summary>
+    public double PendingDemand { get; set; }
+
+    /// <summary>Matériel : unités de la première série qui profitent encore du réglage du mini-jeu de calibration.</summary>
+    public int FirstSeriesLeft { get; set; }
+
+    public double FirstSeriesScore { get; set; }
+
+    public bool IsHardware => Archetype.Hardware;
+
     /// <summary>Hébergé sur tes propres serveurs (Campaign.Infra.cs) ; le débordement va à l'offre externe, sous le plafond.</summary>
     public bool HostingInternal { get; set; }
 
@@ -135,7 +159,7 @@ public class Product
     public double Capacity => HostingInternal ? InternalCapacity + (OverflowActive ? Hosting.Capacity : 0) : Hosting.Capacity;
 
     /// <summary>Ce que coûte l'hébergement externe par mois (rien en interne sans débordement : l'électricité est payée par site).</summary>
-    public decimal ExternalMonthlyCost => !IsLive || HostingInternal && !OverflowActive ? 0 : Hosting.MonthlyCost;
+    public decimal ExternalMonthlyCost => !IsLive || IsHardware || HostingInternal && !OverflowActive ? 0 : Hosting.MonthlyCost;
 
     public decimal MarketingBudget { get; set; }
     public string MarketingChannelId { get; set; } = "social";

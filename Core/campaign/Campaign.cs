@@ -90,7 +90,9 @@ public partial class Campaign
         return (Headquarters, null);
     }
 
-    public Premises SiteOf(Person person) => PostOf(person).Site;
+    /// <summary>Le site où la personne travaille : celui de sa production pour un opérateur, sinon celui de son poste.</summary>
+    public Premises SiteOf(Person person) =>
+        person.Assignment.Kind == AssignmentKind.Production && FindSite(person.Assignment.TargetId) is { } plant ? plant : PostOf(person).Site;
     public List<StoredItem> Storage { get; set; } = new();
     public List<Person> People { get; set; } = new();
     public List<Candidate> Candidates { get; set; } = new();
@@ -193,7 +195,7 @@ public partial class Campaign
     {
         string[] names = ["Flowly", "Tasko", "Brikk", "Nuvola", "Kanto", "Lumio", "Vendo", "Marketto", "Swapz", "Trova", "Zelia", "Orbit"];
         int n = 0;
-        foreach (var segment in ProductCatalog.Segments)
+        foreach (var segment in ProductCatalog.Segments.Where(s => !ProductCatalog.Type(s.TypeId).Hardware))
         {
             int count = segment.TypeId == "social" ? 2 : Random.Next(1, 3);
             for (int i = 0; i < count; i++)
@@ -264,7 +266,8 @@ public partial class Campaign
             notice.Resolved = true;
     }
 
-    public bool IsUnlocked(string node) => Unlocked.Contains(node);
+    /// <summary>Un nœud de l'arbre acheté, ou une recherche terminée (« res_… »).</summary>
+    public bool IsUnlocked(string node) => Unlocked.Contains(node) || ResearchDone.Contains(node);
 
     /// <summary>Accorde des points de développement pour un accomplissement, une seule fois.</summary>
     public void Award(string key, int points, string why)

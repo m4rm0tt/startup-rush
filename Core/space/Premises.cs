@@ -149,9 +149,12 @@ public class Premises
     public IEnumerable<Cell> AccessCells(PlacedItem item) =>
         item.HostId != null || item.Wall != null ? [] : AccessCells(item.Def, item.X, item.Y, item.Facing);
 
-    /// <summary>Les postes de travail : chaque socket de chaise de chaque bureau.</summary>
+    /// <summary>
+    /// Les postes de travail : chaque socket de chaise de chaque bureau, et des établis et bancs de laboratoire (ils
+    /// servent eux-mêmes d'outil de travail : pas d'ordinateur à ajouter).
+    /// </summary>
     public IEnumerable<Workstation> Workstations =>
-        Desks.SelectMany(d => d.Def.Pack.Facing(d.Facing).Sockets.Keys.Where(s => s == "chair" || s.StartsWith("chair_")).Select(s => new Workstation(d, s)));
+        Desks.Concat(Floor.Where(i => i.Def.Kind == FurnitureKind.Lab)).SelectMany(d => d.Def.Pack.Facing(d.Facing).Sockets.Keys.Where(s => s == "chair" || s.StartsWith("chair_")).Select(s => new Workstation(d, s)));
 
     public PlacedItem? ChairOf(Workstation post) => ChildAt(post.Desk, post.ChairSocket);
 
@@ -175,7 +178,8 @@ public class Premises
 
     /// <summary>L'ordinateur du poste : un portable dans son socket, ou une tour (qui demande alors un écran et un clavier).</summary>
     public PlacedItem? ComputerOf(Workstation post) =>
-        ChildAt(post.Desk, "laptop" + post.Suffix) is { Def.Kind: FurnitureKind.Laptop } laptop ? laptop
+        post.Desk.Def.Kind == FurnitureKind.Lab ? post.Desk
+        : ChildAt(post.Desk, "laptop" + post.Suffix) is { Def.Kind: FurnitureKind.Laptop } laptop ? laptop
         : post.Suffix == "" && ChildAt(post.Desk, "tower_floor") is { Def.Kind: FurnitureKind.Tower } tower ? tower
         : null;
 

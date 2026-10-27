@@ -68,6 +68,8 @@ public static class Infrastructure
         "hq" => (60, 5, 400),
         "server_room" => (12, 0, 300),
         "datacenter" => (40, 0, 2_000),
+        "hw_workshop" => (20, 3, 100),
+        "factory" => (120, 10, 300),
         _ => (5, 1, 50),
     };
 

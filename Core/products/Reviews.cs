@@ -67,6 +67,9 @@ public static class Reviews
         Need.Trust => "« Ça fait un peu amateur. »",
         Need.Conversion => "« Je ne vois pas pourquoi payer. »",
         Need.Productivity => "« Pratique, mais il manque l'essentiel pour bosser. »",
+        Need.Power => "« Pas assez puissant pour le prix. »",
+        Need.Durability => "« Je doute que ça tienne longtemps. »",
+        Need.Portability => "« Trop lourd, et la batterie ne tient pas. »",
         _ => "« Pas assez d'offres. »"
     };
 

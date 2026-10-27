@@ -12,6 +12,16 @@ public record PackFacing(
 {
     /// <summary>Emplacements d'une baie (en U), 0 pour un autre objet.</summary>
     public int Slots { get; init; }
+
+    /// <summary>Ports de flux (machines, convoyeurs) : case relative, sens (in, out, inout) et direction vers le voisin.</summary>
+    public IReadOnlyList<PackPort> Ports { get; init; } = [];
+}
+
+/// <summary>Un port de flux : « Dir » pointe vers la case voisine qu'il relie (+U, −U, +V, −V).</summary>
+public record PackPort(string Name, string Kind, Cell Tile, Cell Dir)
+{
+    public bool In => Kind is "in" or "inout";
+    public bool Out => Kind is "out" or "inout";
 }
 
 /// <summary>
@@ -105,6 +115,14 @@ public static class Pack
 
     private static Cell CellOf(JsonElement e) => new(e[0].GetInt32(), e[1].GetInt32());
 
+    private static Cell Direction(string dir) => dir switch
+    {
+        "+U" => new Cell(1, 0),
+        "-U" => new Cell(-1, 0),
+        "+V" => new Cell(0, 1),
+        _ => new Cell(0, -1),
+    };
+
     private static Dictionary<string, PackAsset> LoadAssets()
     {
         using var document = JsonDocument.Parse(Resource("pack/manifest.json"));
@@ -126,7 +144,11 @@ public static class Pack
                         foreach (var sock in s.EnumerateObject())
                             sockets[sock.Name] = sock.Value.GetProperty("accepts").EnumerateArray().Select(x => x.GetString()!).ToArray();
                     int slots = o.Value.TryGetProperty("slots", out var sl) && sl.ValueKind == JsonValueKind.Object && sl.TryGetProperty("count", out var n) ? n.GetInt32() : 0;
-                    facings[o.Name] = new PackFacing(o.Name, collision, access, sockets) { Slots = slots };
+                    var ports = o.Value.TryGetProperty("ports", out var po) && po.ValueKind == JsonValueKind.Array
+                        ? po.EnumerateArray().Select(x => new PackPort(x.GetProperty("name").GetString()!, x.GetProperty("kind").GetString()!,
+                            CellOf(x.GetProperty("tile")), Direction(x.GetProperty("world_dir").GetString()!))).ToList()
+                        : [];
+                    facings[o.Name] = new PackFacing(o.Name, collision, access, sockets) { Slots = slots, Ports = ports };
                 }
             bool centered = a.TryGetProperty("footprint_tiles", out var fp) && fp.ValueKind == JsonValueKind.Null
                             && a.TryGetProperty("size_su", out var su) && su.ValueKind != JsonValueKind.Null;

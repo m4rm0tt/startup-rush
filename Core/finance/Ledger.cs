@@ -10,7 +10,10 @@ public enum Category
     Interest, LoanRepayment, Deposit, Moving, Fees, Refund, Registration,
 
     // Lot 4 : services cloud vendus (recette), électricité et réseau des sites (dépense)
-    Cloud, Energy
+    Cloud, Energy,
+
+    // Lot 5 : matières achetées, garanties et retours, recherche, frais des canaux de vente
+    Materials, Warranty, Research, ChannelFees
 }
 
 /// <summary>Un mouvement de trésorerie (argent réellement entré ou sorti).</summary>

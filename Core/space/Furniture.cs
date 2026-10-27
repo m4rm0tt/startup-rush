@@ -49,6 +49,21 @@ public enum FurnitureKind
     /// <summary>Console de supervision (NOC).</summary>
     Supervision,
 
+    /// <summary>Équipement de laboratoire : un poste de recherche (établi, banc) ou un instrument qui rend la recherche possible.</summary>
+    Lab,
+
+    /// <summary>Station de production (Core/industry) : une étape d'une recette.</summary>
+    Station,
+
+    /// <summary>Convoyeur, jonction, table de transfert ou fin de ligne : relie les stations port à port.</summary>
+    Conveyor,
+
+    /// <summary>Rangement de stock (rack à palettes, palette, bac).</summary>
+    Warehouse,
+
+    /// <summary>Zone et utilités d'usine (salle propre, aspiration, armoire de contrôle, rodage).</summary>
+    Facility,
+
     /// <summary>Objet du pack sans effet de jeu pour l'instant : il se dessine, rien de plus (voir docs/asset_usage.csv).</summary>
     Decor
 }
@@ -295,6 +310,48 @@ public static class FurnitureCatalog
         new("ups_floor", "Onduleur au sol", FurnitureKind.Backup, 6_000m, "Couvre 10 kW en cas de coupure.") { Backup = 10, UnlockNode = "server_room" },
         new("supervision_console", "Console de supervision", FurnitureKind.Supervision, 3_500m, "Surveille le site : incidents deux fois moins fréquents, organisation +1.") { Organization = 1, UnlockNode = "server_room" },
         new("workstation_gpu", "Station GPU", FurnitureKind.Tower, 4_800m, "Production ×1,05 ; apporte 2 unités GPU au site. 0,5 kW. Demande un écran et un clavier.") { Output = 1.05, Gpu = 2, Power = 0.5 },
+        // Laboratoires (lot 5) : postes de recherche et instruments ; les recherches demandent certains équipements sur le site
+        new("workbench_electronics", "Établi électronique", FurnitureKind.Lab, 2_400m, "Un poste de recherche (prototypes, cartes) ; accueille instruments et outils.") { Output = 0.9, Power = 0.3, UnlockNode = "hardware" },
+        new("research_station", "Paillasse de recherche", FurnitureKind.Lab, 3_200m, "Un poste de chercheur : +10 % sur les recherches du site (2 au plus).") { Output = 1.0, Power = 0.3, UnlockNode = "hardware" },
+        new("test_bench_pc", "Banc de test PC", FurnitureKind.Lab, 2_800m, "Valide les PC et les serveurs ; un poste de recherche.") { Output = 0.9, Power = 0.6, UnlockNode = "hardware" },
+        new("test_bench_embedded", "Banc de test embarqué", FurnitureKind.Lab, 2_600m, "Valide les cartes et les appareils mobiles ; un poste de recherche.") { Output = 0.9, Power = 0.3, UnlockNode = "hardware" },
+        new("calibration_bench", "Établi de calibration", FurnitureKind.Lab, 2_200m, "La précision des prototypes et des premières séries.") { Power = 0.1, UnlockNode = "hardware" },
+        new("instrument_rack", "Chariot d'instruments", FurnitureKind.Lab, 3_500m, "Des mesures avancées sur les bancs de test.") { Power = 0.4, UnlockNode = "hardware" },
+        new("printer_3d", "Imprimante 3D", FurnitureKind.Lab, 1_800m, "Des pièces et boîtiers de prototype.") { Power = 0.3, UnlockNode = "hardware" },
+        new("laser_cutter", "Découpeuse laser", FurnitureKind.Lab, 6_500m, "Des pièces plates et des gabarits.") { Power = 1.5, UnlockNode = "hardware" },
+        new("cobot_cell", "Cellule cobot", FurnitureKind.Lab, 22_000m, "Un robot collaboratif pour mettre au point l'assemblage automatisé.") { Power = 1.2, UnlockNode = "industry" },
+        new("oscilloscope", "Oscilloscope", FurnitureKind.Lab, 1_200m, "Sur un établi : le diagnostic des signaux.") { Power = 0.1, UnlockNode = "hardware" },
+        new("soldering_station", "Station de soudure", FurnitureKind.Lab, 450m, "Sur un établi : souder les prototypes.") { Power = 0.1, UnlockNode = "hardware" },
+        new("lab_power_supply", "Alimentation de laboratoire", FurnitureKind.Lab, 400m, "Sur un établi : alimenter les prototypes.") { Power = 0.1, UnlockNode = "hardware" },
+        new("microscope", "Microscope", FurnitureKind.Lab, 1_500m, "Sur un établi : inspecter les soudures et les puces.") { UnlockNode = "hardware" },
+        new("cnc_mill_desktop", "Fraiseuse CNC", FurnitureKind.Lab, 4_800m, "Sur un établi : usiner des pièces précises.") { Power = 0.6, UnlockNode = "hardware" },
+
+        // Production (lot 5) : stations reliées par des convoyeurs, port à port (Core/industry)
+        new("assembly_station_manual", "Poste d'assemblage", FurnitureKind.Station, 2_500m, "Assemblage manuel : 30 min par unité, un opérateur.") { Power = 0.2, UnlockNode = "hardware" },
+        new("flash_station", "Station de flash", FurnitureKind.Station, 3_000m, "Installe le logiciel : 10 min par unité, un opérateur.") { Power = 0.5, UnlockNode = "hardware" },
+        new("packing_station", "Poste d'emballage", FurnitureKind.Station, 2_200m, "Emballe et étiquette : 8 min par unité, un opérateur.") { Power = 0.3, UnlockNode = "hardware" },
+        new("assembly_cell_robotic", "Cellule d'assemblage robotisée", FurnitureKind.Station, 45_000m, "Assemblage automatique : 12 min par unité, supervisée.") { Power = 4, UnlockNode = "industry" },
+        new("pick_and_place_machine", "Machine de placement", FurnitureKind.Station, 38_000m, "Place les composants sur les cartes : 6 min par carte.") { Power = 3, UnlockNode = "industry" },
+        new("reflow_oven", "Four de refusion", FurnitureKind.Station, 24_000m, "Soude les cartes : 6 min par carte.") { Power = 6, UnlockNode = "industry" },
+        new("aoi_inspection", "Inspection optique", FurnitureKind.Station, 16_000m, "Inspecte : 4 min par unité.") { Power = 1, UnlockNode = "industry" },
+        new("pcb_tester", "Testeur de cartes", FurnitureKind.Station, 18_000m, "Teste : 8 min par unité.") { Power = 1, UnlockNode = "industry" },
+        new("chip_fab_tool", "Outil de traitement des plaquettes", FurnitureKind.Station, 180_000m, "En salle propre : 4 h par plaquette (20 processeurs).") { Power = 25, UnlockNode = "cleanroom" },
+        new("precision_station", "Station de précision", FurnitureKind.Facility, 60_000m, "Contrôle les plaquettes : sans elle, la moitié des puces d'une plaquette est rebutée.") { Power = 5, UnlockNode = "cleanroom" },
+        new("conveyor_straight", "Convoyeur droit", FurnitureKind.Conveyor, 400m, "Transporte dans un sens (2 unités en attente).") { UnlockNode = "hardware" },
+        new("conveyor_curve", "Convoyeur courbe", FurnitureKind.Conveyor, 450m, "Tourne à angle droit.") { UnlockNode = "hardware" },
+        new("conveyor_junction_t", "Jonction en T", FurnitureKind.Conveyor, 700m, "Réunit deux convoyeurs en un.") { UnlockNode = "hardware" },
+        new("conveyor_transfer_table", "Table de transfert", FurnitureKind.Conveyor, 1_400m, "Renvoie vers n'importe quel côté relié.") { UnlockNode = "hardware" },
+        new("conveyor_end", "Fin de ligne", FurnitureKind.Conveyor, 300m, "Les unités terminées y entrent au stock du site.") { UnlockNode = "hardware" },
+        new("storage_rack_industrial", "Rack à palettes", FurnitureKind.Warehouse, 1_200m, "Stock du site : +150 unités.") { UnlockNode = "hardware" },
+        new("pallet", "Palette", FurnitureKind.Warehouse, 40m, "Stock du site : +40 unités.") { UnlockNode = "hardware" },
+        new("tote_bin", "Bac de manutention", FurnitureKind.Warehouse, 25m, "Stock du site : +10 unités.") { UnlockNode = "hardware" },
+        new("stress_test_rack", "Banc de rodage", FurnitureKind.Facility, 6_000m, "Rode 30 unités par jour sur le site : −40 % de défauts sur celles-là.") { Power = 2, UnlockNode = "hardware" },
+        new("control_cabinet", "Armoire de contrôle", FurnitureKind.Facility, 5_000m, "Supervise 4 machines automatiques sans opérateur.") { Power = 0.3, UnlockNode = "industry" },
+        new("cleanroom_partition", "Cloison de salle propre", FurnitureKind.Facility, 2_500m, "Avec le sas, l'aspiration et le refroidissement : une salle propre (4 cloisons au moins).") { UnlockNode = "cleanroom" },
+        new("cleanroom_airlock", "Sas de salle propre", FurnitureKind.Facility, 12_000m, "L'entrée de la salle propre.") { Power = 1, UnlockNode = "cleanroom" },
+        new("dust_extraction", "Centrale d'aspiration", FurnitureKind.Facility, 6_000m, "Filtration de l'air de la salle propre.") { Power = 2, UnlockNode = "cleanroom" },
+        new("industrial_chiller", "Groupe de refroidissement", FurnitureKind.Utility, 15_000m, "Évacue 30 kW de chaleur ; consomme 6 kW. Demandé par la salle propre.") { Cooling = 30, Power = 6, UnlockNode = "industry" },
+
         new("workstation_compute", "Poste de calcul avancé", FurnitureKind.Tower, 3_900m, "Production ×1,05 ; apporte 12 unités de calcul au site. 0,4 kW. Demande un écran et un clavier.") { Output = 1.05, Compute = 12, Power = 0.4 },
     ];
 

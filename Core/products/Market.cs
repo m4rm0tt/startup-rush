@@ -15,7 +15,14 @@ public class Competitor
 }
 
 /// <summary>Ce que l'entreprise apporte au projet ce jour-là, et les déblocages qui comptent pour le marché.</summary>
-public record DayInputs(double SupportPoints, IReadOnlyList<Competitor> Competitors, bool Optimization = false, bool Loyalty = false);
+public record DayInputs(double SupportPoints, IReadOnlyList<Competitor> Competitors, bool Optimization = false, bool Loyalty = false)
+{
+    /// <summary>Matériel : stock vendable, visibilité et capacité des canaux, commission moyenne (null pour un logiciel).</summary>
+    public HardwareSales? Sales { get; init; }
+}
+
+/// <summary>Ce qui limite les ventes d'un produit matériel aujourd'hui.</summary>
+public record HardwareSales(int Stock, double Visibility, double PerDay, double Commission);
 
 /// <summary>
 /// Le modèle de marché, un pas par jour. Toutes les étapes sont multiplicatives et gardées dans ProductDay,
@@ -96,7 +103,8 @@ public static class Market
         double utilization = Load(product, inputs.Optimization) / Math.Max(0.01, product.Capacity);
         double performance = Performance(utilization);
         double downtime = utilization > 1 ? Math.Min(24, (utilization - 1) * 20) : 0;
-        double appeal = baseAppeal * (1 - bugPenalty) * performance;
+        // Matériel : les pannes connues pèsent sur l'attrait comme des bugs
+        double appeal = baseAppeal * (1 - bugPenalty) * performance * (1 - Math.Min(0.5, product.DefectRate * 2));
 
         double own = Math.Pow(appeal, 3);
         double others = inputs.Competitors.Where(c => c.SegmentId == product.SegmentId).Sum(c => Math.Pow(c.Appeal, 3));
@@ -116,6 +124,18 @@ public static class Market
         bool paysUpfront = product.Model is RevenueModel.Subscription or RevenueModel.Purchase;
         double trial = archetype.TrialRate * (0.4 + 2 * appeal) * (0.5 + share) * (paysUpfront ? Math.Sqrt(priceFactor) : 1);
         double signups = newAware * Math.Min(0.9, trial);
+
+        // Matériel : on ne vend que des unités entières, en stock, par des canaux qui ont de la capacité
+        double sold = 0, lost = 0;
+        if (inputs.Sales is { } channels)
+        {
+            double desired = signups * channels.Visibility + product.PendingDemand;
+            double whole = Math.Floor(desired);
+            sold = Math.Min(whole, Math.Min(channels.Stock, Math.Floor(channels.PerDay)));
+            lost = whole - sold;
+            product.PendingDemand = desired - whole;
+            signups = sold;
+        }
 
         // Support : tickets du jour contre le temps que l'équipe y consacre
         double tickets = (product.Users + product.Sellers) / 1000 * Design.TicketRate(product) * archetype.TicketFactor * 4 * (1 + product.Bugs * 0.02);
@@ -168,7 +188,7 @@ public static class Market
                 // Chaque nouveau joueur achète le jeu une fois ; les joueurs actifs ne paient plus
                 paying = signups;
                 product.TotalBuyers += signups;
-                revenue = (decimal)signups * product.Price;
+                revenue = (decimal)signups * product.Price * (1 - (decimal)(inputs.Sales?.Commission ?? 0));
                 break;
         }
         product.Paying = paying;
@@ -193,6 +213,8 @@ public static class Market
             DowntimeHours = downtime,
             MarketingReach = reach,
             Tickets = tickets,
+            Sold = sold,
+            Lost = lost,
         };
         product.History.Add(result);
         if (product.History.Count > Tuning.Products.HistoryDays)

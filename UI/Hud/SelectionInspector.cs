@@ -33,6 +33,13 @@ public static class SelectionInspector
         var column = Ui.Column(6, Ui.Row(Ui.Image(thumb, thumb.PixelSize.Width, thumb.PixelSize.Height),
             Ui.Column(2, Ui.Title(def.Name, 18), Ui.Muted(def.Effect, 13))));
 
+        // Station de production : son étape, son temps, ce qui la bloque
+        if (Core.industry.IndustryCatalog.Station(def.Id) is { } station)
+        {
+            var status = campaign.Flow.TryGetValue(item.Id, out var s) ? s : new FlowStatus(false, "En attente");
+            column.Children.Add(Ui.Muted($"Étape : {Core.industry.IndustryCatalog.StepName(station.Step)}, {station.Minutes:0} min par unité{(station.Manual ? ", un opérateur" : ", supervisée")}.", 13));
+            column.Children.Add(Ui.Text(status.Text, 15, status.Working ? Palette.Leaf : Palette.Ember));
+        }
         if (def.Kind == FurnitureKind.Desk)
             foreach (var post in campaign.Premises.Workstations.Where(p => p.Desk.Id == item.Id))
             {

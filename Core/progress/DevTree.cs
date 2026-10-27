@@ -17,6 +17,7 @@ public static class DevTree
         new("advanced", "Création", "Composants avancés", "gem", "Les composants peuvent monter au niveau 3.", 1),
         new("community", "Création", "Apps communautaires", "people", "Nouveau type de projet : app communautaire financée par la publicité.", 2),
         new("multiplayer", "Création", "Multijoueur", "dice", "Nouveau composant de jeu : le multijoueur en ligne.", 2, "advanced"),
+        new("hardware", "Création", "Matériel", "computer", "Concevoir du matériel : laboratoires, recherches, atelier d'assemblage, louer un atelier.", 2),
         new("marketplace", "Création", "Places de marché", "tag", "Nouveau type de projet : place de marché à commission.", 3, "community"),
 
         new("hiring", "Organisation", "Recrutement élargi", "user", "2 candidats de plus chaque semaine, souvent plus expérimentés.", 1),
@@ -37,9 +38,13 @@ public static class DevTree
         new("press", "Commercial", "Salons et presse", "megaphone", "Nouveau canal marketing : salons et presse.", 2, "search_ads"),
         new("cloud_offers", "Commercial", "Offres cloud", "wifi", "Vendre de l'hébergement et du stockage à d'autres entreprises, avec ta propre capacité.", 2, "server_room"),
         new("compute_offers", "Commercial", "Calcul à la demande", "computer", "Vendre du calcul CPU et GPU, à l'unité et au mois.", 2, "cloud_offers"),
+        new("online_shop", "Commercial", "Boutique en ligne", "tag", "Un canal de vente pour le matériel : bien plus visible que la vente directe.", 1, "hardware"),
+        new("distributors", "Commercial", "Distributeurs", "building", "Les revendeurs : très visibles, gros volumes, 25 % de commission.", 2, "online_shop"),
         new("loyalty", "Commercial", "Fidélisation", "heart", "Les utilisateurs partent 15 % moins vite.", 2),
 
         new("quality_lab", "Innovation", "Laboratoire qualité", "check", "+0,05 de qualité sur tout le travail.", 2),
+        new("industry", "Innovation", "Industrialisation", "building", "Machines automatiques (lignes de cartes, cellule robotisée), cobot, louer une usine.", 3, "hardware"),
+        new("cleanroom", "Innovation", "Salle propre", "shield", "Fabriquer ses propres puces : salle propre, traitement des plaquettes, station de précision.", 3, "industry"),
         new("ai_tools", "Innovation", "Assistants de code", "computer", "+10 % de production pour toute l'équipe.", 3, "quality_lab"),
 
         // Outils du boss : le terminal, puis la délégation (Campaign.Terminal.cs, Campaign.Launch.cs)

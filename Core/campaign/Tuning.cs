@@ -69,6 +69,16 @@ public static class Tuning
     }
 
     /// <summary>Le terminal du fondateur : son seul moyen de produire (voir Campaign.Terminal.cs).</summary>
+    /// <summary>Matériel (lot 5).</summary>
+    public static class Hardware
+    {
+        /// <summary>Part d'unités en panne pour une conception de qualité moyenne, sans contrôle ni rodage ⚙️.</summary>
+        public const double BaseDefects = 0.08;
+
+        /// <summary>Unités de la première série qui profitent du réglage du mini-jeu de calibration.</summary>
+        public const int FirstSeries = 100;
+    }
+
     public static class Terminal
     {
         /// <summary>Points de travail d'un mot validé pour un niveau 50 sur un poste standard, à vitesse normale.</summary>

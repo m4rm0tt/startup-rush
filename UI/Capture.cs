@@ -196,6 +196,13 @@ public static class Capture
             await Shot(window, folder, name, report);
             later.ClosePanels();
         }
+        // Une section dépliée reste ouverte malgré le rafraîchissement automatique du menu (chaque seconde)
+        Hud.Ui.SetDetailsOpen("Ce qui y contribue", true);
+        later.OpenRoot(new BuildPanel());
+        await Wait(2.5);
+        await Shot(window, folder, "18c_section_ouverte", report);
+        later.ClosePanels();
+        Hud.Ui.SetDetailsOpen("Ce qui y contribue", false);
         // Aménagement : poser un bureau, fantôme orienté sur une case libre
         later.OpenRoot(new BuildPanel());
         later.Session.SetTool(new BuildTool("desk_simple", Facing: "sw"));

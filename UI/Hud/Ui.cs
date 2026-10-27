@@ -164,15 +164,39 @@ public static class Ui
     /// <summary>Montant signé lisible : « +1 200 CHF », « −300 CHF ».</summary>
     public static string SignedChf(decimal amount) => amount >= 0 ? $"+{amount:N0} CHF" : $"−{-amount:N0} CHF";
 
-    /// <summary>Section repliée par défaut : les détails pour qui veut comprendre, jamais nécessaires pour jouer.</summary>
-    public static Expander Details(string title, Control content, bool open = false) => new()
+    /// <summary>Sections dépliées par le joueur (par titre) : un menu se reconstruit chaque seconde, elles doivent rester ouvertes.</summary>
+    private static readonly HashSet<string> OpenDetails = new();
+
+    /// <summary>Ouvre ou ferme une section dépliable par son titre (parcours de captures).</summary>
+    public static void SetDetailsOpen(string title, bool open)
     {
-        Header = Text(title, 14, Palette.Fog, wrap: false),
-        Content = content,
-        IsExpanded = open,
-        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-        Margin = new Thickness(0, 6, 0, 0),
-    };
+        if (open)
+            OpenDetails.Add(title);
+        else
+            OpenDetails.Remove(title);
+    }
+
+    /// <summary>
+    /// Section repliée par défaut : les détails pour qui veut comprendre, jamais nécessaires pour jouer. Son état (ouverte ou
+    /// fermée) est retenu : sans cela, le rafraîchissement automatique du menu la refermait aussitôt.
+    /// </summary>
+    public static Expander Details(string title, Control content, bool open = false)
+    {
+        var expander = new Expander
+        {
+            Header = Text(title, 14, Palette.Fog, wrap: false),
+            Content = content,
+            IsExpanded = open || OpenDetails.Contains(title),
+            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+            Margin = new Thickness(0, 6, 0, 0),
+        };
+        expander.PropertyChanged += (_, e) =>
+        {
+            if (e.Property == Expander.IsExpandedProperty)
+                SetDetailsOpen(title, expander.IsExpanded);
+        };
+        return expander;
+    }
 
     /// <summary>Un chiffre clé : petite étiquette au-dessus, gros nombre dessous.</summary>
     public static PixelPanel Stat(string label, string value, IBrush? color = null, double width = 150, string? tip = null)

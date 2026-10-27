@@ -1,7 +1,7 @@
 # Bilan d'équilibrage mesuré
 
 Généré par `Tests/balance/BalanceReportTest.cs` (`dotnet test Tests/Tests.csproj --filter Name=WriteBalanceReport`).
-Protocole : 10 façons de jouer × 5 graines (11, 23, 37, 41, 59), 18 mois de jeu, fondateur polyvalent, réglages de `Core/campaign/Tuning.cs`. Joué par `Core/bots/Autopilot.cs` : une décision par jour ouvré, avec les commandes de l'interface. Aucune prestation client n'existe dans cette version.
+Protocole : 11 façons de jouer × 5 graines (11, 23, 37, 41, 59), 18 mois de jeu, fondateur polyvalent, réglages de `Core/campaign/Tuning.cs`. Joué par `Core/bots/Autopilot.cs` : une décision par jour ouvré, avec les commandes de l'interface. Aucune prestation client n'existe dans cette version.
 
 ## Résumé
 
@@ -13,6 +13,7 @@ Protocole : 10 façons de jouer × 5 graines (11, 23, 37, 41, 59), 18 mois de je
 | jeu_simple | 0/5 | 11 895 | 5 281 | 26 | 330 (5/5) | 3 206 | 3 894 | 8 | 26 | 5 618 |
 | delegation | 0/5 | 103 308 | 12 438 | 22 | 120 (5/5) | 34 258 | 1 617 | 16 | 43 | 6 166 |
 | hebergement_maison | 0/5 | 77 865 | 12 384 | 22 | 120 (5/5) | 31 291 | 1 466 | 19 | 103 | 11 503 |
+| materiel | 0/5 | 10 356 | 2 425 | 22 | 120 (5/5) | 19 985 | 1 090 | 19 | 225 | 11 503 |
 | marketing_excessif | 2/5 | 35 088 | -1 996 | 22 | 180 (5/5) | 19 299 | 2 437 | 9 | 35 | 9 157 |
 | exces_puis_correction | 0/5 | 42 209 | 331 | 22 | 150 (5/5) | 17 666 | 2 263 | 10 | 38 | 7 928 |
 | recrutement_precoce | 5/5 | -989 | -1 988 | 10 | 60 (5/5) | 1 280 | 276 | 7 | 26 | 1 401 |
@@ -26,6 +27,7 @@ Protocole : 10 façons de jouer × 5 graines (11, 23, 37, 41, 59), 18 mois de je
 - **jeu_simple** : Un petit jeu grand public, puis des mises à jour régulières.
 - **delegation** : Comme plusieurs_petits, mais le fondateur arrête de taper dès la première embauche : l'équipe développe, lance et prépare les petites mises à jour.
 - **hebergement_maison** : Comme plusieurs_petits, puis une salle serveur dès 40 000 CHF : les projets passent sur ses serveurs, le stockage et l'hébergement libres sont vendus.
+- **materiel** : Comme plusieurs_petits, puis le matériel dès 35 000 CHF : un atelier, la recherche « Conception de cartes », une carte pour les makers fabriquée sur une ligne d'assemblage, vendue en ligne.
 - **marketing_excessif** : Erreur : 6 000 CHF de marketing par mois dès la sortie d'une petite application.
 - **exces_puis_correction** : Même erreur de marketing, mais corrigée dès que l'argent devient tendu (budget coupé, prêt si possible).
 - **recrutement_precoce** : Erreur : trois embauches dès le départ, avant le moindre revenu.
@@ -65,6 +67,11 @@ Protocole : 10 façons de jouer × 5 graines (11, 23, 37, 41, 59), 18 mois de je
 | hebergement_maison | 37 | en activité | 540 | 12 896 → 14 480 → 23 291 → 22 480 → 40 655 → 75 772 | 1 | Ta chambre, Prilly | 9 |
 | hebergement_maison | 41 | en activité | 540 | 12 918 → 14 667 → 21 638 → 16 047 → 34 484 → 77 865 | 1 | Ta chambre, Prilly | 9 |
 | hebergement_maison | 59 | en activité | 540 | 12 899 → 15 030 → 22 736 → 17 177 → 33 589 → 79 347 | 1 | Ta chambre, Prilly | 9 |
+| materiel | 11 | en activité | 540 | 12 867 → 16 240 → 26 013 → 10 854 → 25 318 → 15 944 | 2 | Ta chambre, Prilly | 9 |
+| materiel | 23 | en activité | 540 | 12 955 → 14 169 → 24 512 → 9 648 → 11 145 → 10 781 | 1 | Ta chambre, Prilly | 9 |
+| materiel | 37 | en activité | 540 | 12 896 → 14 480 → 23 291 → 13 794 → 21 573 → 4 930 | 2 | Ta chambre, Prilly | 9 |
+| materiel | 41 | en activité | 540 | 12 918 → 14 667 → 21 638 → 5 203 → 7 768 → 4 134 | 1 | Ta chambre, Prilly | 9 |
+| materiel | 59 | en activité | 540 | 12 899 → 15 030 → 22 736 → 5 529 → 11 267 → 10 356 | 1 | Ta chambre, Prilly | 9 |
 | marketing_excessif | 11 | en activité | 540 | 6 713 → 3 370 → -673 → 1 317 → 12 280 → 39 168 | 0 | Ta chambre, Prilly | 7 |
 | marketing_excessif | 23 | faillite | 207 | 6 853 → 1 055 | 0 | Ta chambre, Prilly | 5 |
 | marketing_excessif | 37 | en activité | 540 | 6 784 → 3 436 → -458 → 1 802 → 12 298 → 39 632 | 0 | Ta chambre, Prilly | 7 |

@@ -143,7 +143,10 @@ public class IndustryPanel : GamePanel
             row++;
             grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
             bool material = IndustryCatalog.IsMaterial(item);
-            string asset = material ? IndustryCatalog.Material(item).Asset : "product_box";
+            // Un produit fini prend l'illustration de sa famille : ordinateur assemblé, carte graphique, ou son carton
+            string family = material ? "" : Campaign.FindProduct(int.Parse(item[2..]))?.ArchetypeId ?? "";
+            string asset = material ? IndustryCatalog.Material(item).Asset
+                : family is "pc" or "server_hw" or "laptop" ? "product_pc_assembled" : family == "gpu_card" ? "product_gpu" : "product_box";
             var thumb = PackLibrary.Thumbnail(asset);
             Cell(Ui.Image(thumb, 20, 20), 0);
             Cell(Ui.Text(IndustryCatalog.ItemName(item, Campaign.FindProduct), 14, Palette.Cloud, wrap: false), 1);

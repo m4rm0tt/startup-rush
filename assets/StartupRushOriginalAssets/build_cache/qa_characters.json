@@ -1,0 +1,132 @@
+{
+ "hair": {
+  "short_crop:se": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "short_crop:sw": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "short_crop:nw": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "short_crop:ne": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "side_part:se": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "side_part:sw": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "side_part:nw": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "side_part:ne": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "curly_top:se": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "curly_top:sw": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "curly_top:nw": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "curly_top:ne": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "long_straight:se": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "long_straight:sw": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "long_straight:nw": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "long_straight:ne": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "bun:se": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "bun:sw": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "bun:nw": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "bun:ne": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "bob:se": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "bob:sw": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "bob:nw": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  },
+  "bob:ne": {
+   "uncovered_scalp_px": 0,
+   "floating_components": 0,
+   "ok": true
+  }
+ },
+ "summary": {
+  "bases": 12,
+  "hairstyles": 6,
+  "orientations": 4,
+  "hair_checks": 24,
+  "hair_failures": 0,
+  "skull_mismatch_layers": 0
+ }
+}

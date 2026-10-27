@@ -1,0 +1,63 @@
+{
+ "id": "module_pod_4",
+ "name_fr": "Îlot de 4 postes",
+ "size_tiles": [
+  4,
+  2
+ ],
+ "objects": [
+  {
+   "asset": "desk_simple",
+   "tile": [
+    1,
+    0
+   ],
+   "facing": "nw",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_m_01",
+      "hair": "hair_side_part",
+      "hair_ramp": "hair_brown"
+     }
+    }
+   }
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    2,
+    0
+   ],
+   "facing": "se",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_f_01",
+      "hair": "hair_bob",
+      "hair_ramp": "hair_black"
+     }
+    }
+   }
+  }
+ ],
+ "zones": [
+  {
+   "name": "Ilot",
+   "rect": [
+    0,
+    0,
+    4,
+    2
+   ]
+  }
+ ]
+}

@@ -1,0 +1,58 @@
+{
+ "ran": true,
+ "build_ok": true,
+ "rooms": [
+  {
+   "room": "room_advanced_lab",
+   "identical": true,
+   "detail": "comparaison avec la reference Python : 0 pixels differents sur 505408, ecart max 0"
+  },
+  {
+   "room": "room_bedroom_start",
+   "identical": true,
+   "detail": "comparaison avec la reference Python : 0 pixels differents sur 167616, ecart max 0"
+  },
+  {
+   "room": "room_datacenter",
+   "identical": true,
+   "detail": "comparaison avec la reference Python : 0 pixels differents sur 644160, ecart max 0"
+  },
+  {
+   "room": "room_factory_hall",
+   "identical": true,
+   "detail": "comparaison avec la reference Python : 0 pixels differents sur 1062720, ecart max 0"
+  },
+  {
+   "room": "room_hq_floor",
+   "identical": true,
+   "detail": "comparaison avec la reference Python : 0 pixels differents sur 1258816, ecart max 0"
+  },
+  {
+   "room": "room_hw_workshop",
+   "identical": true,
+   "detail": "comparaison avec la reference Python : 0 pixels differents sur 328000, ecart max 0"
+  },
+  {
+   "room": "room_office_medium",
+   "identical": true,
+   "detail": "comparaison avec la reference Python : 0 pixels differents sur 412096, ecart max 0"
+  },
+  {
+   "room": "room_open_space",
+   "identical": true,
+   "detail": "comparaison avec la reference Python : 0 pixels differents sur 799296, ecart max 0"
+  },
+  {
+   "room": "room_server_compact",
+   "identical": true,
+   "detail": "comparaison avec la reference Python : 0 pixels differents sur 167616, ecart max 0"
+  },
+  {
+   "room": "room_startup_small",
+   "identical": true,
+   "detail": "comparaison avec la reference Python : 0 pixels differents sur 230208, ecart max 0"
+  }
+ ],
+ "all_identical": true,
+ "dotnet": "10.0.401"
+}

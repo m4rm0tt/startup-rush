@@ -1,0 +1,5159 @@
+[
+ {
+  "id": "monitor_basic",
+  "category": "computers",
+  "subcategory": "monitor",
+  "name_fr": "Ecran simple",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "monitor_basic",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   24,
+   8
+  ],
+  "height_px": 22,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Ecran 22 px ; la zone 'screen' recoit l'affichage dynamique.",
+  "provides": [
+   "monitor"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     37,
+     39
+    ],
+    "anchor": [
+     15,
+     31
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_basic__se.png",
+      "mask": "masks/computers/monitor_basic__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_basic__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "sockets": {
+     "top": {
+      "offset_px": [
+       0,
+       -22
+      ],
+      "world_su": [
+       -0.5,
+       0.0,
+       22
+      ],
+      "accepts": [
+       "webcam"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "webcam sur le bord superieur"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -9,
+        -16
+       ],
+       [
+        11,
+        -26
+       ],
+       [
+        11,
+        -14
+       ],
+       [
+        -9,
+        -4
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     37,
+     39
+    ],
+    "anchor": [
+     14,
+     31
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_basic__sw.png",
+      "mask": "masks/computers/monitor_basic__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_basic__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "sockets": {
+     "top": {
+      "offset_px": [
+       1,
+       -22
+      ],
+      "world_su": [
+       0.0,
+       -0.5,
+       22
+      ],
+      "accepts": [
+       "webcam"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "webcam sur le bord superieur"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -10,
+        -26
+       ],
+       [
+        10,
+        -16
+       ],
+       [
+        10,
+        -4
+       ],
+       [
+        -10,
+        -14
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     37,
+     38
+    ],
+    "anchor": [
+     14,
+     30
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_basic__nw.png",
+      "mask": "masks/computers/monitor_basic__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_basic__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "sockets": {
+     "top": {
+      "offset_px": [
+       1,
+       -22
+      ],
+      "world_su": [
+       0.5,
+       0.0,
+       22
+      ],
+      "accepts": [
+       "webcam"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": "webcam sur le bord superieur"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        10,
+        -26
+       ],
+       [
+        -10,
+        -16
+       ],
+       [
+        -10,
+        -4
+       ],
+       [
+        10,
+        -14
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     37,
+     38
+    ],
+    "anchor": [
+     15,
+     30
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_basic__ne.png",
+      "mask": "masks/computers/monitor_basic__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_basic__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "sockets": {
+     "top": {
+      "offset_px": [
+       0,
+       -22
+      ],
+      "world_su": [
+       0.0,
+       0.5,
+       22
+      ],
+      "accepts": [
+       "webcam"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": "webcam sur le bord superieur"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        11,
+        -16
+       ],
+       [
+        -9,
+        -26
+       ],
+       [
+        -9,
+        -14
+       ],
+       [
+        11,
+        -4
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "primary": "graphite",
+   "screen": "display"
+  },
+  "sockets_def": [
+   {
+    "name": "top",
+    "accepts": [
+     "webcam"
+    ],
+    "local": [
+     0,
+     0.5,
+     22
+    ],
+    "facing_rel": "same",
+    "note": "webcam sur le bord superieur"
+   }
+  ]
+ },
+ {
+  "id": "monitor_large",
+  "category": "computers",
+  "subcategory": "monitor",
+  "name_fr": "Grand ecran",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "monitor_large",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   32,
+   8
+  ],
+  "height_px": 26,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "monitor"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     47,
+     47
+    ],
+    "anchor": [
+     19,
+     37
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_large__se.png",
+      "mask": "masks/computers/monitor_large__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_large__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "sockets": {
+     "top": {
+      "offset_px": [
+       0,
+       -26
+      ],
+      "world_su": [
+       -0.5,
+       0.0,
+       26
+      ],
+      "accepts": [
+       "webcam"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "webcam"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -13,
+        -18
+       ],
+       [
+        15,
+        -32
+       ],
+       [
+        15,
+        -16
+       ],
+       [
+        -13,
+        -2
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     47,
+     47
+    ],
+    "anchor": [
+     18,
+     37
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_large__sw.png",
+      "mask": "masks/computers/monitor_large__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_large__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "sockets": {
+     "top": {
+      "offset_px": [
+       1,
+       -26
+      ],
+      "world_su": [
+       0.0,
+       -0.5,
+       26
+      ],
+      "accepts": [
+       "webcam"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "webcam"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -14,
+        -32
+       ],
+       [
+        14,
+        -18
+       ],
+       [
+        14,
+        -2
+       ],
+       [
+        -14,
+        -16
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     47,
+     46
+    ],
+    "anchor": [
+     18,
+     36
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_large__nw.png",
+      "mask": "masks/computers/monitor_large__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_large__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "sockets": {
+     "top": {
+      "offset_px": [
+       1,
+       -26
+      ],
+      "world_su": [
+       0.5,
+       0.0,
+       26
+      ],
+      "accepts": [
+       "webcam"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": "webcam"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        14,
+        -32
+       ],
+       [
+        -14,
+        -18
+       ],
+       [
+        -14,
+        -2
+       ],
+       [
+        14,
+        -16
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     47,
+     46
+    ],
+    "anchor": [
+     19,
+     36
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_large__ne.png",
+      "mask": "masks/computers/monitor_large__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_large__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "sockets": {
+     "top": {
+      "offset_px": [
+       0,
+       -26
+      ],
+      "world_su": [
+       0.0,
+       0.5,
+       26
+      ],
+      "accepts": [
+       "webcam"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": "webcam"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        15,
+        -18
+       ],
+       [
+        -13,
+        -32
+       ],
+       [
+        -13,
+        -16
+       ],
+       [
+        15,
+        -2
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "primary": "graphite",
+   "screen": "display"
+  },
+  "sockets_def": [
+   {
+    "name": "top",
+    "accepts": [
+     "webcam"
+    ],
+    "local": [
+     0,
+     0.5,
+     26
+    ],
+    "facing_rel": "same",
+    "note": "webcam"
+   }
+  ]
+ },
+ {
+  "id": "monitor_ultrawide",
+  "category": "computers",
+  "subcategory": "monitor",
+  "name_fr": "Ecran ultralarge incurve",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "monitor_ultrawide",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   44,
+   10
+  ],
+  "height_px": 24,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Ecran ultralarge (2 cases de bureau) ; legere courbure suggeree par les ailes.",
+  "provides": [
+   "monitor"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     62,
+     52
+    ],
+    "anchor": [
+     28,
+     39
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_ultrawide__se.png",
+      "mask": "masks/computers/monitor_ultrawide__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_ultrawide__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "sockets": {
+     "top": {
+      "offset_px": [
+       0,
+       -24
+      ],
+      "world_su": [
+       -0.5,
+       0.0,
+       24
+      ],
+      "accepts": [
+       "webcam"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "webcam"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -19,
+        -13
+       ],
+       [
+        21,
+        -33
+       ],
+       [
+        21,
+        -19
+       ],
+       [
+        -19,
+        1
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     63,
+     52
+    ],
+    "anchor": [
+     25,
+     39
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_ultrawide__sw.png",
+      "mask": "masks/computers/monitor_ultrawide__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_ultrawide__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "sockets": {
+     "top": {
+      "offset_px": [
+       1,
+       -24
+      ],
+      "world_su": [
+       0.0,
+       -0.5,
+       24
+      ],
+      "accepts": [
+       "webcam"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "webcam"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -20,
+        -33
+       ],
+       [
+        20,
+        -13
+       ],
+       [
+        20,
+        1
+       ],
+       [
+        -20,
+        -19
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     63,
+     53
+    ],
+    "anchor": [
+     25,
+     38
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_ultrawide__nw.png",
+      "mask": "masks/computers/monitor_ultrawide__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_ultrawide__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "sockets": {
+     "top": {
+      "offset_px": [
+       1,
+       -24
+      ],
+      "world_su": [
+       0.5,
+       0.0,
+       24
+      ],
+      "accepts": [
+       "webcam"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": "webcam"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        20,
+        -33
+       ],
+       [
+        -20,
+        -13
+       ],
+       [
+        -20,
+        1
+       ],
+       [
+        20,
+        -19
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     62,
+     53
+    ],
+    "anchor": [
+     28,
+     38
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_ultrawide__ne.png",
+      "mask": "masks/computers/monitor_ultrawide__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_ultrawide__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "sockets": {
+     "top": {
+      "offset_px": [
+       0,
+       -24
+      ],
+      "world_su": [
+       0.0,
+       0.5,
+       24
+      ],
+      "accepts": [
+       "webcam"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": "webcam"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        21,
+        -13
+       ],
+       [
+        -19,
+        -33
+       ],
+       [
+        -19,
+        -19
+       ],
+       [
+        21,
+        1
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "primary": "graphite",
+   "screen": "display"
+  },
+  "sockets_def": [
+   {
+    "name": "top",
+    "accepts": [
+     "webcam"
+    ],
+    "local": [
+     0,
+     0.5,
+     24
+    ],
+    "facing_rel": "same",
+    "note": "webcam"
+   }
+  ]
+ },
+ {
+  "id": "monitor_arm_second",
+  "category": "computers",
+  "subcategory": "monitor",
+  "name_fr": "Module de deuxieme ecran (bras)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "monitor_arm_second",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   24,
+   10
+  ],
+  "height_px": 30,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Amelioration visible : bras articule + ecran, se pose sur le socket monitor_second.",
+  "provides": [
+   "monitor_arm",
+   "monitor"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     44
+    ],
+    "anchor": [
+     13,
+     36
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_arm_second__se.png",
+      "mask": "masks/computers/monitor_arm_second__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_arm_second__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -7,
+        -21
+       ],
+       [
+        13,
+        -31
+       ],
+       [
+        13,
+        -19
+       ],
+       [
+        -7,
+        -9
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     40,
+     44
+    ],
+    "anchor": [
+     16,
+     36
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_arm_second__sw.png",
+      "mask": "masks/computers/monitor_arm_second__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_arm_second__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -12,
+        -31
+       ],
+       [
+        8,
+        -21
+       ],
+       [
+        8,
+        -9
+       ],
+       [
+        -12,
+        -19
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     40,
+     44
+    ],
+    "anchor": [
+     16,
+     37
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_arm_second__nw.png",
+      "mask": "masks/computers/monitor_arm_second__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_arm_second__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        8,
+        -33
+       ],
+       [
+        -12,
+        -23
+       ],
+       [
+        -12,
+        -11
+       ],
+       [
+        8,
+        -21
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     40,
+     44
+    ],
+    "anchor": [
+     13,
+     37
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/monitor_arm_second__ne.png",
+      "mask": "masks/computers/monitor_arm_second__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/monitor_arm_second__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        13,
+        -23
+       ],
+       [
+        -7,
+        -33
+       ],
+       [
+        -7,
+        -21
+       ],
+       [
+        13,
+        -11
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "primary": "graphite",
+   "screen": "display"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "tower_used",
+  "category": "computers",
+  "subcategory": "tower",
+  "name_fr": "Tour d'occasion",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "tower_used",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   18
+  ],
+  "height_px": 22,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Vieille tour beige, lecteur en facade : point de depart.",
+  "provides": [
+   "tower"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     41,
+     40
+    ],
+    "anchor": [
+     16,
+     31
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/tower_used__se.png",
+      "mask": "masks/computers/tower_used__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/tower_used__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     41,
+     40
+    ],
+    "anchor": [
+     16,
+     31
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/tower_used__sw.png",
+      "mask": "masks/computers/tower_used__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/tower_used__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     41,
+     40
+    ],
+    "anchor": [
+     16,
+     31
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/tower_used__nw.png",
+      "mask": "masks/computers/tower_used__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/tower_used__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     41,
+     40
+    ],
+    "anchor": [
+     16,
+     31
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/tower_used__ne.png",
+      "mask": "masks/computers/tower_used__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/tower_used__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "beige_pc",
+   "metal": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "tower_office",
+  "category": "computers",
+  "subcategory": "tower",
+  "name_fr": "Tour bureautique",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "tower_office",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   8,
+   16
+  ],
+  "height_px": 20,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "tower"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     36,
+     36
+    ],
+    "anchor": [
+     14,
+     28
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/tower_office__se.png",
+      "mask": "masks/computers/tower_office__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/tower_office__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     36,
+     36
+    ],
+    "anchor": [
+     14,
+     28
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/tower_office__sw.png",
+      "mask": "masks/computers/tower_office__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/tower_office__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     36,
+     36
+    ],
+    "anchor": [
+     14,
+     28
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/tower_office__nw.png",
+      "mask": "masks/computers/tower_office__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/tower_office__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     36,
+     36
+    ],
+    "anchor": [
+     14,
+     28
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/tower_office__ne.png",
+      "mask": "masks/computers/tower_office__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/tower_office__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "metal": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "workstation_dev",
+  "category": "computers",
+  "subcategory": "tower",
+  "name_fr": "Station de developpement",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "workstation_dev",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   20
+  ],
+  "height_px": 26,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "tower"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     45,
+     46
+    ],
+    "anchor": [
+     17,
+     36
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_dev__se.png",
+      "mask": "masks/computers/workstation_dev__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_dev__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     45,
+     46
+    ],
+    "anchor": [
+     17,
+     36
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_dev__sw.png",
+      "mask": "masks/computers/workstation_dev__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_dev__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     45,
+     46
+    ],
+    "anchor": [
+     17,
+     36
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_dev__nw.png",
+      "mask": "masks/computers/workstation_dev__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_dev__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     45,
+     46
+    ],
+    "anchor": [
+     17,
+     36
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_dev__ne.png",
+      "mask": "masks/computers/workstation_dev__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_dev__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "metal": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "workstation_creative",
+  "category": "computers",
+  "subcategory": "tower",
+  "name_fr": "Station creative",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "workstation_creative",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   18
+  ],
+  "height_px": 26,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Boitier alu clair, grille ronde en facade.",
+  "provides": [
+   "tower"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     43,
+     44
+    ],
+    "anchor": [
+     16,
+     35
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_creative__se.png",
+      "mask": "masks/computers/workstation_creative__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_creative__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     43,
+     44
+    ],
+    "anchor": [
+     16,
+     35
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_creative__sw.png",
+      "mask": "masks/computers/workstation_creative__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_creative__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     43,
+     44
+    ],
+    "anchor": [
+     16,
+     35
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_creative__nw.png",
+      "mask": "masks/computers/workstation_creative__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_creative__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     43,
+     44
+    ],
+    "anchor": [
+     16,
+     35
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_creative__ne.png",
+      "mask": "masks/computers/workstation_creative__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_creative__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "steel",
+   "metal": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "workstation_gpu",
+  "category": "computers",
+  "subcategory": "tower",
+  "name_fr": "Station GPU / IA",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "workstation_gpu",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   12,
+   22
+  ],
+  "height_px": 30,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Grand boitier a paroi vitree : cartes GPU visibles (sans RGB).",
+  "provides": [
+   "tower"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     50,
+     52
+    ],
+    "anchor": [
+     19,
+     41
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_gpu__se.png",
+      "mask": "masks/computers/workstation_gpu__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_gpu__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     50,
+     52
+    ],
+    "anchor": [
+     19,
+     41
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_gpu__sw.png",
+      "mask": "masks/computers/workstation_gpu__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_gpu__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     50,
+     52
+    ],
+    "anchor": [
+     19,
+     41
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_gpu__nw.png",
+      "mask": "masks/computers/workstation_gpu__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_gpu__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     50,
+     52
+    ],
+    "anchor": [
+     19,
+     41
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_gpu__ne.png",
+      "mask": "masks/computers/workstation_gpu__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_gpu__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "glass": "glass",
+   "accent": "sky",
+   "metal": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "workstation_compute",
+  "category": "computers",
+  "subcategory": "tower",
+  "name_fr": "Poste de calcul avance",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "workstation_compute",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   18,
+   22
+  ],
+  "height_px": 32,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Double unite au pied du bureau, refroidissement liquide.",
+  "provides": [
+   "tower"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     54,
+     52
+    ],
+    "anchor": [
+     17,
+     42
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_compute__se.png",
+      "mask": "masks/computers/workstation_compute__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_compute__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     54,
+     56
+    ],
+    "anchor": [
+     17,
+     42
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_compute__sw.png",
+      "mask": "masks/computers/workstation_compute__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_compute__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     56,
+     56
+    ],
+    "anchor": [
+     26,
+     42
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_compute__nw.png",
+      "mask": "masks/computers/workstation_compute__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_compute__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     56,
+     52
+    ],
+    "anchor": [
+     26,
+     42
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/workstation_compute__ne.png",
+      "mask": "masks/computers/workstation_compute__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/workstation_compute__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "glass": "glass",
+   "accent": "sky",
+   "metal": "graphite"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "graphite",
+    "fixed": [
+     "steel"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "mini_pc",
+  "category": "computers",
+  "subcategory": "tower",
+  "name_fr": "Mini-PC",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "mini_pc",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   8,
+   8
+  ],
+  "height_px": 3,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Se pose sur le bureau.",
+  "provides": [
+   "desk_item",
+   "tower_mini"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     22,
+     15
+    ],
+    "anchor": [
+     10,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/mini_pc__se.png",
+      "mask": "masks/computers/mini_pc__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/mini_pc__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     22,
+     15
+    ],
+    "anchor": [
+     10,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/mini_pc__sw.png",
+      "mask": "masks/computers/mini_pc__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/mini_pc__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     22,
+     15
+    ],
+    "anchor": [
+     10,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/mini_pc__nw.png",
+      "mask": "masks/computers/mini_pc__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/mini_pc__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     22,
+     15
+    ],
+    "anchor": [
+     10,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/mini_pc__ne.png",
+      "mask": "masks/computers/mini_pc__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/mini_pc__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "keyboard_mouse",
+  "category": "computers",
+  "subcategory": "peripheral",
+  "name_fr": "Clavier et souris",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "keyboard_mouse",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   22,
+   8
+  ],
+  "height_px": 2,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "keyboard"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     34,
+     20
+    ],
+    "anchor": [
+     14,
+     12
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/keyboard_mouse__se.png",
+      "mask": "masks/computers/keyboard_mouse__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "fabric"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/keyboard_mouse__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     34,
+     21
+    ],
+    "anchor": [
+     14,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/keyboard_mouse__sw.png",
+      "mask": "masks/computers/keyboard_mouse__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "fabric"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/keyboard_mouse__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     35,
+     21
+    ],
+    "anchor": [
+     20,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/keyboard_mouse__nw.png",
+      "mask": "masks/computers/keyboard_mouse__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "fabric"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/keyboard_mouse__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     35,
+     20
+    ],
+    "anchor": [
+     20,
+     12
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/keyboard_mouse__ne.png",
+      "mask": "masks/computers/keyboard_mouse__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "fabric"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/keyboard_mouse__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "fabric": "navy"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "laptop_old",
+  "category": "computers",
+  "subcategory": "laptop",
+  "name_fr": "Portable ancien",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "laptop_old",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   16,
+   12
+  ],
+  "height_px": 13,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Epais, beige, petit ecran : point de depart.",
+  "provides": [
+   "laptop"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     37
+    ],
+    "anchor": [
+     23,
+     28
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_old__se.png",
+      "mask": "masks/computers/laptop_old__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_old__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -15,
+        -12
+       ],
+       [
+        -1,
+        -19
+       ],
+       [
+        1,
+        -10
+       ],
+       [
+        -13,
+        -3
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     45,
+     37
+    ],
+    "anchor": [
+     16,
+     28
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_old__sw.png",
+      "mask": "masks/computers/laptop_old__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_old__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        1,
+        -19
+       ],
+       [
+        15,
+        -12
+       ],
+       [
+        13,
+        -3
+       ],
+       [
+        -1,
+        -10
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     45,
+     34
+    ],
+    "anchor": [
+     16,
+     21
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_old__nw.png",
+      "mask": "masks/computers/laptop_old__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_old__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        15,
+        -11
+       ],
+       [
+        1,
+        -4
+       ],
+       [
+        -1,
+        3
+       ],
+       [
+        13,
+        -4
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     40,
+     34
+    ],
+    "anchor": [
+     23,
+     21
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_old__ne.png",
+      "mask": "masks/computers/laptop_old__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_old__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -1,
+        -4
+       ],
+       [
+        -15,
+        -11
+       ],
+       [
+        -13,
+        -4
+       ],
+       [
+        1,
+        3
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "beige_pc",
+   "screen": "display"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "laptop_standard",
+  "category": "computers",
+  "subcategory": "laptop",
+  "name_fr": "Portable standard",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "laptop_standard",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   18,
+   12
+  ],
+  "height_px": 13,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "laptop"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     42,
+     38
+    ],
+    "anchor": [
+     24,
+     28
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_standard__se.png",
+      "mask": "masks/computers/laptop_standard__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_standard__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -17,
+        -12
+       ],
+       [
+        -1,
+        -20
+       ],
+       [
+        2,
+        -9
+       ],
+       [
+        -14,
+        -1
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     46,
+     38
+    ],
+    "anchor": [
+     17,
+     28
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_standard__sw.png",
+      "mask": "masks/computers/laptop_standard__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_standard__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        1,
+        -20
+       ],
+       [
+        17,
+        -12
+       ],
+       [
+        14,
+        -1
+       ],
+       [
+        -2,
+        -9
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     46,
+     35
+    ],
+    "anchor": [
+     17,
+     21
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_standard__nw.png",
+      "mask": "masks/computers/laptop_standard__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_standard__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        17,
+        -11
+       ],
+       [
+        1,
+        -3
+       ],
+       [
+        -2,
+        4
+       ],
+       [
+        14,
+        -4
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     42,
+     35
+    ],
+    "anchor": [
+     24,
+     21
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_standard__ne.png",
+      "mask": "masks/computers/laptop_standard__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_standard__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -1,
+        -3
+       ],
+       [
+        -17,
+        -11
+       ],
+       [
+        -14,
+        -4
+       ],
+       [
+        2,
+        4
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "steel",
+   "screen": "display"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "laptop_pro",
+  "category": "computers",
+  "subcategory": "laptop",
+  "name_fr": "Portable professionnel",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "laptop_pro",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   20,
+   13
+  ],
+  "height_px": 14,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "laptop"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     44,
+     41
+    ],
+    "anchor": [
+     25,
+     30
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_pro__se.png",
+      "mask": "masks/computers/laptop_pro__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_pro__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -18,
+        -13
+       ],
+       [
+        0,
+        -22
+       ],
+       [
+        3,
+        -10
+       ],
+       [
+        -15,
+        -1
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     50,
+     41
+    ],
+    "anchor": [
+     19,
+     30
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_pro__sw.png",
+      "mask": "masks/computers/laptop_pro__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_pro__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        0,
+        -22
+       ],
+       [
+        18,
+        -13
+       ],
+       [
+        15,
+        -1
+       ],
+       [
+        -3,
+        -10
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     50,
+     37
+    ],
+    "anchor": [
+     19,
+     22
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_pro__nw.png",
+      "mask": "masks/computers/laptop_pro__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_pro__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        18,
+        -13
+       ],
+       [
+        0,
+        -4
+       ],
+       [
+        -3,
+        5
+       ],
+       [
+        15,
+        -4
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     44,
+     37
+    ],
+    "anchor": [
+     25,
+     22
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_pro__ne.png",
+      "mask": "masks/computers/laptop_pro__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_pro__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        0,
+        -4
+       ],
+       [
+        -18,
+        -13
+       ],
+       [
+        -15,
+        -4
+       ],
+       [
+        3,
+        5
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "screen": "display"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "laptop_gaming",
+  "category": "computers",
+  "subcategory": "laptop",
+  "name_fr": "Portable puissant",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "laptop_gaming",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   22,
+   15
+  ],
+  "height_px": 15,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Chassis epais, grilles laterales, un seul filet d'accent (pas de RGB partout).",
+  "provides": [
+   "laptop"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     49,
+     45
+    ],
+    "anchor": [
+     27,
+     33
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_gaming__se.png",
+      "mask": "masks/computers/laptop_gaming__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_gaming__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -20,
+        -14
+       ],
+       [
+        0,
+        -24
+       ],
+       [
+        3,
+        -13
+       ],
+       [
+        -17,
+        -3
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     55,
+     45
+    ],
+    "anchor": [
+     21,
+     33
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_gaming__sw.png",
+      "mask": "masks/computers/laptop_gaming__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_gaming__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        0,
+        -24
+       ],
+       [
+        20,
+        -14
+       ],
+       [
+        17,
+        -3
+       ],
+       [
+        -3,
+        -13
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     55,
+     39
+    ],
+    "anchor": [
+     21,
+     24
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_gaming__nw.png",
+      "mask": "masks/computers/laptop_gaming__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_gaming__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        20,
+        -14
+       ],
+       [
+        0,
+        -4
+       ],
+       [
+        -3,
+        5
+       ],
+       [
+        17,
+        -5
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     49,
+     39
+    ],
+    "anchor": [
+     27,
+     24
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/laptop_gaming__ne.png",
+      "mask": "masks/computers/laptop_gaming__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/laptop_gaming__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        0,
+        -4
+       ],
+       [
+        -20,
+        -14
+       ],
+       [
+        -17,
+        -5
+       ],
+       [
+        3,
+        5
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "accent": "teal",
+   "screen": "display"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "graphics_tablet",
+  "category": "computers",
+  "subcategory": "peripheral",
+  "name_fr": "Tablette graphique",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "graphics_tablet",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   16,
+   11
+  ],
+  "height_px": 2,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     33,
+     19
+    ],
+    "anchor": [
+     16,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/graphics_tablet__se.png",
+      "mask": "masks/computers/graphics_tablet__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/graphics_tablet__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     32,
+     19
+    ],
+    "anchor": [
+     16,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/graphics_tablet__sw.png",
+      "mask": "masks/computers/graphics_tablet__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/graphics_tablet__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     32,
+     19
+    ],
+    "anchor": [
+     16,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/graphics_tablet__nw.png",
+      "mask": "masks/computers/graphics_tablet__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/graphics_tablet__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     32,
+     20
+    ],
+    "anchor": [
+     16,
+     11
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/graphics_tablet__ne.png",
+      "mask": "masks/computers/graphics_tablet__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/graphics_tablet__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "accent": "coral"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "headset_stand",
+  "category": "computers",
+  "subcategory": "peripheral",
+  "name_fr": "Casque sur support",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "headset_stand",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   10
+  ],
+  "height_px": 16,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     29,
+     27
+    ],
+    "anchor": [
+     12,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/headset_stand__se.png",
+      "mask": "masks/computers/headset_stand__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/headset_stand__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     29,
+     27
+    ],
+    "anchor": [
+     12,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/headset_stand__sw.png",
+      "mask": "masks/computers/headset_stand__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/headset_stand__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     29,
+     27
+    ],
+    "anchor": [
+     12,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/headset_stand__nw.png",
+      "mask": "masks/computers/headset_stand__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/headset_stand__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     29,
+     27
+    ],
+    "anchor": [
+     12,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/headset_stand__ne.png",
+      "mask": "masks/computers/headset_stand__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/headset_stand__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "primary": "graphite",
+   "fabric": "teal"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "webcam",
+  "category": "computers",
+  "subcategory": "peripheral",
+  "name_fr": "Webcam",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "webcam",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   6,
+   4
+  ],
+  "height_px": 3,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Se clipse sur le socket 'top' d'un ecran.",
+  "provides": [
+   "webcam"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     15,
+     12
+    ],
+    "anchor": [
+     7,
+     7
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/webcam__se.png",
+      "mask": "masks/computers/webcam__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/webcam__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     15,
+     12
+    ],
+    "anchor": [
+     7,
+     7
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/webcam__sw.png",
+      "mask": "masks/computers/webcam__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/webcam__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     15,
+     12
+    ],
+    "anchor": [
+     7,
+     7
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/webcam__nw.png",
+      "mask": "masks/computers/webcam__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/webcam__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     15,
+     12
+    ],
+    "anchor": [
+     7,
+     7
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/webcam__ne.png",
+      "mask": "masks/computers/webcam__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/webcam__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "docking_station",
+  "category": "computers",
+  "subcategory": "peripheral",
+  "name_fr": "Station d'accueil",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "docking_station",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   6
+  ],
+  "height_px": 3,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     21,
+     15
+    ],
+    "anchor": [
+     10,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/docking_station__se.png",
+      "mask": "masks/computers/docking_station__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/docking_station__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     21,
+     15
+    ],
+    "anchor": [
+     10,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/docking_station__sw.png",
+      "mask": "masks/computers/docking_station__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/docking_station__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     21,
+     15
+    ],
+    "anchor": [
+     10,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/docking_station__nw.png",
+      "mask": "masks/computers/docking_station__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/docking_station__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     21,
+     15
+    ],
+    "anchor": [
+     10,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/docking_station__ne.png",
+      "mask": "masks/computers/docking_station__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/docking_station__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "printer_mfp",
+  "category": "computers",
+  "subcategory": "office",
+  "name_fr": "Imprimante multifonction",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "printer_mfp",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 37,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Imprimante/scanner au sol : bacs, panneau de commande, sortie papier.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     68,
+     63
+    ],
+    "anchor": [
+     26,
+     34
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/printer_mfp__se.png",
+      "mask": "masks/computers/printer_mfp__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/printer_mfp__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -37
+     ],
+     [
+      32,
+      -21
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -21
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     64,
+     64
+    ],
+    "anchor": [
+     24,
+     34
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/printer_mfp__sw.png",
+      "mask": "masks/computers/printer_mfp__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/printer_mfp__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -37
+     ],
+     [
+      32,
+      -21
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -21
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "metal": "graphite",
+   "screen": "display",
+   "glass": "glass"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "plastic",
+    "fixed": [
+     "graphite"
+    ]
+   },
+   {
+    "channel": "metal",
+    "kept": "graphite",
+    "fixed": [
+     "steel"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "videoconf_bar",
+  "category": "computers",
+  "subcategory": "av",
+  "name_fr": "Barre de visioconference",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "videoconf_bar",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   24,
+   5
+  ],
+  "height_px": 4,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Camera + haut-parleurs, se pose sur un ecran de presentation.",
+  "provides": [
+   "videoconf_bar",
+   "webcam"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     35,
+     23
+    ],
+    "anchor": [
+     17,
+     13
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/videoconf_bar__se.png",
+      "mask": "masks/computers/videoconf_bar__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/videoconf_bar__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     35,
+     23
+    ],
+    "anchor": [
+     17,
+     13
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/videoconf_bar__sw.png",
+      "mask": "masks/computers/videoconf_bar__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/videoconf_bar__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "speakerphone",
+  "category": "computers",
+  "subcategory": "av",
+  "name_fr": "Pieuvre de conference",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "speakerphone",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   10
+  ],
+  "height_px": 2,
+  "walkable": false,
+  "symmetric": true,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "speakerphone",
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     25,
+     16
+    ],
+    "anchor": [
+     12,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/speakerphone__se.png",
+      "mask": "masks/computers/speakerphone__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/speakerphone__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "device_test_rack",
+  "category": "computers",
+  "subcategory": "test",
+  "name_fr": "Poste de test mobile",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "device_test_rack",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   24,
+   10
+  ],
+  "height_px": 14,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Support incline : 3 telephones + 1 tablette branches.",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     43,
+     37
+    ],
+    "anchor": [
+     19,
+     26
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/device_test_rack__se.png",
+      "mask": "masks/computers/device_test_rack__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/device_test_rack__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     43,
+     35
+    ],
+    "anchor": [
+     19,
+     24
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/device_test_rack__sw.png",
+      "mask": "masks/computers/device_test_rack__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/device_test_rack__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     42,
+     35
+    ],
+    "anchor": [
+     19,
+     24
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/device_test_rack__nw.png",
+      "mask": "masks/computers/device_test_rack__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/device_test_rack__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     42,
+     37
+    ],
+    "anchor": [
+     19,
+     26
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/device_test_rack__ne.png",
+      "mask": "masks/computers/device_test_rack__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/device_test_rack__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "primary": "graphite",
+   "screen": "display"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "console_test_kit",
+  "category": "computers",
+  "subcategory": "test",
+  "name_fr": "Kit de test console generique",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "console_test_kit",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   22,
+   12
+  ],
+  "height_px": 6,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Boitier de console generique + manette + console portable.",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     37,
+     21
+    ],
+    "anchor": [
+     19,
+     12
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/console_test_kit__se.png",
+      "mask": "masks/computers/console_test_kit__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/console_test_kit__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     35,
+     25
+    ],
+    "anchor": [
+     15,
+     15
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/console_test_kit__sw.png",
+      "mask": "masks/computers/console_test_kit__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/console_test_kit__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     38,
+     24
+    ],
+    "anchor": [
+     17,
+     13
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/console_test_kit__nw.png",
+      "mask": "masks/computers/console_test_kit__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/console_test_kit__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     36,
+     23
+    ],
+    "anchor": [
+     19,
+     12
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/console_test_kit__ne.png",
+      "mask": "masks/computers/console_test_kit__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/console_test_kit__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "screen": "display"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "plastic",
+    "fixed": [
+     "coral",
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "xr_headset_stand",
+  "category": "computers",
+  "subcategory": "test",
+  "name_fr": "Casque XR sur support",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "xr_headset_stand",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   10
+  ],
+  "height_px": 16,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     25,
+     25
+    ],
+    "anchor": [
+     10,
+     19
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/xr_headset_stand__se.png",
+      "mask": "masks/computers/xr_headset_stand__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/xr_headset_stand__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     25,
+     25
+    ],
+    "anchor": [
+     10,
+     19
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/xr_headset_stand__sw.png",
+      "mask": "masks/computers/xr_headset_stand__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/xr_headset_stand__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     25,
+     26
+    ],
+    "anchor": [
+     10,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/xr_headset_stand__nw.png",
+      "mask": "masks/computers/xr_headset_stand__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/xr_headset_stand__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     25,
+     26
+    ],
+    "anchor": [
+     10,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/xr_headset_stand__ne.png",
+      "mask": "masks/computers/xr_headset_stand__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/xr_headset_stand__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "primary": "plastic",
+   "fabric": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "capture_device",
+  "category": "computers",
+  "subcategory": "test",
+  "name_fr": "Boitier de capture",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "capture_device",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   7
+  ],
+  "height_px": 3,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     25,
+     16
+    ],
+    "anchor": [
+     11,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/capture_device__se.png",
+      "mask": "masks/computers/capture_device__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/capture_device__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     23,
+     17
+    ],
+    "anchor": [
+     11,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/capture_device__sw.png",
+      "mask": "masks/computers/capture_device__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/capture_device__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     26,
+     16
+    ],
+    "anchor": [
+     14,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/capture_device__nw.png",
+      "mask": "masks/computers/capture_device__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/capture_device__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     23,
+     16
+    ],
+    "anchor": [
+     11,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/capture_device__ne.png",
+      "mask": "masks/computers/capture_device__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/capture_device__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "network_cabinet",
+  "category": "computers",
+  "subcategory": "network",
+  "name_fr": "Baie de rangement technique",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "network_cabinet",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 47,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Demi-baie vitree : panneau de brassage, switch, box.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     68,
+     74
+    ],
+    "anchor": [
+     27,
+     45
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/network_cabinet__se.png",
+      "mask": "masks/computers/network_cabinet__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/network_cabinet__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -47
+     ],
+     [
+      32,
+      -31
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -31
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     68,
+     74
+    ],
+    "anchor": [
+     23,
+     45
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/network_cabinet__sw.png",
+      "mask": "masks/computers/network_cabinet__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/network_cabinet__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -47
+     ],
+     [
+      32,
+      -31
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -31
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "metal": "graphite"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "graphite",
+    "fixed": [
+     "steel"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "router",
+  "category": "computers",
+  "subcategory": "network",
+  "name_fr": "Routeur",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "router",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   12,
+   8
+  ],
+  "height_px": 10,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     25,
+     24
+    ],
+    "anchor": [
+     12,
+     17
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/router__se.png",
+      "mask": "masks/computers/router__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/router__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     27,
+     24
+    ],
+    "anchor": [
+     12,
+     17
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/router__sw.png",
+      "mask": "masks/computers/router__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/router__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     27,
+     21
+    ],
+    "anchor": [
+     12,
+     14
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/router__nw.png",
+      "mask": "masks/computers/router__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/router__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     25,
+     21
+    ],
+    "anchor": [
+     12,
+     14
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/router__ne.png",
+      "mask": "masks/computers/router__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/router__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "plastic"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "plastic",
+    "fixed": [
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "network_switch_desk",
+  "category": "computers",
+  "subcategory": "network",
+  "name_fr": "Switch de bureau",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "network_switch_desk",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   14,
+   8
+  ],
+  "height_px": 3,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     27,
+     18
+    ],
+    "anchor": [
+     13,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/network_switch_desk__se.png",
+      "mask": "masks/computers/network_switch_desk__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/network_switch_desk__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     27,
+     18
+    ],
+    "anchor": [
+     13,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/network_switch_desk__sw.png",
+      "mask": "masks/computers/network_switch_desk__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/network_switch_desk__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     27,
+     18
+    ],
+    "anchor": [
+     13,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/network_switch_desk__nw.png",
+      "mask": "masks/computers/network_switch_desk__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/network_switch_desk__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     27,
+     18
+    ],
+    "anchor": [
+     13,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/network_switch_desk__ne.png",
+      "mask": "masks/computers/network_switch_desk__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/computers/network_switch_desk__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "steel"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "access_point",
+  "category": "computers",
+  "subcategory": "network",
+  "name_fr": "Point d'acces Wi-Fi (mural)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "wall",
+  "silhouette_group": "access_point",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 96,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": true,
+  "tags": [],
+  "notes": "Disque mural en hauteur.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     16,
+     23
+    ],
+    "anchor": [
+     21,
+     92
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/access_point__se.png",
+      "mask": "masks/computers/access_point__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -96
+     ],
+     [
+      32,
+      -80
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -80
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     16,
+     23
+    ],
+    "anchor": [
+     -5,
+     92
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/access_point__sw.png",
+      "mask": "masks/computers/access_point__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -96
+     ],
+     [
+      32,
+      -80
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -80
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "primary": "plastic"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "fiber_box",
+  "category": "computers",
+  "subcategory": "network",
+  "name_fr": "Boitier fibre (mural)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "wall",
+  "silhouette_group": "fiber_box",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 58,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": true,
+  "tags": [],
+  "notes": "Boitier de raccordement + gaine descendant au sol.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     20,
+     67
+    ],
+    "anchor": [
+     24,
+     55
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/fiber_box__se.png",
+      "mask": "masks/computers/fiber_box__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -58
+     ],
+     [
+      32,
+      -42
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -42
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     20,
+     67
+    ],
+    "anchor": [
+     -4,
+     55
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/computers/fiber_box__sw.png",
+      "mask": "masks/computers/fiber_box__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -58
+     ],
+     [
+      32,
+      -42
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -42
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "primary": "plastic"
+  },
+  "sockets_def": []
+ }
+]

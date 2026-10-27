@@ -1,0 +1,408 @@
+{
+ "id": "room_bedroom_start",
+ "name_fr": "Chambre de départ",
+ "usage": "current",
+ "tier": 1,
+ "size_tiles": [
+  6,
+  5
+ ],
+ "story": "Petit logement d'un passionné : lit, rangement, bureau modeste. Pièce normale où l'on ajoute du mobilier.",
+ "floor": [
+  {
+   "material": "floor_wood_planks",
+   "rect": [
+    0,
+    0,
+    6,
+    5
+   ],
+   "swatches": {
+    "floor": "oak"
+   }
+  }
+ ],
+ "walls": {
+  "left": {
+   "segments": [
+    "plain",
+    "plain",
+    "window",
+    "plain",
+    "door"
+   ],
+   "pattern": "wallpaper",
+   "swatches": {
+    "wall": "sage",
+    "trim": "plastic",
+    "wood": "birch"
+   }
+  },
+  "right": {
+   "segments": [
+    "plain",
+    "plain",
+    "window",
+    "plain",
+    "plain",
+    "plain"
+   ],
+   "pattern": "paint",
+   "swatches": {
+    "wall": "cream",
+    "trim": "plastic"
+   }
+  }
+ },
+ "wall_items": [
+  {
+   "asset": "poster_project",
+   "wall": "right",
+   "index": 4
+  },
+  {
+   "asset": "idea_sketch",
+   "wall": "left",
+   "index": 3
+  },
+  {
+   "asset": "window_blinds",
+   "wall": "left",
+   "index": 2
+  },
+  {
+   "asset": "window_blinds",
+   "wall": "right",
+   "index": 2
+  },
+  {
+   "asset": "clock_wall",
+   "wall": "right",
+   "index": 1
+  },
+  {
+   "asset": "sticky_notes",
+   "wall": "left",
+   "index": 1
+  }
+ ],
+ "objects": [
+  {
+   "asset": "rug_small",
+   "tile": [
+    2,
+    2
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "bookcase",
+   "tile": [
+    0,
+    0
+   ],
+   "facing": "se",
+   "children": {
+    "shelf_1": "rubber_duck_debug",
+    "shelf_2": "trophy_project"
+   }
+  },
+  {
+   "asset": "dresser",
+   "tile": [
+    1,
+    0
+   ],
+   "facing": "sw",
+   "children": {
+    "top": "plant_succulent"
+   }
+  },
+  {
+   "asset": "bed_single",
+   "tile": [
+    3,
+    0
+   ],
+   "facing": "sw",
+   "swatches": {
+    "fabric": "sky"
+   }
+  },
+  {
+   "asset": "nightstand",
+   "tile": [
+    5,
+    1
+   ],
+   "facing": "sw",
+   "children": {
+    "top": "lamp_desk"
+   }
+  },
+  {
+   "asset": "desk_compact",
+   "tile": [
+    0,
+    2
+   ],
+   "facing": "se",
+   "children": {
+    "chair": {
+     "asset": "chair_budget",
+     "character": {
+      "base": "player_m",
+      "hair": "hair_short_crop",
+      "hair_ramp": "hair_brown"
+     }
+    },
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_used",
+    "desk_right": "mug",
+    "desk_back_left": "side_project"
+   }
+  },
+  {
+   "asset": "lamp_floor",
+   "tile": [
+    5,
+    3
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "moving_box",
+   "tile": [
+    5,
+    4
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "plant_floor_medium",
+   "tile": [
+    1,
+    4
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "trash_bin",
+   "tile": [
+    1,
+    3
+   ],
+   "facing": "se"
+  }
+ ],
+ "entrances": [
+  {
+   "wall": "left",
+   "index": 4,
+   "kind": "door",
+   "access_tile": [
+    0,
+    4
+   ]
+  }
+ ],
+ "zones": [
+  {
+   "name": "Coin nuit",
+   "rect": [
+    3,
+    0,
+    3,
+    2
+   ]
+  },
+  {
+   "name": "Poste de travail",
+   "rect": [
+    0,
+    2,
+    2,
+    2
+   ]
+  },
+  {
+   "name": "Rangement",
+   "rect": [
+    0,
+    0,
+    2,
+    2
+   ]
+  }
+ ],
+ "foreground": "aucun mur avant (coupe) ; les objets hauts du premier rang peuvent etre estompes (occlusion)",
+ "visible_walls": {
+  "left": "mur gauche (orientation se) le long de V, U=0",
+  "right": "mur droit (orientation sw) le long de U, V=0",
+  "front": "aucun : coupe avant (bords de dalle floor_edge)"
+ },
+ "computed": {
+  "occupied_cells": [
+   [
+    0,
+    0
+   ],
+   [
+    0,
+    1
+   ],
+   [
+    0,
+    2
+   ],
+   [
+    1,
+    0
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    3,
+    0
+   ],
+   [
+    4,
+    0
+   ],
+   [
+    5,
+    4
+   ]
+  ],
+  "reserved_access_cells": [
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    2
+   ]
+  ],
+  "buildable_cells": [
+   [
+    0,
+    3
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    1,
+    3
+   ],
+   [
+    2,
+    0
+   ],
+   [
+    2,
+    1
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    3
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    3,
+    1
+   ],
+   [
+    3,
+    2
+   ],
+   [
+    3,
+    3
+   ],
+   [
+    3,
+    4
+   ],
+   [
+    4,
+    1
+   ],
+   [
+    4,
+    2
+   ],
+   [
+    4,
+    3
+   ],
+   [
+    4,
+    4
+   ],
+   [
+    5,
+    0
+   ],
+   [
+    5,
+    1
+   ],
+   [
+    5,
+    2
+   ],
+   [
+    5,
+    3
+   ]
+  ],
+  "buildable_count": 20,
+  "cell_count": 30,
+  "free_wall_item_slots": {
+   "left": [
+    0
+   ],
+   "right": [
+    0,
+    3,
+    5
+   ]
+  },
+  "occluders": [
+   {
+    "asset": "bookcase",
+    "tile": [
+     0,
+     0
+    ],
+    "height_px": 72
+   },
+   {
+    "asset": "lamp_floor",
+    "tile": [
+     5,
+     3
+    ],
+    "height_px": 74
+   }
+  ],
+  "workstations": 1
+ },
+ "validation": {
+  "issues": [],
+  "ok": true
+ }
+}

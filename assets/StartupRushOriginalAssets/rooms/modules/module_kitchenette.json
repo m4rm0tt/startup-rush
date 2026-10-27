@@ -1,0 +1,118 @@
+{
+ "id": "module_kitchenette",
+ "name_fr": "Kitchenette (contre un mur gauche)",
+ "size_tiles": [
+  4,
+  6
+ ],
+ "floor": [
+  {
+   "material": "floor_tile_ceramic",
+   "rect": [
+    0,
+    0,
+    4,
+    6
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "asset": "kitchen_counter",
+   "tile": [
+    0,
+    0
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "kitchen_sink",
+   "tile": [
+    0,
+    1
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "kitchen_counter",
+   "tile": [
+    0,
+    2
+   ],
+   "facing": "se",
+   "children": {
+    "counter": "coffee_machine"
+   }
+  },
+  {
+   "asset": "fridge",
+   "tile": [
+    0,
+    3
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "vending_drinks",
+   "tile": [
+    0,
+    4
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "vending_snacks",
+   "tile": [
+    0,
+    5
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "table_meeting_small",
+   "tile": [
+    2,
+    1
+   ],
+   "facing": "se",
+   "children": {
+    "center": "mug"
+   }
+  },
+  {
+   "asset": "water_cooler",
+   "tile": [
+    1,
+    5
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "trash_bin",
+   "tile": [
+    1,
+    0
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "recycling_station",
+   "tile": [
+    3,
+    0
+   ],
+   "facing": "sw"
+  }
+ ],
+ "zones": [
+  {
+   "name": "Kitchenette",
+   "rect": [
+    0,
+    0,
+    4,
+    6
+   ]
+  }
+ ]
+}

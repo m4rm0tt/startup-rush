@@ -1,0 +1,8 @@
+{
+ "scope": "assets, masks, polices, json d'assets, plans de pieces",
+ "files_compared": 2441,
+ "identical": 2441,
+ "different": 0,
+ "examples": [],
+ "method": "deux constructions completes successives, comparaison SHA-256"
+}

@@ -1,0 +1,1613 @@
+[
+ {
+  "id": "wall_plain",
+  "category": "architecture",
+  "subcategory": "wall",
+  "name_fr": "Mur plein",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_piece",
+  "render_layer": "walls",
+  "orientations": {
+   "se": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     39,
+     117
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/architecture/wall_plain__se.png",
+      "mask": "masks/architecture/wall_plain__se__mask.png",
+      "mask_channels": [
+       "wall",
+       "trim"
+      ]
+     }
+    },
+    "wall_side": "left",
+    "span_tiles": 1,
+    "placement": "ancre = coin interieur bas de la case (U=0,V=j) pour se, (U=i,V=0) pour sw"
+   },
+   "sw": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     2,
+     117
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/architecture/wall_plain__sw.png",
+      "mask": "masks/architecture/wall_plain__sw__mask.png",
+      "mask_channels": [
+       "wall",
+       "trim"
+      ]
+     }
+    },
+    "wall_side": "right",
+    "span_tiles": 1,
+    "placement": "ancre = coin interieur bas de la case (U=0,V=j) pour se, (U=i,V=0) pour sw"
+   }
+  },
+  "channels": {
+   "wall": "cream",
+   "trim": "plastic",
+   "glass": "glass",
+   "wood": "birch",
+   "metal": "brass"
+  },
+  "dims": {
+   "height_px": 112,
+   "thickness_su": 8,
+   "baseboard_px": 6
+  }
+ },
+ {
+  "id": "wall_window",
+  "category": "architecture",
+  "subcategory": "wall",
+  "name_fr": "Mur avec fenetre",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_piece",
+  "render_layer": "walls",
+  "orientations": {
+   "se": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     39,
+     117
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/architecture/wall_window__se.png",
+      "mask": "masks/architecture/wall_window__se__mask.png",
+      "mask_channels": [
+       "glass",
+       "wall",
+       "trim"
+      ]
+     }
+    },
+    "wall_side": "left",
+    "span_tiles": 1,
+    "placement": "ancre = coin interieur bas de la case (U=0,V=j) pour se, (U=i,V=0) pour sw"
+   },
+   "sw": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     2,
+     117
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/architecture/wall_window__sw.png",
+      "mask": "masks/architecture/wall_window__sw__mask.png",
+      "mask_channels": [
+       "glass",
+       "wall",
+       "trim"
+      ]
+     }
+    },
+    "wall_side": "right",
+    "span_tiles": 1,
+    "placement": "ancre = coin interieur bas de la case (U=0,V=j) pour se, (U=i,V=0) pour sw"
+   }
+  },
+  "channels": {
+   "wall": "cream",
+   "trim": "plastic",
+   "glass": "glass",
+   "wood": "birch",
+   "metal": "brass"
+  },
+  "dims": {
+   "height_px": 112,
+   "thickness_su": 8,
+   "baseboard_px": 6
+  },
+  "opening": {
+   "s_su": [
+    5,
+    27
+   ],
+   "z_px": [
+    34,
+    90
+   ],
+   "walkable": false
+  }
+ },
+ {
+  "id": "wall_door",
+  "category": "architecture",
+  "subcategory": "wall",
+  "name_fr": "Mur avec porte",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_piece",
+  "render_layer": "walls",
+  "orientations": {
+   "se": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     39,
+     117
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/architecture/wall_door__se.png",
+      "mask": "masks/architecture/wall_door__se__mask.png",
+      "mask_channels": [
+       "wood",
+       "metal",
+       "wall",
+       "trim"
+      ]
+     }
+    },
+    "wall_side": "left",
+    "span_tiles": 1,
+    "placement": "ancre = coin interieur bas de la case (U=0,V=j) pour se, (U=i,V=0) pour sw"
+   },
+   "sw": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     2,
+     117
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/architecture/wall_door__sw.png",
+      "mask": "masks/architecture/wall_door__sw__mask.png",
+      "mask_channels": [
+       "wood",
+       "metal",
+       "wall",
+       "trim"
+      ]
+     }
+    },
+    "wall_side": "right",
+    "span_tiles": 1,
+    "placement": "ancre = coin interieur bas de la case (U=0,V=j) pour se, (U=i,V=0) pour sw"
+   }
+  },
+  "channels": {
+   "wall": "cream",
+   "trim": "plastic",
+   "glass": "glass",
+   "wood": "birch",
+   "metal": "brass"
+  },
+  "dims": {
+   "height_px": 112,
+   "thickness_su": 8,
+   "baseboard_px": 6
+  },
+  "opening": {
+   "s_su": [
+    4,
+    28
+   ],
+   "z_px": [
+    0,
+    84
+   ],
+   "walkable": true,
+   "passage_tile_rule": "la case de piece adjacente au segment est un acces"
+  }
+ },
+ {
+  "id": "wall_opening",
+  "category": "architecture",
+  "subcategory": "wall",
+  "name_fr": "Mur avec ouverture (passage)",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_piece",
+  "render_layer": "walls",
+  "orientations": {
+   "se": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     39,
+     117
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/architecture/wall_opening__se.png",
+      "mask": "masks/architecture/wall_opening__se__mask.png",
+      "mask_channels": [
+       "wall",
+       "trim"
+      ]
+     }
+    },
+    "wall_side": "left",
+    "span_tiles": 1,
+    "placement": "ancre = coin interieur bas de la case (U=0,V=j) pour se, (U=i,V=0) pour sw"
+   },
+   "sw": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     2,
+     117
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/architecture/wall_opening__sw.png",
+      "mask": "masks/architecture/wall_opening__sw__mask.png",
+      "mask_channels": [
+       "wall",
+       "trim"
+      ]
+     }
+    },
+    "wall_side": "right",
+    "span_tiles": 1,
+    "placement": "ancre = coin interieur bas de la case (U=0,V=j) pour se, (U=i,V=0) pour sw"
+   }
+  },
+  "channels": {
+   "wall": "cream",
+   "trim": "plastic",
+   "glass": "glass",
+   "wood": "birch",
+   "metal": "brass"
+  },
+  "dims": {
+   "height_px": 112,
+   "thickness_su": 8,
+   "baseboard_px": 6
+  },
+  "opening": {
+   "s_su": [
+    4,
+    28
+   ],
+   "z_px": [
+    0,
+    84
+   ],
+   "walkable": true,
+   "passage_tile_rule": "la case de piece adjacente au segment est un acces"
+  }
+ },
+ {
+  "id": "wall_corner_inner",
+  "category": "architecture",
+  "subcategory": "wall",
+  "name_fr": "Angle interieur (coin du fond)",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_piece",
+  "render_layer": "walls",
+  "orientations": {
+   "all": {
+    "size": [
+     14,
+     9
+    ],
+    "anchor": [
+     7,
+     121
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/architecture/wall_corner_inner__all.png",
+      "mask": "masks/architecture/wall_corner_inner__all__mask.png",
+      "mask_channels": [
+       "trim"
+      ]
+     }
+    },
+    "placement": "ancre = coin (U=0,V=0) de la piece"
+   }
+  }
+ },
+ {
+  "id": "wall_end",
+  "category": "architecture",
+  "subcategory": "wall",
+  "name_fr": "Terminaison de mur (chant visible)",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_piece",
+  "render_layer": "walls",
+  "orientations": {
+   "se": {
+    "size": [
+     11,
+     119
+    ],
+    "anchor": [
+     9,
+     117
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/architecture/wall_end__se.png",
+      "mask": "masks/architecture/wall_end__se__mask.png",
+      "mask_channels": [
+       "wall",
+       "trim"
+      ]
+     }
+    },
+    "placement": "ancre = (U=0, V=Vmax) : extremite avant du mur gauche"
+   },
+   "sw": {
+    "size": [
+     11,
+     119
+    ],
+    "anchor": [
+     2,
+     117
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/architecture/wall_end__sw.png",
+      "mask": "masks/architecture/wall_end__sw__mask.png",
+      "mask_channels": [
+       "wall",
+       "trim"
+      ]
+     }
+    },
+    "placement": "ancre = (U=Umax, V=0) : extremite avant du mur droit"
+   }
+  }
+ },
+ {
+  "id": "wall_window_wide",
+  "category": "architecture",
+  "subcategory": "wall",
+  "name_fr": "Mur avec grande fenetre (2 cases)",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_piece",
+  "render_layer": "walls",
+  "orientations": {
+   "se": {
+    "size": [
+     73,
+     151
+    ],
+    "anchor": [
+     71,
+     117
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/architecture/wall_window_wide__se.png",
+      "mask": "masks/architecture/wall_window_wide__se__mask.png",
+      "mask_channels": [
+       "glass",
+       "wall",
+       "trim"
+      ]
+     }
+    },
+    "span_tiles": 2,
+    "placement": "ancre = coin interieur bas de la PREMIERE case couverte"
+   },
+   "sw": {
+    "size": [
+     73,
+     151
+    ],
+    "anchor": [
+     2,
+     117
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/architecture/wall_window_wide__sw.png",
+      "mask": "masks/architecture/wall_window_wide__sw__mask.png",
+      "mask_channels": [
+       "glass",
+       "wall",
+       "trim"
+      ]
+     }
+    },
+    "span_tiles": 2,
+    "placement": "ancre = coin interieur bas de la PREMIERE case couverte"
+   }
+  },
+  "channels": {
+   "wall": "cream",
+   "trim": "plastic",
+   "glass": "glass"
+  },
+  "opening": {
+   "s_su": [
+    5,
+    59
+   ],
+   "z_px": [
+    34,
+    90
+   ],
+   "walkable": false
+  }
+ },
+ {
+  "id": "wall_corner_outer",
+  "category": "architecture",
+  "subcategory": "wall",
+  "name_fr": "Angle saillant (retour)",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_piece",
+  "render_layer": "walls",
+  "orientations": {
+   "all": {
+    "size": [
+     20,
+     124
+    ],
+    "anchor": [
+     10,
+     121
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/architecture/wall_corner_outer__all.png",
+      "mask": "masks/architecture/wall_corner_outer__all__mask.png",
+      "mask_channels": [
+       "wall",
+       "trim"
+      ]
+     }
+    },
+    "placement": "ancre = point (U=a, V=b) ou un mur gauche (face +U a U=a) rencontre un mur droit (face +V a V=b) en angle saillant ; dessiner APRES les deux segments adjacents (il recouvre leur extremite)."
+   }
+  },
+  "channels": {
+   "wall": "cream",
+   "trim": "plastic"
+  }
+ },
+ {
+  "id": "pattern_paint",
+  "category": "wall_patterns",
+  "subcategory": "wall_pattern",
+  "name_fr": "Peinture unie",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_pattern_overlay",
+  "defaults": {
+   "wall": "cream"
+  },
+  "orientations": {
+   "se": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     39,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_paint__se.png"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     2,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_paint__sw.png"
+     }
+    }
+   }
+  },
+  "encoding": "R = canal (11 wall, 14 wall2, 3 wood), G = delta d'indice + 8, A = 255 sur la face murale",
+  "period_su": 32,
+  "source_flat": "sources/wall_patterns/pattern_paint_flat.png"
+ },
+ {
+  "id": "pattern_two_tone",
+  "category": "wall_patterns",
+  "subcategory": "wall_pattern",
+  "name_fr": "Deux tons + cimaise",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_pattern_overlay",
+  "defaults": {
+   "wall": "cream",
+   "wall2": "teal"
+  },
+  "orientations": {
+   "se": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     39,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_two_tone__se.png"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     2,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_two_tone__sw.png"
+     }
+    }
+   }
+  },
+  "encoding": "R = canal (11 wall, 14 wall2, 3 wood), G = delta d'indice + 8, A = 255 sur la face murale",
+  "period_su": 32,
+  "source_flat": "sources/wall_patterns/pattern_two_tone_flat.png"
+ },
+ {
+  "id": "pattern_wallpaper",
+  "category": "wall_patterns",
+  "subcategory": "wall_pattern",
+  "name_fr": "Papier peint discret",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_pattern_overlay",
+  "defaults": {
+   "wall": "sage"
+  },
+  "orientations": {
+   "se": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     39,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_wallpaper__se.png"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     2,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_wallpaper__sw.png"
+     }
+    }
+   }
+  },
+  "encoding": "R = canal (11 wall, 14 wall2, 3 wood), G = delta d'indice + 8, A = 255 sur la face murale",
+  "period_su": 32,
+  "source_flat": "sources/wall_patterns/pattern_wallpaper_flat.png"
+ },
+ {
+  "id": "pattern_stripes",
+  "category": "wall_patterns",
+  "subcategory": "wall_pattern",
+  "name_fr": "Bandes verticales",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_pattern_overlay",
+  "defaults": {
+   "wall": "cream",
+   "wall2": "sand"
+  },
+  "orientations": {
+   "se": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     39,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_stripes__se.png"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     2,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_stripes__sw.png"
+     }
+    }
+   }
+  },
+  "encoding": "R = canal (11 wall, 14 wall2, 3 wood), G = delta d'indice + 8, A = 255 sur la face murale",
+  "period_su": 32,
+  "source_flat": "sources/wall_patterns/pattern_stripes_flat.png"
+ },
+ {
+  "id": "pattern_wood_panels",
+  "category": "wall_patterns",
+  "subcategory": "wall_pattern",
+  "name_fr": "Lambris bois",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_pattern_overlay",
+  "defaults": {
+   "wood": "oak"
+  },
+  "orientations": {
+   "se": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     39,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_wood_panels__se.png"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     2,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_wood_panels__sw.png"
+     }
+    }
+   }
+  },
+  "encoding": "R = canal (11 wall, 14 wall2, 3 wood), G = delta d'indice + 8, A = 255 sur la face murale",
+  "period_su": 32,
+  "source_flat": "sources/wall_patterns/pattern_wood_panels_flat.png"
+ },
+ {
+  "id": "pattern_concrete",
+  "category": "wall_patterns",
+  "subcategory": "wall_pattern",
+  "name_fr": "Beton banche",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_pattern_overlay",
+  "defaults": {
+   "wall": "concrete"
+  },
+  "orientations": {
+   "se": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     39,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_concrete__se.png"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     2,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_concrete__sw.png"
+     }
+    }
+   }
+  },
+  "encoding": "R = canal (11 wall, 14 wall2, 3 wood), G = delta d'indice + 8, A = 255 sur la face murale",
+  "period_su": 32,
+  "source_flat": "sources/wall_patterns/pattern_concrete_flat.png"
+ },
+ {
+  "id": "pattern_brick",
+  "category": "wall_patterns",
+  "subcategory": "wall_pattern",
+  "name_fr": "Brique interieure",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_pattern_overlay",
+  "defaults": {
+   "wall": "brick",
+   "wall2": "cream"
+  },
+  "orientations": {
+   "se": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     39,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_brick__se.png"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     2,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_brick__sw.png"
+     }
+    }
+   }
+  },
+  "encoding": "R = canal (11 wall, 14 wall2, 3 wood), G = delta d'indice + 8, A = 255 sur la face murale",
+  "period_su": 32,
+  "source_flat": "sources/wall_patterns/pattern_brick_flat.png"
+ },
+ {
+  "id": "pattern_acoustic",
+  "category": "wall_patterns",
+  "subcategory": "wall_pattern",
+  "name_fr": "Panneaux acoustiques",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "wall_pattern_overlay",
+  "defaults": {
+   "wall": "cream",
+   "wall2": "navy"
+  },
+  "orientations": {
+   "se": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     39,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_acoustic__se.png"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     41,
+     135
+    ],
+    "anchor": [
+     2,
+     117
+    ],
+    "layers": {
+     "overlay": {
+      "file": "assets/wall_patterns/pattern_acoustic__sw.png"
+     }
+    }
+   }
+  },
+  "encoding": "R = canal (11 wall, 14 wall2, 3 wood), G = delta d'indice + 8, A = 255 sur la face murale",
+  "period_su": 32,
+  "source_flat": "sources/wall_patterns/pattern_acoustic_flat.png"
+ },
+ {
+  "id": "floor_wood_planks",
+  "category": "floors",
+  "subcategory": "floor",
+  "name_fr": "Plancher bois (lames)",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "floor_tile",
+  "render_layer": "floor",
+  "period_tiles": [
+   2,
+   1
+  ],
+  "variant_rule": "variante = (U mod pu, V mod pv)",
+  "channels": {
+   "floor": "oak"
+  },
+  "variants": {
+   "u0v0": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_wood_planks__u0v0.png",
+      "mask": "masks/floors/floor_wood_planks__u0v0__mask.png",
+      "mask_channels": [
+       "floor"
+      ]
+     }
+    }
+   },
+   "u1v0": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_wood_planks__u1v0.png",
+      "mask": "masks/floors/floor_wood_planks__u1v0__mask.png",
+      "mask_channels": [
+       "floor"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "floor_parquet",
+  "category": "floors",
+  "subcategory": "floor",
+  "name_fr": "Parquet a batons (vannerie)",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "floor_tile",
+  "render_layer": "floor",
+  "period_tiles": [
+   1,
+   1
+  ],
+  "variant_rule": "variante = (U mod pu, V mod pv)",
+  "channels": {
+   "floor": "walnut"
+  },
+  "variants": {
+   "u0v0": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_parquet__u0v0.png",
+      "mask": "masks/floors/floor_parquet__u0v0__mask.png",
+      "mask_channels": [
+       "floor"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "floor_carpet",
+  "category": "floors",
+  "subcategory": "floor",
+  "name_fr": "Moquette",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "floor_tile",
+  "render_layer": "floor",
+  "period_tiles": [
+   1,
+   1
+  ],
+  "variant_rule": "variante = (U mod pu, V mod pv)",
+  "channels": {
+   "floor": "navy"
+  },
+  "variants": {
+   "u0v0": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_carpet__u0v0.png",
+      "mask": "masks/floors/floor_carpet__u0v0__mask.png",
+      "mask_channels": [
+       "floor"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "floor_carpet_tiles",
+  "category": "floors",
+  "subcategory": "floor",
+  "name_fr": "Dalles de moquette",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "floor_tile",
+  "render_layer": "floor",
+  "period_tiles": [
+   2,
+   2
+  ],
+  "variant_rule": "variante = (U mod pu, V mod pv)",
+  "channels": {
+   "floor": "steel"
+  },
+  "variants": {
+   "u0v0": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_carpet_tiles__u0v0.png",
+      "mask": "masks/floors/floor_carpet_tiles__u0v0__mask.png",
+      "mask_channels": [
+       "floor"
+      ]
+     }
+    }
+   },
+   "u0v1": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_carpet_tiles__u0v1.png",
+      "mask": "masks/floors/floor_carpet_tiles__u0v1__mask.png",
+      "mask_channels": [
+       "floor"
+      ]
+     }
+    }
+   },
+   "u1v0": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_carpet_tiles__u1v0.png",
+      "mask": "masks/floors/floor_carpet_tiles__u1v0__mask.png",
+      "mask_channels": [
+       "floor"
+      ]
+     }
+    }
+   },
+   "u1v1": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_carpet_tiles__u1v1.png",
+      "mask": "masks/floors/floor_carpet_tiles__u1v1__mask.png",
+      "mask_channels": [
+       "floor"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "floor_tile_ceramic",
+  "category": "floors",
+  "subcategory": "floor",
+  "name_fr": "Carrelage",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "floor_tile",
+  "render_layer": "floor",
+  "period_tiles": [
+   1,
+   1
+  ],
+  "variant_rule": "variante = (U mod pu, V mod pv)",
+  "channels": {
+   "floor": "plastic",
+   "floor2": "steel"
+  },
+  "variants": {
+   "u0v0": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_tile_ceramic__u0v0.png",
+      "mask": "masks/floors/floor_tile_ceramic__u0v0__mask.png",
+      "mask_channels": [
+       "floor",
+       "floor2"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "floor_concrete",
+  "category": "floors",
+  "subcategory": "floor",
+  "name_fr": "Beton cire",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "floor_tile",
+  "render_layer": "floor",
+  "period_tiles": [
+   2,
+   2
+  ],
+  "variant_rule": "variante = (U mod pu, V mod pv)",
+  "channels": {
+   "floor": "concrete"
+  },
+  "variants": {
+   "u0v0": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_concrete__u0v0.png",
+      "mask": "masks/floors/floor_concrete__u0v0__mask.png",
+      "mask_channels": [
+       "floor"
+      ]
+     }
+    }
+   },
+   "u0v1": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_concrete__u0v1.png",
+      "mask": "masks/floors/floor_concrete__u0v1__mask.png",
+      "mask_channels": [
+       "floor"
+      ]
+     }
+    }
+   },
+   "u1v0": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_concrete__u1v0.png",
+      "mask": "masks/floors/floor_concrete__u1v0__mask.png",
+      "mask_channels": [
+       "floor"
+      ]
+     }
+    }
+   },
+   "u1v1": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_concrete__u1v1.png",
+      "mask": "masks/floors/floor_concrete__u1v1__mask.png",
+      "mask_channels": [
+       "floor"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "floor_vinyl",
+  "category": "floors",
+  "subcategory": "floor",
+  "name_fr": "Vinyle mouchete",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "floor_tile",
+  "render_layer": "floor",
+  "period_tiles": [
+   1,
+   1
+  ],
+  "variant_rule": "variante = (U mod pu, V mod pv)",
+  "channels": {
+   "floor": "sage",
+   "floor2": "cream"
+  },
+  "variants": {
+   "u0v0": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_vinyl__u0v0.png",
+      "mask": "masks/floors/floor_vinyl__u0v0__mask.png",
+      "mask_channels": [
+       "floor",
+       "floor2"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "floor_raised",
+  "category": "floors",
+  "subcategory": "floor",
+  "name_fr": "Faux plancher technique",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "floor_tile",
+  "render_layer": "floor",
+  "period_tiles": [
+   1,
+   1
+  ],
+  "variant_rule": "variante = (U mod pu, V mod pv)",
+  "channels": {
+   "floor": "steel"
+  },
+  "variants": {
+   "u0v0": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_raised__u0v0.png",
+      "mask": "masks/floors/floor_raised__u0v0__mask.png",
+      "mask_channels": [
+       "floor"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "floor_raised_vent",
+  "category": "floors",
+  "subcategory": "floor",
+  "name_fr": "Faux plancher perfore (soufflage)",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "floor_tile",
+  "render_layer": "floor",
+  "period_tiles": [
+   1,
+   1
+  ],
+  "variant_rule": "variante = (U mod pu, V mod pv)",
+  "channels": {
+   "floor": "steel",
+   "floor2": "graphite"
+  },
+  "variants": {
+   "u0v0": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_raised_vent__u0v0.png",
+      "mask": "masks/floors/floor_raised_vent__u0v0__mask.png",
+      "mask_channels": [
+       "floor",
+       "floor2"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "floor_edge",
+  "category": "floors",
+  "subcategory": "floor_edge",
+  "name_fr": "Bord avant de dalle (coupe)",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "floor_edge",
+  "render_layer": "floor_edge",
+  "orientations": {
+   "se": {
+    "size": [
+     32,
+     27
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_edge__se.png"
+     }
+    },
+    "placement": "le long du bord U=Umax ; ancre = (Umax, V)"
+   },
+   "sw": {
+    "size": [
+     32,
+     27
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_edge__sw.png"
+     }
+    },
+    "placement": "le long du bord V=Vmax ; ancre = (U, Vmax)"
+   }
+  },
+  "channels": {}
+ },
+ {
+  "id": "floor_edge_corner",
+  "category": "floors",
+  "subcategory": "floor_edge",
+  "name_fr": "Coin avant de dalle",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "floor_edge",
+  "render_layer": "floor_edge",
+  "orientations": {
+   "all": {
+    "size": [
+     64,
+     27
+    ],
+    "anchor": [
+     32,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_edge_corner__all.png"
+     }
+    },
+    "placement": "ancre = coin avant (Umax, Vmax) ; remplace les deux derniers modules de bord"
+   }
+  }
+ },
+ {
+  "id": "floor_threshold",
+  "category": "floors",
+  "subcategory": "floor_overlay",
+  "name_fr": "Seuil de transition (barre laiton)",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "floor_overlay",
+  "render_layer": "floor_overlay",
+  "orientations": {
+   "along_u": {
+    "size": [
+     36,
+     21
+    ],
+    "anchor": [
+     2,
+     3
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_threshold__along_u.png",
+      "mask": "masks/floors/floor_threshold__along_u__mask.png",
+      "mask_channels": [
+       "metal"
+      ]
+     }
+    },
+    "placement": "sur l'arete V=j entre deux cases (le long de U) ; ancre = (U, V=j)"
+   },
+   "along_v": {
+    "size": [
+     36,
+     21
+    ],
+    "anchor": [
+     34,
+     3
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_threshold__along_v.png",
+      "mask": "masks/floors/floor_threshold__along_v__mask.png",
+      "mask_channels": [
+       "metal"
+      ]
+     }
+    },
+    "placement": "sur l'arete U=i entre deux cases (le long de V) ; ancre = (U=i, V)"
+   }
+  },
+  "channels": {
+   "metal": "brass"
+  }
+ },
+ {
+  "id": "floor_marking",
+  "category": "floors",
+  "subcategory": "floor_overlay",
+  "name_fr": "Marquage au sol (atelier)",
+  "pack_version": "1.0.0",
+  "usage": "shared",
+  "kind": "floor_overlay",
+  "render_layer": "floor_overlay",
+  "orientations": {
+   "line_u": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_marking__line_u.png",
+      "mask": "masks/floors/floor_marking__line_u__mask.png",
+      "mask_channels": [
+       "accent"
+      ]
+     }
+    },
+    "placement": "bande le long de l'arete V=0 de la case"
+   },
+   "line_v": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_marking__line_v.png",
+      "mask": "masks/floors/floor_marking__line_v__mask.png",
+      "mask_channels": [
+       "accent"
+      ]
+     }
+    },
+    "placement": "bande le long de l'arete U=0 de la case"
+   },
+   "hatch": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_marking__hatch.png",
+      "mask": "masks/floors/floor_marking__hatch__mask.png",
+      "mask_channels": [
+       "accent"
+      ]
+     }
+    },
+    "placement": "zone hachuree (case entiere)"
+   },
+   "walkway_dot": {
+    "size": [
+     64,
+     32
+    ],
+    "anchor": [
+     32,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/floors/floor_marking__walkway_dot.png",
+      "mask": "masks/floors/floor_marking__walkway_dot__mask.png",
+      "mask_channels": [
+       "accent"
+      ]
+     }
+    },
+    "placement": "repere de cheminement"
+   }
+  },
+  "channels": {
+   "accent": "hazard"
+  }
+ }
+]

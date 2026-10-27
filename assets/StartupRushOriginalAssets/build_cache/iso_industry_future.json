@@ -1,0 +1,7757 @@
+[
+ {
+  "id": "conveyor_straight",
+  "category": "industry_future",
+  "subcategory": "conveyor",
+  "name_fr": "Convoyeur droit",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "conveyor_straight",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 16,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Module 1 case. Flux le long de y local : se = le long de U, sw = le long de V. Symetrique (tambours aux deux bouts) : le flux peut etre inverse sans autre sprite.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     66,
+     48
+    ],
+    "anchor": [
+     30,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_straight__se.png",
+      "mask": "masks/industry_future/conveyor_straight__se__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_straight__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -16
+     ],
+     [
+      32,
+      0
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      0
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       0,
+       4
+      ],
+      "world_su": [
+       16.0,
+       16.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "produit au centre de la bande"
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "back",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     },
+     {
+      "name": "out",
+      "dir": "front",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+U"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     66,
+     48
+    ],
+    "anchor": [
+     30,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_straight__sw.png",
+      "mask": "masks/industry_future/conveyor_straight__sw__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_straight__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -16
+     ],
+     [
+      32,
+      0
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      0
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       0,
+       4
+      ],
+      "world_su": [
+       16.0,
+       16.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "produit au centre de la bande"
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "back",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     },
+     {
+      "name": "out",
+      "dir": "front",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+V"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "secondary": "rubber"
+  },
+  "belt_height_px": 12,
+  "port_rule": "ports : 'tile' = case du module portant le port, 'world_dir' = direction monde de l'arete d'echange ; dessus de bande a 12 px pour tous les modules et machines en ligne.",
+  "flow_reversible": true,
+  "sockets_def": [
+   {
+    "name": "belt",
+    "accepts": [
+     "product",
+     "tote"
+    ],
+    "local": [
+     16,
+     16,
+     12
+    ],
+    "facing_rel": "same",
+    "note": "produit au centre de la bande"
+   }
+  ]
+ },
+ {
+  "id": "conveyor_curve",
+  "category": "industry_future",
+  "subcategory": "conveyor",
+  "name_fr": "Convoyeur courbe (90 degres)",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "conveyor_curve",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 16,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Bande en quart de couronne (rayons 6 a 26 su) autour du coin arriere-droit, plaque interieure.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     108,
+     64
+    ],
+    "anchor": [
+     54,
+     40
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_curve__se.png",
+      "mask": "masks/industry_future/conveyor_curve__se__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_curve__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -16
+     ],
+     [
+      32,
+      0
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      0
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       0,
+       4
+      ],
+      "world_su": [
+       16.0,
+       16.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "a",
+      "dir": "back",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     },
+     {
+      "name": "b",
+      "dir": "right",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     108,
+     60
+    ],
+    "anchor": [
+     22,
+     24
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_curve__sw.png",
+      "mask": "masks/industry_future/conveyor_curve__sw__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_curve__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -16
+     ],
+     [
+      32,
+      0
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      0
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       0,
+       4
+      ],
+      "world_su": [
+       16.0,
+       16.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "a",
+      "dir": "back",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     },
+     {
+      "name": "b",
+      "dir": "right",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+U"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     108,
+     60
+    ],
+    "anchor": [
+     54,
+     8
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_curve__nw.png",
+      "mask": "masks/industry_future/conveyor_curve__nw__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_curve__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -16
+     ],
+     [
+      32,
+      0
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      0
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       0,
+       4
+      ],
+      "world_su": [
+       16.0,
+       16.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "a",
+      "dir": "back",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+U"
+     },
+     {
+      "name": "b",
+      "dir": "right",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+V"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     108,
+     60
+    ],
+    "anchor": [
+     86,
+     24
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_curve__ne.png",
+      "mask": "masks/industry_future/conveyor_curve__ne__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_curve__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -16
+     ],
+     [
+      32,
+      0
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      0
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       0,
+       4
+      ],
+      "world_su": [
+       16.0,
+       16.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "a",
+      "dir": "back",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+V"
+     },
+     {
+      "name": "b",
+      "dir": "right",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "secondary": "rubber",
+   "metal": "steel"
+  },
+  "belt_height_px": 12,
+  "port_rule": "ports : 'tile' = case du module portant le port, 'world_dir' = direction monde de l'arete d'echange ; dessus de bande a 12 px pour tous les modules et machines en ligne.",
+  "flow_reversible": true,
+  "curve_rule": "relie les aretes 'back' et 'right' locales ; les 4 orientations couvrent les 4 virages",
+  "sockets_def": [
+   {
+    "name": "belt",
+    "accepts": [
+     "product",
+     "tote"
+    ],
+    "local": [
+     16,
+     16,
+     12
+    ],
+    "facing_rel": "same",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "id": "conveyor_junction_t",
+  "category": "industry_future",
+  "subcategory": "conveyor",
+  "name_fr": "Convoyeur jonction en T (insertion)",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "conveyor_junction_t",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 16,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Ligne principale le long de y ; arrivee laterale par l'arete gauche, guide d'insertion.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     66,
+     48
+    ],
+    "anchor": [
+     30,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_junction_t__se.png",
+      "mask": "masks/industry_future/conveyor_junction_t__se__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_junction_t__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -16
+     ],
+     [
+      32,
+      0
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      0
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       0,
+       4
+      ],
+      "world_su": [
+       16.0,
+       16.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "in_main",
+      "dir": "back",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     },
+     {
+      "name": "in_side",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+V"
+     },
+     {
+      "name": "out",
+      "dir": "front",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+U"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     66,
+     48
+    ],
+    "anchor": [
+     30,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_junction_t__sw.png",
+      "mask": "masks/industry_future/conveyor_junction_t__sw__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_junction_t__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -16
+     ],
+     [
+      32,
+      0
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      0
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       0,
+       4
+      ],
+      "world_su": [
+       16.0,
+       16.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "in_main",
+      "dir": "back",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     },
+     {
+      "name": "in_side",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     },
+     {
+      "name": "out",
+      "dir": "front",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+V"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     66,
+     48
+    ],
+    "anchor": [
+     30,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_junction_t__nw.png",
+      "mask": "masks/industry_future/conveyor_junction_t__nw__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_junction_t__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -16
+     ],
+     [
+      32,
+      0
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      0
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       0,
+       4
+      ],
+      "world_su": [
+       16.0,
+       16.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "in_main",
+      "dir": "back",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+U"
+     },
+     {
+      "name": "in_side",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     },
+     {
+      "name": "out",
+      "dir": "front",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     66,
+     48
+    ],
+    "anchor": [
+     30,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_junction_t__ne.png",
+      "mask": "masks/industry_future/conveyor_junction_t__ne__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_junction_t__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -16
+     ],
+     [
+      32,
+      0
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      0
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       0,
+       4
+      ],
+      "world_su": [
+       16.0,
+       16.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "in_main",
+      "dir": "back",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+V"
+     },
+     {
+      "name": "in_side",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+U"
+     },
+     {
+      "name": "out",
+      "dir": "front",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "secondary": "rubber"
+  },
+  "belt_height_px": 12,
+  "port_rule": "ports : 'tile' = case du module portant le port, 'world_dir' = direction monde de l'arete d'echange ; dessus de bande a 12 px pour tous les modules et machines en ligne.",
+  "sockets_def": [
+   {
+    "name": "belt",
+    "accepts": [
+     "product",
+     "tote"
+    ],
+    "local": [
+     16,
+     16,
+     12
+    ],
+    "facing_rel": "same",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "id": "conveyor_end",
+  "category": "industry_future",
+  "subcategory": "conveyor",
+  "name_fr": "Convoyeur fin de ligne (butee)",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "conveyor_end",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 20,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Butee rayee jaune/noir et cellule de detection a l'avant ; entree par l'arriere.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     62,
+     46
+    ],
+    "anchor": [
+     30,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_end__se.png",
+      "mask": "masks/industry_future/conveyor_end__se__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_end__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -20
+     ],
+     [
+      32,
+      -4
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -4
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       -2,
+       3
+      ],
+      "world_su": [
+       14.0,
+       16.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "back",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     62,
+     46
+    ],
+    "anchor": [
+     26,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_end__sw.png",
+      "mask": "masks/industry_future/conveyor_end__sw__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_end__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -20
+     ],
+     [
+      32,
+      -4
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -4
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       2,
+       3
+      ],
+      "world_su": [
+       16.0,
+       14.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "back",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     62,
+     49
+    ],
+    "anchor": [
+     26,
+     17
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_end__nw.png",
+      "mask": "masks/industry_future/conveyor_end__nw__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_end__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -20
+     ],
+     [
+      32,
+      -4
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -4
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       2,
+       5
+      ],
+      "world_su": [
+       18.0,
+       16.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "back",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+U"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     62,
+     49
+    ],
+    "anchor": [
+     30,
+     17
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_end__ne.png",
+      "mask": "masks/industry_future/conveyor_end__ne__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_end__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -20
+     ],
+     [
+      32,
+      -4
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -4
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       -2,
+       5
+      ],
+      "world_su": [
+       16.0,
+       18.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "back",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+V"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "secondary": "rubber",
+   "accent": "hazard"
+  },
+  "belt_height_px": 12,
+  "port_rule": "ports : 'tile' = case du module portant le port, 'world_dir' = direction monde de l'arete d'echange ; dessus de bande a 12 px pour tous les modules et machines en ligne.",
+  "sockets_def": [
+   {
+    "name": "belt",
+    "accepts": [
+     "product",
+     "tote"
+    ],
+    "local": [
+     16,
+     18,
+     12
+    ],
+    "facing_rel": "same",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "id": "conveyor_transfer_table",
+  "category": "industry_future",
+  "subcategory": "conveyor",
+  "name_fr": "Table de transfert a angle droit",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "conveyor_transfer_table",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 14,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Rouleaux d'axe x + deux bandes de transfert d'axe y : echange dans les 4 directions.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     62,
+     43
+    ],
+    "anchor": [
+     28,
+     12
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_transfer_table__se.png",
+      "mask": "masks/industry_future/conveyor_transfer_table__se__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_transfer_table__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -14
+     ],
+     [
+      32,
+      2
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      2
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       0,
+       4
+      ],
+      "world_su": [
+       16.0,
+       16.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "back",
+      "dir": "back",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     },
+     {
+      "name": "front",
+      "dir": "front",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+U"
+     },
+     {
+      "name": "left",
+      "dir": "left",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+V"
+     },
+     {
+      "name": "right",
+      "dir": "right",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     62,
+     43
+    ],
+    "anchor": [
+     28,
+     12
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/conveyor_transfer_table__sw.png",
+      "mask": "masks/industry_future/conveyor_transfer_table__sw__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/conveyor_transfer_table__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -14
+     ],
+     [
+      32,
+      2
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      2
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       0,
+       4
+      ],
+      "world_su": [
+       16.0,
+       16.0,
+       12
+      ],
+      "accepts": [
+       "product",
+       "tote"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "back",
+      "dir": "back",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     },
+     {
+      "name": "front",
+      "dir": "front",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+V"
+     },
+     {
+      "name": "left",
+      "dir": "left",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     },
+     {
+      "name": "right",
+      "dir": "right",
+      "kind": "inout",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+U"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "secondary": "rubber",
+   "accent": "hazard"
+  },
+  "belt_height_px": 12,
+  "port_rule": "ports : 'tile' = case du module portant le port, 'world_dir' = direction monde de l'arete d'echange ; dessus de bande a 12 px pour tous les modules et machines en ligne.",
+  "sockets_def": [
+   {
+    "name": "belt",
+    "accepts": [
+     "product",
+     "tote"
+    ],
+    "local": [
+     16,
+     16,
+     12
+    ],
+    "facing_rel": "same",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "id": "assembly_station_manual",
+  "category": "industry_future",
+  "subcategory": "assembly",
+  "name_fr": "Poste d'assemblage manuel",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "assembly_station_manual",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 64,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Etabli ESD, rampe d'outils, lampe, bacs de pieces. Rebords a rouleaux aux deux bouts (ports a 12 px).",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     106,
+     111
+    ],
+    "anchor": [
+     63,
+     63
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/assembly_station_manual__se.png",
+      "mask": "masks/industry_future/assembly_station_manual__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/assembly_station_manual__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -64
+     ],
+     [
+      32,
+      -48
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -32
+     ]
+    ],
+    "sockets": {
+     "chair": {
+      "offset_px": [
+       12,
+       38
+      ],
+      "world_su": [
+       44.0,
+       32.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "nw",
+      "draw": "workstation",
+      "note": "operateur assis"
+     },
+     "bench_left": {
+      "offset_px": [
+       -30,
+       5
+      ],
+      "world_su": [
+       20.0,
+       50.0,
+       30
+      ],
+      "accepts": [
+       "desk_item",
+       "product"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "bench_center": {
+      "offset_px": [
+       -11,
+       -3
+      ],
+      "world_su": [
+       21.0,
+       32.0,
+       30
+      ],
+      "accepts": [
+       "product",
+       "desk_item"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "bench_right": {
+      "offset_px": [
+       6,
+       -13
+      ],
+      "world_su": [
+       20.0,
+       14.0,
+       30
+      ],
+      "accepts": [
+       "desk_item",
+       "product"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       1
+      ],
+      "world_dir": "+V"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     116,
+     111
+    ],
+    "anchor": [
+     31,
+     63
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/assembly_station_manual__sw.png",
+      "mask": "masks/industry_future/assembly_station_manual__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/assembly_station_manual__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -64
+     ],
+     [
+      64,
+      -32
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -48
+     ]
+    ],
+    "sockets": {
+     "chair": {
+      "offset_px": [
+       -12,
+       38
+      ],
+      "world_su": [
+       32.0,
+       44.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "ne",
+      "draw": "workstation",
+      "note": "operateur assis"
+     },
+     "bench_left": {
+      "offset_px": [
+       -6,
+       -13
+      ],
+      "world_su": [
+       14.0,
+       20.0,
+       30
+      ],
+      "accepts": [
+       "desk_item",
+       "product"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "bench_center": {
+      "offset_px": [
+       11,
+       -3
+      ],
+      "world_su": [
+       32.0,
+       21.0,
+       30
+      ],
+      "accepts": [
+       "product",
+       "desk_item"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "bench_right": {
+      "offset_px": [
+       30,
+       5
+      ],
+      "world_su": [
+       50.0,
+       20.0,
+       30
+      ],
+      "accepts": [
+       "desk_item",
+       "product"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       1,
+       0
+      ],
+      "world_dir": "+U"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     116,
+     100
+    ],
+    "anchor": [
+     63,
+     52
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/assembly_station_manual__nw.png",
+      "mask": "masks/industry_future/assembly_station_manual__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/assembly_station_manual__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       1
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -64
+     ],
+     [
+      32,
+      -48
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -32
+     ]
+    ],
+    "sockets": {
+     "chair": {
+      "offset_px": [
+       -44,
+       10
+      ],
+      "world_su": [
+       -12.0,
+       32.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "se",
+      "draw": "workstation",
+      "note": "operateur assis"
+     },
+     "bench_left": {
+      "offset_px": [
+       -2,
+       -17
+      ],
+      "world_su": [
+       12.0,
+       14.0,
+       30
+      ],
+      "accepts": [
+       "desk_item",
+       "product"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "bench_center": {
+      "offset_px": [
+       -21,
+       -8
+      ],
+      "world_su": [
+       11.0,
+       32.0,
+       30
+      ],
+      "accepts": [
+       "product",
+       "desk_item"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "bench_right": {
+      "offset_px": [
+       -38,
+       1
+      ],
+      "world_su": [
+       12.0,
+       50.0,
+       30
+      ],
+      "accepts": [
+       "desk_item",
+       "product"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       0,
+       1
+      ],
+      "world_dir": "+V"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     106,
+     100
+    ],
+    "anchor": [
+     31,
+     52
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/assembly_station_manual__ne.png",
+      "mask": "masks/industry_future/assembly_station_manual__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/assembly_station_manual__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -64
+     ],
+     [
+      64,
+      -32
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -48
+     ]
+    ],
+    "sockets": {
+     "chair": {
+      "offset_px": [
+       44,
+       10
+      ],
+      "world_su": [
+       32.0,
+       -12.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "sw",
+      "draw": "workstation",
+      "note": "operateur assis"
+     },
+     "bench_left": {
+      "offset_px": [
+       38,
+       1
+      ],
+      "world_su": [
+       50.0,
+       12.0,
+       30
+      ],
+      "accepts": [
+       "desk_item",
+       "product"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "bench_center": {
+      "offset_px": [
+       21,
+       -8
+      ],
+      "world_su": [
+       32.0,
+       11.0,
+       30
+      ],
+      "accepts": [
+       "product",
+       "desk_item"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "bench_right": {
+      "offset_px": [
+       2,
+       -17
+      ],
+      "world_su": [
+       14.0,
+       12.0,
+       30
+      ],
+      "accepts": [
+       "desk_item",
+       "product"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       1,
+       0
+      ],
+      "world_dir": "+U"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "secondary": "teal",
+   "primary": "plastic",
+   "screen": "display"
+  },
+  "belt_height_px": 12,
+  "port_rule": "ports : 'tile' = case du module portant le port, 'world_dir' = direction monde de l'arete d'echange ; dessus de bande a 12 px pour tous les modules et machines en ligne.",
+  "sockets_def": [
+   {
+    "name": "chair",
+    "accepts": [
+     "chair"
+    ],
+    "local": [
+     32,
+     -12,
+     0
+    ],
+    "facing_rel": "opposite",
+    "note": "operateur assis"
+   },
+   {
+    "name": "bench_left",
+    "accepts": [
+     "desk_item",
+     "product"
+    ],
+    "local": [
+     14,
+     12,
+     30
+    ],
+    "facing_rel": "same",
+    "note": ""
+   },
+   {
+    "name": "bench_center",
+    "accepts": [
+     "product",
+     "desk_item"
+    ],
+    "local": [
+     32,
+     11,
+     30
+    ],
+    "facing_rel": "same",
+    "note": ""
+   },
+   {
+    "name": "bench_right",
+    "accepts": [
+     "desk_item",
+     "product"
+    ],
+    "local": [
+     50,
+     12,
+     30
+    ],
+    "facing_rel": "same",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "id": "assembly_cell_robotic",
+  "category": "industry_future",
+  "subcategory": "assembly",
+  "name_fr": "Cellule d'assemblage robotisee",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "assembly_cell_robotic",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   2
+  ],
+  "size_su": null,
+  "height_px": 50,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Bras robotise (6 axes stylise) au-dessus d'une bande traversante (rangee avant). Grillage a l'arriere et sur les cotes seulement : la cellule reste lisible depuis la camera.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     133,
+     128
+    ],
+    "anchor": [
+     65,
+     62
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/assembly_cell_robotic__se.png",
+      "mask": "masks/industry_future/assembly_cell_robotic__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/assembly_cell_robotic__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "maintenance",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -50
+     ],
+     [
+      64,
+      -18
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      0,
+      64
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -18
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       16,
+       28
+      ],
+      "world_su": [
+       48.0,
+       32.0,
+       12
+      ],
+      "accepts": [
+       "product"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "poste de prise du robot"
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       1,
+       1
+      ],
+      "world_dir": "+V"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       1,
+       0
+      ],
+      "world_dir": "-V"
+     }
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "sw": {
+    "size": [
+     154,
+     116
+    ],
+    "anchor": [
+     65,
+     50
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/assembly_cell_robotic__sw.png",
+      "mask": "masks/industry_future/assembly_cell_robotic__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/assembly_cell_robotic__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "maintenance",
+      "tile": [
+       1,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -50
+     ],
+     [
+      64,
+      -18
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      0,
+      64
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -18
+     ]
+    ],
+    "sockets": {
+     "belt": {
+      "offset_px": [
+       -16,
+       28
+      ],
+      "world_su": [
+       32.0,
+       48.0,
+       12
+      ],
+      "accepts": [
+       "product"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "poste de prise du robot"
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       1
+      ],
+      "world_dir": "-U"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       1,
+       1
+      ],
+      "world_dir": "+U"
+     }
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   }
+  },
+  "channels": {
+   "accent": "hazard",
+   "secondary": "rubber",
+   "metal": "steel",
+   "primary": "steel",
+   "screen": "display"
+  },
+  "belt_height_px": 12,
+  "port_rule": "ports : 'tile' = case du module portant le port, 'world_dir' = direction monde de l'arete d'echange ; dessus de bande a 12 px pour tous les modules et machines en ligne.",
+  "sockets_def": [
+   {
+    "name": "belt",
+    "accepts": [
+     "product"
+    ],
+    "local": [
+     32,
+     16,
+     12
+    ],
+    "facing_rel": "same",
+    "note": "poste de prise du robot"
+   }
+  ]
+ },
+ {
+  "id": "pick_and_place_machine",
+  "category": "industry_future",
+  "subcategory": "smt",
+  "name_fr": "Machine de placement de composants",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "pick_and_place_machine",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 48,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Carrosserie fermee, bancs de chargeurs a bobines en facade, fenetre sur le portique, passage de bande.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     106,
+     92
+    ],
+    "anchor": [
+     63,
+     43
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/pick_and_place_machine__se.png",
+      "mask": "masks/industry_future/pick_and_place_machine__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "glass",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/pick_and_place_machine__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "operate",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "operate",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -48
+     ],
+     [
+      32,
+      -32
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -16
+     ]
+    ],
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       1
+      ],
+      "world_dir": "+V"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     106,
+     83
+    ],
+    "anchor": [
+     31,
+     34
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/pick_and_place_machine__sw.png",
+      "mask": "masks/industry_future/pick_and_place_machine__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "glass",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/pick_and_place_machine__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "operate",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "operate",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -48
+     ],
+     [
+      64,
+      -16
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -32
+     ]
+    ],
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       1,
+       0
+      ],
+      "world_dir": "+U"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "accent": "teal",
+   "glass": "glass",
+   "secondary": "rubber",
+   "metal": "steel",
+   "screen": "display"
+  },
+  "belt_height_px": 12,
+  "port_rule": "ports : 'tile' = case du module portant le port, 'world_dir' = direction monde de l'arete d'echange ; dessus de bande a 12 px pour tous les modules et machines en ligne.",
+  "sockets_def": []
+ },
+ {
+  "id": "reflow_oven",
+  "category": "industry_future",
+  "subcategory": "smt",
+  "name_fr": "Four de refusion (tunnel)",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "reflow_oven",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   3,
+   1
+  ],
+  "size_su": null,
+  "height_px": 46,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Tunnel a 6 zones de chauffe : temoins par zone et hublots chauds stylises (aucune flamme).",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     132,
+     94
+    ],
+    "anchor": [
+     94,
+     30
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/reflow_oven__se.png",
+      "mask": "masks/industry_future/reflow_oven__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/reflow_oven__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     3
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      0,
+      2
+     ]
+    ],
+    "access": [
+     {
+      "kind": "operate",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -46
+     ],
+     [
+      32,
+      -30
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -64,
+      64
+     ],
+     [
+      -96,
+      48
+     ],
+     [
+      -96,
+      2
+     ]
+    ],
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       2
+      ],
+      "world_dir": "+V"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     132,
+     96
+    ],
+    "anchor": [
+     30,
+     32
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/reflow_oven__sw.png",
+      "mask": "masks/industry_future/reflow_oven__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/reflow_oven__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     3,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "operate",
+      "tile": [
+       2,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -46
+     ],
+     [
+      96,
+      2
+     ],
+     [
+      96,
+      48
+     ],
+     [
+      64,
+      64
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -30
+     ]
+    ],
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       2,
+       0
+      ],
+      "world_dir": "+U"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "accent": "teal",
+   "metal": "steel",
+   "screen": "display",
+   "secondary": "rubber"
+  },
+  "belt_height_px": 12,
+  "port_rule": "ports : 'tile' = case du module portant le port, 'world_dir' = direction monde de l'arete d'echange ; dessus de bande a 12 px pour tous les modules et machines en ligne.",
+  "sockets_def": []
+ },
+ {
+  "id": "aoi_inspection",
+  "category": "industry_future",
+  "subcategory": "smt",
+  "name_fr": "Inspection optique automatique",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "aoi_inspection",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 44,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Capot camera surmonte d'un objectif, hublot sur la zone d'inspection, petit ecran sur bras.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     67,
+     70
+    ],
+    "anchor": [
+     30,
+     38
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/aoi_inspection__se.png",
+      "mask": "masks/industry_future/aoi_inspection__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "glass",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/aoi_inspection__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "operate",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -44
+     ],
+     [
+      32,
+      -28
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -28
+     ]
+    ],
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+V"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     70,
+     62
+    ],
+    "anchor": [
+     30,
+     30
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/aoi_inspection__sw.png",
+      "mask": "masks/industry_future/aoi_inspection__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "glass",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/aoi_inspection__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "operate",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -44
+     ],
+     [
+      32,
+      -28
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -28
+     ]
+    ],
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "+U"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "glass": "glass",
+   "accent": "teal",
+   "metal": "steel",
+   "screen": "display",
+   "secondary": "rubber"
+  },
+  "belt_height_px": 12,
+  "port_rule": "ports : 'tile' = case du module portant le port, 'world_dir' = direction monde de l'arete d'echange ; dessus de bande a 12 px pour tous les modules et machines en ligne.",
+  "sockets_def": []
+ },
+ {
+  "id": "pcb_tester",
+  "category": "industry_future",
+  "subcategory": "test",
+  "name_fr": "Testeur de cartes (sondes mobiles)",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "pcb_tester",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 44,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Baie inferieure, plateau vitre au-dessus : carte verte et sondes visibles par la fenetre.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     101,
+     91
+    ],
+    "anchor": [
+     62,
+     43
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/pcb_tester__se.png",
+      "mask": "masks/industry_future/pcb_tester__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "glass",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/pcb_tester__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "operate",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -44
+     ],
+     [
+      32,
+      -28
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -12
+     ]
+    ],
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       1
+      ],
+      "world_dir": "+V"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     104,
+     90
+    ],
+    "anchor": [
+     30,
+     42
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/pcb_tester__sw.png",
+      "mask": "masks/industry_future/pcb_tester__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "glass",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/pcb_tester__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "operate",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -44
+     ],
+     [
+      64,
+      -12
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -28
+     ]
+    ],
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       1,
+       0
+      ],
+      "world_dir": "+U"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "metal": "steel",
+   "glass": "glass",
+   "secondary": "rubber",
+   "screen": "display"
+  },
+  "belt_height_px": 12,
+  "port_rule": "ports : 'tile' = case du module portant le port, 'world_dir' = direction monde de l'arete d'echange ; dessus de bande a 12 px pour tous les modules et machines en ligne.",
+  "sockets_def": []
+ },
+ {
+  "id": "chip_fab_tool",
+  "category": "industry_future",
+  "subcategory": "fab",
+  "name_fr": "Outil de traitement microelectronique (ferme)",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "chip_fab_tool",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   2
+  ],
+  "size_su": null,
+  "height_px": 64,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Machine de salle propre fermee (gravure/depot stylise) : module frontal avec 2 ports de chargement, ecran tactile sur bras, panneaux de service. Aucun procede reel represente.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     138,
+     124
+    ],
+    "anchor": [
+     59,
+     62
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/chip_fab_tool__se.png",
+      "mask": "masks/industry_future/chip_fab_tool__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/chip_fab_tool__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "operate",
+      "tile": [
+       2,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "operate",
+      "tile": [
+       2,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -64
+     ],
+     [
+      64,
+      -32
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      0,
+      64
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -32
+     ]
+    ],
+    "ports": [
+     {
+      "name": "load_a",
+      "dir": "front",
+      "kind": "inout",
+      "tile": [
+       1,
+       1
+      ],
+      "world_dir": "+U"
+     },
+     {
+      "name": "load_b",
+      "dir": "front",
+      "kind": "inout",
+      "tile": [
+       1,
+       0
+      ],
+      "world_dir": "+U"
+     }
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "sw": {
+    "size": [
+     137,
+     115
+    ],
+    "anchor": [
+     57,
+     53
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/chip_fab_tool__sw.png",
+      "mask": "masks/industry_future/chip_fab_tool__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/chip_fab_tool__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "operate",
+      "tile": [
+       0,
+       2
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "operate",
+      "tile": [
+       1,
+       2
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -64
+     ],
+     [
+      64,
+      -32
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      0,
+      64
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -32
+     ]
+    ],
+    "ports": [
+     {
+      "name": "load_a",
+      "dir": "front",
+      "kind": "inout",
+      "tile": [
+       0,
+       1
+      ],
+      "world_dir": "+V"
+     },
+     {
+      "name": "load_b",
+      "dir": "front",
+      "kind": "inout",
+      "tile": [
+       1,
+       1
+      ],
+      "world_dir": "+V"
+     }
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "accent": "teal",
+   "metal": "steel",
+   "screen": "display",
+   "secondary": "steel"
+  },
+  "port_rule": "ports : 'tile' = case du module portant le port, 'world_dir' = direction monde de l'arete d'echange ; dessus de bande a 12 px pour tous les modules et machines en ligne.",
+  "feed": "boites de plaquettes (product_wafer) aux deux ports de chargement",
+  "sockets_def": []
+ },
+ {
+  "id": "precision_station",
+  "category": "industry_future",
+  "subcategory": "fab",
+  "name_fr": "Station de precision avancee",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "precision_station",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 54,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Socle granit sur bati, portique et tete optique sous capot transparent (aretes), console a manette.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     109,
+     98
+    ],
+    "anchor": [
+     61,
+     51
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/precision_station__se.png",
+      "mask": "masks/industry_future/precision_station__se__mask.png",
+      "mask_channels": [
+       "metal",
+       "glass",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/precision_station__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "operate",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "operate",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -54
+     ],
+     [
+      32,
+      -38
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -22
+     ]
+    ],
+    "sockets": {
+     "stage": {
+      "offset_px": [
+       -13,
+       -2
+      ],
+      "world_su": [
+       19.0,
+       32.0,
+       28
+      ],
+      "accepts": [
+       "product"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "piece sur la platine"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     109,
+     98
+    ],
+    "anchor": [
+     29,
+     51
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/precision_station__sw.png",
+      "mask": "masks/industry_future/precision_station__sw__mask.png",
+      "mask_channels": [
+       "metal",
+       "glass",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/precision_station__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "operate",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "operate",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -54
+     ],
+     [
+      64,
+      -22
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -38
+     ]
+    ],
+    "sockets": {
+     "stage": {
+      "offset_px": [
+       13,
+       -2
+      ],
+      "world_su": [
+       32.0,
+       19.0,
+       28
+      ],
+      "accepts": [
+       "product"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "piece sur la platine"
+     }
+    }
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "glass": "glass",
+   "screen": "display"
+  },
+  "sockets_def": [
+   {
+    "name": "stage",
+    "accepts": [
+     "product"
+    ],
+    "local": [
+     32,
+     13,
+     28
+    ],
+    "facing_rel": "same",
+    "note": "piece sur la platine"
+   }
+  ]
+ },
+ {
+  "id": "flash_station",
+  "category": "industry_future",
+  "subcategory": "test",
+  "name_fr": "Station d'installation / flash logiciel",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "flash_station",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 48,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Bacs d'appareils raccordes a un concentrateur, terminal (ecran de code) et unite centrale.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     106,
+     90
+    ],
+    "anchor": [
+     63,
+     42
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/flash_station__se.png",
+      "mask": "masks/industry_future/flash_station__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/flash_station__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -48
+     ],
+     [
+      32,
+      -32
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -16
+     ]
+    ],
+    "sockets": {
+     "chair": {
+      "offset_px": [
+       12,
+       38
+      ],
+      "world_su": [
+       44.0,
+       32.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "nw",
+      "draw": "workstation",
+      "note": "operateur"
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       1
+      ],
+      "world_dir": "+V"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     106,
+     79
+    ],
+    "anchor": [
+     31,
+     31
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/flash_station__sw.png",
+      "mask": "masks/industry_future/flash_station__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/flash_station__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -48
+     ],
+     [
+      64,
+      -16
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -32
+     ]
+    ],
+    "sockets": {
+     "chair": {
+      "offset_px": [
+       -12,
+       38
+      ],
+      "world_su": [
+       32.0,
+       44.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "ne",
+      "draw": "workstation",
+      "note": "operateur"
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       1,
+       0
+      ],
+      "world_dir": "+U"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     106,
+     79
+    ],
+    "anchor": [
+     63,
+     31
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/flash_station__nw.png",
+      "mask": "masks/industry_future/flash_station__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/flash_station__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       1
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -48
+     ],
+     [
+      32,
+      -32
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -16
+     ]
+    ],
+    "sockets": {
+     "chair": {
+      "offset_px": [
+       -44,
+       10
+      ],
+      "world_su": [
+       -12.0,
+       32.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "se",
+      "draw": "workstation",
+      "note": "operateur"
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       0,
+       1
+      ],
+      "world_dir": "+V"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     106,
+     83
+    ],
+    "anchor": [
+     31,
+     35
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/flash_station__ne.png",
+      "mask": "masks/industry_future/flash_station__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/flash_station__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -48
+     ],
+     [
+      64,
+      -16
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -32
+     ]
+    ],
+    "sockets": {
+     "chair": {
+      "offset_px": [
+       44,
+       10
+      ],
+      "world_su": [
+       32.0,
+       -12.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "sw",
+      "draw": "workstation",
+      "note": "operateur"
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       1,
+       0
+      ],
+      "world_dir": "+U"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "secondary": "steel",
+   "primary": "plastic",
+   "screen": "display"
+  },
+  "belt_height_px": 12,
+  "port_rule": "ports : 'tile' = case du module portant le port, 'world_dir' = direction monde de l'arete d'echange ; dessus de bande a 12 px pour tous les modules et machines en ligne.",
+  "sockets_def": [
+   {
+    "name": "chair",
+    "accepts": [
+     "chair"
+    ],
+    "local": [
+     32,
+     -12,
+     0
+    ],
+    "facing_rel": "opposite",
+    "note": "operateur"
+   }
+  ]
+ },
+ {
+  "id": "stress_test_rack",
+  "category": "industry_future",
+  "subcategory": "test",
+  "name_fr": "Banc de stress-test (rodage)",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "stress_test_rack",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 76,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Etagere ouverte de cartes en rodage : ventilateurs et temoins visibles. Volontairement differente d'une baie serveur (cadre ouvert, cartes exposees).",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     121,
+     124
+    ],
+    "anchor": [
+     62,
+     76
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/stress_test_rack__se.png",
+      "mask": "masks/industry_future/stress_test_rack__se__mask.png",
+      "mask_channels": [
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/stress_test_rack__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "maintenance",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "maintenance",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -76
+     ],
+     [
+      32,
+      -60
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -44
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "sw": {
+    "size": [
+     120,
+     124
+    ],
+    "anchor": [
+     29,
+     76
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/stress_test_rack__sw.png",
+      "mask": "masks/industry_future/stress_test_rack__sw__mask.png",
+      "mask_channels": [
+       "secondary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/stress_test_rack__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "maintenance",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "maintenance",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -76
+     ],
+     [
+      64,
+      -44
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -60
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "secondary": "steel"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "packing_station",
+  "category": "industry_future",
+  "subcategory": "logistics",
+  "name_fr": "Poste d'emballage et d'etiquetage",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "packing_station",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 48,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Table bois : carton ouvert, devidoir, imprimante d'etiquettes, rouleau de calage ; cartons plats dessous.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     106,
+     80
+    ],
+    "anchor": [
+     63,
+     32
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/packing_station__se.png",
+      "mask": "masks/industry_future/packing_station__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "wood",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/packing_station__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -48
+     ],
+     [
+      32,
+      -32
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -16
+     ]
+    ],
+    "sockets": {
+     "table_center": {
+      "offset_px": [
+       -21,
+       -2
+      ],
+      "world_su": [
+       17.0,
+       38.0,
+       30
+      ],
+      "accepts": [
+       "product",
+       "box"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       1
+      ],
+      "world_dir": "+V"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-V"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     106,
+     91
+    ],
+    "anchor": [
+     31,
+     43
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/packing_station__sw.png",
+      "mask": "masks/industry_future/packing_station__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "wood",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/packing_station__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -48
+     ],
+     [
+      64,
+      -16
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -32
+     ]
+    ],
+    "sockets": {
+     "table_center": {
+      "offset_px": [
+       9,
+       -8
+      ],
+      "world_su": [
+       26.0,
+       17.0,
+       30
+      ],
+      "accepts": [
+       "product",
+       "box"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "ports": [
+     {
+      "name": "in",
+      "dir": "left",
+      "kind": "in",
+      "tile": [
+       0,
+       0
+      ],
+      "world_dir": "-U"
+     },
+     {
+      "name": "out",
+      "dir": "right",
+      "kind": "out",
+      "tile": [
+       1,
+       0
+      ],
+      "world_dir": "+U"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "wood": "birch",
+   "primary": "kraft",
+   "secondary": "plastic"
+  },
+  "belt_height_px": 12,
+  "port_rule": "ports : 'tile' = case du module portant le port, 'world_dir' = direction monde de l'arete d'echange ; dessus de bande a 12 px pour tous les modules et machines en ligne.",
+  "sockets_def": [
+   {
+    "name": "table_center",
+    "accepts": [
+     "product",
+     "box"
+    ],
+    "local": [
+     26,
+     15,
+     30
+    ],
+    "facing_rel": "same",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "id": "storage_rack_industrial",
+  "category": "industry_future",
+  "subcategory": "logistics",
+  "name_fr": "Rack de stockage a palettes",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "storage_rack_industrial",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 86,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Echelles bleu acier, lisses orange, platelages grillages ; chargement par defaut dessine.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     128,
+     136
+    ],
+    "anchor": [
+     63,
+     87
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/storage_rack_industrial__se.png",
+      "mask": "masks/industry_future/storage_rack_industrial__se__mask.png",
+      "mask_channels": [
+       "wood",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/storage_rack_industrial__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "load",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "load",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -86
+     ],
+     [
+      32,
+      -70
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -54
+     ]
+    ],
+    "sockets": {
+     "level_0": {
+      "offset_px": [
+       -16,
+       24
+      ],
+      "world_su": [
+       16.0,
+       32.0,
+       0
+      ],
+      "accepts": [
+       "pallet",
+       "tote",
+       "box"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "level_1": {
+      "offset_px": [
+       -16,
+       -6
+      ],
+      "world_su": [
+       16.0,
+       32.0,
+       30
+      ],
+      "accepts": [
+       "pallet",
+       "tote",
+       "box"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "level_2": {
+      "offset_px": [
+       -16,
+       -34
+      ],
+      "world_su": [
+       16.0,
+       32.0,
+       58
+      ],
+      "accepts": [
+       "pallet",
+       "tote",
+       "box"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "sw": {
+    "size": [
+     128,
+     136
+    ],
+    "anchor": [
+     31,
+     87
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/storage_rack_industrial__sw.png",
+      "mask": "masks/industry_future/storage_rack_industrial__sw__mask.png",
+      "mask_channels": [
+       "wood",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/storage_rack_industrial__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "load",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "load",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -86
+     ],
+     [
+      64,
+      -54
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -70
+     ]
+    ],
+    "sockets": {
+     "level_0": {
+      "offset_px": [
+       16,
+       24
+      ],
+      "world_su": [
+       32.0,
+       16.0,
+       0
+      ],
+      "accepts": [
+       "pallet",
+       "tote",
+       "box"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "level_1": {
+      "offset_px": [
+       16,
+       -6
+      ],
+      "world_su": [
+       32.0,
+       16.0,
+       30
+      ],
+      "accepts": [
+       "pallet",
+       "tote",
+       "box"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "level_2": {
+      "offset_px": [
+       16,
+       -34
+      ],
+      "world_su": [
+       32.0,
+       16.0,
+       58
+      ],
+      "accepts": [
+       "pallet",
+       "tote",
+       "box"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     }
+    },
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   }
+  },
+  "channels": {
+   "metal": "navy",
+   "accent": "coral",
+   "wood": "birch"
+  },
+  "sockets_def": [
+   {
+    "name": "level_0",
+    "accepts": [
+     "pallet",
+     "tote",
+     "box"
+    ],
+    "local": [
+     32,
+     16,
+     0
+    ],
+    "facing_rel": "same",
+    "note": ""
+   },
+   {
+    "name": "level_1",
+    "accepts": [
+     "pallet",
+     "tote",
+     "box"
+    ],
+    "local": [
+     32,
+     16,
+     30
+    ],
+    "facing_rel": "same",
+    "note": ""
+   },
+   {
+    "name": "level_2",
+    "accepts": [
+     "pallet",
+     "tote",
+     "box"
+    ],
+    "local": [
+     32,
+     16,
+     58
+    ],
+    "facing_rel": "same",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "id": "pallet",
+  "category": "industry_future",
+  "subcategory": "logistics",
+  "name_fr": "Palette de manutention",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "pallet",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 6,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Palette bois vide (planches, des) ; la charge se pose via le socket load.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     56,
+     35
+    ],
+    "anchor": [
+     27,
+     4
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/pallet__se.png",
+      "mask": "masks/industry_future/pallet__se__mask.png",
+      "mask_channels": [
+       "wood"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/pallet__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -6
+     ],
+     [
+      32,
+      10
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      10
+     ]
+    ],
+    "sockets": {
+     "load": {
+      "offset_px": [
+       0,
+       11
+      ],
+      "world_su": [
+       16.0,
+       16.0,
+       5.5
+      ],
+      "accepts": [
+       "product",
+       "tote",
+       "box"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "charge posee sur la palette"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     56,
+     35
+    ],
+    "anchor": [
+     27,
+     4
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/pallet__sw.png",
+      "mask": "masks/industry_future/pallet__sw__mask.png",
+      "mask_channels": [
+       "wood"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/pallet__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -6
+     ],
+     [
+      32,
+      10
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      10
+     ]
+    ],
+    "sockets": {
+     "load": {
+      "offset_px": [
+       0,
+       11
+      ],
+      "world_su": [
+       16.0,
+       16.0,
+       5.5
+      ],
+      "accepts": [
+       "product",
+       "tote",
+       "box"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "charge posee sur la palette"
+     }
+    }
+   }
+  },
+  "channels": {
+   "wood": "birch"
+  },
+  "sockets_def": [
+   {
+    "name": "load",
+    "accepts": [
+     "product",
+     "tote",
+     "box"
+    ],
+    "local": [
+     16,
+     16,
+     5.5
+    ],
+    "facing_rel": "same",
+    "note": "charge posee sur la palette"
+   }
+  ]
+ },
+ {
+  "id": "tote_bin",
+  "category": "industry_future",
+  "subcategory": "logistics",
+  "name_fr": "Bac de manutention",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "tote_bin",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   20,
+   14
+  ],
+  "height_px": 10,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Bac plastique ouvert, poignees evidees ; empilable (+10 px).",
+  "provides": [
+   "tote",
+   "product"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     43,
+     32
+    ],
+    "anchor": [
+     20,
+     21
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/tote_bin__se.png",
+      "mask": "masks/industry_future/tote_bin__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/tote_bin__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     43,
+     32
+    ],
+    "anchor": [
+     20,
+     21
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/tote_bin__sw.png",
+      "mask": "masks/industry_future/tote_bin__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/tote_bin__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "teal"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "dust_extraction",
+  "category": "industry_future",
+  "subcategory": "utility",
+  "name_fr": "Centrale d'aspiration / filtration",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "dust_extraction",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 74,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Deux cartouches filtrantes, bacs de collecte, moteur et gaine verticale vers le plafond.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     70,
+     94
+    ],
+    "anchor": [
+     27,
+     63
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/dust_extraction__se.png",
+      "mask": "masks/industry_future/dust_extraction__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/dust_extraction__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "maintenance",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -74
+     ],
+     [
+      32,
+      -58
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -58
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "sw": {
+    "size": [
+     70,
+     94
+    ],
+    "anchor": [
+     27,
+     63
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/dust_extraction__sw.png",
+      "mask": "masks/industry_future/dust_extraction__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/dust_extraction__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "maintenance",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -74
+     ],
+     [
+      32,
+      -58
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -58
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "metal": "steel",
+   "accent": "teal"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "industrial_chiller",
+  "category": "industry_future",
+  "subcategory": "utility",
+  "name_fr": "Groupe de refroidissement (chiller)",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "industrial_chiller",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 34,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Deux ventilateurs sur le dessus, persiennes, panneau de commande, departs eau froide/chaude a l'arriere.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     103,
+     80
+    ],
+    "anchor": [
+     61,
+     32
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/industrial_chiller__se.png",
+      "mask": "masks/industry_future/industrial_chiller__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/industrial_chiller__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "maintenance",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -34
+     ],
+     [
+      32,
+      -18
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -2
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     103,
+     80
+    ],
+    "anchor": [
+     29,
+     32
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/industrial_chiller__sw.png",
+      "mask": "masks/industry_future/industrial_chiller__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/industrial_chiller__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "maintenance",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -34
+     ],
+     [
+      64,
+      -2
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -18
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "secondary": "graphite",
+   "screen": "display",
+   "accent": "teal",
+   "metal": "steel"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "control_cabinet",
+  "category": "industry_future",
+  "subcategory": "utility",
+  "name_fr": "Armoire de controle",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "control_cabinet",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 76,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Armoire acier : voyants, petit ecran IHM, poignee, etiquette, presse-etoupe et goulotte en haut.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     73,
+     96
+    ],
+    "anchor": [
+     24,
+     68
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/control_cabinet__se.png",
+      "mask": "masks/industry_future/control_cabinet__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/control_cabinet__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "operate",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -76
+     ],
+     [
+      32,
+      -60
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -60
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "sw": {
+    "size": [
+     73,
+     96
+    ],
+    "anchor": [
+     22,
+     68
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/control_cabinet__sw.png",
+      "mask": "masks/industry_future/control_cabinet__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/control_cabinet__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "operate",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -76
+     ],
+     [
+      32,
+      -60
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -60
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   }
+  },
+  "channels": {
+   "primary": "steel",
+   "screen": "display",
+   "metal": "steel"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "cleanroom_airlock",
+  "category": "industry_future",
+  "subcategory": "cleanroom",
+  "name_fr": "Sas de salle propre (douche a air)",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "cleanroom_airlock",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   2
+  ],
+  "size_su": null,
+  "height_px": 90,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Cabine traversante : portes vitrees avant/arriere, grilles de soufflage laterales, caisson filtrant.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     127,
+     137
+    ],
+    "anchor": [
+     31,
+     88
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/cleanroom_airlock__se.png",
+      "mask": "masks/industry_future/cleanroom_airlock__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/cleanroom_airlock__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "enter",
+      "tile": [
+       2,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "exit",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -90
+     ],
+     [
+      64,
+      -58
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -74
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "sw": {
+    "size": [
+     127,
+     137
+    ],
+    "anchor": [
+     63,
+     88
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/cleanroom_airlock__sw.png",
+      "mask": "masks/industry_future/cleanroom_airlock__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "metal",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/cleanroom_airlock__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "enter",
+      "tile": [
+       0,
+       2
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "exit",
+      "tile": [
+       0,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -90
+     ],
+     [
+      32,
+      -74
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -58
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "secondary": "steel",
+   "glass": "glass",
+   "metal": "steel"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "cleanroom_partition",
+  "category": "industry_future",
+  "subcategory": "cleanroom",
+  "name_fr": "Cloison de salle propre",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "cleanroom_partition",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 86,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Panneau blanc sur toute la largeur de case (raboutable), fenetre affleurante, plinthe arrondie.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     77,
+     110
+    ],
+    "anchor": [
+     22,
+     82
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/cleanroom_partition__se.png",
+      "mask": "masks/industry_future/cleanroom_partition__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/cleanroom_partition__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -86
+     ],
+     [
+      32,
+      -70
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -70
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "sw": {
+    "size": [
+     77,
+     110
+    ],
+    "anchor": [
+     22,
+     82
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/cleanroom_partition__sw.png",
+      "mask": "masks/industry_future/cleanroom_partition__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/cleanroom_partition__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -86
+     ],
+     [
+      32,
+      -70
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -70
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   }
+  },
+  "channels": {
+   "secondary": "steel",
+   "primary": "plastic",
+   "glass": "glass"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "product_pcb",
+  "category": "industry_future",
+  "subcategory": "product",
+  "name_fr": "Carte electronique",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "product_pcb",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   14,
+   10
+  ],
+  "height_px": 3,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "product"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     29,
+     17
+    ],
+    "anchor": [
+     14,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/product_pcb__se.png"
+     },
+     "shadow": {
+      "file": "assets/industry_future/product_pcb__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     29,
+     17
+    ],
+    "anchor": [
+     14,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/product_pcb__sw.png"
+     },
+     "shadow": {
+      "file": "assets/industry_future/product_pcb__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {},
+  "sockets_def": []
+ },
+ {
+  "id": "product_cpu",
+  "category": "industry_future",
+  "subcategory": "product",
+  "name_fr": "Processeur (microcomposant)",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "product_cpu",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   10
+  ],
+  "height_px": 2,
+  "walkable": false,
+  "symmetric": true,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "product"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     25,
+     15
+    ],
+    "anchor": [
+     12,
+     8
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/product_cpu__se.png",
+      "mask": "masks/industry_future/product_cpu__se__mask.png",
+      "mask_channels": [
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/product_cpu__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "metal": "steel"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "product_ram",
+  "category": "industry_future",
+  "subcategory": "product",
+  "name_fr": "Module memoire",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "product_ram",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   16,
+   4
+  ],
+  "height_px": 6,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "product"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     24,
+     20
+    ],
+    "anchor": [
+     11,
+     13
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/product_ram__se.png"
+     },
+     "shadow": {
+      "file": "assets/industry_future/product_ram__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     24,
+     20
+    ],
+    "anchor": [
+     11,
+     13
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/product_ram__sw.png"
+     },
+     "shadow": {
+      "file": "assets/industry_future/product_ram__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {},
+  "sockets_def": []
+ },
+ {
+  "id": "product_gpu",
+  "category": "industry_future",
+  "subcategory": "product",
+  "name_fr": "Carte graphique",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "product_gpu",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   20,
+   8
+  ],
+  "height_px": 5,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "product"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     32,
+     21
+    ],
+    "anchor": [
+     16,
+     12
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/product_gpu__se.png",
+      "mask": "masks/industry_future/product_gpu__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/product_gpu__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     32,
+     23
+    ],
+    "anchor": [
+     16,
+     14
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/product_gpu__sw.png",
+      "mask": "masks/industry_future/product_gpu__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/product_gpu__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "accent": "teal",
+   "metal": "steel"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "product_case",
+  "category": "industry_future",
+  "subcategory": "product",
+  "name_fr": "Boitier vide",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "product_case",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   18
+  ],
+  "height_px": 21,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "product"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     37,
+     39
+    ],
+    "anchor": [
+     16,
+     30
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/product_case__se.png",
+      "mask": "masks/industry_future/product_case__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/product_case__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     37,
+     39
+    ],
+    "anchor": [
+     16,
+     30
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/product_case__sw.png",
+      "mask": "masks/industry_future/product_case__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/product_case__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "product_pc_assembled",
+  "category": "industry_future",
+  "subcategory": "product",
+  "name_fr": "Ordinateur assemble",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "product_pc_assembled",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   18
+  ],
+  "height_px": 21,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "product"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     37,
+     39
+    ],
+    "anchor": [
+     16,
+     30
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/product_pc_assembled__se.png",
+      "mask": "masks/industry_future/product_pc_assembled__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/product_pc_assembled__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     37,
+     39
+    ],
+    "anchor": [
+     16,
+     30
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/product_pc_assembled__sw.png",
+      "mask": "masks/industry_future/product_pc_assembled__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/product_pc_assembled__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "glass": "glass"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "product_box",
+  "category": "industry_future",
+  "subcategory": "product",
+  "name_fr": "Carton de produit",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "product_box",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   16,
+   12
+  ],
+  "height_px": 10,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "product",
+   "box"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     35,
+     28
+    ],
+    "anchor": [
+     16,
+     19
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/product_box__se.png",
+      "mask": "masks/industry_future/product_box__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/product_box__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     35,
+     28
+    ],
+    "anchor": [
+     16,
+     19
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/product_box__sw.png",
+      "mask": "masks/industry_future/product_box__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/industry_future/product_box__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "kraft"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "product_wafer",
+  "category": "industry_future",
+  "subcategory": "product",
+  "name_fr": "Plaquette de silicium",
+  "pack_version": "1.0.0",
+  "usage": "future",
+  "kind": "floor",
+  "silhouette_group": "product_wafer",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   14,
+   14
+  ],
+  "height_px": 1,
+  "walkable": false,
+  "symmetric": true,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "product"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     33,
+     19
+    ],
+    "anchor": [
+     16,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/industry_future/product_wafer__se.png"
+     },
+     "shadow": {
+      "file": "assets/industry_future/product_wafer__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {},
+  "sockets_def": []
+ }
+]

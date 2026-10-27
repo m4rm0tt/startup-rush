@@ -1,0 +1,749 @@
+[
+ {
+  "id": "module_server_1u",
+  "category": "servers",
+  "subcategory": "rack_module",
+  "name_fr": "Serveur 1U",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "rack_module",
+  "render_layer": "objects",
+  "silhouette_group": "rack_module",
+  "units": 1,
+  "unit_px": 4,
+  "face_width_su": 20,
+  "fits": [
+   "rack_compact",
+   "rack_standard",
+   "rack_high_density"
+  ],
+  "provides": [
+   "rack_module"
+  ],
+  "placement": "ancre du module = slots.positions[i].offset_px de la baie (meme orientation) ; occupe les slots i .. i+units-1 ; dessiner apres la baie, du bas vers le haut ; orientations se/sw uniquement",
+  "orientations": {
+   "se": {
+    "size": [
+     20,
+     14
+    ],
+    "anchor": [
+     0,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_server_1u__se.png",
+      "mask": "masks/servers/module_server_1u__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     20,
+     14
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_server_1u__sw.png",
+      "mask": "masks/servers/module_server_1u__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite"
+  }
+ },
+ {
+  "id": "module_compute_2u",
+  "category": "servers",
+  "subcategory": "rack_module",
+  "name_fr": "Serveur de calcul 2U",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "rack_module",
+  "render_layer": "objects",
+  "silhouette_group": "rack_module",
+  "units": 2,
+  "unit_px": 4,
+  "face_width_su": 20,
+  "fits": [
+   "rack_compact",
+   "rack_standard",
+   "rack_high_density"
+  ],
+  "provides": [
+   "rack_module"
+  ],
+  "placement": "ancre du module = slots.positions[i].offset_px de la baie (meme orientation) ; occupe les slots i .. i+units-1 ; dessiner apres la baie, du bas vers le haut ; orientations se/sw uniquement",
+  "orientations": {
+   "se": {
+    "size": [
+     20,
+     18
+    ],
+    "anchor": [
+     0,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_compute_2u__se.png",
+      "mask": "masks/servers/module_compute_2u__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "accent"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     20,
+     18
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_compute_2u__sw.png",
+      "mask": "masks/servers/module_compute_2u__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "accent"
+      ]
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "accent": "teal"
+  }
+ },
+ {
+  "id": "module_storage_2u",
+  "category": "servers",
+  "subcategory": "rack_module",
+  "name_fr": "Stockage / NAS 2U (12 baies)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "rack_module",
+  "render_layer": "objects",
+  "silhouette_group": "rack_module",
+  "units": 2,
+  "unit_px": 4,
+  "face_width_su": 20,
+  "fits": [
+   "rack_compact",
+   "rack_standard",
+   "rack_high_density"
+  ],
+  "provides": [
+   "rack_module"
+  ],
+  "placement": "ancre du module = slots.positions[i].offset_px de la baie (meme orientation) ; occupe les slots i .. i+units-1 ; dessiner apres la baie, du bas vers le haut ; orientations se/sw uniquement",
+  "orientations": {
+   "se": {
+    "size": [
+     20,
+     18
+    ],
+    "anchor": [
+     0,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_storage_2u__se.png",
+      "mask": "masks/servers/module_storage_2u__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     20,
+     18
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_storage_2u__sw.png",
+      "mask": "masks/servers/module_storage_2u__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite"
+  }
+ },
+ {
+  "id": "module_storage_jbod_4u",
+  "category": "servers",
+  "subcategory": "rack_module",
+  "name_fr": "Tiroir de disques 4U (JBOD)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "rack_module",
+  "render_layer": "objects",
+  "silhouette_group": "rack_module",
+  "units": 4,
+  "unit_px": 4,
+  "face_width_su": 20,
+  "fits": [
+   "rack_compact",
+   "rack_standard",
+   "rack_high_density"
+  ],
+  "provides": [
+   "rack_module"
+  ],
+  "placement": "ancre du module = slots.positions[i].offset_px de la baie (meme orientation) ; occupe les slots i .. i+units-1 ; dessiner apres la baie, du bas vers le haut ; orientations se/sw uniquement",
+  "orientations": {
+   "se": {
+    "size": [
+     20,
+     26
+    ],
+    "anchor": [
+     0,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_storage_jbod_4u__se.png",
+      "mask": "masks/servers/module_storage_jbod_4u__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "accent"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     20,
+     26
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_storage_jbod_4u__sw.png",
+      "mask": "masks/servers/module_storage_jbod_4u__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "accent"
+      ]
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "accent": "teal"
+  }
+ },
+ {
+  "id": "module_gpu_4u",
+  "category": "servers",
+  "subcategory": "rack_module",
+  "name_fr": "Serveur GPU 4U",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "rack_module",
+  "render_layer": "objects",
+  "silhouette_group": "rack_module",
+  "units": 4,
+  "unit_px": 4,
+  "face_width_su": 20,
+  "fits": [
+   "rack_compact",
+   "rack_standard",
+   "rack_high_density"
+  ],
+  "provides": [
+   "rack_module"
+  ],
+  "placement": "ancre du module = slots.positions[i].offset_px de la baie (meme orientation) ; occupe les slots i .. i+units-1 ; dessiner apres la baie, du bas vers le haut ; orientations se/sw uniquement",
+  "orientations": {
+   "se": {
+    "size": [
+     20,
+     26
+    ],
+    "anchor": [
+     0,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_gpu_4u__se.png",
+      "mask": "masks/servers/module_gpu_4u__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "accent"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     20,
+     26
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_gpu_4u__sw.png",
+      "mask": "masks/servers/module_gpu_4u__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "accent"
+      ]
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "accent": "coral"
+  }
+ },
+ {
+  "id": "module_network_switch_1u",
+  "category": "servers",
+  "subcategory": "rack_module",
+  "name_fr": "Switch reseau 1U",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "rack_module",
+  "render_layer": "objects",
+  "silhouette_group": "rack_module",
+  "units": 1,
+  "unit_px": 4,
+  "face_width_su": 20,
+  "fits": [
+   "rack_compact",
+   "rack_standard",
+   "rack_high_density"
+  ],
+  "provides": [
+   "rack_module"
+  ],
+  "placement": "ancre du module = slots.positions[i].offset_px de la baie (meme orientation) ; occupe les slots i .. i+units-1 ; dessiner apres la baie, du bas vers le haut ; orientations se/sw uniquement",
+  "orientations": {
+   "se": {
+    "size": [
+     20,
+     14
+    ],
+    "anchor": [
+     0,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_network_switch_1u__se.png",
+      "mask": "masks/servers/module_network_switch_1u__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     20,
+     14
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_network_switch_1u__sw.png",
+      "mask": "masks/servers/module_network_switch_1u__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite"
+  }
+ },
+ {
+  "id": "module_patch_panel_1u",
+  "category": "servers",
+  "subcategory": "rack_module",
+  "name_fr": "Panneau de brassage 1U",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "rack_module",
+  "render_layer": "objects",
+  "silhouette_group": "rack_module",
+  "units": 1,
+  "unit_px": 4,
+  "face_width_su": 20,
+  "fits": [
+   "rack_compact",
+   "rack_standard",
+   "rack_high_density"
+  ],
+  "provides": [
+   "rack_module"
+  ],
+  "placement": "ancre du module = slots.positions[i].offset_px de la baie (meme orientation) ; occupe les slots i .. i+units-1 ; dessiner apres la baie, du bas vers le haut ; orientations se/sw uniquement",
+  "orientations": {
+   "se": {
+    "size": [
+     20,
+     14
+    ],
+    "anchor": [
+     0,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_patch_panel_1u__se.png",
+      "mask": "masks/servers/module_patch_panel_1u__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     20,
+     14
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_patch_panel_1u__sw.png",
+      "mask": "masks/servers/module_patch_panel_1u__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "steel"
+  }
+ },
+ {
+  "id": "module_compute_node_2u",
+  "category": "servers",
+  "subcategory": "rack_module",
+  "name_fr": "Noeuds de calcul 2U (2 demi-largeurs)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "rack_module",
+  "render_layer": "objects",
+  "silhouette_group": "rack_module",
+  "units": 2,
+  "unit_px": 4,
+  "face_width_su": 20,
+  "fits": [
+   "rack_compact",
+   "rack_standard",
+   "rack_high_density"
+  ],
+  "provides": [
+   "rack_module"
+  ],
+  "placement": "ancre du module = slots.positions[i].offset_px de la baie (meme orientation) ; occupe les slots i .. i+units-1 ; dessiner apres la baie, du bas vers le haut ; orientations se/sw uniquement",
+  "orientations": {
+   "se": {
+    "size": [
+     20,
+     18
+    ],
+    "anchor": [
+     0,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_compute_node_2u__se.png",
+      "mask": "masks/servers/module_compute_node_2u__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     20,
+     18
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_compute_node_2u__sw.png",
+      "mask": "masks/servers/module_compute_node_2u__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "metal": "steel"
+  }
+ },
+ {
+  "id": "module_ups_2u",
+  "category": "servers",
+  "subcategory": "rack_module",
+  "name_fr": "Onduleur de baie 2U",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "rack_module",
+  "render_layer": "objects",
+  "silhouette_group": "rack_module",
+  "units": 2,
+  "unit_px": 4,
+  "face_width_su": 20,
+  "fits": [
+   "rack_compact",
+   "rack_standard",
+   "rack_high_density"
+  ],
+  "provides": [
+   "rack_module"
+  ],
+  "placement": "ancre du module = slots.positions[i].offset_px de la baie (meme orientation) ; occupe les slots i .. i+units-1 ; dessiner apres la baie, du bas vers le haut ; orientations se/sw uniquement",
+  "orientations": {
+   "se": {
+    "size": [
+     20,
+     18
+    ],
+    "anchor": [
+     0,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_ups_2u__se.png",
+      "mask": "masks/servers/module_ups_2u__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     20,
+     18
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_ups_2u__sw.png",
+      "mask": "masks/servers/module_ups_2u__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "steel",
+   "screen": "screen"
+  }
+ },
+ {
+  "id": "module_blank_1u",
+  "category": "servers",
+  "subcategory": "rack_module",
+  "name_fr": "Obturateur 1U",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "rack_module",
+  "render_layer": "objects",
+  "silhouette_group": "rack_module",
+  "units": 1,
+  "unit_px": 4,
+  "face_width_su": 20,
+  "fits": [
+   "rack_compact",
+   "rack_standard",
+   "rack_high_density"
+  ],
+  "provides": [
+   "rack_module"
+  ],
+  "placement": "ancre du module = slots.positions[i].offset_px de la baie (meme orientation) ; occupe les slots i .. i+units-1 ; dessiner apres la baie, du bas vers le haut ; orientations se/sw uniquement",
+  "orientations": {
+   "se": {
+    "size": [
+     20,
+     14
+    ],
+    "anchor": [
+     0,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_blank_1u__se.png",
+      "mask": "masks/servers/module_blank_1u__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     20,
+     14
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_blank_1u__sw.png",
+      "mask": "masks/servers/module_blank_1u__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "metal": "steel"
+  }
+ },
+ {
+  "id": "module_cable_manager_1u",
+  "category": "servers",
+  "subcategory": "rack_module",
+  "name_fr": "Passe-cables 1U",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "rack_module",
+  "render_layer": "objects",
+  "silhouette_group": "rack_module",
+  "units": 1,
+  "unit_px": 4,
+  "face_width_su": 20,
+  "fits": [
+   "rack_compact",
+   "rack_standard",
+   "rack_high_density"
+  ],
+  "provides": [
+   "rack_module"
+  ],
+  "placement": "ancre du module = slots.positions[i].offset_px de la baie (meme orientation) ; occupe les slots i .. i+units-1 ; dessiner apres la baie, du bas vers le haut ; orientations se/sw uniquement",
+  "orientations": {
+   "se": {
+    "size": [
+     20,
+     14
+    ],
+    "anchor": [
+     0,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_cable_manager_1u__se.png",
+      "mask": "masks/servers/module_cable_manager_1u__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     20,
+     14
+    ],
+    "anchor": [
+     0,
+     0
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/module_cable_manager_1u__sw.png",
+      "mask": "masks/servers/module_cable_manager_1u__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "metal": "steel"
+  }
+ }
+]

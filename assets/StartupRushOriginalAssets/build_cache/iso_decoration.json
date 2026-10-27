@@ -1,0 +1,2979 @@
+[
+ {
+  "id": "plant_floor_medium",
+  "category": "decoration",
+  "subcategory": "plant",
+  "name_fr": "Plante en pot (moyenne)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "plant_floor_medium",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 40,
+  "walkable": false,
+  "symmetric": true,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Buisson en pot terre cuite ; feuillage recolorable (canal plant).",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     53,
+     55
+    ],
+    "anchor": [
+     20,
+     28
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/plant_floor_medium__se.png",
+      "mask": "masks/decoration/plant_floor_medium__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "plant"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/plant_floor_medium__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -40
+     ],
+     [
+      32,
+      -24
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -24
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "primary": "brick",
+   "plant": "leaf"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "plant_floor_tall",
+  "category": "decoration",
+  "subcategory": "plant",
+  "name_fr": "Grande plante (ficus lyre)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "plant_floor_tall",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 76,
+  "walkable": false,
+  "symmetric": true,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Plante haute a grandes feuilles, cache-pot moderne.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     62,
+     90
+    ],
+    "anchor": [
+     17,
+     65
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/plant_floor_tall__se.png",
+      "mask": "masks/decoration/plant_floor_tall__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "wood",
+       "plant"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/plant_floor_tall__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -76
+     ],
+     [
+      32,
+      -60
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -60
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 50
+    }
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "wood": "walnut",
+   "plant": "leaf"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "plant_succulent",
+  "category": "decoration",
+  "subcategory": "plant",
+  "name_fr": "Succulente de bureau",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "plant_succulent",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   10
+  ],
+  "height_px": 9,
+  "walkable": false,
+  "symmetric": true,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     21,
+     18
+    ],
+    "anchor": [
+     10,
+     12
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/plant_succulent__se.png",
+      "mask": "masks/decoration/plant_succulent__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "plant"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/plant_succulent__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "sky",
+   "plant": "sage"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "plant_trailing",
+  "category": "decoration",
+  "subcategory": "plant",
+  "name_fr": "Plante retombante (etagere)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "plant_trailing",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   12,
+   12
+  ],
+  "height_px": 8,
+  "walkable": false,
+  "symmetric": true,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Les tiges retombent SOUS le point de pose (bord d'etagere) : le sprite depasse sous l'ancre.",
+  "provides": [
+   "desk_item",
+   "shelf_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     36,
+     44
+    ],
+    "anchor": [
+     18,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/plant_trailing__se.png",
+      "mask": "masks/decoration/plant_trailing__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "plant"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/plant_trailing__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "plant": "leaf"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "poster_project",
+  "category": "decoration",
+  "subcategory": "wall_art",
+  "name_fr": "Affiche de projet fictif (fusee)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "wall",
+  "silhouette_group": "poster_project",
+  "render_layer": "wall_items",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 82,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": true,
+  "tags": [],
+  "notes": "Affiche encadree : une fusee decolle d'un portable (projet fictif), sans texte.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     28,
+     53
+    ],
+    "anchor": [
+     29,
+     80
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/poster_project__se.png",
+      "mask": "masks/decoration/poster_project__se__mask.png",
+      "mask_channels": [
+       "wood"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -82
+     ],
+     [
+      32,
+      -66
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -66
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     28,
+     53
+    ],
+    "anchor": [
+     -1,
+     80
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/poster_project__sw.png",
+      "mask": "masks/decoration/poster_project__sw__mask.png",
+      "mask_channels": [
+       "wood"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -82
+     ],
+     [
+      32,
+      -66
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -66
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "wood": "oak"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "poster_schematic",
+  "category": "decoration",
+  "subcategory": "wall_art",
+  "name_fr": "Schema technique (plan bleu)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "wall",
+  "silhouette_group": "poster_schematic",
+  "render_layer": "wall_items",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 78,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": true,
+  "tags": [],
+  "notes": "Plan bleu generique : puce, pistes, resistance, masse, cartouche ; aucune inscription.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     28,
+     49
+    ],
+    "anchor": [
+     29,
+     78
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/poster_schematic__se.png",
+      "mask": "masks/decoration/poster_schematic__se__mask.png",
+      "mask_channels": [
+       "metal"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -78
+     ],
+     [
+      32,
+      -62
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -62
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     28,
+     49
+    ],
+    "anchor": [
+     -1,
+     78
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/poster_schematic__sw.png",
+      "mask": "masks/decoration/poster_schematic__sw__mask.png",
+      "mask_channels": [
+       "metal"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -78
+     ],
+     [
+      32,
+      -62
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -62
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "metal": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "photo_abstract",
+  "category": "decoration",
+  "subcategory": "wall_art",
+  "name_fr": "Photo abstraite encadree",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "wall",
+  "silhouette_group": "photo_abstract",
+  "render_layer": "wall_items",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 70,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": true,
+  "tags": [],
+  "notes": "Paysage abstrait non personnel (soleil, collines, lac), cadre blanc et passe-partout.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     24,
+     36
+    ],
+    "anchor": [
+     27,
+     70
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/photo_abstract__se.png",
+      "mask": "masks/decoration/photo_abstract__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -70
+     ],
+     [
+      32,
+      -54
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -54
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     24,
+     36
+    ],
+    "anchor": [
+     -3,
+     70
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/photo_abstract__sw.png",
+      "mask": "masks/decoration/photo_abstract__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -70
+     ],
+     [
+      32,
+      -54
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -54
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "primary": "plastic"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "clock_wall",
+  "category": "decoration",
+  "subcategory": "wall_art",
+  "name_fr": "Horloge murale",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "wall",
+  "silhouette_group": "clock_wall",
+  "render_layer": "wall_items",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 78,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": true,
+  "tags": [],
+  "notes": "Cadran rond (aiguilles fixes, le jeu peut superposer des aiguilles), lunette recolorable.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     21,
+     26
+    ],
+    "anchor": [
+     25,
+     74
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/clock_wall__se.png",
+      "mask": "masks/decoration/clock_wall__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -78
+     ],
+     [
+      32,
+      -62
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -62
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     21,
+     26
+    ],
+    "anchor": [
+     -4,
+     74
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/clock_wall__sw.png",
+      "mask": "masks/decoration/clock_wall__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -78
+     ],
+     [
+      32,
+      -62
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -62
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "primary": "coral"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "award_plaque",
+  "category": "decoration",
+  "subcategory": "wall_art",
+  "name_fr": "Plaque de reussite",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "wall",
+  "silhouette_group": "award_plaque",
+  "render_layer": "wall_items",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 78,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": true,
+  "tags": [],
+  "notes": "Plaque bois et laiton avec embleme etoile (petite decoration de reussite).",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     20,
+     33
+    ],
+    "anchor": [
+     25,
+     74
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/award_plaque__se.png",
+      "mask": "masks/decoration/award_plaque__se__mask.png",
+      "mask_channels": [
+       "wood",
+       "metal"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -78
+     ],
+     [
+      32,
+      -62
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -62
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     20,
+     33
+    ],
+    "anchor": [
+     -5,
+     74
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/award_plaque__sw.png",
+      "mask": "masks/decoration/award_plaque__sw__mask.png",
+      "mask_channels": [
+       "wood",
+       "metal"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -78
+     ],
+     [
+      32,
+      -62
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -62
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "wood": "walnut",
+   "metal": "brass"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "sticky_notes",
+  "category": "decoration",
+  "subcategory": "wall_art",
+  "name_fr": "Notes adhesives (mur)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "wall",
+  "silhouette_group": "sticky_notes",
+  "render_layer": "wall_items",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 78,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": true,
+  "tags": [],
+  "notes": "Grappe de notes colorees avec griffonnages (texte suggere, illisible).",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     26,
+     25
+    ],
+    "anchor": [
+     28,
+     66
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/sticky_notes__se.png"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -78
+     ],
+     [
+      32,
+      -62
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -62
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     25,
+     29
+    ],
+    "anchor": [
+     -3,
+     68
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/sticky_notes__sw.png"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -78
+     ],
+     [
+      32,
+      -62
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -62
+     ]
+    ]
+   }
+  },
+  "channels": {},
+  "sockets_def": []
+ },
+ {
+  "id": "idea_sketch",
+  "category": "decoration",
+  "subcategory": "wall_art",
+  "name_fr": "Croquis d'idee punaise",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "wall",
+  "silhouette_group": "idea_sketch",
+  "render_layer": "wall_items",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 76,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": true,
+  "tags": [],
+  "notes": "Feuille punaisee : ampoule dessinee + fleches (reference cachee discrete).",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     19,
+     32
+    ],
+    "anchor": [
+     25,
+     70
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/idea_sketch__se.png",
+      "mask": "masks/decoration/idea_sketch__se__mask.png",
+      "mask_channels": [
+       "secondary"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -76
+     ],
+     [
+      32,
+      -60
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -60
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     19,
+     32
+    ],
+    "anchor": [
+     -6,
+     70
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/idea_sketch__sw.png",
+      "mask": "masks/decoration/idea_sketch__sw__mask.png",
+      "mask_channels": [
+       "secondary"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -76
+     ],
+     [
+      32,
+      -60
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -60
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "secondary": "cream"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "figurine_robot",
+  "category": "decoration",
+  "subcategory": "desk_decor",
+  "name_fr": "Petite figurine robot",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "figurine_robot",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   8,
+   8
+  ],
+  "height_px": 14,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Robot jouet original (tete carree, antenne, ecran de poitrine).",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     17,
+     23
+    ],
+    "anchor": [
+     7,
+     18
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/figurine_robot__se.png",
+      "mask": "masks/decoration/figurine_robot__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/figurine_robot__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     17,
+     23
+    ],
+    "anchor": [
+     7,
+     18
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/figurine_robot__sw.png",
+      "mask": "masks/decoration/figurine_robot__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/figurine_robot__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     17,
+     23
+    ],
+    "anchor": [
+     7,
+     18
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/figurine_robot__nw.png",
+      "mask": "masks/decoration/figurine_robot__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/figurine_robot__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     17,
+     23
+    ],
+    "anchor": [
+     7,
+     18
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/figurine_robot__ne.png",
+      "mask": "masks/decoration/figurine_robot__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/figurine_robot__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "sky",
+   "screen": "display",
+   "secondary": "plastic",
+   "accent": "coral"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "books_stack",
+  "category": "decoration",
+  "subcategory": "desk_decor",
+  "name_fr": "Pile de livres",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "books_stack",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   12,
+   9
+  ],
+  "height_px": 6,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     25,
+     20
+    ],
+    "anchor": [
+     12,
+     13
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/books_stack__se.png",
+      "mask": "masks/decoration/books_stack__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/books_stack__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     26,
+     20
+    ],
+    "anchor": [
+     13,
+     13
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/books_stack__sw.png",
+      "mask": "masks/decoration/books_stack__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/books_stack__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     26,
+     20
+    ],
+    "anchor": [
+     12,
+     13
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/books_stack__nw.png",
+      "mask": "masks/decoration/books_stack__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/books_stack__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     26,
+     20
+    ],
+    "anchor": [
+     12,
+     13
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/books_stack__ne.png",
+      "mask": "masks/decoration/books_stack__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/books_stack__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "coral",
+   "secondary": "teal",
+   "accent": "sun"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "storage_boxes",
+  "category": "decoration",
+  "subcategory": "desk_decor",
+  "name_fr": "Boites de rangement",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "storage_boxes",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   14,
+   10
+  ],
+  "height_px": 11,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item",
+   "shelf_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     30,
+     27
+    ],
+    "anchor": [
+     14,
+     19
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/storage_boxes__se.png",
+      "mask": "masks/decoration/storage_boxes__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/storage_boxes__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     30,
+     27
+    ],
+    "anchor": [
+     14,
+     19
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/storage_boxes__sw.png",
+      "mask": "masks/decoration/storage_boxes__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/storage_boxes__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     30,
+     27
+    ],
+    "anchor": [
+     14,
+     19
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/storage_boxes__nw.png",
+      "mask": "masks/decoration/storage_boxes__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/storage_boxes__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     30,
+     27
+    ],
+    "anchor": [
+     14,
+     19
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/storage_boxes__ne.png",
+      "mask": "masks/decoration/storage_boxes__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/storage_boxes__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "kraft",
+   "secondary": "sky"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "mug",
+  "category": "decoration",
+  "subcategory": "desk_decor",
+  "name_fr": "Tasse",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "mug",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   7,
+   6
+  ],
+  "height_px": 5,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     15,
+     14
+    ],
+    "anchor": [
+     7,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/mug__se.png",
+      "mask": "masks/decoration/mug__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/mug__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     15,
+     14
+    ],
+    "anchor": [
+     7,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/mug__sw.png",
+      "mask": "masks/decoration/mug__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/mug__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     15,
+     14
+    ],
+    "anchor": [
+     7,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/mug__nw.png",
+      "mask": "masks/decoration/mug__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/mug__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     15,
+     14
+    ],
+    "anchor": [
+     7,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/mug__ne.png",
+      "mask": "masks/decoration/mug__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/mug__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "coral"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "bottle",
+  "category": "decoration",
+  "subcategory": "desk_decor",
+  "name_fr": "Bouteille d'eau",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "bottle",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   4,
+   4
+  ],
+  "height_px": 10,
+  "walkable": false,
+  "symmetric": true,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     12,
+     17
+    ],
+    "anchor": [
+     5,
+     13
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/bottle__se.png",
+      "mask": "masks/decoration/bottle__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "glass",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/bottle__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "glass": "glass",
+   "accent": "teal",
+   "primary": "sky"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "snack_bowl",
+  "category": "decoration",
+  "subcategory": "desk_decor",
+  "name_fr": "Bol de snacks",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "snack_bowl",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   8,
+   8
+  ],
+  "height_px": 5,
+  "walkable": false,
+  "symmetric": true,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     21,
+     15
+    ],
+    "anchor": [
+     10,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/snack_bowl__se.png",
+      "mask": "masks/decoration/snack_bowl__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/snack_bowl__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "sun"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "notebook",
+  "category": "decoration",
+  "subcategory": "desk_decor",
+  "name_fr": "Carnet et stylo",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "notebook",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   12,
+   10
+  ],
+  "height_px": 2,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     28,
+     18
+    ],
+    "anchor": [
+     11,
+     11
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/notebook__se.png",
+      "mask": "masks/decoration/notebook__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/notebook__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     28,
+     19
+    ],
+    "anchor": [
+     11,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/notebook__sw.png",
+      "mask": "masks/decoration/notebook__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/notebook__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     29,
+     19
+    ],
+    "anchor": [
+     17,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/notebook__nw.png",
+      "mask": "masks/decoration/notebook__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/notebook__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     29,
+     18
+    ],
+    "anchor": [
+     17,
+     11
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/notebook__ne.png",
+      "mask": "masks/decoration/notebook__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/notebook__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "navy",
+   "accent": "coral",
+   "secondary": "sky"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "paper_stack",
+  "category": "decoration",
+  "subcategory": "desk_decor",
+  "name_fr": "Pile de papiers",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "paper_stack",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   12
+  ],
+  "height_px": 3,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     27,
+     18
+    ],
+    "anchor": [
+     13,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/paper_stack__se.png",
+      "mask": "masks/decoration/paper_stack__se__mask.png",
+      "mask_channels": [
+       "secondary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/paper_stack__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     27,
+     18
+    ],
+    "anchor": [
+     13,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/paper_stack__sw.png",
+      "mask": "masks/decoration/paper_stack__sw__mask.png",
+      "mask_channels": [
+       "secondary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/paper_stack__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     27,
+     18
+    ],
+    "anchor": [
+     13,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/paper_stack__nw.png",
+      "mask": "masks/decoration/paper_stack__nw__mask.png",
+      "mask_channels": [
+       "secondary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/paper_stack__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     27,
+     18
+    ],
+    "anchor": [
+     13,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/paper_stack__ne.png",
+      "mask": "masks/decoration/paper_stack__ne__mask.png",
+      "mask_channels": [
+       "secondary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/paper_stack__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "secondary": "plastic"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "cable_organizer",
+  "category": "decoration",
+  "subcategory": "desk_decor",
+  "name_fr": "Rangement de cables",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "cable_organizer",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   12,
+   8
+  ],
+  "height_px": 5,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     24,
+     15
+    ],
+    "anchor": [
+     10,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/cable_organizer__se.png",
+      "mask": "masks/decoration/cable_organizer__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/cable_organizer__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     24,
+     18
+    ],
+    "anchor": [
+     10,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/cable_organizer__sw.png",
+      "mask": "masks/decoration/cable_organizer__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/cable_organizer__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     25,
+     18
+    ],
+    "anchor": [
+     14,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/cable_organizer__nw.png",
+      "mask": "masks/decoration/cable_organizer__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/cable_organizer__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     25,
+     15
+    ],
+    "anchor": [
+     14,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/cable_organizer__ne.png",
+      "mask": "masks/decoration/cable_organizer__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/cable_organizer__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "trophy_project",
+  "category": "decoration",
+  "subcategory": "desk_decor",
+  "name_fr": "Trophee de projet",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "trophy_project",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   8,
+   8
+  ],
+  "height_px": 14,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Coupe originale surmontee d'une etoile, socle bois et plaque.",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     18,
+     22
+    ],
+    "anchor": [
+     8,
+     17
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/trophy_project__se.png",
+      "mask": "masks/decoration/trophy_project__se__mask.png",
+      "mask_channels": [
+       "wood",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/trophy_project__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     18,
+     22
+    ],
+    "anchor": [
+     8,
+     17
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/trophy_project__sw.png",
+      "mask": "masks/decoration/trophy_project__sw__mask.png",
+      "mask_channels": [
+       "wood",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/trophy_project__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     18,
+     22
+    ],
+    "anchor": [
+     8,
+     17
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/trophy_project__nw.png",
+      "mask": "masks/decoration/trophy_project__nw__mask.png",
+      "mask_channels": [
+       "wood",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/trophy_project__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     18,
+     22
+    ],
+    "anchor": [
+     8,
+     17
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/trophy_project__ne.png",
+      "mask": "masks/decoration/trophy_project__ne__mask.png",
+      "mask_channels": [
+       "wood",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/trophy_project__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "wood": "walnut",
+   "metal": "brass"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "rubber_duck_debug",
+  "category": "decoration",
+  "subcategory": "desk_decor",
+  "name_fr": "Canard de debogage",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "rubber_duck_debug",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   7,
+   8
+  ],
+  "height_px": 7,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Canard en caoutchouc (jouet) : reference discrete au debogage par explication.",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     18,
+     15
+    ],
+    "anchor": [
+     9,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/rubber_duck_debug__se.png",
+      "mask": "masks/decoration/rubber_duck_debug__se__mask.png",
+      "mask_channels": [
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/rubber_duck_debug__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     18,
+     15
+    ],
+    "anchor": [
+     8,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/rubber_duck_debug__sw.png",
+      "mask": "masks/decoration/rubber_duck_debug__sw__mask.png",
+      "mask_channels": [
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/rubber_duck_debug__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     18,
+     18
+    ],
+    "anchor": [
+     8,
+     12
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/rubber_duck_debug__nw.png",
+      "mask": "masks/decoration/rubber_duck_debug__nw__mask.png",
+      "mask_channels": [
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/rubber_duck_debug__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     18,
+     18
+    ],
+    "anchor": [
+     9,
+     12
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/rubber_duck_debug__ne.png",
+      "mask": "masks/decoration/rubber_duck_debug__ne__mask.png",
+      "mask_channels": [
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/rubber_duck_debug__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "accent": "sun"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "retro_message",
+  "category": "decoration",
+  "subcategory": "desk_decor",
+  "name_fr": "Petit ecran retro (invite)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "retro_message",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   10
+  ],
+  "height_px": 10,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Mini ecran retro affichant une invite generique '>_' (message informatique generique).",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     24,
+     23
+    ],
+    "anchor": [
+     11,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/retro_message__se.png",
+      "mask": "masks/decoration/retro_message__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/retro_message__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        1,
+        -3
+       ],
+       [
+        8,
+        -6
+       ],
+       [
+        8,
+        -2
+       ],
+       [
+        1,
+        2
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     24,
+     23
+    ],
+    "anchor": [
+     11,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/retro_message__sw.png",
+      "mask": "masks/decoration/retro_message__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/retro_message__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -7,
+        -6
+       ],
+       [
+        0,
+        -3
+       ],
+       [
+        0,
+        2
+       ],
+       [
+        -7,
+        -2
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     24,
+     23
+    ],
+    "anchor": [
+     11,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/retro_message__nw.png",
+      "mask": "masks/decoration/retro_message__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/retro_message__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        0,
+        -10
+       ],
+       [
+        -7,
+        -7
+       ],
+       [
+        -7,
+        -2
+       ],
+       [
+        0,
+        -6
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     24,
+     23
+    ],
+    "anchor": [
+     11,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/retro_message__ne.png",
+      "mask": "masks/decoration/retro_message__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/retro_message__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        8,
+        -7
+       ],
+       [
+        1,
+        -10
+       ],
+       [
+        1,
+        -6
+       ],
+       [
+        8,
+        -2
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "beige_pc",
+   "screen": "display"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "side_project",
+  "category": "decoration",
+  "subcategory": "desk_decor",
+  "name_fr": "Mini-projet personnel (platine)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "side_project",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   16,
+   10
+  ],
+  "height_px": 3,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Platine d'essai avec fils, carte microcontroleur generique, LED et piles.",
+  "provides": [
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     28,
+     20
+    ],
+    "anchor": [
+     14,
+     12
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/side_project__se.png",
+      "mask": "masks/decoration/side_project__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/side_project__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     32,
+     18
+    ],
+    "anchor": [
+     14,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/side_project__sw.png",
+      "mask": "masks/decoration/side_project__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/side_project__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     28,
+     20
+    ],
+    "anchor": [
+     13,
+     10
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/side_project__nw.png",
+      "mask": "masks/decoration/side_project__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/side_project__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     33,
+     17
+    ],
+    "anchor": [
+     18,
+     9
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/side_project__ne.png",
+      "mask": "masks/decoration/side_project__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/side_project__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "metal": "steel"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "moving_box",
+  "category": "decoration",
+  "subcategory": "floor_decor",
+  "name_fr": "Cartons de demenagement",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "moving_box",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 26,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [],
+  "notes": "Deux cartons scotches (fleches 'haut' pictogrammes) : chambre de depart, emmenagement.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     49,
+     44
+    ],
+    "anchor": [
+     21,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/moving_box__se.png",
+      "mask": "masks/decoration/moving_box__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/moving_box__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -26
+     ],
+     [
+      32,
+      -10
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -10
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     49,
+     45
+    ],
+    "anchor": [
+     21,
+     17
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/decoration/moving_box__sw.png",
+      "mask": "masks/decoration/moving_box__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/decoration/moving_box__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -26
+     ],
+     [
+      32,
+      -10
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -10
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "primary": "kraft"
+  },
+  "sockets_def": []
+ }
+]

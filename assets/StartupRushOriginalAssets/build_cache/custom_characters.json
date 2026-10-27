@@ -1,0 +1,3144 @@
+[
+ {
+  "id": "player_m",
+  "category": "characters",
+  "subcategory": "avatar",
+  "name_fr": "Avatar joueur (presentation masculine)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_base",
+  "presentation": "m",
+  "build": "regular",
+  "outfit": "hoodie",
+  "face": "p_m",
+  "channels": {
+   "skin": "skin_light",
+   "hair": "hair_brown",
+   "primary": "teal",
+   "secondary": "navy",
+   "accent": "sun"
+  },
+  "skin_options": [
+   "skin_light",
+   "skin_medium",
+   "skin_deep"
+  ],
+  "compatible_hair": [
+   "hair_short_crop",
+   "hair_side_part",
+   "hair_curly_top",
+   "hair_long_straight",
+   "hair_bun",
+   "hair_bob"
+  ],
+  "hair_offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "seat_anchor": [
+   20,
+   50
+  ],
+  "head_center": [
+   20,
+   14
+  ],
+  "portrait_crop": [
+   4,
+   0,
+   32,
+   32
+  ],
+  "layer_order": [
+   "hair_back",
+   "body",
+   "head",
+   "hair_front"
+  ],
+  "pose": "assis, statique",
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/player_m__se__body.png",
+      "mask": "masks/characters/bases/player_m__se__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/player_m__se__head.png",
+      "mask": "masks/characters/bases/player_m__se__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": "se",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/player_m__sw__body.png",
+      "mask": "masks/characters/bases/player_m__sw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/player_m__sw__head.png",
+      "mask": "masks/characters/bases/player_m__sw__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/player_m__nw__body.png",
+      "mask": "masks/characters/bases/player_m__nw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/player_m__nw__head.png",
+      "mask": "masks/characters/bases/player_m__nw__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": "nw",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/player_m__ne__body.png",
+      "mask": "masks/characters/bases/player_m__ne__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/player_m__ne__head.png",
+      "mask": "masks/characters/bases/player_m__ne__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "player_f",
+  "category": "characters",
+  "subcategory": "avatar",
+  "name_fr": "Avatar joueur (presentation feminine)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_base",
+  "presentation": "f",
+  "build": "slim_f",
+  "outfit": "jacket_tee",
+  "face": "p_f",
+  "channels": {
+   "skin": "skin_medium",
+   "hair": "hair_brown",
+   "primary": "coral",
+   "secondary": "navy",
+   "accent": "cream"
+  },
+  "skin_options": [
+   "skin_light",
+   "skin_medium",
+   "skin_deep"
+  ],
+  "compatible_hair": [
+   "hair_short_crop",
+   "hair_side_part",
+   "hair_curly_top",
+   "hair_long_straight",
+   "hair_bun",
+   "hair_bob"
+  ],
+  "hair_offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "seat_anchor": [
+   20,
+   50
+  ],
+  "head_center": [
+   20,
+   14
+  ],
+  "portrait_crop": [
+   4,
+   0,
+   32,
+   32
+  ],
+  "layer_order": [
+   "hair_back",
+   "body",
+   "head",
+   "hair_front"
+  ],
+  "pose": "assis, statique",
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/player_f__se__body.png",
+      "mask": "masks/characters/bases/player_f__se__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/player_f__se__head.png",
+      "mask": "masks/characters/bases/player_f__se__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": "se",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/player_f__sw__body.png",
+      "mask": "masks/characters/bases/player_f__sw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/player_f__sw__head.png",
+      "mask": "masks/characters/bases/player_f__sw__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/player_f__nw__body.png",
+      "mask": "masks/characters/bases/player_f__nw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/player_f__nw__head.png",
+      "mask": "masks/characters/bases/player_f__nw__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": "nw",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/player_f__ne__body.png",
+      "mask": "masks/characters/bases/player_f__ne__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/player_f__ne__head.png",
+      "mask": "masks/characters/bases/player_f__ne__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "employee_m_01",
+  "category": "characters",
+  "subcategory": "employee",
+  "name_fr": "Employe (presentation masculine)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_base",
+  "presentation": "m",
+  "build": "regular",
+  "outfit": "shirt_tie",
+  "face": "m01",
+  "channels": {
+   "skin": "skin_light",
+   "hair": "hair_brown",
+   "primary": "sky",
+   "secondary": "graphite",
+   "accent": "coral"
+  },
+  "skin_options": [
+   "skin_light",
+   "skin_medium",
+   "skin_deep"
+  ],
+  "compatible_hair": [
+   "hair_short_crop",
+   "hair_side_part",
+   "hair_curly_top",
+   "hair_long_straight",
+   "hair_bun",
+   "hair_bob"
+  ],
+  "hair_offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "seat_anchor": [
+   20,
+   50
+  ],
+  "head_center": [
+   20,
+   14
+  ],
+  "portrait_crop": [
+   4,
+   0,
+   32,
+   32
+  ],
+  "layer_order": [
+   "hair_back",
+   "body",
+   "head",
+   "hair_front"
+  ],
+  "pose": "assis, statique",
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_01__se__body.png",
+      "mask": "masks/characters/bases/employee_m_01__se__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_01__se__head.png",
+      "mask": "masks/characters/bases/employee_m_01__se__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": "se",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_01__sw__body.png",
+      "mask": "masks/characters/bases/employee_m_01__sw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_01__sw__head.png",
+      "mask": "masks/characters/bases/employee_m_01__sw__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_01__nw__body.png",
+      "mask": "masks/characters/bases/employee_m_01__nw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_01__nw__head.png",
+      "mask": "masks/characters/bases/employee_m_01__nw__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": "nw",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_01__ne__body.png",
+      "mask": "masks/characters/bases/employee_m_01__ne__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_01__ne__head.png",
+      "mask": "masks/characters/bases/employee_m_01__ne__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "employee_m_02",
+  "category": "characters",
+  "subcategory": "employee",
+  "name_fr": "Employe (presentation masculine)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_base",
+  "presentation": "m",
+  "build": "broad",
+  "outfit": "tee",
+  "face": "m02",
+  "channels": {
+   "skin": "skin_deep",
+   "hair": "hair_brown",
+   "primary": "sun",
+   "secondary": "navy",
+   "accent": "teal"
+  },
+  "skin_options": [
+   "skin_light",
+   "skin_medium",
+   "skin_deep"
+  ],
+  "compatible_hair": [
+   "hair_short_crop",
+   "hair_side_part",
+   "hair_curly_top",
+   "hair_long_straight",
+   "hair_bun",
+   "hair_bob"
+  ],
+  "hair_offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "seat_anchor": [
+   20,
+   50
+  ],
+  "head_center": [
+   20,
+   14
+  ],
+  "portrait_crop": [
+   4,
+   0,
+   32,
+   32
+  ],
+  "layer_order": [
+   "hair_back",
+   "body",
+   "head",
+   "hair_front"
+  ],
+  "pose": "assis, statique",
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_02__se__body.png",
+      "mask": "masks/characters/bases/employee_m_02__se__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_02__se__head.png",
+      "mask": "masks/characters/bases/employee_m_02__se__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": "se",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_02__sw__body.png",
+      "mask": "masks/characters/bases/employee_m_02__sw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_02__sw__head.png",
+      "mask": "masks/characters/bases/employee_m_02__sw__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_02__nw__body.png",
+      "mask": "masks/characters/bases/employee_m_02__nw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_02__nw__head.png",
+      "mask": "masks/characters/bases/employee_m_02__nw__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": "nw",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_02__ne__body.png",
+      "mask": "masks/characters/bases/employee_m_02__ne__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_02__ne__head.png",
+      "mask": "masks/characters/bases/employee_m_02__ne__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "employee_m_03",
+  "category": "characters",
+  "subcategory": "employee",
+  "name_fr": "Employe (presentation masculine)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_base",
+  "presentation": "m",
+  "build": "slim",
+  "outfit": "cardigan",
+  "face": "m03",
+  "channels": {
+   "skin": "skin_medium",
+   "hair": "hair_brown",
+   "primary": "sage",
+   "secondary": "walnut",
+   "accent": "cream"
+  },
+  "skin_options": [
+   "skin_light",
+   "skin_medium",
+   "skin_deep"
+  ],
+  "compatible_hair": [
+   "hair_short_crop",
+   "hair_side_part",
+   "hair_curly_top",
+   "hair_long_straight",
+   "hair_bun",
+   "hair_bob"
+  ],
+  "hair_offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "seat_anchor": [
+   20,
+   50
+  ],
+  "head_center": [
+   20,
+   14
+  ],
+  "portrait_crop": [
+   4,
+   0,
+   32,
+   32
+  ],
+  "layer_order": [
+   "hair_back",
+   "body",
+   "head",
+   "hair_front"
+  ],
+  "pose": "assis, statique",
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_03__se__body.png",
+      "mask": "masks/characters/bases/employee_m_03__se__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_03__se__head.png",
+      "mask": "masks/characters/bases/employee_m_03__se__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": "se",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_03__sw__body.png",
+      "mask": "masks/characters/bases/employee_m_03__sw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_03__sw__head.png",
+      "mask": "masks/characters/bases/employee_m_03__sw__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_03__nw__body.png",
+      "mask": "masks/characters/bases/employee_m_03__nw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_03__nw__head.png",
+      "mask": "masks/characters/bases/employee_m_03__nw__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": "nw",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_03__ne__body.png",
+      "mask": "masks/characters/bases/employee_m_03__ne__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_03__ne__head.png",
+      "mask": "masks/characters/bases/employee_m_03__ne__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "employee_m_04",
+  "category": "characters",
+  "subcategory": "employee",
+  "name_fr": "Employe (presentation masculine)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_base",
+  "presentation": "m",
+  "build": "regular",
+  "outfit": "flannel",
+  "face": "m04",
+  "channels": {
+   "skin": "skin_light",
+   "hair": "hair_brown",
+   "primary": "red",
+   "secondary": "steel",
+   "accent": "graphite"
+  },
+  "skin_options": [
+   "skin_light",
+   "skin_medium",
+   "skin_deep"
+  ],
+  "compatible_hair": [
+   "hair_short_crop",
+   "hair_side_part",
+   "hair_curly_top",
+   "hair_long_straight",
+   "hair_bun",
+   "hair_bob"
+  ],
+  "hair_offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "seat_anchor": [
+   20,
+   50
+  ],
+  "head_center": [
+   20,
+   14
+  ],
+  "portrait_crop": [
+   4,
+   0,
+   32,
+   32
+  ],
+  "layer_order": [
+   "hair_back",
+   "body",
+   "head",
+   "hair_front"
+  ],
+  "pose": "assis, statique",
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_04__se__body.png",
+      "mask": "masks/characters/bases/employee_m_04__se__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_04__se__head.png",
+      "mask": "masks/characters/bases/employee_m_04__se__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": "se",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_04__sw__body.png",
+      "mask": "masks/characters/bases/employee_m_04__sw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_04__sw__head.png",
+      "mask": "masks/characters/bases/employee_m_04__sw__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_04__nw__body.png",
+      "mask": "masks/characters/bases/employee_m_04__nw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_04__nw__head.png",
+      "mask": "masks/characters/bases/employee_m_04__nw__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": "nw",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_04__ne__body.png",
+      "mask": "masks/characters/bases/employee_m_04__ne__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_04__ne__head.png",
+      "mask": "masks/characters/bases/employee_m_04__ne__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "employee_m_05",
+  "category": "characters",
+  "subcategory": "employee",
+  "name_fr": "Employe (presentation masculine)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_base",
+  "presentation": "m",
+  "build": "broad",
+  "outfit": "polo",
+  "face": "m05",
+  "channels": {
+   "skin": "skin_medium",
+   "hair": "hair_brown",
+   "primary": "navy",
+   "secondary": "sand",
+   "accent": "sun"
+  },
+  "skin_options": [
+   "skin_light",
+   "skin_medium",
+   "skin_deep"
+  ],
+  "compatible_hair": [
+   "hair_short_crop",
+   "hair_side_part",
+   "hair_curly_top",
+   "hair_long_straight",
+   "hair_bun",
+   "hair_bob"
+  ],
+  "hair_offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "seat_anchor": [
+   20,
+   50
+  ],
+  "head_center": [
+   20,
+   14
+  ],
+  "portrait_crop": [
+   4,
+   0,
+   32,
+   32
+  ],
+  "layer_order": [
+   "hair_back",
+   "body",
+   "head",
+   "hair_front"
+  ],
+  "pose": "assis, statique",
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_05__se__body.png",
+      "mask": "masks/characters/bases/employee_m_05__se__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_05__se__head.png",
+      "mask": "masks/characters/bases/employee_m_05__se__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": "se",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_05__sw__body.png",
+      "mask": "masks/characters/bases/employee_m_05__sw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_05__sw__head.png",
+      "mask": "masks/characters/bases/employee_m_05__sw__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_05__nw__body.png",
+      "mask": "masks/characters/bases/employee_m_05__nw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_05__nw__head.png",
+      "mask": "masks/characters/bases/employee_m_05__nw__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": "nw",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_m_05__ne__body.png",
+      "mask": "masks/characters/bases/employee_m_05__ne__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_m_05__ne__head.png",
+      "mask": "masks/characters/bases/employee_m_05__ne__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "employee_f_01",
+  "category": "characters",
+  "subcategory": "employee",
+  "name_fr": "Employe (presentation feminine)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_base",
+  "presentation": "f",
+  "build": "slim_f",
+  "outfit": "blouse",
+  "face": "f01",
+  "channels": {
+   "skin": "skin_light",
+   "hair": "hair_brown",
+   "primary": "cream",
+   "secondary": "navy",
+   "accent": "teal"
+  },
+  "skin_options": [
+   "skin_light",
+   "skin_medium",
+   "skin_deep"
+  ],
+  "compatible_hair": [
+   "hair_short_crop",
+   "hair_side_part",
+   "hair_curly_top",
+   "hair_long_straight",
+   "hair_bun",
+   "hair_bob"
+  ],
+  "hair_offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "seat_anchor": [
+   20,
+   50
+  ],
+  "head_center": [
+   20,
+   14
+  ],
+  "portrait_crop": [
+   4,
+   0,
+   32,
+   32
+  ],
+  "layer_order": [
+   "hair_back",
+   "body",
+   "head",
+   "hair_front"
+  ],
+  "pose": "assis, statique",
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_01__se__body.png",
+      "mask": "masks/characters/bases/employee_f_01__se__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_01__se__head.png",
+      "mask": "masks/characters/bases/employee_f_01__se__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": "se",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_01__sw__body.png",
+      "mask": "masks/characters/bases/employee_f_01__sw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_01__sw__head.png",
+      "mask": "masks/characters/bases/employee_f_01__sw__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_01__nw__body.png",
+      "mask": "masks/characters/bases/employee_f_01__nw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_01__nw__head.png",
+      "mask": "masks/characters/bases/employee_f_01__nw__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": "nw",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_01__ne__body.png",
+      "mask": "masks/characters/bases/employee_f_01__ne__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_01__ne__head.png",
+      "mask": "masks/characters/bases/employee_f_01__ne__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "employee_f_02",
+  "category": "characters",
+  "subcategory": "employee",
+  "name_fr": "Employe (presentation feminine)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_base",
+  "presentation": "f",
+  "build": "reg_f",
+  "outfit": "turtleneck",
+  "face": "f02",
+  "channels": {
+   "skin": "skin_light",
+   "hair": "hair_brown",
+   "primary": "sage",
+   "secondary": "graphite",
+   "accent": "coral"
+  },
+  "skin_options": [
+   "skin_light",
+   "skin_medium",
+   "skin_deep"
+  ],
+  "compatible_hair": [
+   "hair_short_crop",
+   "hair_side_part",
+   "hair_curly_top",
+   "hair_long_straight",
+   "hair_bun",
+   "hair_bob"
+  ],
+  "hair_offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "seat_anchor": [
+   20,
+   50
+  ],
+  "head_center": [
+   20,
+   14
+  ],
+  "portrait_crop": [
+   4,
+   0,
+   32,
+   32
+  ],
+  "layer_order": [
+   "hair_back",
+   "body",
+   "head",
+   "hair_front"
+  ],
+  "pose": "assis, statique",
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_02__se__body.png",
+      "mask": "masks/characters/bases/employee_f_02__se__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_02__se__head.png",
+      "mask": "masks/characters/bases/employee_f_02__se__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": "se",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_02__sw__body.png",
+      "mask": "masks/characters/bases/employee_f_02__sw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_02__sw__head.png",
+      "mask": "masks/characters/bases/employee_f_02__sw__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_02__nw__body.png",
+      "mask": "masks/characters/bases/employee_f_02__nw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_02__nw__head.png",
+      "mask": "masks/characters/bases/employee_f_02__nw__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": "nw",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_02__ne__body.png",
+      "mask": "masks/characters/bases/employee_f_02__ne__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_02__ne__head.png",
+      "mask": "masks/characters/bases/employee_f_02__ne__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "employee_f_03",
+  "category": "characters",
+  "subcategory": "employee",
+  "name_fr": "Employe (presentation feminine)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_base",
+  "presentation": "f",
+  "build": "reg_f",
+  "outfit": "blazer",
+  "face": "f03",
+  "channels": {
+   "skin": "skin_deep",
+   "hair": "hair_brown",
+   "primary": "graphite",
+   "secondary": "graphite",
+   "accent": "sun"
+  },
+  "skin_options": [
+   "skin_light",
+   "skin_medium",
+   "skin_deep"
+  ],
+  "compatible_hair": [
+   "hair_short_crop",
+   "hair_side_part",
+   "hair_curly_top",
+   "hair_long_straight",
+   "hair_bun",
+   "hair_bob"
+  ],
+  "hair_offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "seat_anchor": [
+   20,
+   50
+  ],
+  "head_center": [
+   20,
+   14
+  ],
+  "portrait_crop": [
+   4,
+   0,
+   32,
+   32
+  ],
+  "layer_order": [
+   "hair_back",
+   "body",
+   "head",
+   "hair_front"
+  ],
+  "pose": "assis, statique",
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_03__se__body.png",
+      "mask": "masks/characters/bases/employee_f_03__se__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_03__se__head.png",
+      "mask": "masks/characters/bases/employee_f_03__se__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": "se",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_03__sw__body.png",
+      "mask": "masks/characters/bases/employee_f_03__sw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_03__sw__head.png",
+      "mask": "masks/characters/bases/employee_f_03__sw__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_03__nw__body.png",
+      "mask": "masks/characters/bases/employee_f_03__nw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_03__nw__head.png",
+      "mask": "masks/characters/bases/employee_f_03__nw__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": "nw",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_03__ne__body.png",
+      "mask": "masks/characters/bases/employee_f_03__ne__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_03__ne__head.png",
+      "mask": "masks/characters/bases/employee_f_03__ne__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "employee_f_04",
+  "category": "characters",
+  "subcategory": "employee",
+  "name_fr": "Employe (presentation feminine)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_base",
+  "presentation": "f",
+  "build": "broad_f",
+  "outfit": "denim",
+  "face": "f04",
+  "channels": {
+   "skin": "skin_medium",
+   "hair": "hair_brown",
+   "primary": "sky",
+   "secondary": "navy",
+   "accent": "rose"
+  },
+  "skin_options": [
+   "skin_light",
+   "skin_medium",
+   "skin_deep"
+  ],
+  "compatible_hair": [
+   "hair_short_crop",
+   "hair_side_part",
+   "hair_curly_top",
+   "hair_long_straight",
+   "hair_bun",
+   "hair_bob"
+  ],
+  "hair_offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "seat_anchor": [
+   20,
+   50
+  ],
+  "head_center": [
+   20,
+   14
+  ],
+  "portrait_crop": [
+   4,
+   0,
+   32,
+   32
+  ],
+  "layer_order": [
+   "hair_back",
+   "body",
+   "head",
+   "hair_front"
+  ],
+  "pose": "assis, statique",
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_04__se__body.png",
+      "mask": "masks/characters/bases/employee_f_04__se__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_04__se__head.png",
+      "mask": "masks/characters/bases/employee_f_04__se__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": "se",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_04__sw__body.png",
+      "mask": "masks/characters/bases/employee_f_04__sw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_04__sw__head.png",
+      "mask": "masks/characters/bases/employee_f_04__sw__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_04__nw__body.png",
+      "mask": "masks/characters/bases/employee_f_04__nw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_04__nw__head.png",
+      "mask": "masks/characters/bases/employee_f_04__nw__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": "nw",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_04__ne__body.png",
+      "mask": "masks/characters/bases/employee_f_04__ne__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_04__ne__head.png",
+      "mask": "masks/characters/bases/employee_f_04__ne__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "employee_f_05",
+  "category": "characters",
+  "subcategory": "employee",
+  "name_fr": "Employe (presentation feminine)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_base",
+  "presentation": "f",
+  "build": "slim_f",
+  "outfit": "tee",
+  "face": "f05",
+  "channels": {
+   "skin": "skin_deep",
+   "hair": "hair_brown",
+   "primary": "rose",
+   "secondary": "walnut",
+   "accent": "sun"
+  },
+  "skin_options": [
+   "skin_light",
+   "skin_medium",
+   "skin_deep"
+  ],
+  "compatible_hair": [
+   "hair_short_crop",
+   "hair_side_part",
+   "hair_curly_top",
+   "hair_long_straight",
+   "hair_bun",
+   "hair_bob"
+  ],
+  "hair_offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "seat_anchor": [
+   20,
+   50
+  ],
+  "head_center": [
+   20,
+   14
+  ],
+  "portrait_crop": [
+   4,
+   0,
+   32,
+   32
+  ],
+  "layer_order": [
+   "hair_back",
+   "body",
+   "head",
+   "hair_front"
+  ],
+  "pose": "assis, statique",
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_05__se__body.png",
+      "mask": "masks/characters/bases/employee_f_05__se__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_05__se__head.png",
+      "mask": "masks/characters/bases/employee_f_05__se__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "front",
+    "mirrored_from": "se",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_05__sw__body.png",
+      "mask": "masks/characters/bases/employee_f_05__sw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin",
+       "accent"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_05__sw__head.png",
+      "mask": "masks/characters/bases/employee_f_05__sw__head__mask.png",
+      "mask_channels": [
+       "skin",
+       "hair"
+      ]
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": null,
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_05__nw__body.png",
+      "mask": "masks/characters/bases/employee_f_05__nw__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_05__nw__head.png",
+      "mask": "masks/characters/bases/employee_f_05__nw__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "view": "back",
+    "mirrored_from": "nw",
+    "layers": {
+     "body": {
+      "file": "assets/characters/bases/employee_f_05__ne__body.png",
+      "mask": "masks/characters/bases/employee_f_05__ne__body__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "skin"
+      ]
+     },
+     "head": {
+      "file": "assets/characters/bases/employee_f_05__ne__head.png",
+      "mask": "masks/characters/bases/employee_f_05__ne__head__mask.png",
+      "mask_channels": [
+       "skin"
+      ]
+     }
+    }
+   }
+  }
+ },
+ {
+  "id": "hair_short_crop",
+  "category": "characters",
+  "subcategory": "hair",
+  "name_fr": "Coiffure short crop",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_hair",
+  "presentation_hint": "m",
+  "channels": {
+   "hair": "hair_brown"
+  },
+  "hair_ramps": [
+   "hair_black",
+   "hair_brown",
+   "hair_auburn",
+   "hair_blond",
+   "hair_gray"
+  ],
+  "compatible_bases": [
+   "player_m",
+   "player_f",
+   "employee_m_01",
+   "employee_m_02",
+   "employee_m_03",
+   "employee_m_04",
+   "employee_m_05",
+   "employee_f_01",
+   "employee_f_02",
+   "employee_f_03",
+   "employee_f_04",
+   "employee_f_05"
+  ],
+  "offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "anchor": [
+   20,
+   50
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_short_crop__se__front.png",
+      "mask": "masks/characters/hair/hair_short_crop__se__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_short_crop__sw__front.png",
+      "mask": "masks/characters/hair/hair_short_crop__sw__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_short_crop__nw__front.png",
+      "mask": "masks/characters/hair/hair_short_crop__nw__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_short_crop__ne__front.png",
+      "mask": "masks/characters/hair/hair_short_crop__ne__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   }
+  }
+ },
+ {
+  "id": "hair_side_part",
+  "category": "characters",
+  "subcategory": "hair",
+  "name_fr": "Coiffure side part",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_hair",
+  "presentation_hint": "m",
+  "channels": {
+   "hair": "hair_brown"
+  },
+  "hair_ramps": [
+   "hair_black",
+   "hair_brown",
+   "hair_auburn",
+   "hair_blond",
+   "hair_gray"
+  ],
+  "compatible_bases": [
+   "player_m",
+   "player_f",
+   "employee_m_01",
+   "employee_m_02",
+   "employee_m_03",
+   "employee_m_04",
+   "employee_m_05",
+   "employee_f_01",
+   "employee_f_02",
+   "employee_f_03",
+   "employee_f_04",
+   "employee_f_05"
+  ],
+  "offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "anchor": [
+   20,
+   50
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_side_part__se__front.png",
+      "mask": "masks/characters/hair/hair_side_part__se__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_side_part__sw__front.png",
+      "mask": "masks/characters/hair/hair_side_part__sw__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_side_part__nw__front.png",
+      "mask": "masks/characters/hair/hair_side_part__nw__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_side_part__ne__front.png",
+      "mask": "masks/characters/hair/hair_side_part__ne__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   }
+  }
+ },
+ {
+  "id": "hair_curly_top",
+  "category": "characters",
+  "subcategory": "hair",
+  "name_fr": "Coiffure curly top",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_hair",
+  "presentation_hint": "m",
+  "channels": {
+   "hair": "hair_brown"
+  },
+  "hair_ramps": [
+   "hair_black",
+   "hair_brown",
+   "hair_auburn",
+   "hair_blond",
+   "hair_gray"
+  ],
+  "compatible_bases": [
+   "player_m",
+   "player_f",
+   "employee_m_01",
+   "employee_m_02",
+   "employee_m_03",
+   "employee_m_04",
+   "employee_m_05",
+   "employee_f_01",
+   "employee_f_02",
+   "employee_f_03",
+   "employee_f_04",
+   "employee_f_05"
+  ],
+  "offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "anchor": [
+   20,
+   50
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_curly_top__se__front.png",
+      "mask": "masks/characters/hair/hair_curly_top__se__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_curly_top__sw__front.png",
+      "mask": "masks/characters/hair/hair_curly_top__sw__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_curly_top__nw__front.png",
+      "mask": "masks/characters/hair/hair_curly_top__nw__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_curly_top__ne__front.png",
+      "mask": "masks/characters/hair/hair_curly_top__ne__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   }
+  }
+ },
+ {
+  "id": "hair_long_straight",
+  "category": "characters",
+  "subcategory": "hair",
+  "name_fr": "Coiffure long straight",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_hair",
+  "presentation_hint": "f",
+  "channels": {
+   "hair": "hair_brown"
+  },
+  "hair_ramps": [
+   "hair_black",
+   "hair_brown",
+   "hair_auburn",
+   "hair_blond",
+   "hair_gray"
+  ],
+  "compatible_bases": [
+   "player_m",
+   "player_f",
+   "employee_m_01",
+   "employee_m_02",
+   "employee_m_03",
+   "employee_m_04",
+   "employee_m_05",
+   "employee_f_01",
+   "employee_f_02",
+   "employee_f_03",
+   "employee_f_04",
+   "employee_f_05"
+  ],
+  "offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "anchor": [
+   20,
+   50
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_long_straight__se__front.png",
+      "mask": "masks/characters/hair/hair_long_straight__se__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     },
+     "hair_back": {
+      "file": "assets/characters/hair/hair_long_straight__se__back.png",
+      "mask": "masks/characters/hair/hair_long_straight__se__back__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_long_straight__sw__front.png",
+      "mask": "masks/characters/hair/hair_long_straight__sw__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     },
+     "hair_back": {
+      "file": "assets/characters/hair/hair_long_straight__sw__back.png",
+      "mask": "masks/characters/hair/hair_long_straight__sw__back__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_long_straight__nw__front.png",
+      "mask": "masks/characters/hair/hair_long_straight__nw__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_long_straight__ne__front.png",
+      "mask": "masks/characters/hair/hair_long_straight__ne__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   }
+  }
+ },
+ {
+  "id": "hair_bun",
+  "category": "characters",
+  "subcategory": "hair",
+  "name_fr": "Coiffure bun",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_hair",
+  "presentation_hint": "f",
+  "channels": {
+   "hair": "hair_brown"
+  },
+  "hair_ramps": [
+   "hair_black",
+   "hair_brown",
+   "hair_auburn",
+   "hair_blond",
+   "hair_gray"
+  ],
+  "compatible_bases": [
+   "player_m",
+   "player_f",
+   "employee_m_01",
+   "employee_m_02",
+   "employee_m_03",
+   "employee_m_04",
+   "employee_m_05",
+   "employee_f_01",
+   "employee_f_02",
+   "employee_f_03",
+   "employee_f_04",
+   "employee_f_05"
+  ],
+  "offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "anchor": [
+   20,
+   50
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_bun__se__front.png",
+      "mask": "masks/characters/hair/hair_bun__se__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     },
+     "hair_back": {
+      "file": "assets/characters/hair/hair_bun__se__back.png",
+      "mask": "masks/characters/hair/hair_bun__se__back__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_bun__sw__front.png",
+      "mask": "masks/characters/hair/hair_bun__sw__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     },
+     "hair_back": {
+      "file": "assets/characters/hair/hair_bun__sw__back.png",
+      "mask": "masks/characters/hair/hair_bun__sw__back__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_bun__nw__front.png",
+      "mask": "masks/characters/hair/hair_bun__nw__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_bun__ne__front.png",
+      "mask": "masks/characters/hair/hair_bun__ne__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   }
+  }
+ },
+ {
+  "id": "hair_bob",
+  "category": "characters",
+  "subcategory": "hair",
+  "name_fr": "Coiffure bob",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "character_hair",
+  "presentation_hint": "f",
+  "channels": {
+   "hair": "hair_brown"
+  },
+  "hair_ramps": [
+   "hair_black",
+   "hair_brown",
+   "hair_auburn",
+   "hair_blond",
+   "hair_gray"
+  ],
+  "compatible_bases": [
+   "player_m",
+   "player_f",
+   "employee_m_01",
+   "employee_m_02",
+   "employee_m_03",
+   "employee_m_04",
+   "employee_m_05",
+   "employee_f_01",
+   "employee_f_02",
+   "employee_f_03",
+   "employee_f_04",
+   "employee_f_05"
+  ],
+  "offset_px": [
+   0,
+   0
+  ],
+  "canvas": [
+   40,
+   72
+  ],
+  "anchor": [
+   20,
+   50
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_bob__se__front.png",
+      "mask": "masks/characters/hair/hair_bob__se__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "sw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_bob__sw__front.png",
+      "mask": "masks/characters/hair/hair_bob__sw__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "nw": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_bob__nw__front.png",
+      "mask": "masks/characters/hair/hair_bob__nw__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     72
+    ],
+    "anchor": [
+     20,
+     50
+    ],
+    "layers": {
+     "hair_front": {
+      "file": "assets/characters/hair/hair_bob__ne__front.png",
+      "mask": "masks/characters/hair/hair_bob__ne__front__mask.png",
+      "mask_channels": [
+       "hair"
+      ]
+     }
+    },
+    "qa": {
+     "uncovered_scalp_px": 0,
+     "floating_components": 0,
+     "ok": true
+    }
+   }
+  }
+ }
+]

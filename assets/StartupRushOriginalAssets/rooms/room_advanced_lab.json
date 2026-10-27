@@ -1,0 +1,1215 @@
+{
+ "id": "room_advanced_lab",
+ "name_fr": "Laboratoire avancé (zone de calcul quantique)",
+ "usage": "current",
+ "tier": 8,
+ "size_tiles": [
+  14,
+  10
+ ],
+ "story": "Recherche avancee : calculateurs, espace XR, et zone vitree du cryostat quantique avec son controle.",
+ "floor": [
+  {
+   "material": "floor_vinyl",
+   "rect": [
+    0,
+    0,
+    14,
+    10
+   ],
+   "swatches": {
+    "floor": "plastic",
+    "floor2": "steel"
+   }
+  },
+  {
+   "material": "floor_raised",
+   "rect": [
+    7,
+    0,
+    7,
+    5
+   ]
+  }
+ ],
+ "walls": {
+  "left": {
+   "segments": [
+    "plain",
+    "window",
+    "plain",
+    "plain",
+    "window",
+    "plain",
+    "plain",
+    "plain",
+    "door",
+    "plain"
+   ],
+   "pattern": "paint",
+   "swatches": {
+    "wall": "plastic",
+    "trim": "graphite",
+    "wood": "birch"
+   }
+  },
+  "right": {
+   "segments": [
+    "plain",
+    "plain",
+    "window_wide",
+    null,
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain"
+   ],
+   "pattern": "acoustic",
+   "swatches": {
+    "wall": "plastic",
+    "wall2": "navy",
+    "trim": "graphite"
+   }
+  }
+ },
+ "wall_items": [
+  {
+   "asset": "poster_schematic",
+   "wall": "left",
+   "index": 6
+  },
+  {
+   "asset": "planning_board",
+   "wall": "right",
+   "index": 5
+  }
+ ],
+ "objects": [
+  {
+   "asset": "research_station",
+   "tile": [
+    0,
+    2
+   ],
+   "facing": "se",
+   "children": {
+    "chair": {
+     "asset": "chair_ergonomic",
+     "character": {
+      "base": "employee_f_02",
+      "hair": "hair_bun",
+      "hair_ramp": "hair_blond"
+     }
+    }
+   }
+  },
+  {
+   "asset": "research_station",
+   "tile": [
+    0,
+    5
+   ],
+   "facing": "se",
+   "children": {
+    "chair": {
+     "asset": "chair_ergonomic",
+     "character": {
+      "base": "employee_m_02",
+      "hair": "hair_curly_top",
+      "hair_ramp": "hair_black"
+     }
+    }
+   }
+  },
+  {
+   "asset": "compute_cabinet",
+   "tile": [
+    2,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "compute_cabinet",
+   "tile": [
+    4,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    7,
+    5
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    8,
+    5
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    9,
+    5
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    10,
+    5
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    11,
+    5
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    12,
+    5
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    13,
+    5
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    7,
+    0
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    7,
+    1
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "partition_glass_door",
+   "tile": [
+    7,
+    2
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    7,
+    3
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    7,
+    4
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "quantum_control_rack",
+   "tile": [
+    8,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "quantum_control_rack",
+   "tile": [
+    9,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "quantum_cryostat_open",
+   "tile": [
+    10,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "quantum_cryostat_closed",
+   "tile": [
+    12,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cryo_support_unit",
+   "tile": [
+    8,
+    3
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "supervision_terminal",
+   "tile": [
+    11,
+    3
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "xr_play_mat",
+   "tile": [
+    2,
+    6
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "xr_base_station",
+   "tile": [
+    1,
+    6
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "xr_base_station",
+   "tile": [
+    4,
+    8
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "desk_tech",
+   "tile": [
+    6,
+    6
+   ],
+   "facing": "se",
+   "children": {
+    "monitor_main": "monitor_ultrawide",
+    "keyboard": "keyboard_mouse",
+    "desk_left": "xr_headset_stand",
+    "chair": {
+     "asset": "chair_ergonomic",
+     "character": {
+      "base": "employee_f_01",
+      "hair": "hair_bob",
+      "hair_ramp": "hair_black"
+     }
+    }
+   }
+  },
+  {
+   "asset": "whiteboard_mobile",
+   "tile": [
+    5,
+    2
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "plant_floor_tall",
+   "tile": [
+    13,
+    9
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "plant_floor_medium",
+   "tile": [
+    6,
+    0
+   ],
+   "facing": "se"
+  }
+ ],
+ "entrances": [
+  {
+   "wall": "left",
+   "index": 8,
+   "kind": "door",
+   "access_tile": [
+    0,
+    8
+   ]
+  }
+ ],
+ "zones": [
+  {
+   "name": "Zone quantique (vitree)",
+   "rect": [
+    7,
+    0,
+    7,
+    5
+   ]
+  },
+  {
+   "name": "Calcul",
+   "rect": [
+    2,
+    0,
+    4,
+    2
+   ]
+  },
+  {
+   "name": "Espace XR",
+   "rect": [
+    1,
+    6,
+    4,
+    3
+   ]
+  },
+  {
+   "name": "Recherche",
+   "rect": [
+    0,
+    2,
+    2,
+    5
+   ]
+  }
+ ],
+ "visible_walls": {
+  "left": "mur gauche (orientation se) le long de V, U=0",
+  "right": "mur droit (orientation sw) le long de U, V=0",
+  "front": "aucun : coupe avant (bords de dalle floor_edge)"
+ },
+ "foreground": "aucun mur avant ; les objets 'occluders' peuvent etre estompes s'ils masquent un personnage ou la selection",
+ "computed": {
+  "occupied_cells": [
+   [
+    0,
+    2
+   ],
+   [
+    0,
+    3
+   ],
+   [
+    0,
+    5
+   ],
+   [
+    0,
+    6
+   ],
+   [
+    2,
+    0
+   ],
+   [
+    3,
+    0
+   ],
+   [
+    4,
+    0
+   ],
+   [
+    5,
+    0
+   ],
+   [
+    5,
+    2
+   ],
+   [
+    5,
+    3
+   ],
+   [
+    6,
+    0
+   ],
+   [
+    6,
+    6
+   ],
+   [
+    6,
+    7
+   ],
+   [
+    7,
+    0
+   ],
+   [
+    7,
+    1
+   ],
+   [
+    7,
+    2
+   ],
+   [
+    7,
+    3
+   ],
+   [
+    7,
+    4
+   ],
+   [
+    7,
+    5
+   ],
+   [
+    8,
+    0
+   ],
+   [
+    8,
+    3
+   ],
+   [
+    8,
+    5
+   ],
+   [
+    9,
+    0
+   ],
+   [
+    9,
+    3
+   ],
+   [
+    9,
+    5
+   ],
+   [
+    10,
+    0
+   ],
+   [
+    10,
+    1
+   ],
+   [
+    10,
+    5
+   ],
+   [
+    11,
+    0
+   ],
+   [
+    11,
+    1
+   ],
+   [
+    11,
+    3
+   ],
+   [
+    11,
+    5
+   ],
+   [
+    12,
+    0
+   ],
+   [
+    12,
+    1
+   ],
+   [
+    12,
+    5
+   ],
+   [
+    13,
+    0
+   ],
+   [
+    13,
+    1
+   ],
+   [
+    13,
+    5
+   ],
+   [
+    13,
+    9
+   ]
+  ],
+  "reserved_access_cells": [
+   [
+    0,
+    8
+   ],
+   [
+    1,
+    2
+   ],
+   [
+    1,
+    3
+   ],
+   [
+    1,
+    5
+   ],
+   [
+    1,
+    6
+   ],
+   [
+    2,
+    1
+   ],
+   [
+    3,
+    1
+   ],
+   [
+    4,
+    1
+   ],
+   [
+    5,
+    1
+   ],
+   [
+    7,
+    6
+   ],
+   [
+    7,
+    7
+   ],
+   [
+    8,
+    1
+   ],
+   [
+    8,
+    4
+   ],
+   [
+    9,
+    1
+   ],
+   [
+    9,
+    4
+   ],
+   [
+    10,
+    2
+   ],
+   [
+    11,
+    2
+   ],
+   [
+    11,
+    4
+   ],
+   [
+    12,
+    2
+   ],
+   [
+    13,
+    2
+   ]
+  ],
+  "buildable_cells": [
+   [
+    0,
+    0
+   ],
+   [
+    0,
+    1
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    7
+   ],
+   [
+    0,
+    9
+   ],
+   [
+    1,
+    0
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    7
+   ],
+   [
+    1,
+    8
+   ],
+   [
+    1,
+    9
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    3
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    2,
+    5
+   ],
+   [
+    2,
+    6
+   ],
+   [
+    2,
+    7
+   ],
+   [
+    2,
+    8
+   ],
+   [
+    2,
+    9
+   ],
+   [
+    3,
+    2
+   ],
+   [
+    3,
+    3
+   ],
+   [
+    3,
+    4
+   ],
+   [
+    3,
+    5
+   ],
+   [
+    3,
+    6
+   ],
+   [
+    3,
+    7
+   ],
+   [
+    3,
+    8
+   ],
+   [
+    3,
+    9
+   ],
+   [
+    4,
+    2
+   ],
+   [
+    4,
+    3
+   ],
+   [
+    4,
+    4
+   ],
+   [
+    4,
+    5
+   ],
+   [
+    4,
+    6
+   ],
+   [
+    4,
+    7
+   ],
+   [
+    4,
+    8
+   ],
+   [
+    4,
+    9
+   ],
+   [
+    5,
+    4
+   ],
+   [
+    5,
+    5
+   ],
+   [
+    5,
+    6
+   ],
+   [
+    5,
+    7
+   ],
+   [
+    5,
+    8
+   ],
+   [
+    5,
+    9
+   ],
+   [
+    6,
+    1
+   ],
+   [
+    6,
+    2
+   ],
+   [
+    6,
+    3
+   ],
+   [
+    6,
+    4
+   ],
+   [
+    6,
+    5
+   ],
+   [
+    6,
+    8
+   ],
+   [
+    6,
+    9
+   ],
+   [
+    7,
+    8
+   ],
+   [
+    7,
+    9
+   ],
+   [
+    8,
+    2
+   ],
+   [
+    8,
+    6
+   ],
+   [
+    8,
+    7
+   ],
+   [
+    8,
+    8
+   ],
+   [
+    8,
+    9
+   ],
+   [
+    9,
+    2
+   ],
+   [
+    9,
+    6
+   ],
+   [
+    9,
+    7
+   ],
+   [
+    9,
+    8
+   ],
+   [
+    9,
+    9
+   ],
+   [
+    10,
+    3
+   ],
+   [
+    10,
+    4
+   ],
+   [
+    10,
+    6
+   ],
+   [
+    10,
+    7
+   ],
+   [
+    10,
+    8
+   ],
+   [
+    10,
+    9
+   ],
+   [
+    11,
+    6
+   ],
+   [
+    11,
+    7
+   ],
+   [
+    11,
+    8
+   ],
+   [
+    11,
+    9
+   ],
+   [
+    12,
+    3
+   ],
+   [
+    12,
+    4
+   ],
+   [
+    12,
+    6
+   ],
+   [
+    12,
+    7
+   ],
+   [
+    12,
+    8
+   ],
+   [
+    12,
+    9
+   ],
+   [
+    13,
+    3
+   ],
+   [
+    13,
+    4
+   ],
+   [
+    13,
+    6
+   ],
+   [
+    13,
+    7
+   ],
+   [
+    13,
+    8
+   ]
+  ],
+  "buildable_count": 81,
+  "cell_count": 140,
+  "free_wall_item_slots": {
+   "left": [
+    0,
+    2,
+    3,
+    5,
+    7,
+    9
+   ],
+   "right": [
+    0,
+    1,
+    4,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+   ]
+  },
+  "occluders": [
+   {
+    "asset": "research_station",
+    "tile": [
+     0,
+     2
+    ],
+    "height_px": 70
+   },
+   {
+    "asset": "research_station",
+    "tile": [
+     0,
+     5
+    ],
+    "height_px": 70
+   },
+   {
+    "asset": "compute_cabinet",
+    "tile": [
+     2,
+     0
+    ],
+    "height_px": 98
+   },
+   {
+    "asset": "compute_cabinet",
+    "tile": [
+     4,
+     0
+    ],
+    "height_px": 98
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     7,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     8,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     9,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     10,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     11,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     12,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     13,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     7,
+     0
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     7,
+     1
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass_door",
+    "tile": [
+     7,
+     2
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     7,
+     3
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     7,
+     4
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "quantum_control_rack",
+    "tile": [
+     8,
+     0
+    ],
+    "height_px": 100
+   },
+   {
+    "asset": "quantum_control_rack",
+    "tile": [
+     9,
+     0
+    ],
+    "height_px": 100
+   },
+   {
+    "asset": "quantum_cryostat_open",
+    "tile": [
+     10,
+     0
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "quantum_cryostat_closed",
+    "tile": [
+     12,
+     0
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cryo_support_unit",
+    "tile": [
+     8,
+     3
+    ],
+    "height_px": 72
+   },
+   {
+    "asset": "xr_base_station",
+    "tile": [
+     1,
+     6
+    ],
+    "height_px": 70
+   },
+   {
+    "asset": "xr_base_station",
+    "tile": [
+     4,
+     8
+    ],
+    "height_px": 70
+   },
+   {
+    "asset": "whiteboard_mobile",
+    "tile": [
+     5,
+     2
+    ],
+    "height_px": 64
+   },
+   {
+    "asset": "plant_floor_tall",
+    "tile": [
+     13,
+     9
+    ],
+    "height_px": 76
+   }
+  ],
+  "workstations": 3
+ },
+ "validation": {
+  "issues": [],
+  "ok": true
+ }
+}

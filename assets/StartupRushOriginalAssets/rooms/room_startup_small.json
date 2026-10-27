@@ -1,0 +1,574 @@
+{
+ "id": "room_startup_small",
+ "name_fr": "Petit bureau / atelier de startup",
+ "usage": "current",
+ "tier": 2,
+ "size_tiles": [
+  8,
+  6
+ ],
+ "story": "Premier local loue : esprit loft, trois postes, coin reunion improvise, cartons encore la.",
+ "floor": [
+  {
+   "material": "floor_concrete",
+   "rect": [
+    0,
+    0,
+    8,
+    6
+   ]
+  }
+ ],
+ "walls": {
+  "left": {
+   "segments": [
+    "plain",
+    "window",
+    "plain",
+    "plain",
+    "plain",
+    "door"
+   ],
+   "pattern": "paint",
+   "swatches": {
+    "wall": "cream",
+    "trim": "graphite",
+    "wood": "oak"
+   }
+  },
+  "right": {
+   "segments": [
+    "plain",
+    "window_wide",
+    null,
+    "plain",
+    "window",
+    "plain",
+    "plain",
+    "plain"
+   ],
+   "pattern": "brick",
+   "swatches": {
+    "wall": "brick",
+    "wall2": "cream",
+    "trim": "graphite"
+   }
+  }
+ },
+ "wall_items": [
+  {
+   "asset": "planning_board",
+   "wall": "left",
+   "index": 2
+  },
+  {
+   "asset": "poster_project",
+   "wall": "left",
+   "index": 4
+  },
+  {
+   "asset": "clock_wall",
+   "wall": "left",
+   "index": 0
+  },
+  {
+   "asset": "access_point",
+   "wall": "right",
+   "index": 3
+  }
+ ],
+ "objects": [
+  {
+   "asset": "shelf_metal",
+   "tile": [
+    0,
+    0
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    1,
+    0
+   ],
+   "facing": "sw",
+   "children": {
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "player_f",
+      "hair": "hair_bob",
+      "hair_ramp": "hair_black"
+     }
+    },
+    "monitor_main": "monitor_large",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "workstation_dev"
+   }
+  },
+  {
+   "asset": "printer_mfp",
+   "tile": [
+    3,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    4,
+    0
+   ],
+   "facing": "sw",
+   "children": {
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_m_04",
+      "hair": "hair_side_part",
+      "hair_ramp": "hair_auburn"
+     }
+    },
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "desk_left": "mug"
+   }
+  },
+  {
+   "asset": "kitchen_counter",
+   "tile": [
+    6,
+    0
+   ],
+   "facing": "sw",
+   "children": {
+    "counter": "coffee_machine"
+   }
+  },
+  {
+   "asset": "fridge",
+   "tile": [
+    7,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "desk_compact",
+   "tile": [
+    0,
+    3
+   ],
+   "facing": "se",
+   "children": {
+    "chair": {
+     "asset": "chair_budget",
+     "character": {
+      "base": "employee_f_05",
+      "hair": "hair_long_straight",
+      "hair_ramp": "hair_brown"
+     }
+    },
+    "laptop": "laptop_standard"
+   }
+  },
+  {
+   "asset": "network_cabinet",
+   "tile": [
+    0,
+    4
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "rug_small",
+   "tile": [
+    2,
+    3
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "table_meeting_small",
+   "tile": [
+    2,
+    3
+   ],
+   "facing": "se",
+   "children": {
+    "chair_0": {
+     "asset": "chair_budget",
+     "character": {
+      "base": "employee_m_02",
+      "hair": "hair_curly_top",
+      "hair_ramp": "hair_black"
+     }
+    },
+    "chair_2": {
+     "asset": "chair_budget"
+    },
+    "center": "speakerphone"
+   }
+  },
+  {
+   "asset": "whiteboard_mobile",
+   "tile": [
+    5,
+    3
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "armchair",
+   "tile": [
+    6,
+    2
+   ],
+   "facing": "sw",
+   "swatches": {
+    "fabric": "sun"
+   }
+  },
+  {
+   "asset": "plant_floor_tall",
+   "tile": [
+    7,
+    2
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "plant_floor_medium",
+   "tile": [
+    6,
+    5
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "moving_box",
+   "tile": [
+    7,
+    5
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "moving_box",
+   "tile": [
+    7,
+    4
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "trash_bin",
+   "tile": [
+    1,
+    2
+   ],
+   "facing": "se"
+  }
+ ],
+ "entrances": [
+  {
+   "wall": "left",
+   "index": 5,
+   "kind": "door",
+   "access_tile": [
+    0,
+    5
+   ]
+  }
+ ],
+ "zones": [
+  {
+   "name": "Postes",
+   "rect": [
+    1,
+    0,
+    5,
+    2
+   ]
+  },
+  {
+   "name": "Reunion",
+   "rect": [
+    2,
+    3,
+    2,
+    2
+   ]
+  },
+  {
+   "name": "Cafe",
+   "rect": [
+    6,
+    0,
+    2,
+    2
+   ]
+  }
+ ],
+ "visible_walls": {
+  "left": "mur gauche (orientation se) le long de V, U=0",
+  "right": "mur droit (orientation sw) le long de U, V=0",
+  "front": "aucun : coupe avant (bords de dalle floor_edge)"
+ },
+ "foreground": "aucun mur avant ; les objets 'occluders' peuvent etre estompes s'ils masquent un personnage ou la selection",
+ "computed": {
+  "occupied_cells": [
+   [
+    0,
+    0
+   ],
+   [
+    0,
+    1
+   ],
+   [
+    0,
+    3
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    0
+   ],
+   [
+    2,
+    0
+   ],
+   [
+    2,
+    3
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    3,
+    0
+   ],
+   [
+    3,
+    3
+   ],
+   [
+    3,
+    4
+   ],
+   [
+    4,
+    0
+   ],
+   [
+    5,
+    0
+   ],
+   [
+    5,
+    3
+   ],
+   [
+    5,
+    4
+   ],
+   [
+    6,
+    0
+   ],
+   [
+    6,
+    2
+   ],
+   [
+    6,
+    5
+   ],
+   [
+    7,
+    0
+   ],
+   [
+    7,
+    2
+   ],
+   [
+    7,
+    4
+   ],
+   [
+    7,
+    5
+   ]
+  ],
+  "reserved_access_cells": [
+   [
+    0,
+    5
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    1,
+    3
+   ],
+   [
+    2,
+    1
+   ],
+   [
+    4,
+    1
+   ],
+   [
+    5,
+    1
+   ]
+  ],
+  "buildable_cells": [
+   [
+    0,
+    2
+   ],
+   [
+    1,
+    2
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    5
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    5
+   ],
+   [
+    3,
+    1
+   ],
+   [
+    3,
+    2
+   ],
+   [
+    3,
+    5
+   ],
+   [
+    4,
+    2
+   ],
+   [
+    4,
+    3
+   ],
+   [
+    4,
+    4
+   ],
+   [
+    4,
+    5
+   ],
+   [
+    5,
+    2
+   ],
+   [
+    5,
+    5
+   ],
+   [
+    6,
+    1
+   ],
+   [
+    6,
+    3
+   ],
+   [
+    6,
+    4
+   ],
+   [
+    7,
+    1
+   ],
+   [
+    7,
+    3
+   ]
+  ],
+  "buildable_count": 20,
+  "cell_count": 48,
+  "free_wall_item_slots": {
+   "left": [
+    3
+   ],
+   "right": [
+    0,
+    5,
+    6,
+    7
+   ]
+  },
+  "occluders": [
+   {
+    "asset": "shelf_metal",
+    "tile": [
+     0,
+     0
+    ],
+    "height_px": 70
+   },
+   {
+    "asset": "fridge",
+    "tile": [
+     7,
+     0
+    ],
+    "height_px": 78
+   },
+   {
+    "asset": "whiteboard_mobile",
+    "tile": [
+     5,
+     3
+    ],
+    "height_px": 64
+   },
+   {
+    "asset": "plant_floor_tall",
+    "tile": [
+     7,
+     2
+    ],
+    "height_px": 76
+   }
+  ],
+  "workstations": 4
+ },
+ "validation": {
+  "issues": [],
+  "ok": true
+ }
+}

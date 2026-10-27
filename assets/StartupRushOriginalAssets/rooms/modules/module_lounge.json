@@ -1,0 +1,108 @@
+{
+ "id": "module_lounge",
+ "name_fr": "Coin détente",
+ "size_tiles": [
+  5,
+  4
+ ],
+ "floor": [
+  {
+   "material": "floor_parquet",
+   "rect": [
+    0,
+    0,
+    5,
+    4
+   ]
+  }
+ ],
+ "objects": [
+  {
+   "asset": "rug_large",
+   "tile": [
+    0,
+    1
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "sofa",
+   "tile": [
+    0,
+    0
+   ],
+   "facing": "sw",
+   "swatches": {
+    "fabric": "teal"
+   }
+  },
+  {
+   "asset": "table_coffee",
+   "tile": [
+    1,
+    1
+   ],
+   "facing": "se",
+   "children": {
+    "top": "plant_succulent"
+   }
+  },
+  {
+   "asset": "armchair",
+   "tile": [
+    2,
+    1
+   ],
+   "facing": "sw",
+   "swatches": {
+    "fabric": "coral"
+   }
+  },
+  {
+   "asset": "armchair",
+   "tile": [
+    0,
+    2
+   ],
+   "facing": "ne",
+   "swatches": {
+    "fabric": "sun"
+   }
+  },
+  {
+   "asset": "lamp_floor",
+   "tile": [
+    3,
+    0
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "plant_floor_tall",
+   "tile": [
+    4,
+    0
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "bookcase",
+   "tile": [
+    3,
+    2
+   ],
+   "facing": "se"
+  }
+ ],
+ "zones": [
+  {
+   "name": "Detente",
+   "rect": [
+    0,
+    0,
+    5,
+    4
+   ]
+  }
+ ]
+}

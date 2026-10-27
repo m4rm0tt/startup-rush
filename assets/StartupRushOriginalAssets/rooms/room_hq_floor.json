@@ -1,0 +1,3634 @@
+{
+ "id": "room_hq_floor",
+ "name_fr": "Plateau de siège",
+ "usage": "current",
+ "tier": 5,
+ "size_tiles": [
+  24,
+  18
+ ],
+ "story": "Siege : accueil, deux salles vitrees, kitchenette, sanitaires, ilots, salon et bureau de direction.",
+ "floor": [
+  {
+   "material": "floor_carpet_tiles",
+   "rect": [
+    0,
+    0,
+    24,
+    18
+   ],
+   "swatches": {
+    "floor": "sage"
+   }
+  },
+  {
+   "material": "floor_tile_ceramic",
+   "rect": [
+    0,
+    0,
+    4,
+    6
+   ]
+  },
+  {
+   "material": "floor_tile_ceramic",
+   "rect": [
+    0,
+    7,
+    4,
+    4
+   ],
+   "swatches": {
+    "floor": "sky",
+    "floor2": "plastic"
+   }
+  },
+  {
+   "material": "floor_parquet",
+   "rect": [
+    9,
+    12,
+    5,
+    4
+   ]
+  },
+  {
+   "material": "floor_parquet",
+   "rect": [
+    1,
+    12,
+    6,
+    4
+   ],
+   "swatches": {
+    "floor": "oak"
+   }
+  }
+ ],
+ "include": [
+  {
+   "module": "module_kitchenette",
+   "offset": [
+    0,
+    0
+   ]
+  },
+  {
+   "module": "module_restroom",
+   "offset": [
+    0,
+    7
+   ]
+  },
+  {
+   "module": "module_meeting_room",
+   "offset": [
+    12,
+    0
+   ],
+   "cast": [
+    {
+     "base": "employee_f_01",
+     "hair": "hair_bob",
+     "hair_ramp": "hair_black"
+    },
+    {
+     "base": "employee_m_03",
+     "hair": "hair_short_crop",
+     "hair_ramp": "hair_gray"
+    },
+    {
+     "base": "employee_f_04",
+     "hair": "hair_bob",
+     "hair_ramp": "hair_brown"
+    }
+   ]
+  },
+  {
+   "module": "module_meeting_room",
+   "offset": [
+    18,
+    0
+   ],
+   "cast": [
+    {
+     "base": "employee_m_01",
+     "hair": "hair_curly_top",
+     "hair_ramp": "hair_blond"
+    },
+    {
+     "base": "employee_f_02",
+     "hair": "hair_long_straight",
+     "hair_ramp": "hair_auburn"
+    },
+    {
+     "base": "employee_m_04",
+     "hair": "hair_side_part",
+     "hair_ramp": "hair_auburn"
+    }
+   ]
+  },
+  {
+   "module": "module_pod_4",
+   "offset": [
+    5,
+    1
+   ],
+   "cast": [
+    {
+     "base": "employee_m_02",
+     "hair": "hair_curly_top",
+     "hair_ramp": "hair_black"
+    },
+    {
+     "base": "employee_f_02",
+     "hair": "hair_long_straight",
+     "hair_ramp": "hair_auburn"
+    }
+   ]
+  },
+  {
+   "module": "module_pod_4",
+   "offset": [
+    5,
+    4
+   ],
+   "cast": [
+    {
+     "base": "employee_m_03",
+     "hair": "hair_short_crop",
+     "hair_ramp": "hair_gray"
+    },
+    {
+     "base": "employee_f_03",
+     "hair": "hair_bun",
+     "hair_ramp": "hair_black"
+    }
+   ]
+  },
+  {
+   "module": "module_pod_4",
+   "offset": [
+    8,
+    1
+   ],
+   "cast": [
+    {
+     "base": "employee_m_04",
+     "hair": "hair_side_part",
+     "hair_ramp": "hair_auburn"
+    },
+    {
+     "base": "employee_f_04",
+     "hair": "hair_bob",
+     "hair_ramp": "hair_brown"
+    }
+   ]
+  },
+  {
+   "module": "module_pod_4",
+   "offset": [
+    8,
+    4
+   ],
+   "cast": [
+    {
+     "base": "employee_m_05",
+     "hair": "hair_short_crop",
+     "hair_ramp": "hair_black"
+    },
+    {
+     "base": "employee_f_05",
+     "hair": "hair_long_straight",
+     "hair_ramp": "hair_brown"
+    }
+   ]
+  },
+  {
+   "module": "module_pod_4",
+   "offset": [
+    5,
+    7
+   ],
+   "cast": [
+    {
+     "base": "employee_m_01",
+     "hair": "hair_curly_top",
+     "hair_ramp": "hair_blond"
+    },
+    {
+     "base": "employee_f_02",
+     "hair": "hair_bun",
+     "hair_ramp": "hair_blond"
+    }
+   ]
+  },
+  {
+   "module": "module_lounge",
+   "offset": [
+    9,
+    12
+   ]
+  },
+  {
+   "module": "module_reception",
+   "offset": [
+    1,
+    12
+   ],
+   "cast": [
+    {
+     "base": "employee_m_01",
+     "hair": "hair_side_part",
+     "hair_ramp": "hair_brown"
+    },
+    {
+     "base": "employee_f_03",
+     "hair": "hair_bun",
+     "hair_ramp": "hair_black"
+    }
+   ]
+  }
+ ],
+ "walls": {
+  "left": {
+   "segments": [
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "window",
+    "plain",
+    "window",
+    "plain",
+    "window",
+    "plain",
+    "door",
+    "plain"
+   ],
+   "pattern": "wood_panels",
+   "swatches": {
+    "wood": "oak",
+    "trim": "plastic",
+    "wall": "cream"
+   }
+  },
+  "right": {
+   "segments": [
+    "plain",
+    "window_wide",
+    null,
+    "plain",
+    "window_wide",
+    null,
+    "plain",
+    "plain",
+    "window",
+    "plain",
+    "plain",
+    "plain",
+    "window_wide",
+    null,
+    "window_wide",
+    null,
+    "plain",
+    "plain",
+    "window_wide",
+    null,
+    "window_wide",
+    null,
+    "plain",
+    "plain"
+   ],
+   "pattern": "concrete",
+   "swatches": {
+    "wall": "concrete",
+    "trim": "graphite"
+   }
+  }
+ },
+ "wall_items": [
+  {
+   "asset": "poster_project",
+   "wall": "right",
+   "index": 9
+  },
+  {
+   "asset": "award_plaque",
+   "wall": "left",
+   "index": 13
+  },
+  {
+   "asset": "clock_wall",
+   "wall": "left",
+   "index": 11
+  },
+  {
+   "asset": "photo_abstract",
+   "wall": "right",
+   "index": 16
+  }
+ ],
+ "objects": [
+  {
+   "asset": "rack_compact",
+   "tile": [
+    12,
+    7
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "network_cabinet",
+   "tile": [
+    13,
+    7
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "desk_corner",
+   "tile": [
+    18,
+    12
+   ],
+   "facing": "se",
+   "children": {
+    "chair": {
+     "asset": "chair_ergonomic",
+     "character": {
+      "base": "employee_f_03",
+      "hair": "hair_bun",
+      "hair_ramp": "hair_brown"
+     }
+    },
+    "monitor_main": "monitor_large",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "workstation_compute"
+   }
+  },
+  {
+   "asset": "bookcase",
+   "tile": [
+    17,
+    10
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "armchair",
+   "tile": [
+    21,
+    15
+   ],
+   "facing": "ne",
+   "swatches": {
+    "fabric": "navy"
+   }
+  },
+  {
+   "asset": "armchair",
+   "tile": [
+    22,
+    15
+   ],
+   "facing": "ne",
+   "swatches": {
+    "fabric": "navy"
+   }
+  },
+  {
+   "asset": "table_coffee",
+   "tile": [
+    21,
+    14
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "plant_floor_tall",
+   "tile": [
+    23,
+    17
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "plant_floor_tall",
+   "tile": [
+    15,
+    17
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "plant_floor_medium",
+   "tile": [
+    11,
+    8
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "whiteboard_mobile",
+   "tile": [
+    9,
+    8
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "printer_mfp",
+   "tile": [
+    11,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "trash_bin",
+   "tile": [
+    4,
+    4
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "kitchen_counter",
+   "tile": [
+    0,
+    0
+   ],
+   "facing": "se",
+   "from_module": "module_kitchenette"
+  },
+  {
+   "asset": "kitchen_sink",
+   "tile": [
+    0,
+    1
+   ],
+   "facing": "se",
+   "from_module": "module_kitchenette"
+  },
+  {
+   "asset": "kitchen_counter",
+   "tile": [
+    0,
+    2
+   ],
+   "facing": "se",
+   "children": {
+    "counter": "coffee_machine"
+   },
+   "from_module": "module_kitchenette"
+  },
+  {
+   "asset": "fridge",
+   "tile": [
+    0,
+    3
+   ],
+   "facing": "se",
+   "from_module": "module_kitchenette"
+  },
+  {
+   "asset": "vending_drinks",
+   "tile": [
+    0,
+    4
+   ],
+   "facing": "se",
+   "from_module": "module_kitchenette"
+  },
+  {
+   "asset": "vending_snacks",
+   "tile": [
+    0,
+    5
+   ],
+   "facing": "se",
+   "from_module": "module_kitchenette"
+  },
+  {
+   "asset": "table_meeting_small",
+   "tile": [
+    2,
+    1
+   ],
+   "facing": "se",
+   "children": {
+    "center": "mug"
+   },
+   "from_module": "module_kitchenette"
+  },
+  {
+   "asset": "water_cooler",
+   "tile": [
+    1,
+    5
+   ],
+   "facing": "se",
+   "from_module": "module_kitchenette"
+  },
+  {
+   "asset": "trash_bin",
+   "tile": [
+    1,
+    0
+   ],
+   "facing": "se",
+   "from_module": "module_kitchenette"
+  },
+  {
+   "asset": "recycling_station",
+   "tile": [
+    3,
+    0
+   ],
+   "facing": "sw",
+   "from_module": "module_kitchenette"
+  },
+  {
+   "asset": "toilet_stall",
+   "tile": [
+    0,
+    7
+   ],
+   "facing": "se",
+   "from_module": "module_restroom"
+  },
+  {
+   "asset": "toilet_stall",
+   "tile": [
+    0,
+    8
+   ],
+   "facing": "se",
+   "from_module": "module_restroom"
+  },
+  {
+   "asset": "washbasin",
+   "tile": [
+    0,
+    9
+   ],
+   "facing": "se",
+   "from_module": "module_restroom"
+  },
+  {
+   "asset": "washbasin",
+   "tile": [
+    0,
+    10
+   ],
+   "facing": "se",
+   "from_module": "module_restroom"
+  },
+  {
+   "asset": "trash_bin",
+   "tile": [
+    1,
+    10
+   ],
+   "facing": "se",
+   "from_module": "module_restroom"
+  },
+  {
+   "asset": "partition_acoustic",
+   "tile": [
+    0,
+    11
+   ],
+   "facing": "sw",
+   "from_module": "module_restroom"
+  },
+  {
+   "asset": "partition_acoustic",
+   "tile": [
+    1,
+    11
+   ],
+   "facing": "sw",
+   "from_module": "module_restroom"
+  },
+  {
+   "asset": "partition_acoustic",
+   "tile": [
+    2,
+    11
+   ],
+   "facing": "sw",
+   "from_module": "module_restroom"
+  },
+  {
+   "asset": "partition_acoustic",
+   "tile": [
+    3,
+    7
+   ],
+   "facing": "se",
+   "from_module": "module_restroom"
+  },
+  {
+   "asset": "partition_acoustic",
+   "tile": [
+    3,
+    8
+   ],
+   "facing": "se",
+   "from_module": "module_restroom"
+  },
+  {
+   "asset": "partition_acoustic",
+   "tile": [
+    3,
+    9
+   ],
+   "facing": "se",
+   "from_module": "module_restroom"
+  },
+  {
+   "asset": "table_meeting_large",
+   "tile": [
+    13,
+    2
+   ],
+   "facing": "sw",
+   "children": {
+    "chair_0": {
+     "asset": "chair_meeting",
+     "character": {
+      "base": "employee_f_01",
+      "hair": "hair_bob",
+      "hair_ramp": "hair_black"
+     }
+    },
+    "chair_2": {
+     "asset": "chair_meeting",
+     "character": {
+      "base": "employee_m_03",
+      "hair": "hair_short_crop",
+      "hair_ramp": "hair_gray"
+     }
+    },
+    "chair_4": {
+     "asset": "chair_meeting"
+    },
+    "chair_1": {
+     "asset": "chair_meeting",
+     "character": {
+      "base": "employee_f_04",
+      "hair": "hair_bob",
+      "hair_ramp": "hair_brown"
+     }
+    },
+    "chair_3": {
+     "asset": "chair_meeting"
+    },
+    "center": "speakerphone"
+   },
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "presentation_screen",
+   "tile": [
+    14,
+    0
+   ],
+   "facing": "sw",
+   "children": {
+    "top": "videoconf_bar"
+   },
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "plant_floor_medium",
+   "tile": [
+    17,
+    0
+   ],
+   "facing": "se",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    12,
+    5
+   ],
+   "facing": "sw",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    13,
+    5
+   ],
+   "facing": "sw",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    14,
+    5
+   ],
+   "facing": "sw",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    15,
+    5
+   ],
+   "facing": "sw",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    16,
+    5
+   ],
+   "facing": "sw",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    17,
+    5
+   ],
+   "facing": "sw",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    12,
+    0
+   ],
+   "facing": "se",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    12,
+    1
+   ],
+   "facing": "se",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    12,
+    2
+   ],
+   "facing": "se",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass_door",
+   "tile": [
+    12,
+    3
+   ],
+   "facing": "se",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    12,
+    4
+   ],
+   "facing": "se",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "table_meeting_large",
+   "tile": [
+    19,
+    2
+   ],
+   "facing": "sw",
+   "children": {
+    "chair_0": {
+     "asset": "chair_meeting",
+     "character": {
+      "base": "employee_m_01",
+      "hair": "hair_curly_top",
+      "hair_ramp": "hair_blond"
+     }
+    },
+    "chair_2": {
+     "asset": "chair_meeting",
+     "character": {
+      "base": "employee_f_02",
+      "hair": "hair_long_straight",
+      "hair_ramp": "hair_auburn"
+     }
+    },
+    "chair_4": {
+     "asset": "chair_meeting"
+    },
+    "chair_1": {
+     "asset": "chair_meeting",
+     "character": {
+      "base": "employee_m_04",
+      "hair": "hair_side_part",
+      "hair_ramp": "hair_auburn"
+     }
+    },
+    "chair_3": {
+     "asset": "chair_meeting"
+    },
+    "center": "speakerphone"
+   },
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "presentation_screen",
+   "tile": [
+    20,
+    0
+   ],
+   "facing": "sw",
+   "children": {
+    "top": "videoconf_bar"
+   },
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "plant_floor_medium",
+   "tile": [
+    23,
+    0
+   ],
+   "facing": "se",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    18,
+    5
+   ],
+   "facing": "sw",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    19,
+    5
+   ],
+   "facing": "sw",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    20,
+    5
+   ],
+   "facing": "sw",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    21,
+    5
+   ],
+   "facing": "sw",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    22,
+    5
+   ],
+   "facing": "sw",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    23,
+    5
+   ],
+   "facing": "sw",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    18,
+    0
+   ],
+   "facing": "se",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    18,
+    1
+   ],
+   "facing": "se",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    18,
+    2
+   ],
+   "facing": "se",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass_door",
+   "tile": [
+    18,
+    3
+   ],
+   "facing": "se",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    18,
+    4
+   ],
+   "facing": "se",
+   "from_module": "module_meeting_room"
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    6,
+    1
+   ],
+   "facing": "nw",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_m_02",
+      "hair": "hair_curly_top",
+      "hair_ramp": "hair_black"
+     }
+    }
+   },
+   "from_module": "module_pod_4"
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    7,
+    1
+   ],
+   "facing": "se",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_f_02",
+      "hair": "hair_long_straight",
+      "hair_ramp": "hair_auburn"
+     }
+    }
+   },
+   "from_module": "module_pod_4"
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    6,
+    4
+   ],
+   "facing": "nw",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_m_03",
+      "hair": "hair_short_crop",
+      "hair_ramp": "hair_gray"
+     }
+    }
+   },
+   "from_module": "module_pod_4"
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    7,
+    4
+   ],
+   "facing": "se",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_f_03",
+      "hair": "hair_bun",
+      "hair_ramp": "hair_black"
+     }
+    }
+   },
+   "from_module": "module_pod_4"
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    9,
+    1
+   ],
+   "facing": "nw",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_m_04",
+      "hair": "hair_side_part",
+      "hair_ramp": "hair_auburn"
+     }
+    }
+   },
+   "from_module": "module_pod_4"
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    10,
+    1
+   ],
+   "facing": "se",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_f_04",
+      "hair": "hair_bob",
+      "hair_ramp": "hair_brown"
+     }
+    }
+   },
+   "from_module": "module_pod_4"
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    9,
+    4
+   ],
+   "facing": "nw",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_m_05",
+      "hair": "hair_short_crop",
+      "hair_ramp": "hair_black"
+     }
+    }
+   },
+   "from_module": "module_pod_4"
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    10,
+    4
+   ],
+   "facing": "se",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_f_05",
+      "hair": "hair_long_straight",
+      "hair_ramp": "hair_brown"
+     }
+    }
+   },
+   "from_module": "module_pod_4"
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    6,
+    7
+   ],
+   "facing": "nw",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_m_01",
+      "hair": "hair_curly_top",
+      "hair_ramp": "hair_blond"
+     }
+    }
+   },
+   "from_module": "module_pod_4"
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    7,
+    7
+   ],
+   "facing": "se",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_f_02",
+      "hair": "hair_bun",
+      "hair_ramp": "hair_blond"
+     }
+    }
+   },
+   "from_module": "module_pod_4"
+  },
+  {
+   "asset": "rug_large",
+   "tile": [
+    9,
+    13
+   ],
+   "facing": "sw",
+   "from_module": "module_lounge"
+  },
+  {
+   "asset": "sofa",
+   "tile": [
+    9,
+    12
+   ],
+   "facing": "sw",
+   "swatches": {
+    "fabric": "teal"
+   },
+   "from_module": "module_lounge"
+  },
+  {
+   "asset": "table_coffee",
+   "tile": [
+    10,
+    13
+   ],
+   "facing": "se",
+   "children": {
+    "top": "plant_succulent"
+   },
+   "from_module": "module_lounge"
+  },
+  {
+   "asset": "armchair",
+   "tile": [
+    11,
+    13
+   ],
+   "facing": "sw",
+   "swatches": {
+    "fabric": "coral"
+   },
+   "from_module": "module_lounge"
+  },
+  {
+   "asset": "armchair",
+   "tile": [
+    9,
+    14
+   ],
+   "facing": "ne",
+   "swatches": {
+    "fabric": "sun"
+   },
+   "from_module": "module_lounge"
+  },
+  {
+   "asset": "lamp_floor",
+   "tile": [
+    12,
+    12
+   ],
+   "facing": "se",
+   "from_module": "module_lounge"
+  },
+  {
+   "asset": "plant_floor_tall",
+   "tile": [
+    13,
+    12
+   ],
+   "facing": "se",
+   "from_module": "module_lounge"
+  },
+  {
+   "asset": "bookcase",
+   "tile": [
+    12,
+    14
+   ],
+   "facing": "se",
+   "from_module": "module_lounge"
+  },
+  {
+   "asset": "reception_desk",
+   "tile": [
+    2,
+    12
+   ],
+   "facing": "sw",
+   "children": {
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_m_01",
+      "hair": "hair_side_part",
+      "hair_ramp": "hair_brown"
+     }
+    },
+    "monitor_main": "monitor_basic",
+    "counter_left": "plant_succulent"
+   },
+   "from_module": "module_reception"
+  },
+  {
+   "asset": "rug_small",
+   "tile": [
+    2,
+    14
+   ],
+   "facing": "se",
+   "from_module": "module_reception"
+  },
+  {
+   "asset": "chair_meeting",
+   "tile": [
+    1,
+    15
+   ],
+   "facing": "ne",
+   "from_module": "module_reception"
+  },
+  {
+   "asset": "chair_meeting",
+   "tile": [
+    2,
+    15
+   ],
+   "facing": "ne",
+   "character": {
+    "base": "employee_f_03",
+    "hair": "hair_bun",
+    "hair_ramp": "hair_black"
+   },
+   "from_module": "module_reception"
+  },
+  {
+   "asset": "plant_floor_tall",
+   "tile": [
+    6,
+    12
+   ],
+   "facing": "se",
+   "from_module": "module_reception"
+  },
+  {
+   "asset": "table_coffee",
+   "tile": [
+    4,
+    15
+   ],
+   "facing": "se",
+   "from_module": "module_reception"
+  }
+ ],
+ "entrances": [
+  {
+   "wall": "left",
+   "index": 16,
+   "kind": "door",
+   "access_tile": [
+    0,
+    16
+   ]
+  }
+ ],
+ "zones": [
+  {
+   "name": "Direction",
+   "rect": [
+    17,
+    10,
+    7,
+    8
+   ]
+  },
+  {
+   "name": "Ilots",
+   "rect": [
+    5,
+    1,
+    7,
+    6
+   ]
+  },
+  {
+   "name": "Local technique",
+   "rect": [
+    12,
+    7,
+    2,
+    1
+   ]
+  },
+  {
+   "name": "Kitchenette",
+   "rect": [
+    0,
+    0,
+    4,
+    6
+   ]
+  },
+  {
+   "name": "Sanitaires",
+   "rect": [
+    0,
+    7,
+    3,
+    4
+   ]
+  },
+  {
+   "name": "Salle de reunion",
+   "rect": [
+    12,
+    0,
+    6,
+    5
+   ]
+  },
+  {
+   "name": "Salle de reunion",
+   "rect": [
+    18,
+    0,
+    6,
+    5
+   ]
+  },
+  {
+   "name": "Ilot",
+   "rect": [
+    5,
+    1,
+    4,
+    2
+   ]
+  },
+  {
+   "name": "Ilot",
+   "rect": [
+    5,
+    4,
+    4,
+    2
+   ]
+  },
+  {
+   "name": "Ilot",
+   "rect": [
+    8,
+    1,
+    4,
+    2
+   ]
+  },
+  {
+   "name": "Ilot",
+   "rect": [
+    8,
+    4,
+    4,
+    2
+   ]
+  },
+  {
+   "name": "Ilot",
+   "rect": [
+    5,
+    7,
+    4,
+    2
+   ]
+  },
+  {
+   "name": "Detente",
+   "rect": [
+    9,
+    12,
+    5,
+    4
+   ]
+  },
+  {
+   "name": "Accueil",
+   "rect": [
+    1,
+    12,
+    6,
+    4
+   ]
+  }
+ ],
+ "visible_walls": {
+  "left": "mur gauche (orientation se) le long de V, U=0",
+  "right": "mur droit (orientation sw) le long de U, V=0",
+  "front": "aucun : coupe avant (bords de dalle floor_edge)"
+ },
+ "foreground": "aucun mur avant ; les objets 'occluders' peuvent etre estompes s'ils masquent un personnage ou la selection",
+ "computed": {
+  "occupied_cells": [
+   [
+    0,
+    0
+   ],
+   [
+    0,
+    1
+   ],
+   [
+    0,
+    2
+   ],
+   [
+    0,
+    3
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    5
+   ],
+   [
+    0,
+    7
+   ],
+   [
+    0,
+    8
+   ],
+   [
+    0,
+    9
+   ],
+   [
+    0,
+    10
+   ],
+   [
+    0,
+    11
+   ],
+   [
+    1,
+    11
+   ],
+   [
+    2,
+    1
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    11
+   ],
+   [
+    2,
+    12
+   ],
+   [
+    2,
+    13
+   ],
+   [
+    3,
+    0
+   ],
+   [
+    3,
+    1
+   ],
+   [
+    3,
+    2
+   ],
+   [
+    3,
+    7
+   ],
+   [
+    3,
+    8
+   ],
+   [
+    3,
+    9
+   ],
+   [
+    3,
+    12
+   ],
+   [
+    3,
+    13
+   ],
+   [
+    4,
+    12
+   ],
+   [
+    4,
+    13
+   ],
+   [
+    4,
+    15
+   ],
+   [
+    6,
+    1
+   ],
+   [
+    6,
+    2
+   ],
+   [
+    6,
+    4
+   ],
+   [
+    6,
+    5
+   ],
+   [
+    6,
+    7
+   ],
+   [
+    6,
+    8
+   ],
+   [
+    6,
+    12
+   ],
+   [
+    7,
+    1
+   ],
+   [
+    7,
+    2
+   ],
+   [
+    7,
+    4
+   ],
+   [
+    7,
+    5
+   ],
+   [
+    7,
+    7
+   ],
+   [
+    7,
+    8
+   ],
+   [
+    9,
+    1
+   ],
+   [
+    9,
+    2
+   ],
+   [
+    9,
+    4
+   ],
+   [
+    9,
+    5
+   ],
+   [
+    9,
+    8
+   ],
+   [
+    9,
+    9
+   ],
+   [
+    9,
+    12
+   ],
+   [
+    9,
+    14
+   ],
+   [
+    10,
+    1
+   ],
+   [
+    10,
+    2
+   ],
+   [
+    10,
+    4
+   ],
+   [
+    10,
+    5
+   ],
+   [
+    10,
+    12
+   ],
+   [
+    10,
+    13
+   ],
+   [
+    11,
+    0
+   ],
+   [
+    11,
+    8
+   ],
+   [
+    11,
+    13
+   ],
+   [
+    12,
+    0
+   ],
+   [
+    12,
+    1
+   ],
+   [
+    12,
+    2
+   ],
+   [
+    12,
+    3
+   ],
+   [
+    12,
+    4
+   ],
+   [
+    12,
+    5
+   ],
+   [
+    12,
+    7
+   ],
+   [
+    12,
+    14
+   ],
+   [
+    12,
+    15
+   ],
+   [
+    13,
+    2
+   ],
+   [
+    13,
+    3
+   ],
+   [
+    13,
+    5
+   ],
+   [
+    13,
+    7
+   ],
+   [
+    13,
+    12
+   ],
+   [
+    14,
+    0
+   ],
+   [
+    14,
+    2
+   ],
+   [
+    14,
+    3
+   ],
+   [
+    14,
+    5
+   ],
+   [
+    15,
+    0
+   ],
+   [
+    15,
+    2
+   ],
+   [
+    15,
+    3
+   ],
+   [
+    15,
+    5
+   ],
+   [
+    15,
+    17
+   ],
+   [
+    16,
+    2
+   ],
+   [
+    16,
+    3
+   ],
+   [
+    16,
+    5
+   ],
+   [
+    17,
+    0
+   ],
+   [
+    17,
+    5
+   ],
+   [
+    17,
+    10
+   ],
+   [
+    17,
+    11
+   ],
+   [
+    18,
+    0
+   ],
+   [
+    18,
+    1
+   ],
+   [
+    18,
+    2
+   ],
+   [
+    18,
+    3
+   ],
+   [
+    18,
+    4
+   ],
+   [
+    18,
+    5
+   ],
+   [
+    18,
+    12
+   ],
+   [
+    18,
+    13
+   ],
+   [
+    19,
+    2
+   ],
+   [
+    19,
+    3
+   ],
+   [
+    19,
+    5
+   ],
+   [
+    19,
+    12
+   ],
+   [
+    20,
+    0
+   ],
+   [
+    20,
+    2
+   ],
+   [
+    20,
+    3
+   ],
+   [
+    20,
+    5
+   ],
+   [
+    21,
+    0
+   ],
+   [
+    21,
+    2
+   ],
+   [
+    21,
+    3
+   ],
+   [
+    21,
+    5
+   ],
+   [
+    21,
+    14
+   ],
+   [
+    21,
+    15
+   ],
+   [
+    22,
+    2
+   ],
+   [
+    22,
+    3
+   ],
+   [
+    22,
+    5
+   ],
+   [
+    22,
+    15
+   ],
+   [
+    23,
+    0
+   ],
+   [
+    23,
+    5
+   ],
+   [
+    23,
+    17
+   ]
+  ],
+  "reserved_access_cells": [
+   [
+    0,
+    16
+   ],
+   [
+    3,
+    14
+   ],
+   [
+    5,
+    1
+   ],
+   [
+    5,
+    2
+   ],
+   [
+    5,
+    4
+   ],
+   [
+    5,
+    5
+   ],
+   [
+    5,
+    7
+   ],
+   [
+    5,
+    8
+   ],
+   [
+    8,
+    1
+   ],
+   [
+    8,
+    2
+   ],
+   [
+    8,
+    4
+   ],
+   [
+    8,
+    5
+   ],
+   [
+    8,
+    7
+   ],
+   [
+    8,
+    8
+   ],
+   [
+    11,
+    1
+   ],
+   [
+    11,
+    2
+   ],
+   [
+    11,
+    4
+   ],
+   [
+    11,
+    5
+   ],
+   [
+    12,
+    8
+   ]
+  ],
+  "buildable_cells": [
+   [
+    0,
+    6
+   ],
+   [
+    0,
+    12
+   ],
+   [
+    0,
+    13
+   ],
+   [
+    0,
+    14
+   ],
+   [
+    0,
+    15
+   ],
+   [
+    0,
+    17
+   ],
+   [
+    1,
+    0
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    1,
+    2
+   ],
+   [
+    1,
+    3
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    5
+   ],
+   [
+    1,
+    6
+   ],
+   [
+    1,
+    7
+   ],
+   [
+    1,
+    8
+   ],
+   [
+    1,
+    9
+   ],
+   [
+    1,
+    10
+   ],
+   [
+    1,
+    12
+   ],
+   [
+    1,
+    13
+   ],
+   [
+    1,
+    14
+   ],
+   [
+    1,
+    15
+   ],
+   [
+    1,
+    16
+   ],
+   [
+    1,
+    17
+   ],
+   [
+    2,
+    0
+   ],
+   [
+    2,
+    3
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    2,
+    5
+   ],
+   [
+    2,
+    6
+   ],
+   [
+    2,
+    7
+   ],
+   [
+    2,
+    8
+   ],
+   [
+    2,
+    9
+   ],
+   [
+    2,
+    10
+   ],
+   [
+    2,
+    14
+   ],
+   [
+    2,
+    15
+   ],
+   [
+    2,
+    16
+   ],
+   [
+    2,
+    17
+   ],
+   [
+    3,
+    3
+   ],
+   [
+    3,
+    4
+   ],
+   [
+    3,
+    5
+   ],
+   [
+    3,
+    6
+   ],
+   [
+    3,
+    10
+   ],
+   [
+    3,
+    11
+   ],
+   [
+    3,
+    15
+   ],
+   [
+    3,
+    16
+   ],
+   [
+    3,
+    17
+   ],
+   [
+    4,
+    0
+   ],
+   [
+    4,
+    1
+   ],
+   [
+    4,
+    2
+   ],
+   [
+    4,
+    3
+   ],
+   [
+    4,
+    4
+   ],
+   [
+    4,
+    5
+   ],
+   [
+    4,
+    6
+   ],
+   [
+    4,
+    7
+   ],
+   [
+    4,
+    8
+   ],
+   [
+    4,
+    9
+   ],
+   [
+    4,
+    10
+   ],
+   [
+    4,
+    11
+   ],
+   [
+    4,
+    14
+   ],
+   [
+    4,
+    16
+   ],
+   [
+    4,
+    17
+   ],
+   [
+    5,
+    0
+   ],
+   [
+    5,
+    3
+   ],
+   [
+    5,
+    6
+   ],
+   [
+    5,
+    9
+   ],
+   [
+    5,
+    10
+   ],
+   [
+    5,
+    11
+   ],
+   [
+    5,
+    12
+   ],
+   [
+    5,
+    13
+   ],
+   [
+    5,
+    14
+   ],
+   [
+    5,
+    15
+   ],
+   [
+    5,
+    16
+   ],
+   [
+    5,
+    17
+   ],
+   [
+    6,
+    0
+   ],
+   [
+    6,
+    3
+   ],
+   [
+    6,
+    6
+   ],
+   [
+    6,
+    9
+   ],
+   [
+    6,
+    10
+   ],
+   [
+    6,
+    11
+   ],
+   [
+    6,
+    13
+   ],
+   [
+    6,
+    14
+   ],
+   [
+    6,
+    15
+   ],
+   [
+    6,
+    16
+   ],
+   [
+    6,
+    17
+   ],
+   [
+    7,
+    0
+   ],
+   [
+    7,
+    3
+   ],
+   [
+    7,
+    6
+   ],
+   [
+    7,
+    9
+   ],
+   [
+    7,
+    10
+   ],
+   [
+    7,
+    11
+   ],
+   [
+    7,
+    12
+   ],
+   [
+    7,
+    13
+   ],
+   [
+    7,
+    14
+   ],
+   [
+    7,
+    15
+   ],
+   [
+    7,
+    16
+   ],
+   [
+    7,
+    17
+   ],
+   [
+    8,
+    0
+   ],
+   [
+    8,
+    3
+   ],
+   [
+    8,
+    6
+   ],
+   [
+    8,
+    9
+   ],
+   [
+    8,
+    10
+   ],
+   [
+    8,
+    11
+   ],
+   [
+    8,
+    12
+   ],
+   [
+    8,
+    13
+   ],
+   [
+    8,
+    14
+   ],
+   [
+    8,
+    15
+   ],
+   [
+    8,
+    16
+   ],
+   [
+    8,
+    17
+   ],
+   [
+    9,
+    0
+   ],
+   [
+    9,
+    3
+   ],
+   [
+    9,
+    6
+   ],
+   [
+    9,
+    7
+   ],
+   [
+    9,
+    10
+   ],
+   [
+    9,
+    11
+   ],
+   [
+    9,
+    13
+   ],
+   [
+    9,
+    15
+   ],
+   [
+    9,
+    16
+   ],
+   [
+    9,
+    17
+   ],
+   [
+    10,
+    0
+   ],
+   [
+    10,
+    3
+   ],
+   [
+    10,
+    6
+   ],
+   [
+    10,
+    7
+   ],
+   [
+    10,
+    8
+   ],
+   [
+    10,
+    9
+   ],
+   [
+    10,
+    10
+   ],
+   [
+    10,
+    11
+   ],
+   [
+    10,
+    14
+   ],
+   [
+    10,
+    15
+   ],
+   [
+    10,
+    16
+   ],
+   [
+    10,
+    17
+   ],
+   [
+    11,
+    3
+   ],
+   [
+    11,
+    6
+   ],
+   [
+    11,
+    7
+   ],
+   [
+    11,
+    9
+   ],
+   [
+    11,
+    10
+   ],
+   [
+    11,
+    11
+   ],
+   [
+    11,
+    12
+   ],
+   [
+    11,
+    14
+   ],
+   [
+    11,
+    15
+   ],
+   [
+    11,
+    16
+   ],
+   [
+    11,
+    17
+   ],
+   [
+    12,
+    6
+   ],
+   [
+    12,
+    9
+   ],
+   [
+    12,
+    10
+   ],
+   [
+    12,
+    11
+   ],
+   [
+    12,
+    12
+   ],
+   [
+    12,
+    13
+   ],
+   [
+    12,
+    16
+   ],
+   [
+    12,
+    17
+   ],
+   [
+    13,
+    0
+   ],
+   [
+    13,
+    1
+   ],
+   [
+    13,
+    4
+   ],
+   [
+    13,
+    6
+   ],
+   [
+    13,
+    8
+   ],
+   [
+    13,
+    9
+   ],
+   [
+    13,
+    10
+   ],
+   [
+    13,
+    11
+   ],
+   [
+    13,
+    13
+   ],
+   [
+    13,
+    14
+   ],
+   [
+    13,
+    15
+   ],
+   [
+    13,
+    16
+   ],
+   [
+    13,
+    17
+   ],
+   [
+    14,
+    1
+   ],
+   [
+    14,
+    4
+   ],
+   [
+    14,
+    6
+   ],
+   [
+    14,
+    7
+   ],
+   [
+    14,
+    8
+   ],
+   [
+    14,
+    9
+   ],
+   [
+    14,
+    10
+   ],
+   [
+    14,
+    11
+   ],
+   [
+    14,
+    12
+   ],
+   [
+    14,
+    13
+   ],
+   [
+    14,
+    14
+   ],
+   [
+    14,
+    15
+   ],
+   [
+    14,
+    16
+   ],
+   [
+    14,
+    17
+   ],
+   [
+    15,
+    1
+   ],
+   [
+    15,
+    4
+   ],
+   [
+    15,
+    6
+   ],
+   [
+    15,
+    7
+   ],
+   [
+    15,
+    8
+   ],
+   [
+    15,
+    9
+   ],
+   [
+    15,
+    10
+   ],
+   [
+    15,
+    11
+   ],
+   [
+    15,
+    12
+   ],
+   [
+    15,
+    13
+   ],
+   [
+    15,
+    14
+   ],
+   [
+    15,
+    15
+   ],
+   [
+    15,
+    16
+   ],
+   [
+    16,
+    0
+   ],
+   [
+    16,
+    1
+   ],
+   [
+    16,
+    4
+   ],
+   [
+    16,
+    6
+   ],
+   [
+    16,
+    7
+   ],
+   [
+    16,
+    8
+   ],
+   [
+    16,
+    9
+   ],
+   [
+    16,
+    10
+   ],
+   [
+    16,
+    11
+   ],
+   [
+    16,
+    12
+   ],
+   [
+    16,
+    13
+   ],
+   [
+    16,
+    14
+   ],
+   [
+    16,
+    15
+   ],
+   [
+    16,
+    16
+   ],
+   [
+    16,
+    17
+   ],
+   [
+    17,
+    1
+   ],
+   [
+    17,
+    2
+   ],
+   [
+    17,
+    3
+   ],
+   [
+    17,
+    4
+   ],
+   [
+    17,
+    6
+   ],
+   [
+    17,
+    7
+   ],
+   [
+    17,
+    8
+   ],
+   [
+    17,
+    9
+   ],
+   [
+    17,
+    12
+   ],
+   [
+    17,
+    13
+   ],
+   [
+    17,
+    14
+   ],
+   [
+    17,
+    15
+   ],
+   [
+    17,
+    16
+   ],
+   [
+    17,
+    17
+   ],
+   [
+    18,
+    6
+   ],
+   [
+    18,
+    7
+   ],
+   [
+    18,
+    8
+   ],
+   [
+    18,
+    9
+   ],
+   [
+    18,
+    10
+   ],
+   [
+    18,
+    11
+   ],
+   [
+    18,
+    14
+   ],
+   [
+    18,
+    15
+   ],
+   [
+    18,
+    16
+   ],
+   [
+    18,
+    17
+   ],
+   [
+    19,
+    0
+   ],
+   [
+    19,
+    1
+   ],
+   [
+    19,
+    4
+   ],
+   [
+    19,
+    6
+   ],
+   [
+    19,
+    7
+   ],
+   [
+    19,
+    8
+   ],
+   [
+    19,
+    9
+   ],
+   [
+    19,
+    10
+   ],
+   [
+    19,
+    11
+   ],
+   [
+    19,
+    13
+   ],
+   [
+    19,
+    14
+   ],
+   [
+    19,
+    15
+   ],
+   [
+    19,
+    16
+   ],
+   [
+    19,
+    17
+   ],
+   [
+    20,
+    1
+   ],
+   [
+    20,
+    4
+   ],
+   [
+    20,
+    6
+   ],
+   [
+    20,
+    7
+   ],
+   [
+    20,
+    8
+   ],
+   [
+    20,
+    9
+   ],
+   [
+    20,
+    10
+   ],
+   [
+    20,
+    11
+   ],
+   [
+    20,
+    12
+   ],
+   [
+    20,
+    13
+   ],
+   [
+    20,
+    14
+   ],
+   [
+    20,
+    15
+   ],
+   [
+    20,
+    16
+   ],
+   [
+    20,
+    17
+   ],
+   [
+    21,
+    1
+   ],
+   [
+    21,
+    4
+   ],
+   [
+    21,
+    6
+   ],
+   [
+    21,
+    7
+   ],
+   [
+    21,
+    8
+   ],
+   [
+    21,
+    9
+   ],
+   [
+    21,
+    10
+   ],
+   [
+    21,
+    11
+   ],
+   [
+    21,
+    12
+   ],
+   [
+    21,
+    13
+   ],
+   [
+    21,
+    16
+   ],
+   [
+    21,
+    17
+   ],
+   [
+    22,
+    0
+   ],
+   [
+    22,
+    1
+   ],
+   [
+    22,
+    4
+   ],
+   [
+    22,
+    6
+   ],
+   [
+    22,
+    7
+   ],
+   [
+    22,
+    8
+   ],
+   [
+    22,
+    9
+   ],
+   [
+    22,
+    10
+   ],
+   [
+    22,
+    11
+   ],
+   [
+    22,
+    12
+   ],
+   [
+    22,
+    13
+   ],
+   [
+    22,
+    14
+   ],
+   [
+    22,
+    16
+   ],
+   [
+    22,
+    17
+   ],
+   [
+    23,
+    1
+   ],
+   [
+    23,
+    2
+   ],
+   [
+    23,
+    3
+   ],
+   [
+    23,
+    4
+   ],
+   [
+    23,
+    6
+   ],
+   [
+    23,
+    7
+   ],
+   [
+    23,
+    8
+   ],
+   [
+    23,
+    9
+   ],
+   [
+    23,
+    10
+   ],
+   [
+    23,
+    11
+   ],
+   [
+    23,
+    12
+   ],
+   [
+    23,
+    13
+   ],
+   [
+    23,
+    14
+   ],
+   [
+    23,
+    15
+   ],
+   [
+    23,
+    16
+   ]
+  ],
+  "buildable_count": 296,
+  "cell_count": 432,
+  "free_wall_item_slots": {
+   "left": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    15,
+    17
+   ],
+   "right": [
+    0,
+    3,
+    6,
+    7,
+    10,
+    11,
+    17,
+    22,
+    23
+   ]
+  },
+  "occluders": [
+   {
+    "asset": "bookcase",
+    "tile": [
+     17,
+     10
+    ],
+    "height_px": 72
+   },
+   {
+    "asset": "plant_floor_tall",
+    "tile": [
+     23,
+     17
+    ],
+    "height_px": 76
+   },
+   {
+    "asset": "plant_floor_tall",
+    "tile": [
+     15,
+     17
+    ],
+    "height_px": 76
+   },
+   {
+    "asset": "whiteboard_mobile",
+    "tile": [
+     9,
+     8
+    ],
+    "height_px": 64
+   },
+   {
+    "asset": "fridge",
+    "tile": [
+     0,
+     3
+    ],
+    "height_px": 78
+   },
+   {
+    "asset": "vending_drinks",
+    "tile": [
+     0,
+     4
+    ],
+    "height_px": 80
+   },
+   {
+    "asset": "vending_snacks",
+    "tile": [
+     0,
+     5
+    ],
+    "height_px": 80
+   },
+   {
+    "asset": "toilet_stall",
+    "tile": [
+     0,
+     7
+    ],
+    "height_px": 70
+   },
+   {
+    "asset": "toilet_stall",
+    "tile": [
+     0,
+     8
+    ],
+    "height_px": 70
+   },
+   {
+    "asset": "washbasin",
+    "tile": [
+     0,
+     9
+    ],
+    "height_px": 86
+   },
+   {
+    "asset": "washbasin",
+    "tile": [
+     0,
+     10
+    ],
+    "height_px": 86
+   },
+   {
+    "asset": "partition_acoustic",
+    "tile": [
+     0,
+     11
+    ],
+    "height_px": 64
+   },
+   {
+    "asset": "partition_acoustic",
+    "tile": [
+     1,
+     11
+    ],
+    "height_px": 64
+   },
+   {
+    "asset": "partition_acoustic",
+    "tile": [
+     2,
+     11
+    ],
+    "height_px": 64
+   },
+   {
+    "asset": "partition_acoustic",
+    "tile": [
+     3,
+     7
+    ],
+    "height_px": 64
+   },
+   {
+    "asset": "partition_acoustic",
+    "tile": [
+     3,
+     8
+    ],
+    "height_px": 64
+   },
+   {
+    "asset": "partition_acoustic",
+    "tile": [
+     3,
+     9
+    ],
+    "height_px": 64
+   },
+   {
+    "asset": "presentation_screen",
+    "tile": [
+     14,
+     0
+    ],
+    "height_px": 66
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     12,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     13,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     14,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     15,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     16,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     17,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     12,
+     0
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     12,
+     1
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     12,
+     2
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass_door",
+    "tile": [
+     12,
+     3
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     12,
+     4
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "presentation_screen",
+    "tile": [
+     20,
+     0
+    ],
+    "height_px": 66
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     18,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     19,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     20,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     21,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     22,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     23,
+     5
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     18,
+     0
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     18,
+     1
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     18,
+     2
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass_door",
+    "tile": [
+     18,
+     3
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "partition_glass",
+    "tile": [
+     18,
+     4
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "lamp_floor",
+    "tile": [
+     12,
+     12
+    ],
+    "height_px": 74
+   },
+   {
+    "asset": "plant_floor_tall",
+    "tile": [
+     13,
+     12
+    ],
+    "height_px": 76
+   },
+   {
+    "asset": "bookcase",
+    "tile": [
+     12,
+     14
+    ],
+    "height_px": 72
+   },
+   {
+    "asset": "plant_floor_tall",
+    "tile": [
+     6,
+     12
+    ],
+    "height_px": 76
+   }
+  ],
+  "workstations": 19
+ },
+ "validation": {
+  "issues": [],
+  "ok": true
+ }
+}

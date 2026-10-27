@@ -1,0 +1,2989 @@
+{
+ "sampling": "plus proche voisin",
+ "padding_px": 2,
+ "extrusion_px": 1,
+ "pages": [
+  "assets/hud/ui_atlas_0.png"
+ ],
+ "rects": {
+  "assets/hud/components/hud_card__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    2,
+    2,
+    40,
+    50
+   ]
+  },
+  "assets/hud/components/hud_card__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    46,
+    2,
+    40,
+    50
+   ]
+  },
+  "assets/hud/components/hud_card__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    90,
+    2,
+    40,
+    50
+   ]
+  },
+  "assets/hud/components/hud_card__selected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    134,
+    2,
+    40,
+    50
+   ]
+  },
+  "assets/project_components/comp_card_selected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    178,
+    2,
+    58,
+    48
+   ]
+  },
+  "assets/hud/components/hud_modal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    240,
+    2,
+    40,
+    48
+   ]
+  },
+  "assets/project_components/comp_card__bug.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    284,
+    2,
+    56,
+    46
+   ]
+  },
+  "assets/project_components/comp_card__done.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    344,
+    2,
+    56,
+    46
+   ]
+  },
+  "assets/project_components/comp_card__in_dev.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    404,
+    2,
+    56,
+    46
+   ]
+  },
+  "assets/project_components/comp_card__locked.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    464,
+    2,
+    56,
+    46
+   ]
+  },
+  "assets/project_components/comp_card__planned.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    524,
+    2,
+    56,
+    46
+   ]
+  },
+  "assets/hud/components/hud_window.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    584,
+    2,
+    40,
+    46
+   ]
+  },
+  "assets/terminal/term_frame.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    628,
+    2,
+    40,
+    42
+   ]
+  },
+  "assets/hud/components/hud_portrait_frame__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    672,
+    2,
+    38,
+    38
+   ]
+  },
+  "assets/hud/components/hud_portrait_frame__selected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    714,
+    2,
+    38,
+    38
+   ]
+  },
+  "assets/vfx/vfx_tile_footprint.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    756,
+    2,
+    64,
+    32
+   ]
+  },
+  "assets/vfx/vfx_tile_hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    824,
+    2,
+    64,
+    32
+   ]
+  },
+  "assets/vfx/vfx_tile_invalid.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    892,
+    2,
+    64,
+    32
+   ]
+  },
+  "assets/vfx/vfx_tile_selected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    2,
+    56,
+    64,
+    32
+   ]
+  },
+  "assets/vfx/vfx_tile_valid.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    70,
+    56,
+    64,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_admin.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    960,
+    2,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_analytics.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    138,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_api.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    190,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_auth.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    242,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_automation.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    294,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_catalog.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    346,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_engine.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    398,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_feed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    450,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_game_menu.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    502,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_home.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    554,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_infrastructure.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    606,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_integration.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    658,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_inventory.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    710,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_leaderboard.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    762,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_messaging.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    814,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_netplay.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    866,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_notifications.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    918,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_payment.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    970,
+    56,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_processing.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    2,
+    92,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_profile.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    54,
+    92,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_progression.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    106,
+    92,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_reviews.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    158,
+    92,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_savegame.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    210,
+    92,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_search.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    262,
+    92,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_security.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    314,
+    92,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_storage.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    366,
+    92,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_subscription.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    418,
+    92,
+    48,
+    32
+   ]
+  },
+  "assets/project_components/comp_preview_support.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    470,
+    92,
+    48,
+    32
+   ]
+  },
+  "assets/hud/components/hud_notification__danger.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    522,
+    92,
+    32,
+    26
+   ]
+  },
+  "assets/hud/components/hud_notification__info.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    558,
+    92,
+    32,
+    26
+   ]
+  },
+  "assets/hud/components/hud_notification__success.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    594,
+    92,
+    32,
+    26
+   ]
+  },
+  "assets/hud/components/hud_notification__warning.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    630,
+    92,
+    32,
+    26
+   ]
+  },
+  "assets/hud/components/hud_pattern_cell__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    666,
+    92,
+    26,
+    26
+   ]
+  },
+  "assets/hud/components/hud_pattern_cell__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    696,
+    92,
+    26,
+    26
+   ]
+  },
+  "assets/hud/components/hud_pattern_cell__selected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    726,
+    92,
+    26,
+    26
+   ]
+  },
+  "assets/hud/components/hud_panel_main.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    756,
+    92,
+    24,
+    26
+   ]
+  },
+  "assets/hud/components/hud_chart_frame.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    784,
+    92,
+    24,
+    24
+   ]
+  },
+  "assets/hud/components/hud_field_multiline__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    812,
+    92,
+    24,
+    24
+   ]
+  },
+  "assets/hud/components/hud_field_multiline__error.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    840,
+    92,
+    24,
+    24
+   ]
+  },
+  "assets/hud/components/hud_field_multiline__focus.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    868,
+    92,
+    24,
+    24
+   ]
+  },
+  "assets/hud/components/hud_field_multiline__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    896,
+    92,
+    24,
+    24
+   ]
+  },
+  "assets/hud/components/hud_field_multiline__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    924,
+    92,
+    24,
+    24
+   ]
+  },
+  "assets/hud/components/hud_popover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    952,
+    92,
+    20,
+    22
+   ]
+  },
+  "assets/hud/components/hud_topbar_bg.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    976,
+    92,
+    16,
+    22
+   ]
+  },
+  "assets/hud/components/hud_banner_end_left.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    1012,
+    2,
+    8,
+    22
+   ]
+  },
+  "assets/hud/components/hud_banner_end_right.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    996,
+    92,
+    8,
+    22
+   ]
+  },
+  "assets/hud/components/hud_gauge_base.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    2,
+    128,
+    34,
+    20
+   ]
+  },
+  "assets/hud/components/hud_gauge_fill.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    40,
+    128,
+    34,
+    20
+   ]
+  },
+  "assets/hud/components/hud_gauge_segment_map.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    78,
+    128,
+    34,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_destructive__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    116,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_destructive__focus.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    146,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_destructive__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    176,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_destructive__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    206,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_destructive__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    236,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_primary__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    266,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_primary__focus.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    296,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_primary__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    326,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_primary__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    356,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_primary__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    386,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_secondary__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    416,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_secondary__focus.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    446,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_secondary__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    476,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_secondary__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    506,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_secondary__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    536,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_text__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    566,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_text__focus.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    596,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_text__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    626,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_text__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    656,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_text__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    686,
+    128,
+    26,
+    20
+   ]
+  },
+  "assets/hud/components/hud_banner.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    716,
+    128,
+    24,
+    20
+   ]
+  },
+  "assets/hud/components/hud_tabs__active.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    744,
+    128,
+    24,
+    20
+   ]
+  },
+  "assets/hud/components/hud_tabs__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    772,
+    128,
+    24,
+    20
+   ]
+  },
+  "assets/hud/components/hud_tabs__inactive.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    800,
+    128,
+    24,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_icon__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    828,
+    128,
+    20,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_icon__focus.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    852,
+    128,
+    20,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_icon__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    876,
+    128,
+    20,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_icon__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    900,
+    128,
+    20,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_icon__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    924,
+    128,
+    20,
+    20
+   ]
+  },
+  "assets/hud/components/hud_button_icon__toggled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    948,
+    128,
+    20,
+    20
+   ]
+  },
+  "assets/hud/components/hud_topbar_divider.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    1008,
+    92,
+    3,
+    20
+   ]
+  },
+  "assets/vfx/vfx_select_ring.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    972,
+    128,
+    38,
+    19
+   ]
+  },
+  "assets/hud/components/hud_toast.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    2,
+    152,
+    24,
+    18
+   ]
+  },
+  "assets/hud/components/hud_swatch_cell__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    30,
+    152,
+    18,
+    18
+   ]
+  },
+  "assets/hud/components/hud_swatch_cell__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    52,
+    152,
+    18,
+    18
+   ]
+  },
+  "assets/hud/components/hud_swatch_cell__selected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    74,
+    152,
+    18,
+    18
+   ]
+  },
+  "assets/hud/components/hud_dropdown_list.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    96,
+    152,
+    16,
+    18
+   ]
+  },
+  "assets/hud/components/hud_menu_panel.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    116,
+    152,
+    16,
+    18
+   ]
+  },
+  "assets/hud/components/hud_segmented_left__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    136,
+    152,
+    16,
+    18
+   ]
+  },
+  "assets/hud/components/hud_segmented_left__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    156,
+    152,
+    16,
+    18
+   ]
+  },
+  "assets/hud/components/hud_segmented_left__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    176,
+    152,
+    16,
+    18
+   ]
+  },
+  "assets/hud/components/hud_segmented_left__selected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    196,
+    152,
+    16,
+    18
+   ]
+  },
+  "assets/hud/components/hud_segmented_mid__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    216,
+    152,
+    16,
+    18
+   ]
+  },
+  "assets/hud/components/hud_segmented_mid__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    236,
+    152,
+    16,
+    18
+   ]
+  },
+  "assets/hud/components/hud_segmented_mid__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    256,
+    152,
+    16,
+    18
+   ]
+  },
+  "assets/hud/components/hud_segmented_mid__selected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    276,
+    152,
+    16,
+    18
+   ]
+  },
+  "assets/hud/components/hud_segmented_right__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    296,
+    152,
+    16,
+    18
+   ]
+  },
+  "assets/hud/components/hud_segmented_right__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    316,
+    152,
+    16,
+    18
+   ]
+  },
+  "assets/hud/components/hud_segmented_right__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    336,
+    152,
+    16,
+    18
+   ]
+  },
+  "assets/hud/components/hud_segmented_right__selected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    356,
+    152,
+    16,
+    18
+   ]
+  },
+  "assets/hud/components/hud_dropdown__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    376,
+    152,
+    36,
+    16
+   ]
+  },
+  "assets/hud/components/hud_dropdown__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    416,
+    152,
+    36,
+    16
+   ]
+  },
+  "assets/hud/components/hud_dropdown__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    456,
+    152,
+    36,
+    16
+   ]
+  },
+  "assets/hud/components/hud_dropdown__open.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    496,
+    152,
+    36,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_numeric__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    536,
+    152,
+    32,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_numeric__error.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    572,
+    152,
+    32,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_numeric__focus.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    608,
+    152,
+    32,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_numeric__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    644,
+    152,
+    32,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_numeric__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    680,
+    152,
+    32,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_search__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    716,
+    152,
+    32,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_search__error.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    752,
+    152,
+    32,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_search__focus.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    788,
+    152,
+    32,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_search__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    824,
+    152,
+    32,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_search__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    860,
+    152,
+    32,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_text__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    896,
+    152,
+    24,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_text__error.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    924,
+    152,
+    24,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_text__focus.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    952,
+    152,
+    24,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_text__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    980,
+    152,
+    24,
+    16
+   ]
+  },
+  "assets/hud/components/hud_field_text__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    2,
+    174,
+    24,
+    16
+   ]
+  },
+  "assets/terminal/term_input__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    30,
+    174,
+    24,
+    16
+   ]
+  },
+  "assets/terminal/term_input__focus.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    58,
+    174,
+    24,
+    16
+   ]
+  },
+  "assets/terminal/term_input__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    86,
+    174,
+    24,
+    16
+   ]
+  },
+  "assets/cursors/cursor_action.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    114,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/cursors/cursor_busy.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    134,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/cursors/cursor_move.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    154,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/cursors/cursor_normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    174,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/cursors/cursor_place_invalid.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    194,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/cursors/cursor_place_valid.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    214,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/cursors/cursor_resize_d1.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    234,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/cursors/cursor_resize_d2.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    254,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/cursors/cursor_resize_h.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    274,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/cursors/cursor_resize_v.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    294,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/cursors/cursor_select.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    314,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/cursors/cursor_text.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    334,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/hud/components/hud_panel_inset.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    354,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/hud/components/hud_panel_secondary.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    374,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/hud/components/hud_titlebar.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    394,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/hud/components/hud_topbar_segment.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    414,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/terminal/term_surface.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    434,
+    174,
+    16,
+    16
+   ]
+  },
+  "assets/hud/components/hud_scroll_thumb_v__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    1008,
+    152,
+    10,
+    16
+   ]
+  },
+  "assets/hud/components/hud_scroll_thumb_v__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    454,
+    174,
+    10,
+    16
+   ]
+  },
+  "assets/hud/components/hud_scroll_thumb_v__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    468,
+    174,
+    10,
+    16
+   ]
+  },
+  "assets/hud/components/hud_scroll_track_v.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    482,
+    174,
+    10,
+    16
+   ]
+  },
+  "assets/terminal/term_scroll_thumb.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    1015,
+    92,
+    6,
+    16
+   ]
+  },
+  "assets/terminal/term_scroll_track.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    1014,
+    128,
+    6,
+    16
+   ]
+  },
+  "assets/vfx/vfx_hover_ring.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    496,
+    174,
+    30,
+    15
+   ]
+  },
+  "assets/hud/components/hud_money_chip.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    530,
+    174,
+    22,
+    14
+   ]
+  },
+  "assets/hud/components/hud_chip_dark.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    556,
+    174,
+    16,
+    14
+   ]
+  },
+  "assets/hud/components/hud_list_row__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    576,
+    174,
+    16,
+    14
+   ]
+  },
+  "assets/hud/components/hud_list_row__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    596,
+    174,
+    16,
+    14
+   ]
+  },
+  "assets/hud/components/hud_list_row__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    616,
+    174,
+    16,
+    14
+   ]
+  },
+  "assets/hud/components/hud_list_row__selected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    636,
+    174,
+    16,
+    14
+   ]
+  },
+  "assets/hud/components/hud_menu_item__checked.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    656,
+    174,
+    16,
+    14
+   ]
+  },
+  "assets/hud/components/hud_menu_item__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    676,
+    174,
+    16,
+    14
+   ]
+  },
+  "assets/hud/components/hud_menu_item__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    696,
+    174,
+    16,
+    14
+   ]
+  },
+  "assets/hud/components/hud_menu_item__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    716,
+    174,
+    16,
+    14
+   ]
+  },
+  "assets/hud/components/hud_section_header.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    736,
+    174,
+    16,
+    14
+   ]
+  },
+  "assets/hud/components/hud_button_icon_small__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    756,
+    174,
+    14,
+    14
+   ]
+  },
+  "assets/hud/components/hud_button_icon_small__focus.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    774,
+    174,
+    14,
+    14
+   ]
+  },
+  "assets/hud/components/hud_button_icon_small__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    792,
+    174,
+    14,
+    14
+   ]
+  },
+  "assets/hud/components/hud_button_icon_small__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    810,
+    174,
+    14,
+    14
+   ]
+  },
+  "assets/hud/components/hud_button_icon_small__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    828,
+    174,
+    14,
+    14
+   ]
+  },
+  "assets/hud/components/hud_slider_knob__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    846,
+    174,
+    10,
+    14
+   ]
+  },
+  "assets/hud/components/hud_slider_knob__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    860,
+    174,
+    10,
+    14
+   ]
+  },
+  "assets/hud/components/hud_slider_knob__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    874,
+    174,
+    10,
+    14
+   ]
+  },
+  "assets/hud/components/hud_slider_knob__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    888,
+    174,
+    10,
+    14
+   ]
+  },
+  "assets/hud/components/hud_drag_handle.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    902,
+    174,
+    8,
+    14
+   ]
+  },
+  "assets/hud/components/hud_switch__off_disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    914,
+    174,
+    22,
+    12
+   ]
+  },
+  "assets/hud/components/hud_switch__off_hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    940,
+    174,
+    22,
+    12
+   ]
+  },
+  "assets/hud/components/hud_switch__off_normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    966,
+    174,
+    22,
+    12
+   ]
+  },
+  "assets/hud/components/hud_switch__on_disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    992,
+    174,
+    22,
+    12
+   ]
+  },
+  "assets/hud/components/hud_switch__on_hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    2,
+    194,
+    22,
+    12
+   ]
+  },
+  "assets/hud/components/hud_switch__on_normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    28,
+    194,
+    22,
+    12
+   ]
+  },
+  "assets/terminal/term_titlebar.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    54,
+    194,
+    16,
+    12
+   ]
+  },
+  "assets/hud/components/hud_badge_accent.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    74,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_badge_count.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    90,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_badge_danger.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    106,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_badge_info.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    122,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_badge_neutral.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    138,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_badge_success.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    154,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_badge_warning.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    170,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_checkbox__mixed_disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    186,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_checkbox__mixed_hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    202,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_checkbox__mixed_normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    218,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_checkbox__off_disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    234,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_checkbox__off_hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    250,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_checkbox__off_normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    266,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_checkbox__on_disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    282,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_checkbox__on_hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    298,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_checkbox__on_normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    314,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_radio__off_disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    330,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_radio__off_hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    346,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_radio__off_normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    362,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_radio__on_disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    378,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_radio__on_hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    394,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_radio__on_normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    410,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/hud/components/hud_tooltip.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    426,
+    194,
+    12,
+    12
+   ]
+  },
+  "assets/terminal/term_cursor_bar.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    442,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/terminal/term_cursor_block.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    452,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/terminal/term_cursor_underline.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    462,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/terminal/term_mark_error.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    472,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/terminal/term_mark_info.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    482,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/terminal/term_mark_ok.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    492,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/terminal/term_mark_prompt.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    502,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/terminal/term_mark_running.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    512,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/terminal/term_mark_warning.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    522,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/terminal/term_progress_cap_left.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    532,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/terminal/term_progress_cap_right.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    542,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/terminal/term_progress_empty.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    552,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/terminal/term_progress_full.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    562,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/terminal/term_progress_half.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    572,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/terminal/term_selection.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    582,
+    194,
+    6,
+    12
+   ]
+  },
+  "assets/vfx/vfx_idea.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    592,
+    194,
+    11,
+    11
+   ]
+  },
+  "assets/vfx/vfx_work.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    607,
+    194,
+    11,
+    11
+   ]
+  },
+  "assets/vfx/vfx_alert.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    622,
+    194,
+    9,
+    11
+   ]
+  },
+  "assets/hud/components/hud_scroll_thumb_h__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    635,
+    194,
+    16,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_thumb_h__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    655,
+    194,
+    16,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_thumb_h__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    675,
+    194,
+    16,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_track_h.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    695,
+    194,
+    16,
+    10
+   ]
+  },
+  "assets/vfx/vfx_code.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    715,
+    194,
+    13,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_down__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    732,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_down__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    746,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_down__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    760,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_down__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    774,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_left__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    788,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_left__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    802,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_left__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    816,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_left__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    830,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_right__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    844,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_right__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    858,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_right__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    872,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_right__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    886,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_up__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    900,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_up__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    914,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_up__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    928,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/hud/components/hud_scroll_arrow_up__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    942,
+    194,
+    10,
+    10
+   ]
+  },
+  "assets/vfx/vfx_sparkle_large.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    956,
+    194,
+    9,
+    9
+   ]
+  },
+  "assets/vfx/vfx_success.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    969,
+    194,
+    9,
+    9
+   ]
+  },
+  "assets/hud/components/hud_popover_arrow_left.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    982,
+    194,
+    5,
+    9
+   ]
+  },
+  "assets/hud/components/hud_popover_arrow_right.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    991,
+    194,
+    5,
+    9
+   ]
+  },
+  "assets/hud/components/hud_progress_track.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    1000,
+    194,
+    16,
+    8
+   ]
+  },
+  "assets/hud/components/hud_chart_bar.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    2,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/hud/components/hud_chart_legend.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    14,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_in_bottom__connected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    26,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_in_bottom__idle.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    38,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_in_bottom__invalid.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    50,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_in_left__connected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    62,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_in_left__idle.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    74,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_in_left__invalid.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    86,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_in_right__connected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    98,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_in_right__idle.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    110,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_in_right__invalid.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    122,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_in_top__connected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    134,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_in_top__idle.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    146,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_in_top__invalid.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    158,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_out_bottom__connected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    170,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_out_bottom__idle.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    182,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_out_bottom__invalid.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    194,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_out_left__connected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    206,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_out_left__idle.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    218,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_out_left__invalid.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    230,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_out_right__connected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    242,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_out_right__idle.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    254,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_out_right__invalid.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    266,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_out_top__connected.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    278,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_out_top__idle.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    290,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/project_components/port_out_top__invalid.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    302,
+    210,
+    8,
+    8
+   ]
+  },
+  "assets/hud/components/hud_separator_v.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    1018,
+    174,
+    3,
+    8
+   ]
+  },
+  "assets/hud/components/hud_stepper_down__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    314,
+    210,
+    10,
+    7
+   ]
+  },
+  "assets/hud/components/hud_stepper_down__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    328,
+    210,
+    10,
+    7
+   ]
+  },
+  "assets/hud/components/hud_stepper_down__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    342,
+    210,
+    10,
+    7
+   ]
+  },
+  "assets/hud/components/hud_stepper_down__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    356,
+    210,
+    10,
+    7
+   ]
+  },
+  "assets/hud/components/hud_stepper_up__disabled.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    370,
+    210,
+    10,
+    7
+   ]
+  },
+  "assets/hud/components/hud_stepper_up__hover.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    384,
+    210,
+    10,
+    7
+   ]
+  },
+  "assets/hud/components/hud_stepper_up__normal.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    398,
+    210,
+    10,
+    7
+   ]
+  },
+  "assets/hud/components/hud_stepper_up__pressed.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    412,
+    210,
+    10,
+    7
+   ]
+  },
+  "assets/project_components/link_arrow_down.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    426,
+    210,
+    7,
+    7
+   ]
+  },
+  "assets/project_components/link_arrow_left.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    437,
+    210,
+    7,
+    7
+   ]
+  },
+  "assets/project_components/link_arrow_right.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    448,
+    210,
+    7,
+    7
+   ]
+  },
+  "assets/project_components/link_arrow_up.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    459,
+    210,
+    7,
+    7
+   ]
+  },
+  "assets/vfx/vfx_coin.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    470,
+    210,
+    7,
+    7
+   ]
+  },
+  "assets/vfx/vfx_heart_morale.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    481,
+    210,
+    7,
+    7
+   ]
+  },
+  "assets/hud/components/hud_slider_fill.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    492,
+    210,
+    12,
+    6
+   ]
+  },
+  "assets/hud/components/hud_slider_track.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    508,
+    210,
+    12,
+    6
+   ]
+  },
+  "assets/hud/components/hud_progress_fill_danger.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    524,
+    210,
+    8,
+    6
+   ]
+  },
+  "assets/hud/components/hud_progress_fill_default.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    536,
+    210,
+    8,
+    6
+   ]
+  },
+  "assets/hud/components/hud_progress_fill_striped.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    548,
+    210,
+    8,
+    6
+   ]
+  },
+  "assets/hud/components/hud_progress_fill_success.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    560,
+    210,
+    8,
+    6
+   ]
+  },
+  "assets/hud/components/hud_progress_fill_warning.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    572,
+    210,
+    8,
+    6
+   ]
+  },
+  "assets/hud/components/hud_scroll_grip_h.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    584,
+    210,
+    5,
+    6
+   ]
+  },
+  "assets/hud/components/hud_menu_separator.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    593,
+    210,
+    12,
+    5
+   ]
+  },
+  "assets/hud/components/hud_popover_arrow_down.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    609,
+    210,
+    9,
+    5
+   ]
+  },
+  "assets/hud/components/hud_popover_arrow_up.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    622,
+    210,
+    9,
+    5
+   ]
+  },
+  "assets/hud/components/hud_scroll_grip_v.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    635,
+    210,
+    6,
+    5
+   ]
+  },
+  "assets/hud/components/hud_chart_point.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    645,
+    210,
+    5,
+    5
+   ]
+  },
+  "assets/vfx/vfx_sparkle_small.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    654,
+    210,
+    5,
+    5
+   ]
+  },
+  "assets/hud/components/hud_tooltip_pointer_down.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    663,
+    210,
+    7,
+    4
+   ]
+  },
+  "assets/hud/components/hud_tooltip_pointer_up.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    674,
+    210,
+    7,
+    4
+   ]
+  },
+  "assets/project_components/link_corner_ne.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    685,
+    210,
+    4,
+    4
+   ]
+  },
+  "assets/project_components/link_corner_nw.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    693,
+    210,
+    4,
+    4
+   ]
+  },
+  "assets/project_components/link_corner_se.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    701,
+    210,
+    4,
+    4
+   ]
+  },
+  "assets/project_components/link_corner_sw.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    709,
+    210,
+    4,
+    4
+   ]
+  },
+  "assets/project_components/link_dashed_h.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    717,
+    210,
+    4,
+    4
+   ]
+  },
+  "assets/project_components/link_dashed_v.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    725,
+    210,
+    4,
+    4
+   ]
+  },
+  "assets/project_components/link_h.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    733,
+    210,
+    4,
+    4
+   ]
+  },
+  "assets/project_components/link_tee_down.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    741,
+    210,
+    4,
+    4
+   ]
+  },
+  "assets/project_components/link_tee_up.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    749,
+    210,
+    4,
+    4
+   ]
+  },
+  "assets/project_components/link_v.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    757,
+    210,
+    4,
+    4
+   ]
+  },
+  "assets/hud/components/hud_chart_grid_v.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    1020,
+    194,
+    1,
+    4
+   ]
+  },
+  "assets/hud/components/hud_separator_h.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    765,
+    210,
+    8,
+    3
+   ]
+  },
+  "assets/hud/components/hud_chart_axis_h.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    777,
+    210,
+    4,
+    2
+   ]
+  },
+  "assets/hud/components/hud_chart_grid_h.png": {
+   "page": "assets/hud/ui_atlas_0.png",
+   "rect": [
+    785,
+    210,
+    4,
+    1
+   ]
+  }
+ }
+}

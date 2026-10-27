@@ -1,0 +1,347 @@
+{
+ "summary": {
+  "ids_uniques": {
+   "ok": true,
+   "count": 570,
+   "failures": 0
+  },
+  "ids_ascii_snake_case": {
+   "ok": true,
+   "count": 570,
+   "failures": 0
+  },
+  "fichiers_references_presents": {
+   "ok": true,
+   "count": 2415,
+   "failures": 0
+  },
+  "noms_fichiers_ascii": {
+   "ok": true,
+   "count": 2415,
+   "failures": 0
+  },
+  "png_rgba_8bits": {
+   "ok": true,
+   "count": 2437,
+   "failures": 0
+  },
+  "png_bloc_srgb": {
+   "ok": true,
+   "count": 2437,
+   "failures": 0
+  },
+  "png_decodage": {
+   "ok": true,
+   "count": 2437,
+   "failures": 0
+  },
+  "tailles_declarees": {
+   "ok": true,
+   "count": 1220,
+   "failures": 0
+  },
+  "alpha_binaire_sprites": {
+   "ok": true,
+   "count": 710,
+   "failures": 0
+  },
+  "nettete_couleurs_palette": {
+   "ok": true,
+   "count": 710,
+   "failures": 0
+  },
+  "masque_meme_taille": {
+   "ok": true,
+   "count": 714,
+   "failures": 0
+  },
+  "masque_alpha_binaire": {
+   "ok": true,
+   "count": 714,
+   "failures": 0
+  },
+  "masque_hors_transparence": {
+   "ok": true,
+   "count": 714,
+   "failures": 0
+  },
+  "masque_hors_contour": {
+   "ok": true,
+   "count": 714,
+   "failures": 0
+  },
+  "masque_canaux_connus": {
+   "ok": true,
+   "count": 714,
+   "failures": 0
+  },
+  "masque_indices_0_5": {
+   "ok": true,
+   "count": 714,
+   "failures": 0
+  },
+  "recolor_defaut_egal_base": {
+   "ok": true,
+   "count": 714,
+   "failures": 0
+  },
+  "ombre_forme_pleine": {
+   "ok": true,
+   "count": 478,
+   "failures": 0
+  },
+  "calque_motif_alpha": {
+   "ok": true,
+   "count": 16,
+   "failures": 0
+  },
+  "ui_tailles_declarees": {
+   "ok": true,
+   "count": 480,
+   "failures": 0
+  },
+  "curseurs_point_chaud_dans_image": {
+   "ok": true,
+   "count": 12,
+   "failures": 0
+  },
+  "ui_9slice_marges_coherentes": {
+   "ok": true,
+   "count": 107,
+   "failures": 0
+  },
+  "atlas_rect_dans_page": {
+   "ok": true,
+   "count": 2402,
+   "failures": 0
+  },
+  "atlas_pixels_identiques": {
+   "ok": true,
+   "count": 2402,
+   "failures": 0
+  },
+  "atlas_sans_chevauchement": {
+   "ok": true,
+   "count": 21,
+   "failures": 0
+  },
+  "sols_pavage_sans_trou_ni_recouvrement": {
+   "ok": true,
+   "count": 9,
+   "failures": 0
+  },
+  "sols_1024_px_par_case": {
+   "ok": true,
+   "count": 16,
+   "failures": 0
+  },
+  "murs_toile_ancre_communes": {
+   "ok": true,
+   "count": 2,
+   "failures": 0
+  },
+  "motifs_limites_a_la_surface_murale": {
+   "ok": true,
+   "count": 16,
+   "failures": 0
+  },
+  "coiffures_alignees_toutes_bases": {
+   "ok": true,
+   "count": 24,
+   "failures": 0
+  },
+  "dix_employes_deux_avatars": {
+   "ok": true,
+   "count": 12,
+   "failures": 0
+  },
+  "modules_baie_dans_slots": {
+   "ok": true,
+   "count": 7360,
+   "failures": 0
+  },
+  "convoyeurs_ports_relies": {
+   "ok": true,
+   "count": 41,
+   "failures": 0
+  },
+  "plans_valides": {
+   "ok": true,
+   "count": 10,
+   "failures": 0
+  }
+ },
+ "details": {
+  "ids_uniques": {
+   "ok": true,
+   "failures": [],
+   "count": 570
+  },
+  "ids_ascii_snake_case": {
+   "ok": true,
+   "failures": [],
+   "count": 570
+  },
+  "fichiers_references_presents": {
+   "ok": true,
+   "failures": [],
+   "count": 2415
+  },
+  "noms_fichiers_ascii": {
+   "ok": true,
+   "failures": [],
+   "count": 2415
+  },
+  "png_rgba_8bits": {
+   "ok": true,
+   "failures": [],
+   "count": 2437
+  },
+  "png_bloc_srgb": {
+   "ok": true,
+   "failures": [],
+   "count": 2437
+  },
+  "png_decodage": {
+   "ok": true,
+   "failures": [],
+   "count": 2437
+  },
+  "tailles_declarees": {
+   "ok": true,
+   "failures": [],
+   "count": 1220
+  },
+  "alpha_binaire_sprites": {
+   "ok": true,
+   "failures": [],
+   "count": 710
+  },
+  "nettete_couleurs_palette": {
+   "ok": true,
+   "failures": [],
+   "count": 710
+  },
+  "masque_meme_taille": {
+   "ok": true,
+   "failures": [],
+   "count": 714
+  },
+  "masque_alpha_binaire": {
+   "ok": true,
+   "failures": [],
+   "count": 714
+  },
+  "masque_hors_transparence": {
+   "ok": true,
+   "failures": [],
+   "count": 714
+  },
+  "masque_hors_contour": {
+   "ok": true,
+   "failures": [],
+   "count": 714
+  },
+  "masque_canaux_connus": {
+   "ok": true,
+   "failures": [],
+   "count": 714
+  },
+  "masque_indices_0_5": {
+   "ok": true,
+   "failures": [],
+   "count": 714
+  },
+  "recolor_defaut_egal_base": {
+   "ok": true,
+   "failures": [],
+   "count": 714
+  },
+  "ombre_forme_pleine": {
+   "ok": true,
+   "failures": [],
+   "count": 478
+  },
+  "calque_motif_alpha": {
+   "ok": true,
+   "failures": [],
+   "count": 16
+  },
+  "ui_tailles_declarees": {
+   "ok": true,
+   "failures": [],
+   "count": 480
+  },
+  "curseurs_point_chaud_dans_image": {
+   "ok": true,
+   "failures": [],
+   "count": 12
+  },
+  "ui_9slice_marges_coherentes": {
+   "ok": true,
+   "failures": [],
+   "count": 107
+  },
+  "atlas_rect_dans_page": {
+   "ok": true,
+   "failures": [],
+   "count": 2402
+  },
+  "atlas_pixels_identiques": {
+   "ok": true,
+   "failures": [],
+   "count": 2402
+  },
+  "atlas_sans_chevauchement": {
+   "ok": true,
+   "failures": [],
+   "count": 21
+  },
+  "sols_pavage_sans_trou_ni_recouvrement": {
+   "ok": true,
+   "failures": [],
+   "count": 9
+  },
+  "sols_1024_px_par_case": {
+   "ok": true,
+   "failures": [],
+   "count": 16
+  },
+  "murs_toile_ancre_communes": {
+   "ok": true,
+   "failures": [],
+   "count": 2
+  },
+  "motifs_limites_a_la_surface_murale": {
+   "ok": true,
+   "failures": [],
+   "count": 16
+  },
+  "coiffures_alignees_toutes_bases": {
+   "ok": true,
+   "failures": [],
+   "count": 24
+  },
+  "dix_employes_deux_avatars": {
+   "ok": true,
+   "failures": [],
+   "count": 12
+  },
+  "modules_baie_dans_slots": {
+   "ok": true,
+   "failures": [],
+   "count": 7360
+  },
+  "convoyeurs_ports_relies": {
+   "ok": true,
+   "failures": [],
+   "count": 41
+  },
+  "plans_valides": {
+   "ok": true,
+   "failures": [],
+   "count": 10
+  }
+ },
+ "all_ok": true
+}

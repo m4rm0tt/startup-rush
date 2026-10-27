@@ -1,0 +1,1027 @@
+{
+ "id": "room_office_medium",
+ "name_fr": "Bureau moyen",
+ "usage": "current",
+ "tier": 3,
+ "size_tiles": [
+  12,
+  9
+ ],
+ "story": "L'equipe grandit : deux ilots de quatre postes, coin reunion, coin cafe et salon.",
+ "floor": [
+  {
+   "material": "floor_carpet_tiles",
+   "rect": [
+    0,
+    0,
+    12,
+    9
+   ],
+   "swatches": {
+    "floor": "steel"
+   }
+  },
+  {
+   "material": "floor_tile_ceramic",
+   "rect": [
+    0,
+    5,
+    2,
+    4
+   ]
+  }
+ ],
+ "walls": {
+  "left": {
+   "segments": [
+    "plain",
+    "plain",
+    "window",
+    "plain",
+    "window",
+    "plain",
+    "plain",
+    "plain",
+    "door"
+   ],
+   "pattern": "two_tone",
+   "swatches": {
+    "wall": "cream",
+    "wall2": "teal",
+    "trim": "plastic",
+    "wood": "walnut"
+   }
+  },
+  "right": {
+   "segments": [
+    "plain",
+    "window",
+    "plain",
+    "window",
+    "plain",
+    "plain",
+    "window",
+    "plain",
+    "window",
+    "plain",
+    "plain",
+    "plain"
+   ],
+   "pattern": "two_tone",
+   "swatches": {
+    "wall": "cream",
+    "wall2": "teal",
+    "trim": "plastic"
+   }
+  }
+ },
+ "wall_items": [
+  {
+   "asset": "planning_board",
+   "wall": "right",
+   "index": 4
+  },
+  {
+   "asset": "poster_project",
+   "wall": "left",
+   "index": 3
+  },
+  {
+   "asset": "clock_wall",
+   "wall": "left",
+   "index": 6
+  },
+  {
+   "asset": "award_plaque",
+   "wall": "right",
+   "index": 10
+  },
+  {
+   "asset": "poster_schematic",
+   "wall": "right",
+   "index": 9
+  },
+  {
+   "asset": "access_point",
+   "wall": "left",
+   "index": 1
+  }
+ ],
+ "objects": [
+  {
+   "asset": "desk_simple",
+   "tile": [
+    3,
+    1
+   ],
+   "facing": "nw",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_m_01",
+      "hair": "hair_side_part",
+      "hair_ramp": "hair_brown"
+     }
+    }
+   }
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    4,
+    1
+   ],
+   "facing": "se",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_f_01",
+      "hair": "hair_bob",
+      "hair_ramp": "hair_black"
+     }
+    }
+   }
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    3,
+    3
+   ],
+   "facing": "nw",
+   "children": {
+    "monitor_main": "monitor_large",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_m_02",
+      "hair": "hair_curly_top",
+      "hair_ramp": "hair_black"
+     }
+    }
+   }
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    4,
+    3
+   ],
+   "facing": "se",
+   "children": {
+    "monitor_main": "monitor_large",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_f_02",
+      "hair": "hair_long_straight",
+      "hair_ramp": "hair_auburn"
+     }
+    }
+   }
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    8,
+    1
+   ],
+   "facing": "nw",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "workstation_creative",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_m_03",
+      "hair": "hair_short_crop",
+      "hair_ramp": "hair_gray"
+     }
+    }
+   }
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    9,
+    1
+   ],
+   "facing": "se",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "workstation_creative",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_f_03",
+      "hair": "hair_bun",
+      "hair_ramp": "hair_black"
+     }
+    }
+   }
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    8,
+    3
+   ],
+   "facing": "nw",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office",
+     "character": {
+      "base": "employee_m_04",
+      "hair": "hair_side_part",
+      "hair_ramp": "hair_auburn"
+     }
+    }
+   }
+  },
+  {
+   "asset": "desk_simple",
+   "tile": [
+    9,
+    3
+   ],
+   "facing": "se",
+   "children": {
+    "monitor_main": "monitor_basic",
+    "keyboard": "keyboard_mouse",
+    "tower_floor": "tower_office",
+    "chair": {
+     "asset": "chair_office"
+    }
+   }
+  },
+  {
+   "asset": "plant_floor_tall",
+   "tile": [
+    0,
+    0
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "bookcase",
+   "tile": [
+    0,
+    1
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "printer_mfp",
+   "tile": [
+    2,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "filing_cabinet",
+   "tile": [
+    6,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "filing_cabinet",
+   "tile": [
+    7,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "locker",
+   "tile": [
+    11,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "kitchen_counter",
+   "tile": [
+    0,
+    5
+   ],
+   "facing": "se",
+   "children": {
+    "counter": "coffee_machine"
+   }
+  },
+  {
+   "asset": "kitchen_sink",
+   "tile": [
+    0,
+    6
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "fridge",
+   "tile": [
+    0,
+    7
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "water_cooler",
+   "tile": [
+    1,
+    8
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "rug_small",
+   "tile": [
+    3,
+    6
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "sofa",
+   "tile": [
+    3,
+    6
+   ],
+   "facing": "se",
+   "swatches": {
+    "fabric": "navy"
+   }
+  },
+  {
+   "asset": "table_coffee",
+   "tile": [
+    4,
+    6
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "chair_meeting",
+   "tile": [
+    5,
+    7
+   ],
+   "facing": "nw",
+   "character": {
+    "base": "employee_f_05",
+    "hair": "hair_long_straight",
+    "hair_ramp": "hair_brown"
+   }
+  },
+  {
+   "asset": "table_meeting_small",
+   "tile": [
+    8,
+    6
+   ],
+   "facing": "se",
+   "children": {
+    "chair_0": {
+     "asset": "chair_meeting",
+     "character": {
+      "base": "employee_m_01",
+      "hair": "hair_curly_top",
+      "hair_ramp": "hair_blond"
+     }
+    },
+    "chair_2": {
+     "asset": "chair_meeting",
+     "character": {
+      "base": "employee_f_02",
+      "hair": "hair_bun",
+      "hair_ramp": "hair_blond"
+     }
+    },
+    "chair_3": {
+     "asset": "chair_meeting"
+    },
+    "center": "speakerphone"
+   }
+  },
+  {
+   "asset": "whiteboard_mobile",
+   "tile": [
+    6,
+    7
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "plant_floor_medium",
+   "tile": [
+    11,
+    8
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "plant_floor_medium",
+   "tile": [
+    11,
+    5
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "trash_bin",
+   "tile": [
+    6,
+    2
+   ],
+   "facing": "se"
+  }
+ ],
+ "entrances": [
+  {
+   "wall": "left",
+   "index": 8,
+   "kind": "door",
+   "access_tile": [
+    0,
+    8
+   ]
+  }
+ ],
+ "zones": [
+  {
+   "name": "Ilot A",
+   "rect": [
+    2,
+    1,
+    4,
+    4
+   ]
+  },
+  {
+   "name": "Ilot B",
+   "rect": [
+    7,
+    1,
+    4,
+    4
+   ]
+  },
+  {
+   "name": "Cafe",
+   "rect": [
+    0,
+    5,
+    2,
+    4
+   ]
+  },
+  {
+   "name": "Salon",
+   "rect": [
+    3,
+    6,
+    3,
+    2
+   ]
+  },
+  {
+   "name": "Reunion",
+   "rect": [
+    8,
+    6,
+    3,
+    3
+   ]
+  }
+ ],
+ "visible_walls": {
+  "left": "mur gauche (orientation se) le long de V, U=0",
+  "right": "mur droit (orientation sw) le long de U, V=0",
+  "front": "aucun : coupe avant (bords de dalle floor_edge)"
+ },
+ "foreground": "aucun mur avant ; les objets 'occluders' peuvent etre estompes s'ils masquent un personnage ou la selection",
+ "computed": {
+  "occupied_cells": [
+   [
+    0,
+    0
+   ],
+   [
+    0,
+    1
+   ],
+   [
+    0,
+    2
+   ],
+   [
+    0,
+    5
+   ],
+   [
+    0,
+    6
+   ],
+   [
+    0,
+    7
+   ],
+   [
+    2,
+    0
+   ],
+   [
+    3,
+    1
+   ],
+   [
+    3,
+    2
+   ],
+   [
+    3,
+    3
+   ],
+   [
+    3,
+    4
+   ],
+   [
+    3,
+    6
+   ],
+   [
+    3,
+    7
+   ],
+   [
+    4,
+    1
+   ],
+   [
+    4,
+    2
+   ],
+   [
+    4,
+    3
+   ],
+   [
+    4,
+    4
+   ],
+   [
+    4,
+    6
+   ],
+   [
+    6,
+    0
+   ],
+   [
+    6,
+    7
+   ],
+   [
+    7,
+    0
+   ],
+   [
+    7,
+    7
+   ],
+   [
+    8,
+    1
+   ],
+   [
+    8,
+    2
+   ],
+   [
+    8,
+    3
+   ],
+   [
+    8,
+    4
+   ],
+   [
+    8,
+    6
+   ],
+   [
+    8,
+    7
+   ],
+   [
+    9,
+    1
+   ],
+   [
+    9,
+    2
+   ],
+   [
+    9,
+    3
+   ],
+   [
+    9,
+    4
+   ],
+   [
+    9,
+    6
+   ],
+   [
+    9,
+    7
+   ],
+   [
+    11,
+    0
+   ],
+   [
+    11,
+    5
+   ],
+   [
+    11,
+    8
+   ]
+  ],
+  "reserved_access_cells": [
+   [
+    0,
+    8
+   ],
+   [
+    2,
+    1
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    3
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    5,
+    1
+   ],
+   [
+    5,
+    2
+   ],
+   [
+    5,
+    3
+   ],
+   [
+    5,
+    4
+   ],
+   [
+    7,
+    1
+   ],
+   [
+    7,
+    2
+   ],
+   [
+    7,
+    3
+   ],
+   [
+    7,
+    4
+   ],
+   [
+    10,
+    1
+   ],
+   [
+    10,
+    2
+   ],
+   [
+    10,
+    3
+   ],
+   [
+    10,
+    4
+   ]
+  ],
+  "buildable_cells": [
+   [
+    0,
+    3
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    1,
+    0
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    1,
+    2
+   ],
+   [
+    1,
+    3
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    5
+   ],
+   [
+    1,
+    6
+   ],
+   [
+    1,
+    7
+   ],
+   [
+    1,
+    8
+   ],
+   [
+    2,
+    5
+   ],
+   [
+    2,
+    6
+   ],
+   [
+    2,
+    7
+   ],
+   [
+    2,
+    8
+   ],
+   [
+    3,
+    0
+   ],
+   [
+    3,
+    5
+   ],
+   [
+    3,
+    8
+   ],
+   [
+    4,
+    0
+   ],
+   [
+    4,
+    5
+   ],
+   [
+    4,
+    7
+   ],
+   [
+    4,
+    8
+   ],
+   [
+    5,
+    0
+   ],
+   [
+    5,
+    5
+   ],
+   [
+    5,
+    6
+   ],
+   [
+    5,
+    7
+   ],
+   [
+    5,
+    8
+   ],
+   [
+    6,
+    1
+   ],
+   [
+    6,
+    2
+   ],
+   [
+    6,
+    3
+   ],
+   [
+    6,
+    4
+   ],
+   [
+    6,
+    5
+   ],
+   [
+    6,
+    6
+   ],
+   [
+    6,
+    8
+   ],
+   [
+    7,
+    5
+   ],
+   [
+    7,
+    6
+   ],
+   [
+    7,
+    8
+   ],
+   [
+    8,
+    0
+   ],
+   [
+    8,
+    5
+   ],
+   [
+    8,
+    8
+   ],
+   [
+    9,
+    0
+   ],
+   [
+    9,
+    5
+   ],
+   [
+    9,
+    8
+   ],
+   [
+    10,
+    0
+   ],
+   [
+    10,
+    5
+   ],
+   [
+    10,
+    6
+   ],
+   [
+    10,
+    7
+   ],
+   [
+    10,
+    8
+   ],
+   [
+    11,
+    1
+   ],
+   [
+    11,
+    2
+   ],
+   [
+    11,
+    3
+   ],
+   [
+    11,
+    4
+   ],
+   [
+    11,
+    6
+   ],
+   [
+    11,
+    7
+   ]
+  ],
+  "buildable_count": 54,
+  "cell_count": 108,
+  "free_wall_item_slots": {
+   "left": [
+    0,
+    5,
+    7
+   ],
+   "right": [
+    0,
+    2,
+    5,
+    7,
+    11
+   ]
+  },
+  "occluders": [
+   {
+    "asset": "plant_floor_tall",
+    "tile": [
+     0,
+     0
+    ],
+    "height_px": 76
+   },
+   {
+    "asset": "bookcase",
+    "tile": [
+     0,
+     1
+    ],
+    "height_px": 72
+   },
+   {
+    "asset": "locker",
+    "tile": [
+     11,
+     0
+    ],
+    "height_px": 76
+   },
+   {
+    "asset": "fridge",
+    "tile": [
+     0,
+     7
+    ],
+    "height_px": 78
+   },
+   {
+    "asset": "whiteboard_mobile",
+    "tile": [
+     6,
+     7
+    ],
+    "height_px": 64
+   }
+  ],
+  "workstations": 10
+ },
+ "validation": {
+  "issues": [],
+  "ok": true
+ }
+}

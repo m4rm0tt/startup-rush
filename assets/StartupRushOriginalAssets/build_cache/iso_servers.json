@@ -1,0 +1,5810 @@
+[
+ {
+  "id": "rack_compact",
+  "category": "servers",
+  "subcategory": "rack",
+  "name_fr": "Baie compacte (8U, roulettes)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "rack_compact",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 49,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "rack",
+   "datacenter"
+  ],
+  "notes": "Facade ouverte. Slots de 4 px (1U), facade des modules 20 su. Modules dessines seulement en se/sw ; en nw/ne la baie montre sa porte arriere perforee.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     75,
+     79
+    ],
+    "anchor": [
+     28,
+     48
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_compact__se.png",
+      "mask": "masks/servers/rack_compact__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_compact__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -49
+     ],
+     [
+      32,
+      -33
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -33
+     ]
+    ],
+    "slots": {
+     "unit_px": 4,
+     "count": 8,
+     "face": "front",
+     "accepts": [
+      "rack_module"
+     ],
+     "positions": [
+      {
+       "index": 0,
+       "offset_px": [
+        2,
+        -14
+       ]
+      },
+      {
+       "index": 1,
+       "offset_px": [
+        2,
+        -10
+       ]
+      },
+      {
+       "index": 2,
+       "offset_px": [
+        2,
+        -6
+       ]
+      },
+      {
+       "index": 3,
+       "offset_px": [
+        2,
+        -2
+       ]
+      },
+      {
+       "index": 4,
+       "offset_px": [
+        2,
+        2
+       ]
+      },
+      {
+       "index": 5,
+       "offset_px": [
+        2,
+        6
+       ]
+      },
+      {
+       "index": 6,
+       "offset_px": [
+        2,
+        10
+       ]
+      },
+      {
+       "index": 7,
+       "offset_px": [
+        2,
+        14
+       ]
+      }
+     ],
+     "visible": true
+    }
+   },
+   "sw": {
+    "size": [
+     75,
+     79
+    ],
+    "anchor": [
+     28,
+     48
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_compact__sw.png",
+      "mask": "masks/servers/rack_compact__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_compact__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -49
+     ],
+     [
+      32,
+      -33
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -33
+     ]
+    ],
+    "slots": {
+     "unit_px": 4,
+     "count": 8,
+     "face": "front",
+     "accepts": [
+      "rack_module"
+     ],
+     "positions": [
+      {
+       "index": 0,
+       "offset_px": [
+        -22,
+        -24
+       ]
+      },
+      {
+       "index": 1,
+       "offset_px": [
+        -22,
+        -20
+       ]
+      },
+      {
+       "index": 2,
+       "offset_px": [
+        -22,
+        -16
+       ]
+      },
+      {
+       "index": 3,
+       "offset_px": [
+        -22,
+        -12
+       ]
+      },
+      {
+       "index": 4,
+       "offset_px": [
+        -22,
+        -8
+       ]
+      },
+      {
+       "index": 5,
+       "offset_px": [
+        -22,
+        -4
+       ]
+      },
+      {
+       "index": 6,
+       "offset_px": [
+        -22,
+        0
+       ]
+      },
+      {
+       "index": 7,
+       "offset_px": [
+        -22,
+        4
+       ]
+      }
+     ],
+     "visible": true
+    }
+   },
+   "nw": {
+    "size": [
+     75,
+     79
+    ],
+    "anchor": [
+     28,
+     48
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_compact__nw.png",
+      "mask": "masks/servers/rack_compact__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_compact__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -49
+     ],
+     [
+      32,
+      -33
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -33
+     ]
+    ],
+    "slots": {
+     "unit_px": 4,
+     "count": 8,
+     "face": "front",
+     "accepts": [
+      "rack_module"
+     ],
+     "positions": [
+      {
+       "index": 0,
+       "offset_px": [
+        -2,
+        -36
+       ]
+      },
+      {
+       "index": 1,
+       "offset_px": [
+        -2,
+        -32
+       ]
+      },
+      {
+       "index": 2,
+       "offset_px": [
+        -2,
+        -28
+       ]
+      },
+      {
+       "index": 3,
+       "offset_px": [
+        -2,
+        -24
+       ]
+      },
+      {
+       "index": 4,
+       "offset_px": [
+        -2,
+        -20
+       ]
+      },
+      {
+       "index": 5,
+       "offset_px": [
+        -2,
+        -16
+       ]
+      },
+      {
+       "index": 6,
+       "offset_px": [
+        -2,
+        -12
+       ]
+      },
+      {
+       "index": 7,
+       "offset_px": [
+        -2,
+        -8
+       ]
+      }
+     ],
+     "visible": false
+    }
+   },
+   "ne": {
+    "size": [
+     75,
+     79
+    ],
+    "anchor": [
+     28,
+     48
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_compact__ne.png",
+      "mask": "masks/servers/rack_compact__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_compact__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -49
+     ],
+     [
+      32,
+      -33
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -33
+     ]
+    ],
+    "slots": {
+     "unit_px": 4,
+     "count": 8,
+     "face": "front",
+     "accepts": [
+      "rack_module"
+     ],
+     "positions": [
+      {
+       "index": 0,
+       "offset_px": [
+        22,
+        -26
+       ]
+      },
+      {
+       "index": 1,
+       "offset_px": [
+        22,
+        -22
+       ]
+      },
+      {
+       "index": 2,
+       "offset_px": [
+        22,
+        -18
+       ]
+      },
+      {
+       "index": 3,
+       "offset_px": [
+        22,
+        -14
+       ]
+      },
+      {
+       "index": 4,
+       "offset_px": [
+        22,
+        -10
+       ]
+      },
+      {
+       "index": 5,
+       "offset_px": [
+        22,
+        -6
+       ]
+      },
+      {
+       "index": 6,
+       "offset_px": [
+        22,
+        -2
+       ]
+      },
+      {
+       "index": 7,
+       "offset_px": [
+        22,
+        2
+       ]
+      }
+     ],
+     "visible": false
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "accent": "teal",
+   "metal": "steel"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "rack_standard",
+  "category": "servers",
+  "subcategory": "rack",
+  "name_fr": "Baie standard (20U)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "rack_standard",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 96,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "rack",
+   "datacenter"
+  ],
+  "notes": "Facade ouverte. Slots de 4 px (1U), facade des modules 20 su. Modules dessines seulement en se/sw ; en nw/ne la baie montre sa porte arriere perforee.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     93,
+     126
+    ],
+    "anchor": [
+     28,
+     95
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_standard__se.png",
+      "mask": "masks/servers/rack_standard__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_standard__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -96
+     ],
+     [
+      32,
+      -80
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -80
+     ]
+    ],
+    "slots": {
+     "unit_px": 4,
+     "count": 20,
+     "face": "front",
+     "accepts": [
+      "rack_module"
+     ],
+     "positions": [
+      {
+       "index": 0,
+       "offset_px": [
+        2,
+        -61
+       ]
+      },
+      {
+       "index": 1,
+       "offset_px": [
+        2,
+        -57
+       ]
+      },
+      {
+       "index": 2,
+       "offset_px": [
+        2,
+        -53
+       ]
+      },
+      {
+       "index": 3,
+       "offset_px": [
+        2,
+        -49
+       ]
+      },
+      {
+       "index": 4,
+       "offset_px": [
+        2,
+        -45
+       ]
+      },
+      {
+       "index": 5,
+       "offset_px": [
+        2,
+        -41
+       ]
+      },
+      {
+       "index": 6,
+       "offset_px": [
+        2,
+        -37
+       ]
+      },
+      {
+       "index": 7,
+       "offset_px": [
+        2,
+        -33
+       ]
+      },
+      {
+       "index": 8,
+       "offset_px": [
+        2,
+        -29
+       ]
+      },
+      {
+       "index": 9,
+       "offset_px": [
+        2,
+        -25
+       ]
+      },
+      {
+       "index": 10,
+       "offset_px": [
+        2,
+        -21
+       ]
+      },
+      {
+       "index": 11,
+       "offset_px": [
+        2,
+        -17
+       ]
+      },
+      {
+       "index": 12,
+       "offset_px": [
+        2,
+        -13
+       ]
+      },
+      {
+       "index": 13,
+       "offset_px": [
+        2,
+        -9
+       ]
+      },
+      {
+       "index": 14,
+       "offset_px": [
+        2,
+        -5
+       ]
+      },
+      {
+       "index": 15,
+       "offset_px": [
+        2,
+        -1
+       ]
+      },
+      {
+       "index": 16,
+       "offset_px": [
+        2,
+        3
+       ]
+      },
+      {
+       "index": 17,
+       "offset_px": [
+        2,
+        7
+       ]
+      },
+      {
+       "index": 18,
+       "offset_px": [
+        2,
+        11
+       ]
+      },
+      {
+       "index": 19,
+       "offset_px": [
+        2,
+        15
+       ]
+      }
+     ],
+     "visible": true
+    },
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "sw": {
+    "size": [
+     93,
+     126
+    ],
+    "anchor": [
+     28,
+     95
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_standard__sw.png",
+      "mask": "masks/servers/rack_standard__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_standard__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -96
+     ],
+     [
+      32,
+      -80
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -80
+     ]
+    ],
+    "slots": {
+     "unit_px": 4,
+     "count": 20,
+     "face": "front",
+     "accepts": [
+      "rack_module"
+     ],
+     "positions": [
+      {
+       "index": 0,
+       "offset_px": [
+        -22,
+        -71
+       ]
+      },
+      {
+       "index": 1,
+       "offset_px": [
+        -22,
+        -67
+       ]
+      },
+      {
+       "index": 2,
+       "offset_px": [
+        -22,
+        -63
+       ]
+      },
+      {
+       "index": 3,
+       "offset_px": [
+        -22,
+        -59
+       ]
+      },
+      {
+       "index": 4,
+       "offset_px": [
+        -22,
+        -55
+       ]
+      },
+      {
+       "index": 5,
+       "offset_px": [
+        -22,
+        -51
+       ]
+      },
+      {
+       "index": 6,
+       "offset_px": [
+        -22,
+        -47
+       ]
+      },
+      {
+       "index": 7,
+       "offset_px": [
+        -22,
+        -43
+       ]
+      },
+      {
+       "index": 8,
+       "offset_px": [
+        -22,
+        -39
+       ]
+      },
+      {
+       "index": 9,
+       "offset_px": [
+        -22,
+        -35
+       ]
+      },
+      {
+       "index": 10,
+       "offset_px": [
+        -22,
+        -31
+       ]
+      },
+      {
+       "index": 11,
+       "offset_px": [
+        -22,
+        -27
+       ]
+      },
+      {
+       "index": 12,
+       "offset_px": [
+        -22,
+        -23
+       ]
+      },
+      {
+       "index": 13,
+       "offset_px": [
+        -22,
+        -19
+       ]
+      },
+      {
+       "index": 14,
+       "offset_px": [
+        -22,
+        -15
+       ]
+      },
+      {
+       "index": 15,
+       "offset_px": [
+        -22,
+        -11
+       ]
+      },
+      {
+       "index": 16,
+       "offset_px": [
+        -22,
+        -7
+       ]
+      },
+      {
+       "index": 17,
+       "offset_px": [
+        -22,
+        -3
+       ]
+      },
+      {
+       "index": 18,
+       "offset_px": [
+        -22,
+        1
+       ]
+      },
+      {
+       "index": 19,
+       "offset_px": [
+        -22,
+        5
+       ]
+      }
+     ],
+     "visible": true
+    },
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "nw": {
+    "size": [
+     93,
+     126
+    ],
+    "anchor": [
+     28,
+     95
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_standard__nw.png",
+      "mask": "masks/servers/rack_standard__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_standard__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -96
+     ],
+     [
+      32,
+      -80
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -80
+     ]
+    ],
+    "slots": {
+     "unit_px": 4,
+     "count": 20,
+     "face": "front",
+     "accepts": [
+      "rack_module"
+     ],
+     "positions": [
+      {
+       "index": 0,
+       "offset_px": [
+        -2,
+        -83
+       ]
+      },
+      {
+       "index": 1,
+       "offset_px": [
+        -2,
+        -79
+       ]
+      },
+      {
+       "index": 2,
+       "offset_px": [
+        -2,
+        -75
+       ]
+      },
+      {
+       "index": 3,
+       "offset_px": [
+        -2,
+        -71
+       ]
+      },
+      {
+       "index": 4,
+       "offset_px": [
+        -2,
+        -67
+       ]
+      },
+      {
+       "index": 5,
+       "offset_px": [
+        -2,
+        -63
+       ]
+      },
+      {
+       "index": 6,
+       "offset_px": [
+        -2,
+        -59
+       ]
+      },
+      {
+       "index": 7,
+       "offset_px": [
+        -2,
+        -55
+       ]
+      },
+      {
+       "index": 8,
+       "offset_px": [
+        -2,
+        -51
+       ]
+      },
+      {
+       "index": 9,
+       "offset_px": [
+        -2,
+        -47
+       ]
+      },
+      {
+       "index": 10,
+       "offset_px": [
+        -2,
+        -43
+       ]
+      },
+      {
+       "index": 11,
+       "offset_px": [
+        -2,
+        -39
+       ]
+      },
+      {
+       "index": 12,
+       "offset_px": [
+        -2,
+        -35
+       ]
+      },
+      {
+       "index": 13,
+       "offset_px": [
+        -2,
+        -31
+       ]
+      },
+      {
+       "index": 14,
+       "offset_px": [
+        -2,
+        -27
+       ]
+      },
+      {
+       "index": 15,
+       "offset_px": [
+        -2,
+        -23
+       ]
+      },
+      {
+       "index": 16,
+       "offset_px": [
+        -2,
+        -19
+       ]
+      },
+      {
+       "index": 17,
+       "offset_px": [
+        -2,
+        -15
+       ]
+      },
+      {
+       "index": 18,
+       "offset_px": [
+        -2,
+        -11
+       ]
+      },
+      {
+       "index": 19,
+       "offset_px": [
+        -2,
+        -7
+       ]
+      }
+     ],
+     "visible": false
+    },
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "ne": {
+    "size": [
+     93,
+     126
+    ],
+    "anchor": [
+     28,
+     95
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_standard__ne.png",
+      "mask": "masks/servers/rack_standard__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_standard__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -96
+     ],
+     [
+      32,
+      -80
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -80
+     ]
+    ],
+    "slots": {
+     "unit_px": 4,
+     "count": 20,
+     "face": "front",
+     "accepts": [
+      "rack_module"
+     ],
+     "positions": [
+      {
+       "index": 0,
+       "offset_px": [
+        22,
+        -73
+       ]
+      },
+      {
+       "index": 1,
+       "offset_px": [
+        22,
+        -69
+       ]
+      },
+      {
+       "index": 2,
+       "offset_px": [
+        22,
+        -65
+       ]
+      },
+      {
+       "index": 3,
+       "offset_px": [
+        22,
+        -61
+       ]
+      },
+      {
+       "index": 4,
+       "offset_px": [
+        22,
+        -57
+       ]
+      },
+      {
+       "index": 5,
+       "offset_px": [
+        22,
+        -53
+       ]
+      },
+      {
+       "index": 6,
+       "offset_px": [
+        22,
+        -49
+       ]
+      },
+      {
+       "index": 7,
+       "offset_px": [
+        22,
+        -45
+       ]
+      },
+      {
+       "index": 8,
+       "offset_px": [
+        22,
+        -41
+       ]
+      },
+      {
+       "index": 9,
+       "offset_px": [
+        22,
+        -37
+       ]
+      },
+      {
+       "index": 10,
+       "offset_px": [
+        22,
+        -33
+       ]
+      },
+      {
+       "index": 11,
+       "offset_px": [
+        22,
+        -29
+       ]
+      },
+      {
+       "index": 12,
+       "offset_px": [
+        22,
+        -25
+       ]
+      },
+      {
+       "index": 13,
+       "offset_px": [
+        22,
+        -21
+       ]
+      },
+      {
+       "index": 14,
+       "offset_px": [
+        22,
+        -17
+       ]
+      },
+      {
+       "index": 15,
+       "offset_px": [
+        22,
+        -13
+       ]
+      },
+      {
+       "index": 16,
+       "offset_px": [
+        22,
+        -9
+       ]
+      },
+      {
+       "index": 17,
+       "offset_px": [
+        22,
+        -5
+       ]
+      },
+      {
+       "index": 18,
+       "offset_px": [
+        22,
+        -1
+       ]
+      },
+      {
+       "index": 19,
+       "offset_px": [
+        22,
+        3
+       ]
+      }
+     ],
+     "visible": false
+    },
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "accent": "teal",
+   "metal": "steel"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "rack_high_density",
+  "category": "servers",
+  "subcategory": "rack",
+  "name_fr": "Baie haute densite (20U, porte arriere refroidie)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "rack_high_density",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 103,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "rack",
+   "datacenter"
+  ],
+  "notes": "Facade ouverte. Slots de 4 px (1U), facade des modules 20 su. Modules dessines seulement en se/sw ; en nw/ne la baie montre sa porte arriere perforee.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     99,
+     129
+    ],
+    "anchor": [
+     31,
+     97
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_high_density__se.png",
+      "mask": "masks/servers/rack_high_density__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_high_density__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -103
+     ],
+     [
+      32,
+      -87
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -87
+     ]
+    ],
+    "slots": {
+     "unit_px": 4,
+     "count": 20,
+     "face": "front",
+     "accepts": [
+      "rack_module"
+     ],
+     "positions": [
+      {
+       "index": 0,
+       "offset_px": [
+        2,
+        -62
+       ]
+      },
+      {
+       "index": 1,
+       "offset_px": [
+        2,
+        -58
+       ]
+      },
+      {
+       "index": 2,
+       "offset_px": [
+        2,
+        -54
+       ]
+      },
+      {
+       "index": 3,
+       "offset_px": [
+        2,
+        -50
+       ]
+      },
+      {
+       "index": 4,
+       "offset_px": [
+        2,
+        -46
+       ]
+      },
+      {
+       "index": 5,
+       "offset_px": [
+        2,
+        -42
+       ]
+      },
+      {
+       "index": 6,
+       "offset_px": [
+        2,
+        -38
+       ]
+      },
+      {
+       "index": 7,
+       "offset_px": [
+        2,
+        -34
+       ]
+      },
+      {
+       "index": 8,
+       "offset_px": [
+        2,
+        -30
+       ]
+      },
+      {
+       "index": 9,
+       "offset_px": [
+        2,
+        -26
+       ]
+      },
+      {
+       "index": 10,
+       "offset_px": [
+        2,
+        -22
+       ]
+      },
+      {
+       "index": 11,
+       "offset_px": [
+        2,
+        -18
+       ]
+      },
+      {
+       "index": 12,
+       "offset_px": [
+        2,
+        -14
+       ]
+      },
+      {
+       "index": 13,
+       "offset_px": [
+        2,
+        -10
+       ]
+      },
+      {
+       "index": 14,
+       "offset_px": [
+        2,
+        -6
+       ]
+      },
+      {
+       "index": 15,
+       "offset_px": [
+        2,
+        -2
+       ]
+      },
+      {
+       "index": 16,
+       "offset_px": [
+        2,
+        2
+       ]
+      },
+      {
+       "index": 17,
+       "offset_px": [
+        2,
+        6
+       ]
+      },
+      {
+       "index": 18,
+       "offset_px": [
+        2,
+        10
+       ]
+      },
+      {
+       "index": 19,
+       "offset_px": [
+        2,
+        14
+       ]
+      }
+     ],
+     "visible": true
+    },
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "sw": {
+    "size": [
+     97,
+     129
+    ],
+    "anchor": [
+     30,
+     97
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_high_density__sw.png",
+      "mask": "masks/servers/rack_high_density__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_high_density__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -103
+     ],
+     [
+      32,
+      -87
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -87
+     ]
+    ],
+    "slots": {
+     "unit_px": 4,
+     "count": 20,
+     "face": "front",
+     "accepts": [
+      "rack_module"
+     ],
+     "positions": [
+      {
+       "index": 0,
+       "offset_px": [
+        -22,
+        -72
+       ]
+      },
+      {
+       "index": 1,
+       "offset_px": [
+        -22,
+        -68
+       ]
+      },
+      {
+       "index": 2,
+       "offset_px": [
+        -22,
+        -64
+       ]
+      },
+      {
+       "index": 3,
+       "offset_px": [
+        -22,
+        -60
+       ]
+      },
+      {
+       "index": 4,
+       "offset_px": [
+        -22,
+        -56
+       ]
+      },
+      {
+       "index": 5,
+       "offset_px": [
+        -22,
+        -52
+       ]
+      },
+      {
+       "index": 6,
+       "offset_px": [
+        -22,
+        -48
+       ]
+      },
+      {
+       "index": 7,
+       "offset_px": [
+        -22,
+        -44
+       ]
+      },
+      {
+       "index": 8,
+       "offset_px": [
+        -22,
+        -40
+       ]
+      },
+      {
+       "index": 9,
+       "offset_px": [
+        -22,
+        -36
+       ]
+      },
+      {
+       "index": 10,
+       "offset_px": [
+        -22,
+        -32
+       ]
+      },
+      {
+       "index": 11,
+       "offset_px": [
+        -22,
+        -28
+       ]
+      },
+      {
+       "index": 12,
+       "offset_px": [
+        -22,
+        -24
+       ]
+      },
+      {
+       "index": 13,
+       "offset_px": [
+        -22,
+        -20
+       ]
+      },
+      {
+       "index": 14,
+       "offset_px": [
+        -22,
+        -16
+       ]
+      },
+      {
+       "index": 15,
+       "offset_px": [
+        -22,
+        -12
+       ]
+      },
+      {
+       "index": 16,
+       "offset_px": [
+        -22,
+        -8
+       ]
+      },
+      {
+       "index": 17,
+       "offset_px": [
+        -22,
+        -4
+       ]
+      },
+      {
+       "index": 18,
+       "offset_px": [
+        -22,
+        0
+       ]
+      },
+      {
+       "index": 19,
+       "offset_px": [
+        -22,
+        4
+       ]
+      }
+     ],
+     "visible": true
+    },
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "nw": {
+    "size": [
+     97,
+     131
+    ],
+    "anchor": [
+     30,
+     98
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_high_density__nw.png",
+      "mask": "masks/servers/rack_high_density__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_high_density__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -103
+     ],
+     [
+      32,
+      -87
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -87
+     ]
+    ],
+    "slots": {
+     "unit_px": 4,
+     "count": 20,
+     "face": "front",
+     "accepts": [
+      "rack_module"
+     ],
+     "positions": [
+      {
+       "index": 0,
+       "offset_px": [
+        -2,
+        -84
+       ]
+      },
+      {
+       "index": 1,
+       "offset_px": [
+        -2,
+        -80
+       ]
+      },
+      {
+       "index": 2,
+       "offset_px": [
+        -2,
+        -76
+       ]
+      },
+      {
+       "index": 3,
+       "offset_px": [
+        -2,
+        -72
+       ]
+      },
+      {
+       "index": 4,
+       "offset_px": [
+        -2,
+        -68
+       ]
+      },
+      {
+       "index": 5,
+       "offset_px": [
+        -2,
+        -64
+       ]
+      },
+      {
+       "index": 6,
+       "offset_px": [
+        -2,
+        -60
+       ]
+      },
+      {
+       "index": 7,
+       "offset_px": [
+        -2,
+        -56
+       ]
+      },
+      {
+       "index": 8,
+       "offset_px": [
+        -2,
+        -52
+       ]
+      },
+      {
+       "index": 9,
+       "offset_px": [
+        -2,
+        -48
+       ]
+      },
+      {
+       "index": 10,
+       "offset_px": [
+        -2,
+        -44
+       ]
+      },
+      {
+       "index": 11,
+       "offset_px": [
+        -2,
+        -40
+       ]
+      },
+      {
+       "index": 12,
+       "offset_px": [
+        -2,
+        -36
+       ]
+      },
+      {
+       "index": 13,
+       "offset_px": [
+        -2,
+        -32
+       ]
+      },
+      {
+       "index": 14,
+       "offset_px": [
+        -2,
+        -28
+       ]
+      },
+      {
+       "index": 15,
+       "offset_px": [
+        -2,
+        -24
+       ]
+      },
+      {
+       "index": 16,
+       "offset_px": [
+        -2,
+        -20
+       ]
+      },
+      {
+       "index": 17,
+       "offset_px": [
+        -2,
+        -16
+       ]
+      },
+      {
+       "index": 18,
+       "offset_px": [
+        -2,
+        -12
+       ]
+      },
+      {
+       "index": 19,
+       "offset_px": [
+        -2,
+        -8
+       ]
+      }
+     ],
+     "visible": false
+    },
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "ne": {
+    "size": [
+     99,
+     131
+    ],
+    "anchor": [
+     31,
+     98
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_high_density__ne.png",
+      "mask": "masks/servers/rack_high_density__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_high_density__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -103
+     ],
+     [
+      32,
+      -87
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -87
+     ]
+    ],
+    "slots": {
+     "unit_px": 4,
+     "count": 20,
+     "face": "front",
+     "accepts": [
+      "rack_module"
+     ],
+     "positions": [
+      {
+       "index": 0,
+       "offset_px": [
+        22,
+        -74
+       ]
+      },
+      {
+       "index": 1,
+       "offset_px": [
+        22,
+        -70
+       ]
+      },
+      {
+       "index": 2,
+       "offset_px": [
+        22,
+        -66
+       ]
+      },
+      {
+       "index": 3,
+       "offset_px": [
+        22,
+        -62
+       ]
+      },
+      {
+       "index": 4,
+       "offset_px": [
+        22,
+        -58
+       ]
+      },
+      {
+       "index": 5,
+       "offset_px": [
+        22,
+        -54
+       ]
+      },
+      {
+       "index": 6,
+       "offset_px": [
+        22,
+        -50
+       ]
+      },
+      {
+       "index": 7,
+       "offset_px": [
+        22,
+        -46
+       ]
+      },
+      {
+       "index": 8,
+       "offset_px": [
+        22,
+        -42
+       ]
+      },
+      {
+       "index": 9,
+       "offset_px": [
+        22,
+        -38
+       ]
+      },
+      {
+       "index": 10,
+       "offset_px": [
+        22,
+        -34
+       ]
+      },
+      {
+       "index": 11,
+       "offset_px": [
+        22,
+        -30
+       ]
+      },
+      {
+       "index": 12,
+       "offset_px": [
+        22,
+        -26
+       ]
+      },
+      {
+       "index": 13,
+       "offset_px": [
+        22,
+        -22
+       ]
+      },
+      {
+       "index": 14,
+       "offset_px": [
+        22,
+        -18
+       ]
+      },
+      {
+       "index": 15,
+       "offset_px": [
+        22,
+        -14
+       ]
+      },
+      {
+       "index": 16,
+       "offset_px": [
+        22,
+        -10
+       ]
+      },
+      {
+       "index": 17,
+       "offset_px": [
+        22,
+        -6
+       ]
+      },
+      {
+       "index": 18,
+       "offset_px": [
+        22,
+        -2
+       ]
+      },
+      {
+       "index": 19,
+       "offset_px": [
+        22,
+        2
+       ]
+      }
+     ],
+     "visible": false
+    },
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "metal": "steel",
+   "accent": "sky"
+  },
+  "fixed_parts": [
+   {
+    "channel": "accent",
+    "kept": "sky",
+    "fixed": [
+     "navy",
+     "sun",
+     "teal"
+    ]
+   },
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "copper",
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "server_tower_classic",
+  "category": "servers",
+  "subcategory": "server",
+  "name_fr": "Serveur tour (pied)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "server_tower_classic",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 34,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "server"
+  ],
+  "notes": "Serveur sur pied : 8 baies remplacables a chaud, ecran d'etat ; plus haut et profond qu'une tour PC.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     62,
+     60
+    ],
+    "anchor": [
+     24,
+     31
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/server_tower_classic__se.png",
+      "mask": "masks/servers/server_tower_classic__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/server_tower_classic__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -34
+     ],
+     [
+      32,
+      -18
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -18
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     62,
+     60
+    ],
+    "anchor": [
+     24,
+     31
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/server_tower_classic__sw.png",
+      "mask": "masks/servers/server_tower_classic__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/server_tower_classic__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -34
+     ],
+     [
+      32,
+      -18
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -18
+     ]
+    ]
+   },
+   "nw": {
+    "size": [
+     62,
+     60
+    ],
+    "anchor": [
+     24,
+     31
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/server_tower_classic__nw.png",
+      "mask": "masks/servers/server_tower_classic__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/server_tower_classic__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -34
+     ],
+     [
+      32,
+      -18
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -18
+     ]
+    ]
+   },
+   "ne": {
+    "size": [
+     62,
+     60
+    ],
+    "anchor": [
+     24,
+     31
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/server_tower_classic__ne.png",
+      "mask": "masks/servers/server_tower_classic__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/server_tower_classic__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -34
+     ],
+     [
+      32,
+      -18
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -18
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "primary": "graphite",
+   "screen": "screen",
+   "accent": "teal"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "nas_desktop",
+  "category": "servers",
+  "subcategory": "server",
+  "name_fr": "NAS de bureau (4 baies)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "nas_desktop",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   14
+  ],
+  "height_px": 12,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "storage"
+  ],
+  "notes": "Petit serveur de stockage pose sur un bureau ou une etagere.",
+  "provides": [
+   "desk_item",
+   "shelf_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     33,
+     28
+    ],
+    "anchor": [
+     14,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/nas_desktop__se.png",
+      "mask": "masks/servers/nas_desktop__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/nas_desktop__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     33,
+     28
+    ],
+    "anchor": [
+     14,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/nas_desktop__sw.png",
+      "mask": "masks/servers/nas_desktop__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/nas_desktop__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     33,
+     28
+    ],
+    "anchor": [
+     14,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/nas_desktop__nw.png",
+      "mask": "masks/servers/nas_desktop__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/nas_desktop__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     33,
+     28
+    ],
+    "anchor": [
+     14,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/nas_desktop__ne.png",
+      "mask": "masks/servers/nas_desktop__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/nas_desktop__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "metal": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "ups_floor",
+  "category": "servers",
+  "subcategory": "power",
+  "name_fr": "Onduleur au sol",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "ups_floor",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 26,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "power"
+  ],
+  "notes": "Bloc trapu : afficheur, jauge de batterie a LED, poignees de levage.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     57,
+     50
+    ],
+    "anchor": [
+     24,
+     21
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/ups_floor__se.png",
+      "mask": "masks/servers/ups_floor__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/ups_floor__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -26
+     ],
+     [
+      32,
+      -10
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -10
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     57,
+     50
+    ],
+    "anchor": [
+     23,
+     21
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/ups_floor__sw.png",
+      "mask": "masks/servers/ups_floor__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/ups_floor__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -26
+     ],
+     [
+      32,
+      -10
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -10
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "primary": "steel",
+   "screen": "screen",
+   "metal": "graphite"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "steel",
+    "fixed": [
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "power_distribution_cabinet",
+  "category": "servers",
+  "subcategory": "power",
+  "name_fr": "Armoire de distribution electrique",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "power_distribution_cabinet",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 84,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "power"
+  ],
+  "notes": "Armoire murale profonde de 20 su : porte, fenetre de disjoncteurs, pictogramme sans texte, conduits.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     77,
+     130
+    ],
+    "anchor": [
+     25,
+     103
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/power_distribution_cabinet__se.png",
+      "mask": "masks/servers/power_distribution_cabinet__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/power_distribution_cabinet__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -84
+     ],
+     [
+      32,
+      -68
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -68
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 50
+    }
+   },
+   "sw": {
+    "size": [
+     77,
+     132
+    ],
+    "anchor": [
+     19,
+     105
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/power_distribution_cabinet__sw.png",
+      "mask": "masks/servers/power_distribution_cabinet__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/power_distribution_cabinet__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -84
+     ],
+     [
+      32,
+      -68
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -68
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 50
+    }
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "metal": "steel"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "plastic",
+    "fixed": [
+     "graphite"
+    ]
+   },
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "rack_cooler_inrow",
+  "category": "servers",
+  "subcategory": "cooling",
+  "name_fr": "Refroidissement de rangee (in-row)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "rack_cooler_inrow",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 96,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "cooling",
+   "datacenter"
+  ],
+  "notes": "Demi-largeur de baie, meme hauteur que rack_standard : facade perforee, ventilateurs, ecran de controle.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     85,
+     122
+    ],
+    "anchor": [
+     24,
+     93
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_cooler_inrow__se.png",
+      "mask": "masks/servers/rack_cooler_inrow__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_cooler_inrow__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -96
+     ],
+     [
+      32,
+      -80
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -80
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "sw": {
+    "size": [
+     85,
+     122
+    ],
+    "anchor": [
+     24,
+     93
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_cooler_inrow__sw.png",
+      "mask": "masks/servers/rack_cooler_inrow__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_cooler_inrow__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -96
+     ],
+     [
+      32,
+      -80
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -80
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "nw": {
+    "size": [
+     85,
+     122
+    ],
+    "anchor": [
+     24,
+     93
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_cooler_inrow__nw.png",
+      "mask": "masks/servers/rack_cooler_inrow__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_cooler_inrow__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -96
+     ],
+     [
+      32,
+      -80
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -80
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "ne": {
+    "size": [
+     85,
+     122
+    ],
+    "anchor": [
+     24,
+     93
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/rack_cooler_inrow__ne.png",
+      "mask": "masks/servers/rack_cooler_inrow__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/rack_cooler_inrow__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -96
+     ],
+     [
+      32,
+      -80
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -80
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "screen": "sky",
+   "accent": "sky",
+   "metal": "copper"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "copper",
+    "fixed": [
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "crac_unit",
+  "category": "servers",
+  "subcategory": "cooling",
+  "name_fr": "Climatiseur de salle informatique",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "crac_unit",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 76,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "cooling"
+  ],
+  "notes": "Armoire de climatisation : grandes persiennes, panneau de commande, reprise d'air sur le dessus.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     120,
+     123
+    ],
+    "anchor": [
+     62,
+     76
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/crac_unit__se.png",
+      "mask": "masks/servers/crac_unit__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/crac_unit__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -76
+     ],
+     [
+      32,
+      -60
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -44
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "sw": {
+    "size": [
+     120,
+     123
+    ],
+    "anchor": [
+     28,
+     76
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/crac_unit__sw.png",
+      "mask": "masks/servers/crac_unit__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/crac_unit__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -76
+     ],
+     [
+      64,
+      -44
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -60
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "metal": "graphite",
+   "screen": "screen"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "plastic",
+    "fixed": [
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "cable_tray_straight",
+  "category": "servers",
+  "subcategory": "cabling",
+  "name_fr": "Chemin de cables suspendu (droit)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "cable_tray_straight",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 112,
+  "walkable": true,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "overhead"
+  ],
+  "notes": "Echelle a cables a z=98-104, tiges de suspension jusqu'a z=112 ; se = le long de V, sw = le long de U. Tri : comme un objet au sol (tri topologique des emprises) ; sur une case partagee avec un objet pose dessous, dessiner APRES cet objet. Ancre au sol (hors toile), aucune collision.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     49,
+     40
+    ],
+    "anchor": [
+     25,
+     108
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/cable_tray_straight__se.png",
+      "mask": "masks/servers/cable_tray_straight__se__mask.png",
+      "mask_channels": [
+       "metal",
+       "accent"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -112
+     ],
+     [
+      32,
+      -96
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -96
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     49,
+     38
+    ],
+    "anchor": [
+     25,
+     107
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/cable_tray_straight__sw.png",
+      "mask": "masks/servers/cable_tray_straight__sw__mask.png",
+      "mask_channels": [
+       "metal",
+       "accent"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -112
+     ],
+     [
+      32,
+      -96
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -96
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "accent": "navy"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "graphite"
+    ]
+   },
+   {
+    "channel": "accent",
+    "kept": "navy",
+    "fixed": [
+     "sun",
+     "teal"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "cable_tray_corner",
+  "category": "servers",
+  "subcategory": "cabling",
+  "name_fr": "Chemin de cables suspendu (angle)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "cable_tray_corner",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 112,
+  "walkable": true,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "overhead"
+  ],
+  "notes": "Angle a 90 deg : bras vers l'avant local (-y) et vers la droite locale (+x), centres dans la case ; se raccorde aux troncons droits voisins. Meme regle de tri que cable_tray_straight.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     39,
+     32
+    ],
+    "anchor": [
+     14,
+     100
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/cable_tray_corner__se.png",
+      "mask": "masks/servers/cable_tray_corner__se__mask.png",
+      "mask_channels": [
+       "metal",
+       "accent"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -112
+     ],
+     [
+      32,
+      -96
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -96
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     50,
+     31
+    ],
+    "anchor": [
+     25,
+     99
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/cable_tray_corner__sw.png",
+      "mask": "masks/servers/cable_tray_corner__sw__mask.png",
+      "mask_channels": [
+       "metal",
+       "accent"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -112
+     ],
+     [
+      32,
+      -96
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -96
+     ]
+    ]
+   },
+   "nw": {
+    "size": [
+     39,
+     32
+    ],
+    "anchor": [
+     25,
+     100
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/cable_tray_corner__nw.png",
+      "mask": "masks/servers/cable_tray_corner__nw__mask.png",
+      "mask_channels": [
+       "metal",
+       "accent"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -112
+     ],
+     [
+      32,
+      -96
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -96
+     ]
+    ]
+   },
+   "ne": {
+    "size": [
+     50,
+     26
+    ],
+    "anchor": [
+     25,
+     100
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/cable_tray_corner__ne.png",
+      "mask": "masks/servers/cable_tray_corner__ne__mask.png",
+      "mask_channels": [
+       "metal",
+       "accent"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -112
+     ],
+     [
+      32,
+      -96
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -96
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "accent": "navy"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "graphite"
+    ]
+   },
+   {
+    "channel": "accent",
+    "kept": "navy",
+    "fixed": [
+     "sun",
+     "teal"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "cable_conduit",
+  "category": "servers",
+  "subcategory": "cabling",
+  "name_fr": "Passe-cable au sol",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "cable_conduit",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 3,
+  "walkable": true,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "floor_decor"
+  ],
+  "notes": "Protection de cables franchissable (rampe). se = le long de V, sw = le long de U.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     52,
+     31
+    ],
+    "anchor": [
+     25,
+     1
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/cable_conduit__se.png",
+      "mask": "masks/servers/cable_conduit__se__mask.png",
+      "mask_channels": [
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/cable_conduit__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -3
+     ],
+     [
+      32,
+      13
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      13
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     52,
+     31
+    ],
+    "anchor": [
+     25,
+     1
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/cable_conduit__sw.png",
+      "mask": "masks/servers/cable_conduit__sw__mask.png",
+      "mask_channels": [
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/cable_conduit__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -3
+     ],
+     [
+      32,
+      13
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      13
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "accent": "hazard"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "supervision_console",
+  "category": "servers",
+  "subcategory": "console",
+  "name_fr": "Console de supervision (NOC)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "supervision_console",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   3,
+   1
+  ],
+  "size_su": null,
+  "height_px": 56,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "workstation"
+  ],
+  "notes": "Pupitre long, pont d'ecrans integre (3 zones d'affichage), caissons ventiles.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     138,
+     115
+    ],
+    "anchor": [
+     95,
+     51
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/supervision_console__se.png",
+      "mask": "masks/servers/supervision_console__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/supervision_console__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     3
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      0,
+      2
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       2
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -56
+     ],
+     [
+      32,
+      -40
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -64,
+      64
+     ],
+     [
+      -96,
+      48
+     ],
+     [
+      -96,
+      -8
+     ]
+    ],
+    "sockets": {
+     "keyboard": {
+      "offset_px": [
+       -26,
+       5
+      ],
+      "world_su": [
+       22.0,
+       48.0,
+       30
+      ],
+      "accepts": [
+       "keyboard"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "clavier central"
+     },
+     "desk_left": {
+      "offset_px": [
+       -66,
+       23
+      ],
+      "world_su": [
+       20.0,
+       86.0,
+       30
+      ],
+      "accepts": [
+       "desk_item"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "desk_right": {
+      "offset_px": [
+       10,
+       -15
+      ],
+      "world_su": [
+       20.0,
+       10.0,
+       30
+      ],
+      "accepts": [
+       "desk_item"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "chair": {
+      "offset_px": [
+       -4,
+       46
+      ],
+      "world_su": [
+       44.0,
+       48.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "nw",
+      "draw": "workstation",
+      "note": "operateur"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen_0",
+      "quad_px": [
+       [
+        -81,
+        -5
+       ],
+       [
+        -59,
+        -16
+       ],
+       [
+        -59,
+        0
+       ],
+       [
+        -81,
+        11
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     },
+     {
+      "name": "screen_1",
+      "quad_px": [
+       [
+        -51,
+        -20
+       ],
+       [
+        -29,
+        -31
+       ],
+       [
+        -29,
+        -15
+       ],
+       [
+        -51,
+        -4
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     },
+     {
+      "name": "screen_2",
+      "quad_px": [
+       [
+        -21,
+        -35
+       ],
+       [
+        1,
+        -46
+       ],
+       [
+        1,
+        -30
+       ],
+       [
+        -21,
+        -19
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     138,
+     116
+    ],
+    "anchor": [
+     31,
+     52
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/supervision_console__sw.png",
+      "mask": "masks/servers/supervision_console__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/supervision_console__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     3,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       2,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -56
+     ],
+     [
+      96,
+      -8
+     ],
+     [
+      96,
+      48
+     ],
+     [
+      64,
+      64
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -40
+     ]
+    ],
+    "sockets": {
+     "keyboard": {
+      "offset_px": [
+       26,
+       5
+      ],
+      "world_su": [
+       48.0,
+       22.0,
+       30
+      ],
+      "accepts": [
+       "keyboard"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "clavier central"
+     },
+     "desk_left": {
+      "offset_px": [
+       -10,
+       -15
+      ],
+      "world_su": [
+       10.0,
+       20.0,
+       30
+      ],
+      "accepts": [
+       "desk_item"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "desk_right": {
+      "offset_px": [
+       66,
+       23
+      ],
+      "world_su": [
+       86.0,
+       20.0,
+       30
+      ],
+      "accepts": [
+       "desk_item"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "chair": {
+      "offset_px": [
+       4,
+       46
+      ],
+      "world_su": [
+       48.0,
+       44.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "ne",
+      "draw": "workstation",
+      "note": "operateur"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen_0",
+      "quad_px": [
+       [
+        -2,
+        -47
+       ],
+       [
+        20,
+        -36
+       ],
+       [
+        20,
+        -20
+       ],
+       [
+        -2,
+        -31
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     },
+     {
+      "name": "screen_1",
+      "quad_px": [
+       [
+        28,
+        -32
+       ],
+       [
+        50,
+        -21
+       ],
+       [
+        50,
+        -5
+       ],
+       [
+        28,
+        -16
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     },
+     {
+      "name": "screen_2",
+      "quad_px": [
+       [
+        58,
+        -17
+       ],
+       [
+        80,
+        -6
+       ],
+       [
+        80,
+        10
+       ],
+       [
+        58,
+        -1
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     139,
+     107
+    ],
+    "anchor": [
+     95,
+     43
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/supervision_console__nw.png",
+      "mask": "masks/servers/supervision_console__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/supervision_console__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     3
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      0,
+      2
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       1
+      ],
+      "user_facing": "se",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       2
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -56
+     ],
+     [
+      32,
+      -40
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -64,
+      64
+     ],
+     [
+      -96,
+      48
+     ],
+     [
+      -96,
+      -8
+     ]
+    ],
+    "sockets": {
+     "keyboard": {
+      "offset_px": [
+       -38,
+       -1
+      ],
+      "world_su": [
+       10.0,
+       48.0,
+       30
+      ],
+      "accepts": [
+       "keyboard"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": "clavier central"
+     },
+     "desk_left": {
+      "offset_px": [
+       2,
+       -19
+      ],
+      "world_su": [
+       12.0,
+       10.0,
+       30
+      ],
+      "accepts": [
+       "desk_item"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "desk_right": {
+      "offset_px": [
+       -74,
+       19
+      ],
+      "world_su": [
+       12.0,
+       86.0,
+       30
+      ],
+      "accepts": [
+       "desk_item"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "chair": {
+      "offset_px": [
+       -60,
+       18
+      ],
+      "world_su": [
+       -12.0,
+       48.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "se",
+      "draw": "workstation",
+      "note": "operateur"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen_0",
+      "quad_px": [
+       [
+        18,
+        -39
+       ],
+       [
+        -4,
+        -28
+       ],
+       [
+        -4,
+        -12
+       ],
+       [
+        18,
+        -23
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     },
+     {
+      "name": "screen_1",
+      "quad_px": [
+       [
+        -12,
+        -24
+       ],
+       [
+        -34,
+        -13
+       ],
+       [
+        -34,
+        3
+       ],
+       [
+        -12,
+        -8
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     },
+     {
+      "name": "screen_2",
+      "quad_px": [
+       [
+        -42,
+        -9
+       ],
+       [
+        -64,
+        2
+       ],
+       [
+        -64,
+        18
+       ],
+       [
+        -42,
+        7
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     138,
+     106
+    ],
+    "anchor": [
+     31,
+     42
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/supervision_console__ne.png",
+      "mask": "masks/servers/supervision_console__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/supervision_console__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     3,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      2,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       2,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -56
+     ],
+     [
+      96,
+      -8
+     ],
+     [
+      96,
+      48
+     ],
+     [
+      64,
+      64
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -40
+     ]
+    ],
+    "sockets": {
+     "keyboard": {
+      "offset_px": [
+       38,
+       -1
+      ],
+      "world_su": [
+       48.0,
+       10.0,
+       30
+      ],
+      "accepts": [
+       "keyboard"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": "clavier central"
+     },
+     "desk_left": {
+      "offset_px": [
+       74,
+       19
+      ],
+      "world_su": [
+       86.0,
+       12.0,
+       30
+      ],
+      "accepts": [
+       "desk_item"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "desk_right": {
+      "offset_px": [
+       -2,
+       -19
+      ],
+      "world_su": [
+       10.0,
+       12.0,
+       30
+      ],
+      "accepts": [
+       "desk_item"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "chair": {
+      "offset_px": [
+       60,
+       18
+      ],
+      "world_su": [
+       48.0,
+       -12.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "sw",
+      "draw": "workstation",
+      "note": "operateur"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen_0",
+      "quad_px": [
+       [
+        67,
+        3
+       ],
+       [
+        45,
+        -8
+       ],
+       [
+        45,
+        8
+       ],
+       [
+        67,
+        19
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     },
+     {
+      "name": "screen_1",
+      "quad_px": [
+       [
+        37,
+        -12
+       ],
+       [
+        15,
+        -23
+       ],
+       [
+        15,
+        -7
+       ],
+       [
+        37,
+        4
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     },
+     {
+      "name": "screen_2",
+      "quad_px": [
+       [
+        7,
+        -27
+       ],
+       [
+        -15,
+        -38
+       ],
+       [
+        -15,
+        -22
+       ],
+       [
+        7,
+        -11
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "metal": "graphite",
+   "screen": "display"
+  },
+  "sockets_def": [
+   {
+    "name": "keyboard",
+    "accepts": [
+     "keyboard"
+    ],
+    "local": [
+     48,
+     10,
+     30
+    ],
+    "facing_rel": "same",
+    "note": "clavier central"
+   },
+   {
+    "name": "desk_left",
+    "accepts": [
+     "desk_item"
+    ],
+    "local": [
+     10,
+     12,
+     30
+    ],
+    "facing_rel": "same",
+    "note": ""
+   },
+   {
+    "name": "desk_right",
+    "accepts": [
+     "desk_item"
+    ],
+    "local": [
+     86,
+     12,
+     30
+    ],
+    "facing_rel": "same",
+    "note": ""
+   },
+   {
+    "name": "chair",
+    "accepts": [
+     "chair"
+    ],
+    "local": [
+     48,
+     -12,
+     0
+    ],
+    "facing_rel": "opposite",
+    "note": "operateur"
+   }
+  ]
+ },
+ {
+  "id": "security_cage_panel",
+  "category": "servers",
+  "subcategory": "security",
+  "name_fr": "Grille de securite (cage)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "security_cage_panel",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 88,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "security"
+  ],
+  "notes": "Panneau grillage soude centre dans la case ; se = le long de V, sw = le long de U ; poteaux partages.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     72,
+     110
+    ],
+    "anchor": [
+     19,
+     83
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/security_cage_panel__se.png",
+      "mask": "masks/servers/security_cage_panel__se__mask.png",
+      "mask_channels": [
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/security_cage_panel__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -88
+     ],
+     [
+      32,
+      -72
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -72
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     72,
+     110
+    ],
+    "anchor": [
+     19,
+     83
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/security_cage_panel__sw.png",
+      "mask": "masks/servers/security_cage_panel__sw__mask.png",
+      "mask_channels": [
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/security_cage_panel__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -88
+     ],
+     [
+      32,
+      -72
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -72
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "metal": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "security_cage_door",
+  "category": "servers",
+  "subcategory": "security",
+  "name_fr": "Porte de cage grillagee",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "security_cage_door",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 88,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "security"
+  ],
+  "notes": "Porte grillagee fermee (statique) avec serrure a badge ; franchissable par le jeu.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     72,
+     110
+    ],
+    "anchor": [
+     19,
+     83
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/security_cage_door__se.png",
+      "mask": "masks/servers/security_cage_door__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/security_cage_door__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [
+     {
+      "kind": "pass",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -88
+     ],
+     [
+      32,
+      -72
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -72
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     72,
+     110
+    ],
+    "anchor": [
+     19,
+     83
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/servers/security_cage_door__sw.png",
+      "mask": "masks/servers/security_cage_door__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/servers/security_cage_door__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [],
+    "access": [
+     {
+      "kind": "pass",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -88
+     ],
+     [
+      32,
+      -72
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -72
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "primary": "graphite"
+  },
+  "sockets_def": []
+ }
+]

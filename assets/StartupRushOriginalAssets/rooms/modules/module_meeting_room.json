@@ -1,0 +1,169 @@
+{
+ "id": "module_meeting_room",
+ "name_fr": "Salle de réunion vitrée (contre un mur droit)",
+ "size_tiles": [
+  6,
+  5
+ ],
+ "objects": [
+  {
+   "asset": "table_meeting_large",
+   "tile": [
+    1,
+    2
+   ],
+   "facing": "sw",
+   "children": {
+    "chair_0": {
+     "asset": "chair_meeting",
+     "character": {
+      "base": "employee_m_02",
+      "hair": "hair_curly_top",
+      "hair_ramp": "hair_black"
+     }
+    },
+    "chair_2": {
+     "asset": "chair_meeting",
+     "character": {
+      "base": "employee_f_03",
+      "hair": "hair_bun",
+      "hair_ramp": "hair_black"
+     }
+    },
+    "chair_4": {
+     "asset": "chair_meeting"
+    },
+    "chair_1": {
+     "asset": "chair_meeting",
+     "character": {
+      "base": "employee_m_05",
+      "hair": "hair_short_crop",
+      "hair_ramp": "hair_black"
+     }
+    },
+    "chair_3": {
+     "asset": "chair_meeting"
+    },
+    "center": "speakerphone"
+   }
+  },
+  {
+   "asset": "presentation_screen",
+   "tile": [
+    2,
+    0
+   ],
+   "facing": "sw",
+   "children": {
+    "top": "videoconf_bar"
+   }
+  },
+  {
+   "asset": "plant_floor_medium",
+   "tile": [
+    5,
+    0
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    0,
+    5
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    1,
+    5
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    2,
+    5
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    3,
+    5
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    4,
+    5
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    5,
+    5
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    0,
+    0
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    0,
+    1
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    0,
+    2
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "partition_glass_door",
+   "tile": [
+    0,
+    3
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "partition_glass",
+   "tile": [
+    0,
+    4
+   ],
+   "facing": "se"
+  }
+ ],
+ "zones": [
+  {
+   "name": "Salle de reunion",
+   "rect": [
+    0,
+    0,
+    6,
+    5
+   ]
+  }
+ ]
+}

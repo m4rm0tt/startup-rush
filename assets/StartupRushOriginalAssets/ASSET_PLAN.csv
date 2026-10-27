@@ -1,0 +1,269 @@
+id,family,subcategory,name_fr,footprint,orientations,usage,priority,batch,notes
+wall_plain,architecture,wall,Mur plein,1 case,se/sw(murs),shared,P1,main,"tranche de mur continu, plinthe"
+wall_window,architecture,wall,Mur avec fenetre,1 case,se/sw(murs),shared,P1,main,"vitre stylisee, appui"
+wall_window_wide,architecture,wall,Mur avec grande fenetre,2 cases,se/sw(murs),shared,P2,main,
+wall_door,architecture,wall,Mur avec porte,1 case,se/sw(murs),shared,P1,main,porte fermee statique
+wall_opening,architecture,wall,Mur avec passage,1 case,se/sw(murs),shared,P1,main,ouverture sans vantail
+wall_corner_inner,architecture,wall,Angle interieur,angle,all,shared,P1,main,
+wall_corner_outer,architecture,wall,Angle saillant (retour),angle,all,shared,P3,main,plans en L
+wall_end,architecture,wall,Terminaison de mur,chant,se/sw(murs),shared,P1,main,
+floor_wood_planks,floors,floor,Plancher bois,1 case,variantes 2x1,shared,P1,main,
+floor_parquet,floors,floor,Parquet,1 case,-,shared,P2,main,
+floor_carpet,floors,floor,Moquette,1 case,-,shared,P1,main,
+floor_carpet_tiles,floors,floor,Dalles de moquette,1 case,variantes 2x2,shared,P2,main,
+floor_tile_ceramic,floors,floor,Carrelage,1 case,-,shared,P1,main,"cuisine, sanitaires"
+floor_concrete,floors,floor,Beton cire,1 case,variantes 2x2,shared,P2,main,
+floor_vinyl,floors,floor,Vinyle,1 case,-,shared,P2,main,"labos, salle propre"
+floor_raised,floors,floor,Faux plancher technique,1 case,-,shared,P2,main,datacenter
+floor_raised_vent,floors,floor,Faux plancher perfore,1 case,-,shared,P2,main,
+floor_edge,floors,floor_edge,Bord avant de dalle,1 case,se/sw,shared,P1,main,
+floor_edge_corner,floors,floor_edge,Coin avant de dalle,angle,all,shared,P1,main,
+floor_threshold,floors,floor_overlay,Seuil de transition,arete,along_u/along_v,shared,P1,main,jonction de deux sols
+floor_marking,floors,floor_overlay,Marquage au sol,1 case,4 variantes,shared,P3,main,"atelier, usine"
+pattern_paint,wall_patterns,wall_pattern,Peinture unie,calque,se/sw(murs),shared,P1,main,"canal + delta, surface murale uniquement"
+pattern_two_tone,wall_patterns,wall_pattern,Deux tons,calque,se/sw(murs),shared,P1,main,"canal + delta, surface murale uniquement"
+pattern_wallpaper,wall_patterns,wall_pattern,Papier discret,calque,se/sw(murs),shared,P2,main,"canal + delta, surface murale uniquement"
+pattern_stripes,wall_patterns,wall_pattern,Bandes,calque,se/sw(murs),shared,P2,main,"canal + delta, surface murale uniquement"
+pattern_wood_panels,wall_patterns,wall_pattern,Lambris bois,calque,se/sw(murs),shared,P2,main,"canal + delta, surface murale uniquement"
+pattern_concrete,wall_patterns,wall_pattern,Beton,calque,se/sw(murs),shared,P2,main,"canal + delta, surface murale uniquement"
+pattern_brick,wall_patterns,wall_pattern,Brique interieure,calque,se/sw(murs),shared,P2,main,"canal + delta, surface murale uniquement"
+pattern_acoustic,wall_patterns,wall_pattern,Acoustique/technique,calque,se/sw(murs),shared,P2,main,"canal + delta, surface murale uniquement"
+desk_simple,furniture,desk,Bureau simple,2x1,se/sw/nw/ne,current,P1,main,
+desk_compact,furniture,desk,Bureau compact,1x1,se/sw/nw/ne,current,P1,main,
+desk_long,furniture,desk,Bureau long,3x1,se/sw/nw/ne,current,P2,main,
+desk_corner,furniture,desk,Bureau d'angle,2x2,se/sw/nw/ne,current,P2,main,
+desk_tech,furniture,desk,Bureau technique renforce,2x1,se/sw/nw/ne,current,P2,main,
+table_collab,furniture,table,Table collective,3x2,se/sw,current,P2,main,
+chair_budget,furniture,chair,Chaise economique,pose,se/sw/nw/ne,current,P1,main,
+chair_office,furniture,chair,Chaise de bureau,pose,se/sw/nw/ne,current,P1,main,
+chair_ergonomic,furniture,chair,Chaise ergonomique,pose,se/sw/nw/ne,current,P2,main,
+chair_meeting,furniture,chair,Chaise de reunion,pose,se/sw/nw/ne,current,P2,main,
+table_meeting_small,furniture,table,Petite table de reunion (ronde),2x2,se,current,P2,main,
+table_meeting_large,furniture,table,Grande table de reunion,4x2,se/sw,current,P2,main,
+reception_desk,furniture,desk,Banque d'accueil,3x2,se/sw,current,P2,main,
+wardrobe_office,furniture,storage,Armoire,1x1,se/sw,current,P2,main,
+locker,furniture,storage,Casiers,1x1,se/sw,current,P2,main,
+bookcase,furniture,storage,Bibliotheque,2x1,se/sw,current,P1,main,
+shelf_metal,furniture,storage,Etagere metallique,2x1,se/sw,current,P2,main,
+pedestal_drawer,furniture,storage,Caisson a roulettes,pose,se/sw/nw/ne,current,P2,main,
+filing_cabinet,furniture,storage,Classeur a tiroirs,1x1,se/sw,current,P2,main,
+sideboard_low,furniture,storage,Meuble bas,2x1,se/sw,current,P2,main,
+display_case,furniture,storage,Presentoir vitre,1x1,se/sw,current,P3,main,
+whiteboard_mobile,furniture,board,Tableau blanc mobile,2x1,se/sw,current,P1,main,
+planning_board,furniture,board,Tableau de planning mural,mur 2 cases,se/sw(murs),current,P2,main,
+presentation_screen,furniture,av,Ecran de presentation sur pied,2x1,se/sw,current,P2,main,
+partition_low,furniture,partition,Cloison basse,1 case,se/sw,current,P2,main,
+partition_acoustic,furniture,partition,Separation acoustique,1 case,se/sw,current,P2,main,
+partition_glass,furniture,partition,Vitrage interieur,1 case,se/sw,current,P2,main,
+partition_glass_door,furniture,partition,Vitrage interieur avec porte,1 case,se/sw,current,P3,main,
+trash_bin,furniture,misc,Poubelle,pose,se,current,P1,main,
+recycling_station,furniture,misc,Bacs de tri,1x1,se/sw,current,P2,main,
+coat_rack,furniture,misc,Porte-manteau,pose,se,current,P2,main,
+lamp_ceiling,furniture,lighting,Luminaire suspendu,pose,se,current,P2,main,
+lamp_desk,furniture,lighting,Lampe de bureau,pose,se/sw/nw/ne,current,P1,main,
+lamp_floor,furniture,lighting,Lampadaire,pose,se,current,P1,main,
+sofa,furniture,lounge,Canape,2x1,se/sw/nw/ne,current,P2,main,
+armchair,furniture,lounge,Fauteuil,1x1,se/sw/nw/ne,current,P2,main,
+table_coffee,furniture,lounge,Table basse,1x1,se,current,P2,main,
+kitchen_counter,furniture,kitchen,Element de cuisine,1x1,se/sw,current,P1,main,
+kitchen_sink,furniture,kitchen,Evier,1x1,se/sw,current,P1,main,
+fridge,furniture,kitchen,Refrigerateur,1x1,se/sw,current,P1,main,
+microwave,furniture,kitchen,Micro-ondes,pose,se/sw,current,P1,main,
+coffee_machine,furniture,kitchen,Machine a cafe,pose,se/sw,current,P1,main,
+water_cooler,furniture,kitchen,Fontaine a eau,1x1,se/sw,current,P2,main,
+vending_drinks,furniture,kitchen,Distributeur de boissons,1x1,se/sw,current,P2,main,
+vending_snacks,furniture,kitchen,Distributeur de snacks,1x1,se/sw,current,P2,main,
+toilet,furniture,sanitary,WC,1x1,se/sw/nw/ne,current,P2,main,
+washbasin,furniture,sanitary,Lavabo,1x1,se/sw,current,P2,main,
+toilet_stall,furniture,sanitary,Cabine sanitaire,1x1,se/sw,current,P3,main,
+bed_single,furniture,bedroom,Lit simple,2x1,se/sw,current,P1,main,
+dresser,furniture,bedroom,Commode,1x1,se/sw,current,P1,main,
+nightstand,furniture,bedroom,Table de chevet,pose,se/sw,current,P1,main,
+rug_small,furniture,floor_decor,Tapis,2x2,se,current,P1,main,
+rug_large,furniture,floor_decor,Grand tapis,3x2,se/sw,current,P2,main,
+window_blinds,furniture,window_dressing,Stores de fenetre,mur 1 case,se/sw(murs),current,P2,main,
+laptop_old,computers,laptop,Portable ancien,pose,se/sw/nw/ne,current,P1,main,sans marque
+laptop_standard,computers,laptop,Portable standard,pose,se/sw/nw/ne,current,P2,main,sans marque
+laptop_pro,computers,laptop,Portable professionnel,pose,se/sw/nw/ne,current,P2,main,sans marque
+laptop_gaming,computers,laptop,Portable puissant,pose,se/sw/nw/ne,current,P2,main,sans marque
+tower_used,computers,tower,Tour d'occasion,pose,se/sw/nw/ne,current,P1,main,sans marque
+tower_office,computers,tower,Tour bureautique,pose,se/sw/nw/ne,current,P2,main,sans marque
+workstation_dev,computers,tower,Station de developpement,pose,se/sw/nw/ne,current,P2,main,sans marque
+workstation_creative,computers,tower,Station creative,pose,se/sw/nw/ne,current,P2,main,sans marque
+workstation_gpu,computers,tower,Station GPU/IA,pose,se/sw/nw/ne,current,P2,main,sans marque
+workstation_compute,computers,tower,Poste de calcul avance,pose,se/sw/nw/ne,current,P2,main,sans marque
+mini_pc,computers,tower,Mini-PC,pose,se/sw/nw/ne,current,P2,main,sans marque
+monitor_basic,computers,monitor,Ecran simple,pose,se/sw/nw/ne,current,P1,main,sans marque
+monitor_large,computers,monitor,Grand ecran,pose,se/sw/nw/ne,current,P2,main,sans marque
+monitor_ultrawide,computers,monitor,Ecran ultralarge,pose,se/sw/nw/ne,current,P2,main,sans marque
+monitor_arm_second,computers,monitor,Module 2e ecran,pose,se/sw/nw/ne,current,P2,main,sans marque
+keyboard_mouse,computers,peripheral,Clavier et souris,pose,se/sw/nw/ne,current,P1,main,sans marque
+graphics_tablet,computers,peripheral,Tablette graphique,pose,se/sw/nw/ne,current,P2,main,sans marque
+headset_stand,computers,peripheral,Casque sur support,pose,se/sw/nw/ne,current,P2,main,sans marque
+webcam,computers,peripheral,Webcam (sur ecran),pose,se/sw/nw/ne,current,P2,main,sans marque
+docking_station,computers,peripheral,Station d'accueil,pose,se/sw/nw/ne,current,P2,main,sans marque
+printer_mfp,computers,office,Imprimante/scanner,pose,se/sw,current,P2,main,"sans marque ; revise en cours de production : adosse a un mur ou pose sur un ecran, 2 orientations suffisent"
+videoconf_bar,computers,av,Barre de visioconference,pose,se/sw,current,P2,main,"sans marque ; revise en cours de production : adosse a un mur ou pose sur un ecran, 2 orientations suffisent"
+speakerphone,computers,av,Pieuvre de conference,pose,se/sw/nw/ne,current,P2,main,sans marque
+device_test_rack,computers,test,Poste de test mobile,pose,se/sw/nw/ne,current,P2,main,sans marque
+console_test_kit,computers,test,Kit de test console generique,pose,se/sw/nw/ne,current,P2,main,sans marque
+xr_headset_stand,computers,test,Casque XR sur support,pose,se/sw/nw/ne,current,P2,main,sans marque
+capture_device,computers,test,Boitier de capture,pose,se/sw/nw/ne,current,P2,main,sans marque
+network_cabinet,computers,network,Baie de rangement technique,pose,se/sw,current,P2,main,"sans marque ; revise en cours de production : adosse a un mur ou pose sur un ecran, 2 orientations suffisent"
+router,computers,network,Routeur,pose,se/sw/nw/ne,current,P1,main,sans marque
+network_switch_desk,computers,network,Switch de bureau,pose,se/sw/nw/ne,current,P2,main,sans marque
+access_point,computers,network,Point d'acces (mural),pose,se/sw,current,P2,main,"sans marque ; revise en cours de production : adosse a un mur ou pose sur un ecran, 2 orientations suffisent"
+fiber_box,computers,network,Boitier fibre (mural),pose,se/sw,current,P2,main,"sans marque ; revise en cours de production : adosse a un mur ou pose sur un ecran, 2 orientations suffisent"
+rack_compact,servers,rack,Baie compacte,1x1,se/sw/nw/ne,current,P2,lot_datacenter_labs,
+rack_standard,servers,rack,Baie standard,1x1,se/sw/nw/ne,current,P2,lot_datacenter_labs,
+rack_high_density,servers,rack,Baie haute densite,1x1,se/sw/nw/ne,current,P3,lot_datacenter_labs,
+module_server_1u,servers,rack_module,Serveur 1U (module),slot,se/sw,current,P2,lot_datacenter_labs,
+module_compute_2u,servers,rack_module,Serveur de calcul 2U,slot,se/sw,current,P2,lot_datacenter_labs,
+module_storage_2u,servers,rack_module,Stockage/NAS 2U,slot,se/sw,current,P2,lot_datacenter_labs,
+module_storage_jbod_4u,servers,rack_module,Tiroir de disques 4U,slot,se/sw,current,P3,lot_datacenter_labs,
+module_gpu_4u,servers,rack_module,Serveur GPU 4U,slot,se/sw,current,P3,lot_datacenter_labs,
+module_network_switch_1u,servers,rack_module,Switch 1U,slot,se/sw,current,P2,lot_datacenter_labs,
+module_patch_panel_1u,servers,rack_module,Panneau de brassage 1U,slot,se/sw,current,P2,lot_datacenter_labs,
+module_compute_node_2u,servers,rack_module,Noeud de calcul 2U,slot,se/sw,current,P3,lot_datacenter_labs,
+module_ups_2u,servers,rack_module,Onduleur rack 2U,slot,se/sw,current,P2,lot_datacenter_labs,
+module_blank_1u,servers,rack_module,Obturateur 1U,slot,se/sw,current,P2,lot_datacenter_labs,
+module_cable_manager_1u,servers,rack_module,Passe-cables 1U,slot,se/sw,current,P2,lot_datacenter_labs,
+server_tower_classic,servers,server,Serveur tour,1x1,se/sw/nw/ne,current,P2,lot_datacenter_labs,
+nas_desktop,servers,server,NAS de bureau,pose,se/sw/nw/ne,current,P2,lot_datacenter_labs,
+ups_floor,servers,power,Onduleur au sol,1x1,se/sw,current,P2,lot_datacenter_labs,
+power_distribution_cabinet,servers,power,Armoire de distribution,1x1,se/sw,current,P2,lot_datacenter_labs,
+rack_cooler_inrow,servers,cooling,Refroidissement de rangee,1x1,se/sw/nw/ne,current,P3,lot_datacenter_labs,
+crac_unit,servers,cooling,Climatiseur de salle,2x1,se/sw,current,P2,lot_datacenter_labs,
+cable_tray_straight,servers,cabling,Chemin de cables,1 case,along_u/along_v,current,P2,lot_datacenter_labs,
+cable_tray_corner,servers,cabling,Chemin de cables (angle),1 case,se/sw/nw/ne,current,P3,lot_datacenter_labs,
+cable_conduit,servers,cabling,Conduit au sol,1 case,se/sw,current,P3,lot_datacenter_labs,
+supervision_console,servers,console,Console de supervision,3x1,se/sw/nw/ne,current,P2,lot_datacenter_labs,
+security_cage_panel,servers,security,Grille de securite,1 case,se/sw,current,P3,lot_datacenter_labs,
+security_cage_door,servers,security,Porte de cage,1 case,se/sw,current,P3,lot_datacenter_labs,
+workbench_electronics,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+soldering_station,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+microscope,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+oscilloscope,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+lab_power_supply,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+instrument_rack,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+printer_3d,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+cnc_mill_desktop,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+laser_cutter,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+test_bench_pc,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+test_bench_embedded,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+cobot_cell,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+calibration_bench,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+camera_tripod,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+softbox_light,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+mic_stand,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+greenscreen_backdrop,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+studio_monitors,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+xr_base_station,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+xr_play_mat,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+research_station,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+compute_cabinet,laboratories,lab,(voir manifeste),variable,se/sw,current,P3,lot_datacenter_labs,
+quantum_cryostat_open,laboratories,lab,(voir manifeste),variable,se/sw,current,P3,lot_datacenter_labs,
+quantum_cryostat_closed,laboratories,lab,(voir manifeste),variable,se/sw,current,P3,lot_datacenter_labs,
+quantum_control_rack,laboratories,lab,(voir manifeste),variable,se/sw,current,P3,lot_datacenter_labs,
+cryo_support_unit,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+supervision_terminal,laboratories,lab,(voir manifeste),variable,se/sw,current,P2,lot_datacenter_labs,
+conveyor_straight,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+conveyor_curve,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+conveyor_junction_t,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+conveyor_end,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+conveyor_transfer_table,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+assembly_station_manual,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+assembly_cell_robotic,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+pick_and_place_machine,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+reflow_oven,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+aoi_inspection,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+pcb_tester,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+chip_fab_tool,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+precision_station,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+flash_station,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+stress_test_rack,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+packing_station,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+storage_rack_industrial,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+pallet,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+tote_bin,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+dust_extraction,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+industrial_chiller,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+control_cabinet,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+cleanroom_airlock,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+cleanroom_partition,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+product_pcb,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+product_cpu,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+product_ram,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+product_gpu,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+product_case,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+product_pc_assembled,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+product_box,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+product_wafer,industry_future,industry,(voir manifeste),variable,se/sw,future,P3,lot_industrie_deco,ports d'entree/sortie dans le manifeste
+plant_succulent,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+plant_floor_medium,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+plant_floor_tall,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+plant_trailing,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+poster_project,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+poster_schematic,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+photo_abstract,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+figurine_robot,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+books_stack,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+storage_boxes,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+mug,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+bottle,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+snack_bowl,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+notebook,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+moving_box,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+paper_stack,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+sticky_notes,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+cable_organizer,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+clock_wall,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+award_plaque,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+trophy_project,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+rubber_duck_debug,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+idea_sketch,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+retro_message,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+side_project,decoration,decor,(voir manifeste),variable,se/sw,current,P1,lot_industrie_deco,
+player_m,characters,avatar,Base chauve assise,pose (chaise),se/sw/nw/ne,current,P1,main,couches body/head + masques
+player_f,characters,avatar,Base chauve assise,pose (chaise),se/sw/nw/ne,current,P1,main,couches body/head + masques
+employee_m_01,characters,employee,Base chauve assise,pose (chaise),se/sw/nw/ne,current,P1,main,couches body/head + masques
+employee_m_02,characters,employee,Base chauve assise,pose (chaise),se/sw/nw/ne,current,P1,main,couches body/head + masques
+employee_m_03,characters,employee,Base chauve assise,pose (chaise),se/sw/nw/ne,current,P1,main,couches body/head + masques
+employee_m_04,characters,employee,Base chauve assise,pose (chaise),se/sw/nw/ne,current,P1,main,couches body/head + masques
+employee_m_05,characters,employee,Base chauve assise,pose (chaise),se/sw/nw/ne,current,P1,main,couches body/head + masques
+employee_f_01,characters,employee,Base chauve assise,pose (chaise),se/sw/nw/ne,current,P1,main,couches body/head + masques
+employee_f_02,characters,employee,Base chauve assise,pose (chaise),se/sw/nw/ne,current,P1,main,couches body/head + masques
+employee_f_03,characters,employee,Base chauve assise,pose (chaise),se/sw/nw/ne,current,P1,main,couches body/head + masques
+employee_f_04,characters,employee,Base chauve assise,pose (chaise),se/sw/nw/ne,current,P1,main,couches body/head + masques
+employee_f_05,characters,employee,Base chauve assise,pose (chaise),se/sw/nw/ne,current,P1,main,couches body/head + masques
+hair_short_crop,characters,hair,Coiffure,overlay,se/sw/nw/ne,current,P1,main,hair_front/hair_back + masque
+hair_side_part,characters,hair,Coiffure,overlay,se/sw/nw/ne,current,P1,main,hair_front/hair_back + masque
+hair_curly_top,characters,hair,Coiffure,overlay,se/sw/nw/ne,current,P1,main,hair_front/hair_back + masque
+hair_long_straight,characters,hair,Coiffure,overlay,se/sw/nw/ne,current,P1,main,hair_front/hair_back + masque
+hair_bun,characters,hair,Coiffure,overlay,se/sw/nw/ne,current,P1,main,hair_front/hair_back + masque
+hair_bob,characters,hair,Coiffure,overlay,se/sw/nw/ne,current,P1,main,hair_front/hair_back + masque
+font_startuprush_pixel,fonts,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+font_startuprush_mono,fonts,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+icons_set,hud,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+hud_panels,hud,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+hud_buttons,hud,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+hud_inputs,hud,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+hud_navigation,hud,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+hud_feedback,hud,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+hud_charts,hud,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+cursors_set,cursors,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+vfx_set,vfx,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+terminal_kit,terminal,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+project_component_cards,project_components,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+project_component_previews,project_components,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+reference_screens,hud,ui,(boite a outils HUD),-,-,shared,P1,lot_ui,
+room_bedroom_start,rooms,room_plan,Chambre de depart,6x5,-,current,P1,main,plan JSON + apercu
+room_startup_small,rooms,room_plan,Petit bureau/atelier,8x6,-,current,P1,main,plan JSON + apercu
+room_office_medium,rooms,room_plan,Bureau moyen,12x9,-,current,P2,main,plan JSON + apercu
+room_open_space,rooms,room_plan,Grand open space,18x14,-,current,P2,main,plan JSON + apercu
+room_hq_floor,rooms,room_plan,Plateau de siege,24x18,-,current,P2,main,plan JSON + apercu
+room_server_compact,rooms,room_plan,Salle serveur compacte,6x5,-,current,P2,main,plan JSON + apercu
+room_datacenter,rooms,room_plan,Datacenter,16x12,-,current,P2,main,plan JSON + apercu
+room_hw_workshop,rooms,room_plan,Atelier prototypage materiel,10x8,-,current,P2,main,plan JSON + apercu
+room_factory_hall,rooms,room_plan,Hall de fabrication (futur),22x16,-,future,P2,main,plan JSON + apercu
+room_advanced_lab,rooms,room_plan,Laboratoire avance + zone quantique,14x10,-,current,P2,main,plan JSON + apercu

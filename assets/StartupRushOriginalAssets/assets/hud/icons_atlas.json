@@ -1,0 +1,1240 @@
+{
+ "size": 16,
+ "tint": "multiplication par la couleur voulue (icones blanches)",
+ "atlas": "assets/hud/icons_atlas.png",
+ "icons": {
+  "access": {
+   "rect": [
+    1,
+    1,
+    16,
+    16
+   ],
+   "label_fr": "Accès"
+  },
+  "ai": {
+   "rect": [
+    19,
+    1,
+    16,
+    16
+   ],
+   "label_fr": "IA"
+  },
+  "assembly": {
+   "rect": [
+    37,
+    1,
+    16,
+    16
+   ],
+   "label_fr": "Assemblage"
+  },
+  "assignment": {
+   "rect": [
+    55,
+    1,
+    16,
+    16
+   ],
+   "label_fr": "Affectation"
+  },
+  "back": {
+   "rect": [
+    73,
+    1,
+    16,
+    16
+   ],
+   "label_fr": "Retour"
+  },
+  "bell": {
+   "rect": [
+    91,
+    1,
+    16,
+    16
+   ],
+   "label_fr": "Notifications"
+  },
+  "budget": {
+   "rect": [
+    109,
+    1,
+    16,
+    16
+   ],
+   "label_fr": "Budget"
+  },
+  "bug": {
+   "rect": [
+    127,
+    1,
+    16,
+    16
+   ],
+   "label_fr": "Bogue"
+  },
+  "calendar": {
+   "rect": [
+    145,
+    1,
+    16,
+    16
+   ],
+   "label_fr": "Calendrier"
+  },
+  "cancel": {
+   "rect": [
+    163,
+    1,
+    16,
+    16
+   ],
+   "label_fr": "Annuler"
+  },
+  "caret_down": {
+   "rect": [
+    181,
+    1,
+    16,
+    16
+   ],
+   "label_fr": "Déroulant"
+  },
+  "cash": {
+   "rect": [
+    199,
+    1,
+    16,
+    16
+   ],
+   "label_fr": "Trésorerie"
+  },
+  "chart_line": {
+   "rect": [
+    217,
+    1,
+    16,
+    16
+   ],
+   "label_fr": "Courbe"
+  },
+  "chevron_down": {
+   "rect": [
+    235,
+    1,
+    16,
+    16
+   ],
+   "label_fr": "Chevron bas"
+  },
+  "chevron_left": {
+   "rect": [
+    1,
+    19,
+    16,
+    16
+   ],
+   "label_fr": "Chevron gauche"
+  },
+  "chevron_right": {
+   "rect": [
+    19,
+    19,
+    16,
+    16
+   ],
+   "label_fr": "Chevron droit"
+  },
+  "chevron_up": {
+   "rect": [
+    37,
+    19,
+    16,
+    16
+   ],
+   "label_fr": "Chevron haut"
+  },
+  "client": {
+   "rect": [
+    55,
+    19,
+    16,
+    16
+   ],
+   "label_fr": "Client"
+  },
+  "close": {
+   "rect": [
+    73,
+    19,
+    16,
+    16
+   ],
+   "label_fr": "Fermer"
+  },
+  "cloud": {
+   "rect": [
+    91,
+    19,
+    16,
+    16
+   ],
+   "label_fr": "Nuage"
+  },
+  "code": {
+   "rect": [
+    109,
+    19,
+    16,
+    16
+   ],
+   "label_fr": "Code"
+  },
+  "comp_admin": {
+   "rect": [
+    127,
+    19,
+    16,
+    16
+   ],
+   "label_fr": "Administration"
+  },
+  "comp_api": {
+   "rect": [
+    145,
+    19,
+    16,
+    16
+   ],
+   "label_fr": "API"
+  },
+  "comp_auth": {
+   "rect": [
+    163,
+    19,
+    16,
+    16
+   ],
+   "label_fr": "Compte / connexion"
+  },
+  "comp_automation": {
+   "rect": [
+    181,
+    19,
+    16,
+    16
+   ],
+   "label_fr": "Automatisation"
+  },
+  "comp_catalog": {
+   "rect": [
+    199,
+    19,
+    16,
+    16
+   ],
+   "label_fr": "Catalogue"
+  },
+  "comp_engine": {
+   "rect": [
+    217,
+    19,
+    16,
+    16
+   ],
+   "label_fr": "Moteur"
+  },
+  "comp_feed": {
+   "rect": [
+    235,
+    19,
+    16,
+    16
+   ],
+   "label_fr": "Fil de contenu"
+  },
+  "comp_game_menu": {
+   "rect": [
+    1,
+    37,
+    16,
+    16
+   ],
+   "label_fr": "Menu de jeu"
+  },
+  "comp_infrastructure": {
+   "rect": [
+    19,
+    37,
+    16,
+    16
+   ],
+   "label_fr": "Infrastructure"
+  },
+  "comp_integration": {
+   "rect": [
+    37,
+    37,
+    16,
+    16
+   ],
+   "label_fr": "Intégration"
+  },
+  "comp_inventory": {
+   "rect": [
+    55,
+    37,
+    16,
+    16
+   ],
+   "label_fr": "Inventaire"
+  },
+  "comp_leaderboard": {
+   "rect": [
+    73,
+    37,
+    16,
+    16
+   ],
+   "label_fr": "Classement"
+  },
+  "comp_messaging": {
+   "rect": [
+    91,
+    37,
+    16,
+    16
+   ],
+   "label_fr": "Messagerie"
+  },
+  "comp_netplay": {
+   "rect": [
+    109,
+    37,
+    16,
+    16
+   ],
+   "label_fr": "Réseau (jeu)"
+  },
+  "comp_payment": {
+   "rect": [
+    127,
+    37,
+    16,
+    16
+   ],
+   "label_fr": "Paiement simulé"
+  },
+  "comp_processing": {
+   "rect": [
+    145,
+    37,
+    16,
+    16
+   ],
+   "label_fr": "Traitement"
+  },
+  "comp_profile": {
+   "rect": [
+    163,
+    37,
+    16,
+    16
+   ],
+   "label_fr": "Profil"
+  },
+  "comp_progression": {
+   "rect": [
+    181,
+    37,
+    16,
+    16
+   ],
+   "label_fr": "Progression"
+  },
+  "comp_reviews": {
+   "rect": [
+    199,
+    37,
+    16,
+    16
+   ],
+   "label_fr": "Avis"
+  },
+  "company": {
+   "rect": [
+    217,
+    37,
+    16,
+    16
+   ],
+   "label_fr": "Entreprise"
+  },
+  "competition": {
+   "rect": [
+    235,
+    37,
+    16,
+    16
+   ],
+   "label_fr": "Concurrence"
+  },
+  "components": {
+   "rect": [
+    1,
+    55,
+    16,
+    16
+   ],
+   "label_fr": "Composants"
+  },
+  "confirm": {
+   "rect": [
+    19,
+    55,
+    16,
+    16
+   ],
+   "label_fr": "Valider"
+  },
+  "contract": {
+   "rect": [
+    37,
+    55,
+    16,
+    16
+   ],
+   "label_fr": "Contrat"
+  },
+  "conversion": {
+   "rect": [
+    55,
+    55,
+    16,
+    16
+   ],
+   "label_fr": "Conversion"
+  },
+  "conveyor": {
+   "rect": [
+    73,
+    55,
+    16,
+    16
+   ],
+   "label_fr": "Convoyeur"
+  },
+  "cooling": {
+   "rect": [
+    91,
+    55,
+    16,
+    16
+   ],
+   "label_fr": "Refroidissement"
+  },
+  "cpu": {
+   "rect": [
+    109,
+    55,
+    16,
+    16
+   ],
+   "label_fr": "CPU"
+  },
+  "debt": {
+   "rect": [
+    127,
+    55,
+    16,
+    16
+   ],
+   "label_fr": "Dette"
+  },
+  "delete": {
+   "rect": [
+    145,
+    55,
+    16,
+    16
+   ],
+   "label_fr": "Supprimer"
+  },
+  "dependency": {
+   "rect": [
+    163,
+    55,
+    16,
+    16
+   ],
+   "label_fr": "Dépendance"
+  },
+  "deploy": {
+   "rect": [
+    181,
+    55,
+    16,
+    16
+   ],
+   "label_fr": "Déployer"
+  },
+  "design": {
+   "rect": [
+    199,
+    55,
+    16,
+    16
+   ],
+   "label_fr": "Design"
+  },
+  "drag_grip": {
+   "rect": [
+    217,
+    55,
+    16,
+    16
+   ],
+   "label_fr": "Poignee"
+  },
+  "edit": {
+   "rect": [
+    235,
+    55,
+    16,
+    16
+   ],
+   "label_fr": "Modifier"
+  },
+  "energy": {
+   "rect": [
+    1,
+    73,
+    16,
+    16
+   ],
+   "label_fr": "Énergie"
+  },
+  "error": {
+   "rect": [
+    19,
+    73,
+    16,
+    16
+   ],
+   "label_fr": "Erreur"
+  },
+  "expense": {
+   "rect": [
+    37,
+    73,
+    16,
+    16
+   ],
+   "label_fr": "Dépense"
+  },
+  "external": {
+   "rect": [
+    55,
+    73,
+    16,
+    16
+   ],
+   "label_fr": "Ouvrir à part"
+  },
+  "eye": {
+   "rect": [
+    73,
+    73,
+    16,
+    16
+   ],
+   "label_fr": "Afficher"
+  },
+  "filter": {
+   "rect": [
+    91,
+    73,
+    16,
+    16
+   ],
+   "label_fr": "Filtres"
+  },
+  "furnish": {
+   "rect": [
+    109,
+    73,
+    16,
+    16
+   ],
+   "label_fr": "Aménagement"
+  },
+  "gpu": {
+   "rect": [
+    127,
+    73,
+    16,
+    16
+   ],
+   "label_fr": "GPU"
+  },
+  "help": {
+   "rect": [
+    145,
+    73,
+    16,
+    16
+   ],
+   "label_fr": "Aide"
+  },
+  "home": {
+   "rect": [
+    163,
+    73,
+    16,
+    16
+   ],
+   "label_fr": "Logement"
+  },
+  "idea": {
+   "rect": [
+    181,
+    73,
+    16,
+    16
+   ],
+   "label_fr": "Idée"
+  },
+  "income": {
+   "rect": [
+    199,
+    73,
+    16,
+    16
+   ],
+   "label_fr": "Recette"
+  },
+  "info": {
+   "rect": [
+    217,
+    73,
+    16,
+    16
+   ],
+   "label_fr": "Information"
+  },
+  "invoice": {
+   "rect": [
+    235,
+    73,
+    16,
+    16
+   ],
+   "label_fr": "Facture"
+  },
+  "link": {
+   "rect": [
+    1,
+    91,
+    16,
+    16
+   ],
+   "label_fr": "Liaison"
+  },
+  "load": {
+   "rect": [
+    19,
+    91,
+    16,
+    16
+   ],
+   "label_fr": "Charger"
+  },
+  "loan": {
+   "rect": [
+    37,
+    91,
+    16,
+    16
+   ],
+   "label_fr": "Prêt"
+  },
+  "lock": {
+   "rect": [
+    55,
+    91,
+    16,
+    16
+   ],
+   "label_fr": "Verrouiller"
+  },
+  "mail": {
+   "rect": [
+    73,
+    91,
+    16,
+    16
+   ],
+   "label_fr": "Messages"
+  },
+  "maintenance": {
+   "rect": [
+    91,
+    91,
+    16,
+    16
+   ],
+   "label_fr": "Maintenance"
+  },
+  "manufacturing": {
+   "rect": [
+    109,
+    91,
+    16,
+    16
+   ],
+   "label_fr": "Fabrication"
+  },
+  "marketing": {
+   "rect": [
+    127,
+    91,
+    16,
+    16
+   ],
+   "label_fr": "Marketing"
+  },
+  "memory": {
+   "rect": [
+    145,
+    91,
+    16,
+    16
+   ],
+   "label_fr": "Mémoire"
+  },
+  "minus": {
+   "rect": [
+    163,
+    91,
+    16,
+    16
+   ],
+   "label_fr": "Retirer"
+  },
+  "monitor": {
+   "rect": [
+    181,
+    91,
+    16,
+    16
+   ],
+   "label_fr": "Écran"
+  },
+  "more": {
+   "rect": [
+    199,
+    91,
+    16,
+    16
+   ],
+   "label_fr": "Plus d’actions"
+  },
+  "move": {
+   "rect": [
+    217,
+    91,
+    16,
+    16
+   ],
+   "label_fr": "Déplacement"
+  },
+  "nav_menu": {
+   "rect": [
+    235,
+    91,
+    16,
+    16
+   ],
+   "label_fr": "Menu"
+  },
+  "network": {
+   "rect": [
+    1,
+    109,
+    16,
+    16
+   ],
+   "label_fr": "Réseau"
+  },
+  "occupancy": {
+   "rect": [
+    19,
+    109,
+    16,
+    16
+   ],
+   "label_fr": "Occupation"
+  },
+  "office": {
+   "rect": [
+    37,
+    109,
+    16,
+    16
+   ],
+   "label_fr": "Bureau"
+  },
+  "packaging": {
+   "rect": [
+    55,
+    109,
+    16,
+    16
+   ],
+   "label_fr": "Emballage"
+  },
+  "pause": {
+   "rect": [
+    73,
+    109,
+    16,
+    16
+   ],
+   "label_fr": "Pause"
+  },
+  "pc": {
+   "rect": [
+    91,
+    109,
+    16,
+    16
+   ],
+   "label_fr": "PC"
+  },
+  "place": {
+   "rect": [
+    109,
+    109,
+    16,
+    16
+   ],
+   "label_fr": "Placement"
+  },
+  "plus": {
+   "rect": [
+    127,
+    109,
+    16,
+    16
+   ],
+   "label_fr": "Ajouter"
+  },
+  "price": {
+   "rect": [
+    145,
+    109,
+    16,
+    16
+   ],
+   "label_fr": "Prix"
+  },
+  "product": {
+   "rect": [
+    163,
+    109,
+    16,
+    16
+   ],
+   "label_fr": "Produit"
+  },
+  "profit": {
+   "rect": [
+    181,
+    109,
+    16,
+    16
+   ],
+   "label_fr": "Bénéfice"
+  },
+  "project": {
+   "rect": [
+    199,
+    109,
+    16,
+    16
+   ],
+   "label_fr": "Projet"
+  },
+  "publish": {
+   "rect": [
+    217,
+    109,
+    16,
+    16
+   ],
+   "label_fr": "Publier"
+  },
+  "quality": {
+   "rect": [
+    235,
+    109,
+    16,
+    16
+   ],
+   "label_fr": "Qualité"
+  },
+  "quantum": {
+   "rect": [
+    1,
+    127,
+    16,
+    16
+   ],
+   "label_fr": "Quantique"
+  },
+  "rack": {
+   "rect": [
+    19,
+    127,
+    16,
+    16
+   ],
+   "label_fr": "Baie"
+  },
+  "receivable": {
+   "rect": [
+    37,
+    127,
+    16,
+    16
+   ],
+   "label_fr": "Créance"
+  },
+  "recruit": {
+   "rect": [
+    55,
+    127,
+    16,
+    16
+   ],
+   "label_fr": "Recruter"
+  },
+  "refresh": {
+   "rect": [
+    73,
+    127,
+    16,
+    16
+   ],
+   "label_fr": "Actualiser"
+  },
+  "retention": {
+   "rect": [
+    91,
+    127,
+    16,
+    16
+   ],
+   "label_fr": "Rétention"
+  },
+  "risk": {
+   "rect": [
+    109,
+    127,
+    16,
+    16
+   ],
+   "label_fr": "Risque"
+  },
+  "rotate": {
+   "rect": [
+    127,
+    127,
+    16,
+    16
+   ],
+   "label_fr": "Rotation"
+  },
+  "salary": {
+   "rect": [
+    145,
+    127,
+    16,
+    16
+   ],
+   "label_fr": "Salaire"
+  },
+  "save": {
+   "rect": [
+    163,
+    127,
+    16,
+    16
+   ],
+   "label_fr": "Sauvegarder"
+  },
+  "search": {
+   "rect": [
+    181,
+    127,
+    16,
+    16
+   ],
+   "label_fr": "Recherche"
+  },
+  "security": {
+   "rect": [
+    199,
+    127,
+    16,
+    16
+   ],
+   "label_fr": "Sécurité"
+  },
+  "sell": {
+   "rect": [
+    217,
+    127,
+    16,
+    16
+   ],
+   "label_fr": "Revente"
+  },
+  "server": {
+   "rect": [
+    235,
+    127,
+    16,
+    16
+   ],
+   "label_fr": "Serveur"
+  },
+  "settings": {
+   "rect": [
+    1,
+    145,
+    16,
+    16
+   ],
+   "label_fr": "Réglages"
+  },
+  "sort": {
+   "rect": [
+    19,
+    145,
+    16,
+    16
+   ],
+   "label_fr": "Trier"
+  },
+  "speed_1": {
+   "rect": [
+    37,
+    145,
+    16,
+    16
+   ],
+   "label_fr": "Vitesse 1"
+  },
+  "speed_2": {
+   "rect": [
+    55,
+    145,
+    16,
+    16
+   ],
+   "label_fr": "Vitesse 2"
+  },
+  "speed_3": {
+   "rect": [
+    73,
+    145,
+    16,
+    16
+   ],
+   "label_fr": "Vitesse 3"
+  },
+  "star": {
+   "rect": [
+    91,
+    145,
+    16,
+    16
+   ],
+   "label_fr": "Favori"
+  },
+  "statistics": {
+   "rect": [
+    109,
+    145,
+    16,
+    16
+   ],
+   "label_fr": "Statistiques"
+  },
+  "stock": {
+   "rect": [
+    127,
+    145,
+    16,
+    16
+   ],
+   "label_fr": "Stock"
+  },
+  "storage": {
+   "rect": [
+    145,
+    145,
+    16,
+    16
+   ],
+   "label_fr": "Stockage"
+  },
+  "subscription": {
+   "rect": [
+    163,
+    145,
+    16,
+    16
+   ],
+   "label_fr": "Abonnement"
+  },
+  "success": {
+   "rect": [
+    181,
+    145,
+    16,
+    16
+   ],
+   "label_fr": "Succès"
+  },
+  "support": {
+   "rect": [
+    199,
+    145,
+    16,
+    16
+   ],
+   "label_fr": "Support"
+  },
+  "team": {
+   "rect": [
+    217,
+    145,
+    16,
+    16
+   ],
+   "label_fr": "Équipe"
+  },
+  "terminal": {
+   "rect": [
+    235,
+    145,
+    16,
+    16
+   ],
+   "label_fr": "Terminal"
+  },
+  "test": {
+   "rect": [
+    1,
+    163,
+    16,
+    16
+   ],
+   "label_fr": "Test"
+  },
+  "test_station": {
+   "rect": [
+    19,
+    163,
+    16,
+    16
+   ],
+   "label_fr": "Contrôle"
+  },
+  "time": {
+   "rect": [
+    37,
+    163,
+    16,
+    16
+   ],
+   "label_fr": "Temps"
+  },
+  "training": {
+   "rect": [
+    55,
+    163,
+    16,
+    16
+   ],
+   "label_fr": "Formation"
+  },
+  "trophy": {
+   "rect": [
+    73,
+    163,
+    16,
+    16
+   ],
+   "label_fr": "Trophée"
+  },
+  "unavailable": {
+   "rect": [
+    91,
+    163,
+    16,
+    16
+   ],
+   "label_fr": "Indisponible"
+  },
+  "unlock": {
+   "rect": [
+    109,
+    163,
+    16,
+    16
+   ],
+   "label_fr": "Déverrouiller"
+  },
+  "user": {
+   "rect": [
+    127,
+    163,
+    16,
+    16
+   ],
+   "label_fr": "Utilisateur"
+  },
+  "users": {
+   "rect": [
+    145,
+    163,
+    16,
+    16
+   ],
+   "label_fr": "Utilisateurs"
+  },
+  "version": {
+   "rect": [
+    163,
+    163,
+    16,
+    16
+   ],
+   "label_fr": "Version"
+  },
+  "warning": {
+   "rect": [
+    181,
+    163,
+    16,
+    16
+   ],
+   "label_fr": "Avertissement"
+  }
+ }
+}

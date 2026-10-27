@@ -1,0 +1,3298 @@
+{
+ "id": "room_datacenter",
+ "name_fr": "Datacenter",
+ "usage": "current",
+ "tier": 6,
+ "size_tiles": [
+  16,
+  12
+ ],
+ "story": "Allees chaudes / froides, refroidissement de rangee, climatiseurs, distribution electrique, supervision.",
+ "floor": [
+  {
+   "material": "floor_raised",
+   "rect": [
+    0,
+    0,
+    16,
+    12
+   ]
+  },
+  {
+   "material": "floor_raised_vent",
+   "rect": [
+    2,
+    3,
+    10,
+    1
+   ]
+  },
+  {
+   "material": "floor_raised_vent",
+   "rect": [
+    2,
+    8,
+    10,
+    1
+   ]
+  }
+ ],
+ "walls": {
+  "left": {
+   "segments": [
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "door"
+   ],
+   "pattern": "concrete",
+   "swatches": {
+    "wall": "concrete",
+    "trim": "graphite"
+   }
+  },
+  "right": {
+   "segments": [
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain",
+    "plain"
+   ],
+   "pattern": "acoustic",
+   "swatches": {
+    "wall": "concrete",
+    "wall2": "graphite",
+    "trim": "graphite"
+   }
+  }
+ },
+ "objects": [
+  {
+   "asset": "rack_standard",
+   "tile": [
+    2,
+    2
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_patch_panel_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_cable_manager_1u"
+     },
+     {
+      "index": 3,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 4,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 5,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 7,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 9,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 11,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 12,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 14,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 15,
+      "asset": "module_ups_2u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    3,
+    2
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_patch_panel_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_gpu_4u"
+     },
+     {
+      "index": 6,
+      "asset": "module_gpu_4u"
+     },
+     {
+      "index": 10,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 11,
+      "asset": "module_compute_node_2u"
+     },
+     {
+      "index": 13,
+      "asset": "module_compute_node_2u"
+     },
+     {
+      "index": 15,
+      "asset": "module_cable_manager_1u"
+     },
+     {
+      "index": 16,
+      "asset": "module_ups_2u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    4,
+    2
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_storage_jbod_4u"
+     },
+     {
+      "index": 6,
+      "asset": "module_storage_jbod_4u"
+     },
+     {
+      "index": 10,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 12,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 14,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 15,
+      "asset": "module_server_1u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    5,
+    2
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_patch_panel_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_cable_manager_1u"
+     },
+     {
+      "index": 3,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 4,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 5,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 7,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 9,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 11,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 12,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 14,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 15,
+      "asset": "module_ups_2u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_cooler_inrow",
+   "tile": [
+    6,
+    2
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    7,
+    2
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_storage_jbod_4u"
+     },
+     {
+      "index": 6,
+      "asset": "module_storage_jbod_4u"
+     },
+     {
+      "index": 10,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 12,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 14,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 15,
+      "asset": "module_server_1u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    8,
+    2
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_patch_panel_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_cable_manager_1u"
+     },
+     {
+      "index": 3,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 4,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 5,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 7,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 9,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 11,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 12,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 14,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 15,
+      "asset": "module_ups_2u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    9,
+    2
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_patch_panel_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_gpu_4u"
+     },
+     {
+      "index": 6,
+      "asset": "module_gpu_4u"
+     },
+     {
+      "index": 10,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 11,
+      "asset": "module_compute_node_2u"
+     },
+     {
+      "index": 13,
+      "asset": "module_compute_node_2u"
+     },
+     {
+      "index": 15,
+      "asset": "module_cable_manager_1u"
+     },
+     {
+      "index": 16,
+      "asset": "module_ups_2u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    10,
+    2
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_storage_jbod_4u"
+     },
+     {
+      "index": 6,
+      "asset": "module_storage_jbod_4u"
+     },
+     {
+      "index": 10,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 12,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 14,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 15,
+      "asset": "module_server_1u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    11,
+    2
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_patch_panel_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_cable_manager_1u"
+     },
+     {
+      "index": 3,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 4,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 5,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 7,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 9,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 11,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 12,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 14,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 15,
+      "asset": "module_ups_2u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    2,
+    4
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    3,
+    4
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    4,
+    4
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    5,
+    4
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_cooler_inrow",
+   "tile": [
+    6,
+    4
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    7,
+    4
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    8,
+    4
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    9,
+    4
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    10,
+    4
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    11,
+    4
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    2,
+    7
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_patch_panel_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_cable_manager_1u"
+     },
+     {
+      "index": 3,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 4,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 5,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 7,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 9,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 11,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 12,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 14,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 15,
+      "asset": "module_ups_2u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_high_density",
+   "tile": [
+    3,
+    7
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_patch_panel_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_gpu_4u"
+     },
+     {
+      "index": 6,
+      "asset": "module_gpu_4u"
+     },
+     {
+      "index": 10,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 11,
+      "asset": "module_compute_node_2u"
+     },
+     {
+      "index": 13,
+      "asset": "module_compute_node_2u"
+     },
+     {
+      "index": 15,
+      "asset": "module_cable_manager_1u"
+     },
+     {
+      "index": 16,
+      "asset": "module_ups_2u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    4,
+    7
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_storage_jbod_4u"
+     },
+     {
+      "index": 6,
+      "asset": "module_storage_jbod_4u"
+     },
+     {
+      "index": 10,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 12,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 14,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 15,
+      "asset": "module_server_1u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    5,
+    7
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_patch_panel_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_cable_manager_1u"
+     },
+     {
+      "index": 3,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 4,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 5,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 7,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 9,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 11,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 12,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 14,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 15,
+      "asset": "module_ups_2u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_high_density",
+   "tile": [
+    6,
+    7
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_patch_panel_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_gpu_4u"
+     },
+     {
+      "index": 6,
+      "asset": "module_gpu_4u"
+     },
+     {
+      "index": 10,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 11,
+      "asset": "module_compute_node_2u"
+     },
+     {
+      "index": 13,
+      "asset": "module_compute_node_2u"
+     },
+     {
+      "index": 15,
+      "asset": "module_cable_manager_1u"
+     },
+     {
+      "index": 16,
+      "asset": "module_ups_2u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_cooler_inrow",
+   "tile": [
+    7,
+    7
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    8,
+    7
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_patch_panel_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_cable_manager_1u"
+     },
+     {
+      "index": 3,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 4,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 5,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 7,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 9,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 11,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 12,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 14,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 15,
+      "asset": "module_ups_2u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_high_density",
+   "tile": [
+    9,
+    7
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_patch_panel_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_gpu_4u"
+     },
+     {
+      "index": 6,
+      "asset": "module_gpu_4u"
+     },
+     {
+      "index": 10,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 11,
+      "asset": "module_compute_node_2u"
+     },
+     {
+      "index": 13,
+      "asset": "module_compute_node_2u"
+     },
+     {
+      "index": 15,
+      "asset": "module_cable_manager_1u"
+     },
+     {
+      "index": 16,
+      "asset": "module_ups_2u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    10,
+    7
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_storage_jbod_4u"
+     },
+     {
+      "index": 6,
+      "asset": "module_storage_jbod_4u"
+     },
+     {
+      "index": 10,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 12,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 14,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 15,
+      "asset": "module_server_1u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    11,
+    7
+   ],
+   "facing": "sw",
+   "children": {
+    "slots": [
+     {
+      "index": 0,
+      "asset": "module_patch_panel_1u"
+     },
+     {
+      "index": 1,
+      "asset": "module_network_switch_1u"
+     },
+     {
+      "index": 2,
+      "asset": "module_cable_manager_1u"
+     },
+     {
+      "index": 3,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 4,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 5,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 7,
+      "asset": "module_compute_2u"
+     },
+     {
+      "index": 9,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 11,
+      "asset": "module_blank_1u"
+     },
+     {
+      "index": 12,
+      "asset": "module_storage_2u"
+     },
+     {
+      "index": 14,
+      "asset": "module_server_1u"
+     },
+     {
+      "index": 15,
+      "asset": "module_ups_2u"
+     }
+    ]
+   }
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    2,
+    9
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    3,
+    9
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    4,
+    9
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    5,
+    9
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    6,
+    9
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_cooler_inrow",
+   "tile": [
+    7,
+    9
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    8,
+    9
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    9,
+    9
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    10,
+    9
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "rack_standard",
+   "tile": [
+    11,
+    9
+   ],
+   "facing": "ne"
+  },
+  {
+   "asset": "crac_unit",
+   "tile": [
+    0,
+    2
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "crac_unit",
+   "tile": [
+    0,
+    6
+   ],
+   "facing": "se"
+  },
+  {
+   "asset": "power_distribution_cabinet",
+   "tile": [
+    12,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "power_distribution_cabinet",
+   "tile": [
+    13,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "ups_floor",
+   "tile": [
+    14,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "ups_floor",
+   "tile": [
+    15,
+    0
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    2,
+    2
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    3,
+    2
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    4,
+    2
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    5,
+    2
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    6,
+    2
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    7,
+    2
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    8,
+    2
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    9,
+    2
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    10,
+    2
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    11,
+    2
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    2,
+    4
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    3,
+    4
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    4,
+    4
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    5,
+    4
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    6,
+    4
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    7,
+    4
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    8,
+    4
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    9,
+    4
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    10,
+    4
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    11,
+    4
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    2,
+    7
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    3,
+    7
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    4,
+    7
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    5,
+    7
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    6,
+    7
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    7,
+    7
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    8,
+    7
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    9,
+    7
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    10,
+    7
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    11,
+    7
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    2,
+    9
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    3,
+    9
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    4,
+    9
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    5,
+    9
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    6,
+    9
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    7,
+    9
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    8,
+    9
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    9,
+    9
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    10,
+    9
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "cable_tray_straight",
+   "tile": [
+    11,
+    9
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "security_cage_panel",
+   "tile": [
+    2,
+    11
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "security_cage_panel",
+   "tile": [
+    3,
+    11
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "security_cage_panel",
+   "tile": [
+    4,
+    11
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "security_cage_panel",
+   "tile": [
+    5,
+    11
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "security_cage_panel",
+   "tile": [
+    7,
+    11
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "security_cage_panel",
+   "tile": [
+    8,
+    11
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "security_cage_panel",
+   "tile": [
+    9,
+    11
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "security_cage_panel",
+   "tile": [
+    10,
+    11
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "security_cage_panel",
+   "tile": [
+    11,
+    11
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "security_cage_door",
+   "tile": [
+    6,
+    11
+   ],
+   "facing": "sw"
+  },
+  {
+   "asset": "supervision_console",
+   "tile": [
+    13,
+    7
+   ],
+   "facing": "se",
+   "children": {
+    "chair": {
+     "asset": "chair_ergonomic",
+     "character": {
+      "base": "employee_m_03",
+      "hair": "hair_short_crop",
+      "hair_ramp": "hair_gray"
+     }
+    }
+   }
+  }
+ ],
+ "entrances": [
+  {
+   "wall": "left",
+   "index": 11,
+   "kind": "door",
+   "access_tile": [
+    0,
+    11
+   ]
+  }
+ ],
+ "zones": [
+  {
+   "name": "Allee froide A",
+   "rect": [
+    2,
+    3,
+    10,
+    1
+   ]
+  },
+  {
+   "name": "Allee froide B",
+   "rect": [
+    2,
+    8,
+    10,
+    1
+   ]
+  },
+  {
+   "name": "Allee chaude",
+   "rect": [
+    2,
+    5,
+    10,
+    2
+   ]
+  },
+  {
+   "name": "Supervision",
+   "rect": [
+    13,
+    7,
+    3,
+    4
+   ]
+  }
+ ],
+ "visible_walls": {
+  "left": "mur gauche (orientation se) le long de V, U=0",
+  "right": "mur droit (orientation sw) le long de U, V=0",
+  "front": "aucun : coupe avant (bords de dalle floor_edge)"
+ },
+ "foreground": "aucun mur avant ; les objets 'occluders' peuvent etre estompes s'ils masquent un personnage ou la selection",
+ "computed": {
+  "occupied_cells": [
+   [
+    0,
+    2
+   ],
+   [
+    0,
+    3
+   ],
+   [
+    0,
+    6
+   ],
+   [
+    0,
+    7
+   ],
+   [
+    2,
+    2
+   ],
+   [
+    2,
+    4
+   ],
+   [
+    2,
+    7
+   ],
+   [
+    2,
+    9
+   ],
+   [
+    2,
+    11
+   ],
+   [
+    3,
+    2
+   ],
+   [
+    3,
+    4
+   ],
+   [
+    3,
+    7
+   ],
+   [
+    3,
+    9
+   ],
+   [
+    3,
+    11
+   ],
+   [
+    4,
+    2
+   ],
+   [
+    4,
+    4
+   ],
+   [
+    4,
+    7
+   ],
+   [
+    4,
+    9
+   ],
+   [
+    4,
+    11
+   ],
+   [
+    5,
+    2
+   ],
+   [
+    5,
+    4
+   ],
+   [
+    5,
+    7
+   ],
+   [
+    5,
+    9
+   ],
+   [
+    5,
+    11
+   ],
+   [
+    6,
+    2
+   ],
+   [
+    6,
+    4
+   ],
+   [
+    6,
+    7
+   ],
+   [
+    6,
+    9
+   ],
+   [
+    7,
+    2
+   ],
+   [
+    7,
+    4
+   ],
+   [
+    7,
+    7
+   ],
+   [
+    7,
+    9
+   ],
+   [
+    7,
+    11
+   ],
+   [
+    8,
+    2
+   ],
+   [
+    8,
+    4
+   ],
+   [
+    8,
+    7
+   ],
+   [
+    8,
+    9
+   ],
+   [
+    8,
+    11
+   ],
+   [
+    9,
+    2
+   ],
+   [
+    9,
+    4
+   ],
+   [
+    9,
+    7
+   ],
+   [
+    9,
+    9
+   ],
+   [
+    9,
+    11
+   ],
+   [
+    10,
+    2
+   ],
+   [
+    10,
+    4
+   ],
+   [
+    10,
+    7
+   ],
+   [
+    10,
+    9
+   ],
+   [
+    10,
+    11
+   ],
+   [
+    11,
+    2
+   ],
+   [
+    11,
+    4
+   ],
+   [
+    11,
+    7
+   ],
+   [
+    11,
+    9
+   ],
+   [
+    11,
+    11
+   ],
+   [
+    12,
+    0
+   ],
+   [
+    13,
+    0
+   ],
+   [
+    13,
+    7
+   ],
+   [
+    13,
+    8
+   ],
+   [
+    13,
+    9
+   ],
+   [
+    14,
+    0
+   ],
+   [
+    15,
+    0
+   ]
+  ],
+  "reserved_access_cells": [
+   [
+    0,
+    11
+   ],
+   [
+    1,
+    2
+   ],
+   [
+    1,
+    3
+   ],
+   [
+    1,
+    6
+   ],
+   [
+    1,
+    7
+   ],
+   [
+    2,
+    3
+   ],
+   [
+    2,
+    8
+   ],
+   [
+    3,
+    3
+   ],
+   [
+    3,
+    8
+   ],
+   [
+    4,
+    3
+   ],
+   [
+    4,
+    8
+   ],
+   [
+    5,
+    3
+   ],
+   [
+    5,
+    8
+   ],
+   [
+    6,
+    3
+   ],
+   [
+    6,
+    8
+   ],
+   [
+    7,
+    3
+   ],
+   [
+    7,
+    8
+   ],
+   [
+    8,
+    3
+   ],
+   [
+    8,
+    8
+   ],
+   [
+    9,
+    3
+   ],
+   [
+    9,
+    8
+   ],
+   [
+    10,
+    3
+   ],
+   [
+    10,
+    8
+   ],
+   [
+    11,
+    3
+   ],
+   [
+    11,
+    8
+   ],
+   [
+    12,
+    1
+   ],
+   [
+    13,
+    1
+   ],
+   [
+    14,
+    1
+   ],
+   [
+    14,
+    7
+   ],
+   [
+    14,
+    8
+   ],
+   [
+    14,
+    9
+   ],
+   [
+    15,
+    1
+   ]
+  ],
+  "buildable_cells": [
+   [
+    0,
+    0
+   ],
+   [
+    0,
+    1
+   ],
+   [
+    0,
+    4
+   ],
+   [
+    0,
+    5
+   ],
+   [
+    0,
+    8
+   ],
+   [
+    0,
+    9
+   ],
+   [
+    0,
+    10
+   ],
+   [
+    1,
+    0
+   ],
+   [
+    1,
+    1
+   ],
+   [
+    1,
+    4
+   ],
+   [
+    1,
+    5
+   ],
+   [
+    1,
+    8
+   ],
+   [
+    1,
+    9
+   ],
+   [
+    1,
+    10
+   ],
+   [
+    1,
+    11
+   ],
+   [
+    2,
+    0
+   ],
+   [
+    2,
+    1
+   ],
+   [
+    2,
+    5
+   ],
+   [
+    2,
+    6
+   ],
+   [
+    2,
+    10
+   ],
+   [
+    3,
+    0
+   ],
+   [
+    3,
+    1
+   ],
+   [
+    3,
+    5
+   ],
+   [
+    3,
+    6
+   ],
+   [
+    3,
+    10
+   ],
+   [
+    4,
+    0
+   ],
+   [
+    4,
+    1
+   ],
+   [
+    4,
+    5
+   ],
+   [
+    4,
+    6
+   ],
+   [
+    4,
+    10
+   ],
+   [
+    5,
+    0
+   ],
+   [
+    5,
+    1
+   ],
+   [
+    5,
+    5
+   ],
+   [
+    5,
+    6
+   ],
+   [
+    5,
+    10
+   ],
+   [
+    6,
+    0
+   ],
+   [
+    6,
+    1
+   ],
+   [
+    6,
+    5
+   ],
+   [
+    6,
+    6
+   ],
+   [
+    6,
+    10
+   ],
+   [
+    6,
+    11
+   ],
+   [
+    7,
+    0
+   ],
+   [
+    7,
+    1
+   ],
+   [
+    7,
+    5
+   ],
+   [
+    7,
+    6
+   ],
+   [
+    7,
+    10
+   ],
+   [
+    8,
+    0
+   ],
+   [
+    8,
+    1
+   ],
+   [
+    8,
+    5
+   ],
+   [
+    8,
+    6
+   ],
+   [
+    8,
+    10
+   ],
+   [
+    9,
+    0
+   ],
+   [
+    9,
+    1
+   ],
+   [
+    9,
+    5
+   ],
+   [
+    9,
+    6
+   ],
+   [
+    9,
+    10
+   ],
+   [
+    10,
+    0
+   ],
+   [
+    10,
+    1
+   ],
+   [
+    10,
+    5
+   ],
+   [
+    10,
+    6
+   ],
+   [
+    10,
+    10
+   ],
+   [
+    11,
+    0
+   ],
+   [
+    11,
+    1
+   ],
+   [
+    11,
+    5
+   ],
+   [
+    11,
+    6
+   ],
+   [
+    11,
+    10
+   ],
+   [
+    12,
+    2
+   ],
+   [
+    12,
+    3
+   ],
+   [
+    12,
+    4
+   ],
+   [
+    12,
+    5
+   ],
+   [
+    12,
+    6
+   ],
+   [
+    12,
+    7
+   ],
+   [
+    12,
+    8
+   ],
+   [
+    12,
+    9
+   ],
+   [
+    12,
+    10
+   ],
+   [
+    12,
+    11
+   ],
+   [
+    13,
+    2
+   ],
+   [
+    13,
+    3
+   ],
+   [
+    13,
+    4
+   ],
+   [
+    13,
+    5
+   ],
+   [
+    13,
+    6
+   ],
+   [
+    13,
+    10
+   ],
+   [
+    13,
+    11
+   ],
+   [
+    14,
+    2
+   ],
+   [
+    14,
+    3
+   ],
+   [
+    14,
+    4
+   ],
+   [
+    14,
+    5
+   ],
+   [
+    14,
+    6
+   ],
+   [
+    14,
+    10
+   ],
+   [
+    14,
+    11
+   ],
+   [
+    15,
+    2
+   ],
+   [
+    15,
+    3
+   ],
+   [
+    15,
+    4
+   ],
+   [
+    15,
+    5
+   ],
+   [
+    15,
+    6
+   ],
+   [
+    15,
+    7
+   ],
+   [
+    15,
+    8
+   ],
+   [
+    15,
+    9
+   ],
+   [
+    15,
+    10
+   ],
+   [
+    15,
+    11
+   ]
+  ],
+  "buildable_count": 100,
+  "cell_count": 192,
+  "free_wall_item_slots": {
+   "left": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "right": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+   ]
+  },
+  "occluders": [
+   {
+    "asset": "rack_standard",
+    "tile": [
+     2,
+     2
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     3,
+     2
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     4,
+     2
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     5,
+     2
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_cooler_inrow",
+    "tile": [
+     6,
+     2
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     7,
+     2
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     8,
+     2
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     9,
+     2
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     10,
+     2
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     11,
+     2
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     2,
+     4
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     3,
+     4
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     4,
+     4
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     5,
+     4
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_cooler_inrow",
+    "tile": [
+     6,
+     4
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     7,
+     4
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     8,
+     4
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     9,
+     4
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     10,
+     4
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     11,
+     4
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     2,
+     7
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_high_density",
+    "tile": [
+     3,
+     7
+    ],
+    "height_px": 103
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     4,
+     7
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     5,
+     7
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_high_density",
+    "tile": [
+     6,
+     7
+    ],
+    "height_px": 103
+   },
+   {
+    "asset": "rack_cooler_inrow",
+    "tile": [
+     7,
+     7
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     8,
+     7
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_high_density",
+    "tile": [
+     9,
+     7
+    ],
+    "height_px": 103
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     10,
+     7
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     11,
+     7
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     2,
+     9
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     3,
+     9
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     4,
+     9
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     5,
+     9
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     6,
+     9
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_cooler_inrow",
+    "tile": [
+     7,
+     9
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     8,
+     9
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     9,
+     9
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     10,
+     9
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "rack_standard",
+    "tile": [
+     11,
+     9
+    ],
+    "height_px": 96
+   },
+   {
+    "asset": "crac_unit",
+    "tile": [
+     0,
+     2
+    ],
+    "height_px": 76
+   },
+   {
+    "asset": "crac_unit",
+    "tile": [
+     0,
+     6
+    ],
+    "height_px": 76
+   },
+   {
+    "asset": "power_distribution_cabinet",
+    "tile": [
+     12,
+     0
+    ],
+    "height_px": 84
+   },
+   {
+    "asset": "power_distribution_cabinet",
+    "tile": [
+     13,
+     0
+    ],
+    "height_px": 84
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     2,
+     2
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     3,
+     2
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     4,
+     2
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     5,
+     2
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     6,
+     2
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     7,
+     2
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     8,
+     2
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     9,
+     2
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     10,
+     2
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     11,
+     2
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     2,
+     4
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     3,
+     4
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     4,
+     4
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     5,
+     4
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     6,
+     4
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     7,
+     4
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     8,
+     4
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     9,
+     4
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     10,
+     4
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     11,
+     4
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     2,
+     7
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     3,
+     7
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     4,
+     7
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     5,
+     7
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     6,
+     7
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     7,
+     7
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     8,
+     7
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     9,
+     7
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     10,
+     7
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     11,
+     7
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     2,
+     9
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     3,
+     9
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     4,
+     9
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     5,
+     9
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     6,
+     9
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     7,
+     9
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     8,
+     9
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     9,
+     9
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     10,
+     9
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "cable_tray_straight",
+    "tile": [
+     11,
+     9
+    ],
+    "height_px": 112
+   },
+   {
+    "asset": "security_cage_panel",
+    "tile": [
+     2,
+     11
+    ],
+    "height_px": 88
+   },
+   {
+    "asset": "security_cage_panel",
+    "tile": [
+     3,
+     11
+    ],
+    "height_px": 88
+   },
+   {
+    "asset": "security_cage_panel",
+    "tile": [
+     4,
+     11
+    ],
+    "height_px": 88
+   },
+   {
+    "asset": "security_cage_panel",
+    "tile": [
+     5,
+     11
+    ],
+    "height_px": 88
+   },
+   {
+    "asset": "security_cage_panel",
+    "tile": [
+     7,
+     11
+    ],
+    "height_px": 88
+   },
+   {
+    "asset": "security_cage_panel",
+    "tile": [
+     8,
+     11
+    ],
+    "height_px": 88
+   },
+   {
+    "asset": "security_cage_panel",
+    "tile": [
+     9,
+     11
+    ],
+    "height_px": 88
+   },
+   {
+    "asset": "security_cage_panel",
+    "tile": [
+     10,
+     11
+    ],
+    "height_px": 88
+   },
+   {
+    "asset": "security_cage_panel",
+    "tile": [
+     11,
+     11
+    ],
+    "height_px": 88
+   },
+   {
+    "asset": "security_cage_door",
+    "tile": [
+     6,
+     11
+    ],
+    "height_px": 88
+   }
+  ],
+  "workstations": 1
+ },
+ "validation": {
+  "issues": [],
+  "ok": true
+ }
+}

@@ -1,0 +1,7751 @@
+[
+ {
+  "id": "workbench_electronics",
+  "category": "laboratories",
+  "subcategory": "bench",
+  "name_fr": "Etabli electronique",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "workbench_electronics",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 72,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "workstation",
+   "lab"
+  ],
+  "notes": "Tapis antistatique, panneau perfore avec outils, etagere a bacs, bandeau de prises.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     106,
+     120
+    ],
+    "anchor": [
+     63,
+     72
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/workbench_electronics__se.png",
+      "mask": "masks/laboratories/workbench_electronics__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "fabric",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/workbench_electronics__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -72
+     ],
+     [
+      32,
+      -56
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -40
+     ]
+    ],
+    "sockets": {
+     "bench_left": {
+      "offset_px": [
+       -30,
+       5
+      ],
+      "world_su": [
+       20.0,
+       49.92,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "gauche du plan"
+     },
+     "bench_center": {
+      "offset_px": [
+       -14,
+       -5
+      ],
+      "world_su": [
+       18.0,
+       32.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "centre du plan"
+     },
+     "bench_right": {
+      "offset_px": [
+       6,
+       -13
+      ],
+      "world_su": [
+       20.0,
+       14.08,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "droite du plan"
+     },
+     "shelf_left": {
+      "offset_px": [
+       -41,
+       -30
+      ],
+      "world_su": [
+       7.0,
+       48.0,
+       58
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "etagere haute gauche"
+     },
+     "shelf_right": {
+      "offset_px": [
+       -9,
+       -46
+      ],
+      "world_su": [
+       7.0,
+       16.0,
+       58
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "etagere haute droite"
+     },
+     "chair": {
+      "offset_px": [
+       12,
+       38
+      ],
+      "world_su": [
+       44.0,
+       32.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "nw",
+      "draw": "workstation",
+      "note": "technicien"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     120,
+     120
+    ],
+    "anchor": [
+     31,
+     72
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/workbench_electronics__sw.png",
+      "mask": "masks/laboratories/workbench_electronics__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "fabric",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/workbench_electronics__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -72
+     ],
+     [
+      64,
+      -40
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -56
+     ]
+    ],
+    "sockets": {
+     "bench_left": {
+      "offset_px": [
+       -6,
+       -13
+      ],
+      "world_su": [
+       14.08,
+       20.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "gauche du plan"
+     },
+     "bench_center": {
+      "offset_px": [
+       14,
+       -5
+      ],
+      "world_su": [
+       32.0,
+       18.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "centre du plan"
+     },
+     "bench_right": {
+      "offset_px": [
+       30,
+       5
+      ],
+      "world_su": [
+       49.92,
+       20.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "droite du plan"
+     },
+     "shelf_left": {
+      "offset_px": [
+       9,
+       -46
+      ],
+      "world_su": [
+       16.0,
+       7.0,
+       58
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "etagere haute gauche"
+     },
+     "shelf_right": {
+      "offset_px": [
+       41,
+       -30
+      ],
+      "world_su": [
+       48.0,
+       7.0,
+       58
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "etagere haute droite"
+     },
+     "chair": {
+      "offset_px": [
+       -12,
+       38
+      ],
+      "world_su": [
+       32.0,
+       44.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "ne",
+      "draw": "workstation",
+      "note": "technicien"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     120,
+     108
+    ],
+    "anchor": [
+     63,
+     60
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/workbench_electronics__nw.png",
+      "mask": "masks/laboratories/workbench_electronics__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/workbench_electronics__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       1
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -72
+     ],
+     [
+      32,
+      -56
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -40
+     ]
+    ],
+    "sockets": {
+     "bench_left": {
+      "offset_px": [
+       -2,
+       -17
+      ],
+      "world_su": [
+       12.0,
+       14.08,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": "gauche du plan"
+     },
+     "bench_center": {
+      "offset_px": [
+       -18,
+       -7
+      ],
+      "world_su": [
+       14.0,
+       32.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": "centre du plan"
+     },
+     "bench_right": {
+      "offset_px": [
+       -38,
+       1
+      ],
+      "world_su": [
+       12.0,
+       49.92,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": "droite du plan"
+     },
+     "shelf_left": {
+      "offset_px": [
+       9,
+       -37
+      ],
+      "world_su": [
+       25.0,
+       16.0,
+       58
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": "etagere haute gauche"
+     },
+     "shelf_right": {
+      "offset_px": [
+       -23,
+       -21
+      ],
+      "world_su": [
+       25.0,
+       48.0,
+       58
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": "etagere haute droite"
+     },
+     "chair": {
+      "offset_px": [
+       -44,
+       10
+      ],
+      "world_su": [
+       -12.0,
+       32.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "se",
+      "draw": "workstation",
+      "note": "technicien"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     106,
+     108
+    ],
+    "anchor": [
+     31,
+     60
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/workbench_electronics__ne.png",
+      "mask": "masks/laboratories/workbench_electronics__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "secondary",
+       "fabric",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/workbench_electronics__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -72
+     ],
+     [
+      64,
+      -40
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -56
+     ]
+    ],
+    "sockets": {
+     "bench_left": {
+      "offset_px": [
+       38,
+       1
+      ],
+      "world_su": [
+       49.92,
+       12.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": "gauche du plan"
+     },
+     "bench_center": {
+      "offset_px": [
+       18,
+       -7
+      ],
+      "world_su": [
+       32.0,
+       14.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": "centre du plan"
+     },
+     "bench_right": {
+      "offset_px": [
+       2,
+       -17
+      ],
+      "world_su": [
+       14.08,
+       12.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": "droite du plan"
+     },
+     "shelf_left": {
+      "offset_px": [
+       23,
+       -21
+      ],
+      "world_su": [
+       48.0,
+       25.0,
+       58
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": "etagere haute gauche"
+     },
+     "shelf_right": {
+      "offset_px": [
+       -9,
+       -37
+      ],
+      "world_su": [
+       16.0,
+       25.0,
+       58
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": "etagere haute droite"
+     },
+     "chair": {
+      "offset_px": [
+       44,
+       10
+      ],
+      "world_su": [
+       32.0,
+       -12.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "sw",
+      "draw": "workstation",
+      "note": "technicien"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "fabric": "teal",
+   "metal": "steel",
+   "secondary": "kraft",
+   "accent": "sun"
+  },
+  "fixed_parts": [
+   {
+    "channel": "accent",
+    "kept": "sun",
+    "fixed": [
+     "coral",
+     "sky",
+     "teal"
+    ]
+   }
+  ],
+  "sockets_def": [
+   {
+    "name": "bench_left",
+    "accepts": [
+     "bench_item",
+     "desk_item",
+     "instrument"
+    ],
+    "local": [
+     14.08,
+     12,
+     30
+    ],
+    "facing_rel": "same",
+    "note": "gauche du plan"
+   },
+   {
+    "name": "bench_center",
+    "accepts": [
+     "bench_item",
+     "desk_item",
+     "instrument"
+    ],
+    "local": [
+     32.0,
+     14,
+     30
+    ],
+    "facing_rel": "same",
+    "note": "centre du plan"
+   },
+   {
+    "name": "bench_right",
+    "accepts": [
+     "bench_item",
+     "desk_item",
+     "instrument"
+    ],
+    "local": [
+     49.92,
+     12,
+     30
+    ],
+    "facing_rel": "same",
+    "note": "droite du plan"
+   },
+   {
+    "name": "shelf_left",
+    "accepts": [
+     "bench_item",
+     "desk_item",
+     "instrument"
+    ],
+    "local": [
+     16.0,
+     25,
+     58
+    ],
+    "facing_rel": "same",
+    "note": "etagere haute gauche"
+   },
+   {
+    "name": "shelf_right",
+    "accepts": [
+     "bench_item",
+     "desk_item",
+     "instrument"
+    ],
+    "local": [
+     48.0,
+     25,
+     58
+    ],
+    "facing_rel": "same",
+    "note": "etagere haute droite"
+   },
+   {
+    "name": "chair",
+    "accepts": [
+     "chair"
+    ],
+    "local": [
+     32.0,
+     -12,
+     0
+    ],
+    "facing_rel": "opposite",
+    "note": "technicien"
+   }
+  ]
+ },
+ {
+  "id": "test_bench_pc",
+  "category": "laboratories",
+  "subcategory": "bench",
+  "name_fr": "Banc de test PC",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "test_bench_pc",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 52,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "workstation",
+   "lab"
+  ],
+  "notes": "PC a cadre ouvert (carte mere, ventirad, carte graphique, alimentation), ecran de benchmark, multimetre.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     106,
+     96
+    ],
+    "anchor": [
+     63,
+     48
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/test_bench_pc__se.png",
+      "mask": "masks/laboratories/test_bench_pc__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/test_bench_pc__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -52
+     ],
+     [
+      32,
+      -36
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -20
+     ]
+    ],
+    "sockets": {
+     "bench_left": {
+      "offset_px": [
+       -30,
+       5
+      ],
+      "world_su": [
+       20.0,
+       49.92,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "gauche du plan"
+     },
+     "chair": {
+      "offset_px": [
+       12,
+       38
+      ],
+      "world_su": [
+       44.0,
+       32.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "nw",
+      "draw": "workstation",
+      "note": ""
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -12,
+        -35
+       ],
+       [
+        4,
+        -43
+       ],
+       [
+        4,
+        -29
+       ],
+       [
+        -12,
+        -21
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     107,
+     82
+    ],
+    "anchor": [
+     31,
+     34
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/test_bench_pc__sw.png",
+      "mask": "masks/laboratories/test_bench_pc__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/test_bench_pc__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -52
+     ],
+     [
+      64,
+      -20
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -36
+     ]
+    ],
+    "sockets": {
+     "bench_left": {
+      "offset_px": [
+       -6,
+       -13
+      ],
+      "world_su": [
+       14.08,
+       20.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "gauche du plan"
+     },
+     "chair": {
+      "offset_px": [
+       -12,
+       38
+      ],
+      "world_su": [
+       32.0,
+       44.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "ne",
+      "draw": "workstation",
+      "note": ""
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        35,
+        -24
+       ],
+       [
+        51,
+        -16
+       ],
+       [
+        51,
+        -2
+       ],
+       [
+        35,
+        -10
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     106,
+     83
+    ],
+    "anchor": [
+     63,
+     35
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/test_bench_pc__nw.png",
+      "mask": "masks/laboratories/test_bench_pc__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/test_bench_pc__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       1
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -52
+     ],
+     [
+      32,
+      -36
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -20
+     ]
+    ],
+    "sockets": {
+     "bench_left": {
+      "offset_px": [
+       -2,
+       -17
+      ],
+      "world_su": [
+       12.0,
+       14.08,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": "gauche du plan"
+     },
+     "chair": {
+      "offset_px": [
+       -44,
+       10
+      ],
+      "world_su": [
+       -12.0,
+       32.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "se",
+      "draw": "workstation",
+      "note": ""
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -19,
+        -17
+       ],
+       [
+        -35,
+        -9
+       ],
+       [
+        -35,
+        5
+       ],
+       [
+        -19,
+        -3
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     106,
+     88
+    ],
+    "anchor": [
+     31,
+     40
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/test_bench_pc__ne.png",
+      "mask": "masks/laboratories/test_bench_pc__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/test_bench_pc__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -52
+     ],
+     [
+      64,
+      -20
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -36
+     ]
+    ],
+    "sockets": {
+     "bench_left": {
+      "offset_px": [
+       38,
+       1
+      ],
+      "world_su": [
+       49.92,
+       12.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": "gauche du plan"
+     },
+     "chair": {
+      "offset_px": [
+       44,
+       10
+      ],
+      "world_su": [
+       32.0,
+       -12.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "sw",
+      "draw": "workstation",
+      "note": ""
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -2,
+        -28
+       ],
+       [
+        -18,
+        -36
+       ],
+       [
+        -18,
+        -22
+       ],
+       [
+        -2,
+        -14
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "metal": "steel",
+   "accent": "sky",
+   "screen": "display"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "graphite"
+    ]
+   },
+   {
+    "channel": "accent",
+    "kept": "sky",
+    "fixed": [
+     "coral",
+     "sun"
+    ]
+   },
+   {
+    "channel": "screen",
+    "kept": "display",
+    "fixed": [
+     "screen"
+    ]
+   }
+  ],
+  "sockets_def": [
+   {
+    "name": "bench_left",
+    "accepts": [
+     "bench_item",
+     "desk_item",
+     "instrument"
+    ],
+    "local": [
+     14.08,
+     12,
+     30
+    ],
+    "facing_rel": "same",
+    "note": "gauche du plan"
+   },
+   {
+    "name": "chair",
+    "accepts": [
+     "chair"
+    ],
+    "local": [
+     32,
+     -12,
+     0
+    ],
+    "facing_rel": "opposite",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "id": "test_bench_embedded",
+  "category": "laboratories",
+  "subcategory": "bench",
+  "name_fr": "Banc de test mobile / embarque",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "test_bench_embedded",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 46,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "workstation",
+   "lab"
+  ],
+  "notes": "Cartes de developpement sur entretoises, telephones et tablette en pinces, analyseur logique et fils.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     106,
+     94
+    ],
+    "anchor": [
+     63,
+     46
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/test_bench_embedded__se.png",
+      "mask": "masks/laboratories/test_bench_embedded__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "wood",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/test_bench_embedded__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -46
+     ],
+     [
+      32,
+      -30
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -14
+     ]
+    ],
+    "sockets": {
+     "bench_right": {
+      "offset_px": [
+       10,
+       -13
+      ],
+      "world_su": [
+       22.0,
+       12.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "chair": {
+      "offset_px": [
+       12,
+       38
+      ],
+      "world_su": [
+       44.0,
+       32.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "nw",
+      "draw": "workstation",
+      "note": ""
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     110,
+     79
+    ],
+    "anchor": [
+     31,
+     31
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/test_bench_embedded__sw.png",
+      "mask": "masks/laboratories/test_bench_embedded__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "wood",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/test_bench_embedded__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -46
+     ],
+     [
+      64,
+      -14
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -30
+     ]
+    ],
+    "sockets": {
+     "bench_right": {
+      "offset_px": [
+       30,
+       7
+      ],
+      "world_su": [
+       52.0,
+       22.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "chair": {
+      "offset_px": [
+       -12,
+       38
+      ],
+      "world_su": [
+       32.0,
+       44.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "ne",
+      "draw": "workstation",
+      "note": ""
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     106,
+     79
+    ],
+    "anchor": [
+     63,
+     31
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/test_bench_embedded__nw.png",
+      "mask": "masks/laboratories/test_bench_embedded__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "wood",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/test_bench_embedded__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       1
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -46
+     ],
+     [
+      32,
+      -30
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -14
+     ]
+    ],
+    "sockets": {
+     "bench_right": {
+      "offset_px": [
+       -42,
+       1
+      ],
+      "world_su": [
+       10.0,
+       52.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "chair": {
+      "offset_px": [
+       -44,
+       10
+      ],
+      "world_su": [
+       -12.0,
+       32.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "se",
+      "draw": "workstation",
+      "note": ""
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     106,
+     87
+    ],
+    "anchor": [
+     31,
+     39
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/test_bench_embedded__ne.png",
+      "mask": "masks/laboratories/test_bench_embedded__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "wood",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/test_bench_embedded__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -46
+     ],
+     [
+      64,
+      -14
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -30
+     ]
+    ],
+    "sockets": {
+     "bench_right": {
+      "offset_px": [
+       2,
+       -19
+      ],
+      "world_su": [
+       12.0,
+       10.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "chair": {
+      "offset_px": [
+       44,
+       10
+      ],
+      "world_su": [
+       32.0,
+       -12.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "sw",
+      "draw": "workstation",
+      "note": ""
+     }
+    }
+   }
+  },
+  "channels": {
+   "wood": "birch",
+   "metal": "steel",
+   "primary": "graphite",
+   "screen": "display",
+   "accent": "coral"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "brass",
+     "graphite"
+    ]
+   },
+   {
+    "channel": "primary",
+    "kept": "graphite",
+    "fixed": [
+     "plastic"
+    ]
+   }
+  ],
+  "sockets_def": [
+   {
+    "name": "bench_right",
+    "accepts": [
+     "bench_item",
+     "desk_item",
+     "instrument"
+    ],
+    "local": [
+     52,
+     10,
+     30
+    ],
+    "facing_rel": "same",
+    "note": ""
+   },
+   {
+    "name": "chair",
+    "accepts": [
+     "chair"
+    ],
+    "local": [
+     32,
+     -12,
+     0
+    ],
+    "facing_rel": "opposite",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "id": "research_station",
+  "category": "laboratories",
+  "subcategory": "bench",
+  "name_fr": "Poste de recherche (paillasse)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "research_station",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 70,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "workstation",
+   "lab"
+  ],
+  "notes": "Plan epoxy noir, caissons blancs, etagere vitree a flacons, deux ecrans integres.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     106,
+     118
+    ],
+    "anchor": [
+     63,
+     70
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/research_station__se.png",
+      "mask": "masks/laboratories/research_station__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass",
+       "screen"
+      ]
+     },
+     "glass": {
+      "file": "assets/laboratories/research_station__se__glass.png",
+      "mask": "masks/laboratories/research_station__se__glass__mask.png",
+      "mask_channels": [
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/research_station__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -70
+     ],
+     [
+      32,
+      -54
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -38
+     ]
+    ],
+    "sockets": {
+     "bench_center": {
+      "offset_px": [
+       -14,
+       -5
+      ],
+      "world_su": [
+       18.0,
+       32.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": "centre du plan"
+     },
+     "keyboard": {
+      "offset_px": [
+       -10,
+       -3
+      ],
+      "world_su": [
+       22.0,
+       32.0,
+       30
+      ],
+      "accepts": [
+       "keyboard"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "chair": {
+      "offset_px": [
+       12,
+       38
+      ],
+      "world_su": [
+       44.0,
+       32.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "nw",
+      "draw": "workstation",
+      "note": ""
+     }
+    },
+    "screens": [
+     {
+      "name": "screen_left",
+      "quad_px": [
+       [
+        -46,
+        -19
+       ],
+       [
+        -28,
+        -28
+       ],
+       [
+        -28,
+        -14
+       ],
+       [
+        -46,
+        -5
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     },
+     {
+      "name": "screen_right",
+      "quad_px": [
+       [
+        -18,
+        -33
+       ],
+       [
+        0,
+        -42
+       ],
+       [
+        0,
+        -28
+       ],
+       [
+        -18,
+        -19
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     119,
+     118
+    ],
+    "anchor": [
+     31,
+     70
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/research_station__sw.png",
+      "mask": "masks/laboratories/research_station__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass",
+       "screen"
+      ]
+     },
+     "glass": {
+      "file": "assets/laboratories/research_station__sw__glass.png",
+      "mask": "masks/laboratories/research_station__sw__glass__mask.png",
+      "mask_channels": [
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/research_station__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -70
+     ],
+     [
+      64,
+      -38
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -54
+     ]
+    ],
+    "sockets": {
+     "bench_center": {
+      "offset_px": [
+       14,
+       -5
+      ],
+      "world_su": [
+       32.0,
+       18.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": "centre du plan"
+     },
+     "keyboard": {
+      "offset_px": [
+       10,
+       -3
+      ],
+      "world_su": [
+       32.0,
+       22.0,
+       30
+      ],
+      "accepts": [
+       "keyboard"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "chair": {
+      "offset_px": [
+       -12,
+       38
+      ],
+      "world_su": [
+       32.0,
+       44.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "ne",
+      "draw": "workstation",
+      "note": ""
+     }
+    },
+    "screens": [
+     {
+      "name": "screen_left",
+      "quad_px": [
+       [
+        1,
+        -42
+       ],
+       [
+        19,
+        -33
+       ],
+       [
+        19,
+        -19
+       ],
+       [
+        1,
+        -28
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     },
+     {
+      "name": "screen_right",
+      "quad_px": [
+       [
+        29,
+        -28
+       ],
+       [
+        47,
+        -19
+       ],
+       [
+        47,
+        -5
+       ],
+       [
+        29,
+        -14
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     119,
+     106
+    ],
+    "anchor": [
+     63,
+     58
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/research_station__nw.png",
+      "mask": "masks/laboratories/research_station__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "glass": {
+      "file": "assets/laboratories/research_station__nw__glass.png",
+      "mask": "masks/laboratories/research_station__nw__glass__mask.png",
+      "mask_channels": [
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/research_station__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       -1,
+       1
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -70
+     ],
+     [
+      32,
+      -54
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -38
+     ]
+    ],
+    "sockets": {
+     "bench_center": {
+      "offset_px": [
+       -18,
+       -7
+      ],
+      "world_su": [
+       14.0,
+       32.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": "centre du plan"
+     },
+     "keyboard": {
+      "offset_px": [
+       -22,
+       -9
+      ],
+      "world_su": [
+       10.0,
+       32.0,
+       30
+      ],
+      "accepts": [
+       "keyboard"
+      ],
+      "child_facing": "nw",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "chair": {
+      "offset_px": [
+       -44,
+       10
+      ],
+      "world_su": [
+       -12.0,
+       32.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "se",
+      "draw": "workstation",
+      "note": ""
+     }
+    },
+    "screens": [
+     {
+      "name": "screen_left",
+      "quad_px": [
+       [
+        15,
+        -35
+       ],
+       [
+        -3,
+        -26
+       ],
+       [
+        -3,
+        -12
+       ],
+       [
+        15,
+        -21
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     },
+     {
+      "name": "screen_right",
+      "quad_px": [
+       [
+        -13,
+        -21
+       ],
+       [
+        -31,
+        -12
+       ],
+       [
+        -31,
+        2
+       ],
+       [
+        -13,
+        -7
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     106,
+     106
+    ],
+    "anchor": [
+     31,
+     58
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/research_station__ne.png",
+      "mask": "masks/laboratories/research_station__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass"
+      ]
+     },
+     "glass": {
+      "file": "assets/laboratories/research_station__ne__glass.png",
+      "mask": "masks/laboratories/research_station__ne__glass__mask.png",
+      "mask_channels": [
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/research_station__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -70
+     ],
+     [
+      64,
+      -38
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -54
+     ]
+    ],
+    "sockets": {
+     "bench_center": {
+      "offset_px": [
+       18,
+       -7
+      ],
+      "world_su": [
+       32.0,
+       14.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": "centre du plan"
+     },
+     "keyboard": {
+      "offset_px": [
+       22,
+       -9
+      ],
+      "world_su": [
+       32.0,
+       10.0,
+       30
+      ],
+      "accepts": [
+       "keyboard"
+      ],
+      "child_facing": "ne",
+      "draw": "after_parent",
+      "note": ""
+     },
+     "chair": {
+      "offset_px": [
+       44,
+       10
+      ],
+      "world_su": [
+       32.0,
+       -12.0,
+       0
+      ],
+      "accepts": [
+       "chair"
+      ],
+      "child_facing": "sw",
+      "draw": "workstation",
+      "note": ""
+     }
+    },
+    "screens": [
+     {
+      "name": "screen_left",
+      "quad_px": [
+       [
+        32,
+        -12
+       ],
+       [
+        14,
+        -21
+       ],
+       [
+        14,
+        -7
+       ],
+       [
+        32,
+        2
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     },
+     {
+      "name": "screen_right",
+      "quad_px": [
+       [
+        4,
+        -26
+       ],
+       [
+        -14,
+        -35
+       ],
+       [
+        -14,
+        -21
+       ],
+       [
+        4,
+        -12
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "metal": "steel",
+   "glass": "glass",
+   "screen": "display"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "plastic",
+    "fixed": [
+     "graphite",
+     "steel"
+    ]
+   },
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "graphite"
+    ]
+   },
+   {
+    "channel": "screen",
+    "kept": "display",
+    "fixed": [
+     "screen"
+    ]
+   }
+  ],
+  "sockets_def": [
+   {
+    "name": "bench_center",
+    "accepts": [
+     "bench_item",
+     "desk_item",
+     "instrument"
+    ],
+    "local": [
+     32.0,
+     14,
+     30
+    ],
+    "facing_rel": "same",
+    "note": "centre du plan"
+   },
+   {
+    "name": "keyboard",
+    "accepts": [
+     "keyboard"
+    ],
+    "local": [
+     32,
+     10,
+     30
+    ],
+    "facing_rel": "same",
+    "note": ""
+   },
+   {
+    "name": "chair",
+    "accepts": [
+     "chair"
+    ],
+    "local": [
+     32,
+     -12,
+     0
+    ],
+    "facing_rel": "opposite",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "id": "calibration_bench",
+  "category": "laboratories",
+  "subcategory": "bench",
+  "name_fr": "Etabli de calibration (marbre)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "calibration_bench",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 56,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "lab"
+  ],
+  "notes": "Marbre de granit sur bati acier, trusquin a colonne, coffret de cales etalon, comparateur.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     98,
+     88
+    ],
+    "anchor": [
+     59,
+     42
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/calibration_bench__se.png",
+      "mask": "masks/laboratories/calibration_bench__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "wood",
+       "fabric",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/calibration_bench__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -56
+     ],
+     [
+      32,
+      -40
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -24
+     ]
+    ],
+    "sockets": {
+     "bench_left": {
+      "offset_px": [
+       -32,
+       4
+      ],
+      "world_su": [
+       18.0,
+       50.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "se",
+      "draw": "after_parent",
+      "note": ""
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     98,
+     75
+    ],
+    "anchor": [
+     27,
+     29
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/calibration_bench__sw.png",
+      "mask": "masks/laboratories/calibration_bench__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "wood",
+       "fabric",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/calibration_bench__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -56
+     ],
+     [
+      64,
+      -24
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -40
+     ]
+    ],
+    "sockets": {
+     "bench_left": {
+      "offset_px": [
+       -4,
+       -14
+      ],
+      "world_su": [
+       14.0,
+       18.0,
+       30
+      ],
+      "accepts": [
+       "bench_item",
+       "desk_item",
+       "instrument"
+      ],
+      "child_facing": "sw",
+      "draw": "after_parent",
+      "note": ""
+     }
+    }
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "primary": "plastic",
+   "wood": "birch",
+   "fabric": "navy",
+   "accent": "sun"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "plastic",
+    "fixed": [
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": [
+   {
+    "name": "bench_left",
+    "accepts": [
+     "bench_item",
+     "desk_item",
+     "instrument"
+    ],
+    "local": [
+     14,
+     14,
+     30
+    ],
+    "facing_rel": "same",
+    "note": ""
+   }
+  ]
+ },
+ {
+  "id": "soldering_station",
+  "category": "laboratories",
+  "subcategory": "bench_item",
+  "name_fr": "Station de soudure",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "soldering_station",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   14,
+   10
+  ],
+  "height_px": 8,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "bench_item"
+  ],
+  "notes": "Unite de controle (afficheur, bouton), support de fer en spirale, eponge.",
+  "provides": [
+   "bench_item",
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     30,
+     23
+    ],
+    "anchor": [
+     13,
+     15
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/soldering_station__se.png",
+      "mask": "masks/laboratories/soldering_station__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/soldering_station__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     29,
+     21
+    ],
+    "anchor": [
+     13,
+     13
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/soldering_station__sw.png",
+      "mask": "masks/laboratories/soldering_station__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/soldering_station__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     29,
+     21
+    ],
+    "anchor": [
+     14,
+     13
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/soldering_station__nw.png",
+      "mask": "masks/laboratories/soldering_station__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/soldering_station__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     28,
+     24
+    ],
+    "anchor": [
+     13,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/soldering_station__ne.png",
+      "mask": "masks/laboratories/soldering_station__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/soldering_station__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "metal": "steel",
+   "accent": "coral"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "microscope",
+  "category": "laboratories",
+  "subcategory": "bench_item",
+  "name_fr": "Microscope binoculaire",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "microscope",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   10,
+   12
+  ],
+  "height_px": 19,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "bench_item"
+  ],
+  "notes": "",
+  "provides": [
+   "bench_item",
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     28,
+     32
+    ],
+    "anchor": [
+     11,
+     26
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/microscope__se.png",
+      "mask": "masks/laboratories/microscope__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/microscope__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     26,
+     32
+    ],
+    "anchor": [
+     10,
+     26
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/microscope__sw.png",
+      "mask": "masks/laboratories/microscope__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/microscope__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     26,
+     33
+    ],
+    "anchor": [
+     10,
+     26
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/microscope__nw.png",
+      "mask": "masks/laboratories/microscope__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/microscope__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     28,
+     33
+    ],
+    "anchor": [
+     11,
+     26
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/microscope__ne.png",
+      "mask": "masks/laboratories/microscope__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/microscope__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "metal": "graphite",
+   "glass": "glass"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "plastic",
+    "fixed": [
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "oscilloscope",
+  "category": "laboratories",
+  "subcategory": "instrument",
+  "name_fr": "Oscilloscope",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "oscilloscope",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   16,
+   12
+  ],
+  "height_px": 12,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "bench_item"
+  ],
+  "notes": "Ecran avec courbe, boutons, entrees BNC, poignee.",
+  "provides": [
+   "bench_item",
+   "desk_item",
+   "instrument"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     36,
+     29
+    ],
+    "anchor": [
+     16,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/oscilloscope__se.png",
+      "mask": "masks/laboratories/oscilloscope__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/oscilloscope__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -2,
+        -3
+       ],
+       [
+        6,
+        -7
+       ],
+       [
+        6,
+        0
+       ],
+       [
+        -2,
+        4
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     36,
+     29
+    ],
+    "anchor": [
+     15,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/oscilloscope__sw.png",
+      "mask": "masks/laboratories/oscilloscope__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/oscilloscope__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -12,
+        -10
+       ],
+       [
+        -4,
+        -6
+       ],
+       [
+        -4,
+        1
+       ],
+       [
+        -12,
+        -3
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "nw": {
+    "size": [
+     36,
+     29
+    ],
+    "anchor": [
+     15,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/oscilloscope__nw.png",
+      "mask": "masks/laboratories/oscilloscope__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/oscilloscope__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        2,
+        -15
+       ],
+       [
+        -6,
+        -11
+       ],
+       [
+        -6,
+        -4
+       ],
+       [
+        2,
+        -8
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "ne": {
+    "size": [
+     36,
+     29
+    ],
+    "anchor": [
+     16,
+     20
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/oscilloscope__ne.png",
+      "mask": "masks/laboratories/oscilloscope__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/oscilloscope__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        12,
+        -8
+       ],
+       [
+        4,
+        -12
+       ],
+       [
+        4,
+        -5
+       ],
+       [
+        12,
+        -1
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "metal": "graphite",
+   "screen": "display"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "lab_power_supply",
+  "category": "laboratories",
+  "subcategory": "instrument",
+  "name_fr": "Alimentation de laboratoire",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "lab_power_supply",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   14,
+   10
+  ],
+  "height_px": 8,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "bench_item"
+  ],
+  "notes": "",
+  "provides": [
+   "bench_item",
+   "desk_item",
+   "instrument"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     32,
+     24
+    ],
+    "anchor": [
+     14,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/lab_power_supply__se.png",
+      "mask": "masks/laboratories/lab_power_supply__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/lab_power_supply__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     32,
+     24
+    ],
+    "anchor": [
+     14,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/lab_power_supply__sw.png",
+      "mask": "masks/laboratories/lab_power_supply__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/lab_power_supply__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     32,
+     24
+    ],
+    "anchor": [
+     14,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/lab_power_supply__nw.png",
+      "mask": "masks/laboratories/lab_power_supply__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/lab_power_supply__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     32,
+     24
+    ],
+    "anchor": [
+     14,
+     16
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/lab_power_supply__ne.png",
+      "mask": "masks/laboratories/lab_power_supply__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/lab_power_supply__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "metal": "graphite"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "graphite",
+    "fixed": [
+     "steel"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "cnc_mill_desktop",
+  "category": "laboratories",
+  "subcategory": "bench_item",
+  "name_fr": "Fraiseuse CNC de table",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "cnc_mill_desktop",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   18,
+   16
+  ],
+  "height_px": 17,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "bench_item",
+   "prototyping"
+  ],
+  "notes": "Petit equipement de prototypage : portique, broche, piece en cours (statique).",
+  "provides": [
+   "bench_item",
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     39,
+     37
+    ],
+    "anchor": [
+     19,
+     26
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/cnc_mill_desktop__se.png",
+      "mask": "masks/laboratories/cnc_mill_desktop__se__mask.png",
+      "mask_channels": [
+       "wood",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/cnc_mill_desktop__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     42,
+     37
+    ],
+    "anchor": [
+     19,
+     26
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/cnc_mill_desktop__sw.png",
+      "mask": "masks/laboratories/cnc_mill_desktop__sw__mask.png",
+      "mask_channels": [
+       "wood",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/cnc_mill_desktop__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     42,
+     34
+    ],
+    "anchor": [
+     19,
+     23
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/cnc_mill_desktop__nw.png",
+      "mask": "masks/laboratories/cnc_mill_desktop__nw__mask.png",
+      "mask_channels": [
+       "wood",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/cnc_mill_desktop__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     39,
+     34
+    ],
+    "anchor": [
+     19,
+     23
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/cnc_mill_desktop__ne.png",
+      "mask": "masks/laboratories/cnc_mill_desktop__ne__mask.png",
+      "mask_channels": [
+       "wood",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/cnc_mill_desktop__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "accent": "sun",
+   "wood": "birch"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "graphite",
+    "fixed": [
+     "steel"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "studio_monitors",
+  "category": "laboratories",
+  "subcategory": "bench_item",
+  "name_fr": "Enceintes de studio (paire)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "studio_monitors",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   22,
+   7
+  ],
+  "height_px": 11,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "bench_item",
+   "av"
+  ],
+  "notes": "Ecoutes de creation audio/jeu ; se posent sur un bureau ou un etabli.",
+  "provides": [
+   "bench_item",
+   "desk_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     34,
+     28
+    ],
+    "anchor": [
+     15,
+     19
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/studio_monitors__se.png",
+      "mask": "masks/laboratories/studio_monitors__se__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/studio_monitors__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     34,
+     28
+    ],
+    "anchor": [
+     15,
+     19
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/studio_monitors__sw.png",
+      "mask": "masks/laboratories/studio_monitors__sw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/studio_monitors__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     34,
+     28
+    ],
+    "anchor": [
+     15,
+     19
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/studio_monitors__nw.png",
+      "mask": "masks/laboratories/studio_monitors__nw__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/studio_monitors__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     34,
+     28
+    ],
+    "anchor": [
+     15,
+     19
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/studio_monitors__ne.png",
+      "mask": "masks/laboratories/studio_monitors__ne__mask.png",
+      "mask_channels": [
+       "primary"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/studio_monitors__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "instrument_rack",
+  "category": "laboratories",
+  "subcategory": "instrument",
+  "name_fr": "Chariot d'instruments de mesure",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "instrument_rack",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 66,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "lab"
+  ],
+  "notes": "Chariot ouvert a roulettes : analyseur de spectre, generateur, petit oscilloscope.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     68,
+     85
+    ],
+    "anchor": [
+     23,
+     56
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/instrument_rack__se.png",
+      "mask": "masks/laboratories/instrument_rack__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/instrument_rack__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -66
+     ],
+     [
+      32,
+      -50
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -50
+     ]
+    ],
+    "screens": [
+     {
+      "name": "analyzer",
+      "quad_px": [
+       [
+        3,
+        7
+       ],
+       [
+        11,
+        3
+       ],
+       [
+        11,
+        11
+       ],
+       [
+        3,
+        15
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     68,
+     85
+    ],
+    "anchor": [
+     23,
+     56
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/instrument_rack__sw.png",
+      "mask": "masks/laboratories/instrument_rack__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/instrument_rack__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -66
+     ],
+     [
+      32,
+      -50
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -50
+     ]
+    ],
+    "screens": [
+     {
+      "name": "analyzer",
+      "quad_px": [
+       [
+        -15,
+        1
+       ],
+       [
+        -7,
+        5
+       ],
+       [
+        -7,
+        13
+       ],
+       [
+        -15,
+        9
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "primary": "plastic",
+   "screen": "display"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "copper",
+     "graphite"
+    ]
+   },
+   {
+    "channel": "primary",
+    "kept": "plastic",
+    "fixed": [
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "printer_3d",
+  "category": "laboratories",
+  "subcategory": "prototyping",
+  "name_fr": "Imprimante 3D fermee",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "printer_3d",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 46,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "lab",
+   "prototyping"
+  ],
+  "notes": "Sur sa table : caisson vitre, plateau, piece imprimee, chariot d'extrusion, bobine de filament.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     63,
+     70
+    ],
+    "anchor": [
+     25,
+     41
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/printer_3d__se.png",
+      "mask": "masks/laboratories/printer_3d__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/printer_3d__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -46
+     ],
+     [
+      32,
+      -30
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -30
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     63,
+     70
+    ],
+    "anchor": [
+     25,
+     41
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/printer_3d__sw.png",
+      "mask": "masks/laboratories/printer_3d__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/printer_3d__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -46
+     ],
+     [
+      32,
+      -30
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -30
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "primary": "graphite",
+   "screen": "screen",
+   "accent": "coral"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "graphite",
+    "fixed": [
+     "steel"
+    ]
+   },
+   {
+    "channel": "accent",
+    "kept": "coral",
+    "fixed": [
+     "sun"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "laser_cutter",
+  "category": "laboratories",
+  "subcategory": "prototyping",
+  "name_fr": "Decoupeuse laser",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "laser_cutter",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 40,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "lab",
+   "prototyping"
+  ],
+  "notes": "Capot a fenetre teintee, pupitre avec arret d'urgence, gaine d'extraction a l'arriere.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     101,
+     88
+    ],
+    "anchor": [
+     62,
+     41
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/laser_cutter__se.png",
+      "mask": "masks/laboratories/laser_cutter__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/laser_cutter__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -40
+     ],
+     [
+      32,
+      -24
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -8
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     104,
+     79
+    ],
+    "anchor": [
+     28,
+     32
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/laser_cutter__sw.png",
+      "mask": "masks/laboratories/laser_cutter__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/laser_cutter__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -40
+     ],
+     [
+      64,
+      -8
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -24
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "primary": "plastic",
+   "screen": "screen",
+   "glass": "copper"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "graphite",
+    "fixed": [
+     "steel"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "cobot_cell",
+  "category": "laboratories",
+  "subcategory": "robotics",
+  "name_fr": "Cellule robotisee (cobot)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "cobot_cell",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   2
+  ],
+  "size_su": null,
+  "height_px": 66,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "lab",
+   "robotics"
+  ],
+  "notes": "Bras collaboratif sur table, bacs de pieces, cadre de securite (poteaux jaunes, panneaux translucides, barrage lumineux).",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     146,
+     129
+    ],
+    "anchor": [
+     60,
+     65
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/cobot_cell__se.png",
+      "mask": "masks/laboratories/cobot_cell__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "glass": {
+      "file": "assets/laboratories/cobot_cell__se__glass.png",
+      "mask": "masks/laboratories/cobot_cell__se__glass__mask.png",
+      "mask_channels": [
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/cobot_cell__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       2,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       2,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -66
+     ],
+     [
+      64,
+      -34
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      0,
+      64
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -34
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "sw": {
+    "size": [
+     148,
+     129
+    ],
+    "anchor": [
+     62,
+     65
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/cobot_cell__sw.png",
+      "mask": "masks/laboratories/cobot_cell__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "glass": {
+      "file": "assets/laboratories/cobot_cell__sw__glass.png",
+      "mask": "masks/laboratories/cobot_cell__sw__glass__mask.png",
+      "mask_channels": [
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/cobot_cell__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       2
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       2
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -66
+     ],
+     [
+      64,
+      -34
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      0,
+      64
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -34
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "metal": "steel",
+   "accent": "hazard",
+   "glass": "glass"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "graphite",
+    "fixed": [
+     "plastic"
+    ]
+   },
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "graphite"
+    ]
+   },
+   {
+    "channel": "accent",
+    "kept": "hazard",
+    "fixed": [
+     "coral",
+     "sky",
+     "sun",
+     "teal"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "camera_tripod",
+  "category": "laboratories",
+  "subcategory": "av",
+  "name_fr": "Camera sur trepied",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "camera_tripod",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   16,
+   16
+  ],
+  "height_px": 38,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "av"
+  ],
+  "notes": "Capture video pour creation de contenus/jeux (statique).",
+  "provides": [
+   "floor_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     40,
+     52
+    ],
+    "anchor": [
+     13,
+     42
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/camera_tripod__se.png",
+      "mask": "masks/laboratories/camera_tripod__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/camera_tripod__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     41,
+     52
+    ],
+    "anchor": [
+     16,
+     42
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/camera_tripod__sw.png",
+      "mask": "masks/laboratories/camera_tripod__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/camera_tripod__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     41,
+     51
+    ],
+    "anchor": [
+     16,
+     42
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/camera_tripod__nw.png",
+      "mask": "masks/laboratories/camera_tripod__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/camera_tripod__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     40,
+     51
+    ],
+    "anchor": [
+     13,
+     42
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/camera_tripod__ne.png",
+      "mask": "masks/laboratories/camera_tripod__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/camera_tripod__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "primary": "graphite",
+   "screen": "screen",
+   "glass": "glass"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "softbox_light",
+  "category": "laboratories",
+  "subcategory": "av",
+  "name_fr": "Eclairage softbox",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "softbox_light",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   18,
+   18
+  ],
+  "height_px": 64,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "av"
+  ],
+  "notes": "",
+  "provides": [
+   "floor_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     57,
+     84
+    ],
+    "anchor": [
+     16,
+     74
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/softbox_light__se.png",
+      "mask": "masks/laboratories/softbox_light__se__mask.png",
+      "mask_channels": [
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/softbox_light__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     57,
+     84
+    ],
+    "anchor": [
+     16,
+     74
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/softbox_light__sw.png",
+      "mask": "masks/laboratories/softbox_light__sw__mask.png",
+      "mask_channels": [
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/softbox_light__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     57,
+     85
+    ],
+    "anchor": [
+     16,
+     74
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/softbox_light__nw.png",
+      "mask": "masks/laboratories/softbox_light__nw__mask.png",
+      "mask_channels": [
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/softbox_light__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     57,
+     85
+    ],
+    "anchor": [
+     16,
+     74
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/softbox_light__ne.png",
+      "mask": "masks/laboratories/softbox_light__ne__mask.png",
+      "mask_channels": [
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/softbox_light__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "fabric": "graphite"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "graphite",
+    "fixed": [
+     "steel"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "mic_stand",
+  "category": "laboratories",
+  "subcategory": "av",
+  "name_fr": "Pied de micro avec perche",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "mic_stand",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   14,
+   18
+  ],
+  "height_px": 44,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "av"
+  ],
+  "notes": "",
+  "provides": [
+   "floor_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     47,
+     54
+    ],
+    "anchor": [
+     12,
+     46
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/mic_stand__se.png",
+      "mask": "masks/laboratories/mic_stand__se__mask.png",
+      "mask_channels": [
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/mic_stand__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     41,
+     54
+    ],
+    "anchor": [
+     18,
+     46
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/mic_stand__sw.png",
+      "mask": "masks/laboratories/mic_stand__sw__mask.png",
+      "mask_channels": [
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/mic_stand__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     41,
+     60
+    ],
+    "anchor": [
+     18,
+     53
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/mic_stand__nw.png",
+      "mask": "masks/laboratories/mic_stand__nw__mask.png",
+      "mask_channels": [
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/mic_stand__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     47,
+     60
+    ],
+    "anchor": [
+     12,
+     53
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/mic_stand__ne.png",
+      "mask": "masks/laboratories/mic_stand__ne__mask.png",
+      "mask_channels": [
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/mic_stand__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "fabric": "graphite"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "greenscreen_backdrop",
+  "category": "laboratories",
+  "subcategory": "av",
+  "name_fr": "Fond vert sur portique",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "greenscreen_backdrop",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 82,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "av"
+  ],
+  "notes": "Toile verte sur portique avec retombee au sol (franchissable visuellement, bloquante pour le jeu).",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     100,
+     123
+    ],
+    "anchor": [
+     62,
+     81
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/greenscreen_backdrop__se.png",
+      "mask": "masks/laboratories/greenscreen_backdrop__se__mask.png",
+      "mask_channels": [
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/greenscreen_backdrop__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -82
+     ],
+     [
+      32,
+      -66
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -50
+     ]
+    ]
+   },
+   "sw": {
+    "size": [
+     109,
+     123
+    ],
+    "anchor": [
+     17,
+     81
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/greenscreen_backdrop__sw.png",
+      "mask": "masks/laboratories/greenscreen_backdrop__sw__mask.png",
+      "mask_channels": [
+       "fabric",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/greenscreen_backdrop__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -82
+     ],
+     [
+      64,
+      -50
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -66
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "fabric": "leaf"
+  },
+  "sockets_def": []
+ },
+ {
+  "id": "xr_base_station",
+  "category": "laboratories",
+  "subcategory": "xr",
+  "name_fr": "Balise de suivi XR sur pied",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "xr_base_station",
+  "render_layer": "objects",
+  "footprint_tiles": null,
+  "size_su": [
+   12,
+   12
+  ],
+  "height_px": 70,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "xr"
+  ],
+  "notes": "",
+  "provides": [
+   "floor_item"
+  ],
+  "orientations": {
+   "se": {
+    "size": [
+     45,
+     83
+    ],
+    "anchor": [
+     11,
+     74
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/xr_base_station__se.png",
+      "mask": "masks/laboratories/xr_base_station__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/xr_base_station__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "sw": {
+    "size": [
+     47,
+     83
+    ],
+    "anchor": [
+     13,
+     74
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/xr_base_station__sw.png",
+      "mask": "masks/laboratories/xr_base_station__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "glass"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/xr_base_station__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "nw": {
+    "size": [
+     47,
+     82
+    ],
+    "anchor": [
+     13,
+     74
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/xr_base_station__nw.png",
+      "mask": "masks/laboratories/xr_base_station__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/xr_base_station__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   },
+   "ne": {
+    "size": [
+     45,
+     82
+    ],
+    "anchor": [
+     11,
+     74
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/xr_base_station__ne.png",
+      "mask": "masks/laboratories/xr_base_station__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/xr_base_station__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    }
+   }
+  },
+  "channels": {
+   "metal": "graphite",
+   "primary": "graphite",
+   "glass": "glass"
+  },
+  "fixed_parts": [
+   {
+    "channel": "metal",
+    "kept": "graphite",
+    "fixed": [
+     "steel"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "xr_play_mat",
+  "category": "laboratories",
+  "subcategory": "xr",
+  "name_fr": "Tapis de zone de jeu XR",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "xr_play_mat",
+  "render_layer": "floor_decor",
+  "footprint_tiles": [
+   2,
+   2
+  ],
+  "size_su": null,
+  "height_px": 1,
+  "walkable": true,
+  "symmetric": true,
+  "wall_mount": false,
+  "tags": [
+   "xr",
+   "floor_decor"
+  ],
+  "notes": "Zone de test XR au sol : bordure de securite et cible centrale.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     124,
+     65
+    ],
+    "anchor": [
+     62,
+     1
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/xr_play_mat__se.png",
+      "mask": "masks/laboratories/xr_play_mat__se__mask.png",
+      "mask_channels": [
+       "fabric",
+       "accent"
+      ]
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     2
+    ],
+    "collision_tiles": [],
+    "access": [],
+    "selection_poly": [
+     [
+      0,
+      -1
+     ],
+     [
+      64,
+      31
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      0,
+      64
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      31
+     ]
+    ]
+   }
+  },
+  "channels": {
+   "fabric": "navy",
+   "accent": "sun"
+  },
+  "fixed_parts": [
+   {
+    "channel": "accent",
+    "kept": "sun",
+    "fixed": [
+     "teal"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "compute_cabinet",
+  "category": "laboratories",
+  "subcategory": "compute",
+  "name_fr": "Calculateur avance (armoire)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "compute_cabinet",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 98,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "compute",
+   "lab"
+  ],
+  "notes": "Armoire de supercalcul : angles chanfreines, portes a lames, liseres d'etat, capot debordant, ailettes.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     132,
+     147
+    ],
+    "anchor": [
+     63,
+     99
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/compute_cabinet__se.png",
+      "mask": "masks/laboratories/compute_cabinet__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/compute_cabinet__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -98
+     ],
+     [
+      32,
+      -82
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -66
+     ]
+    ],
+    "screens": [
+     {
+      "name": "status",
+      "quad_px": [
+       [
+        -10,
+        -50
+       ],
+       [
+        4,
+        -57
+       ],
+       [
+        4,
+        -47
+       ],
+       [
+        -10,
+        -40
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 50
+    }
+   },
+   "sw": {
+    "size": [
+     132,
+     147
+    ],
+    "anchor": [
+     31,
+     99
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/compute_cabinet__sw.png",
+      "mask": "masks/laboratories/compute_cabinet__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/compute_cabinet__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -98
+     ],
+     [
+      64,
+      -66
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -82
+     ]
+    ],
+    "screens": [
+     {
+      "name": "status",
+      "quad_px": [
+       [
+        -4,
+        -57
+       ],
+       [
+        10,
+        -50
+       ],
+       [
+        10,
+        -40
+       ],
+       [
+        -4,
+        -47
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 50
+    }
+   }
+  },
+  "channels": {
+   "primary": "navy",
+   "accent": "teal",
+   "metal": "graphite",
+   "screen": "display"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "navy",
+    "fixed": [
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "quantum_cryostat_open",
+  "category": "laboratories",
+  "subcategory": "quantum",
+  "name_fr": "Ordinateur quantique (cryostat ouvert)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "quantum_cryostat_open",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   2
+  ],
+  "size_su": null,
+  "height_px": 112,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "quantum",
+   "lab"
+  ],
+  "notes": "Refrigerateur a dilution stylise mais credible : etages dores suspendus a la plaque superieure, tiges, lignes coaxiales en cuivre, processeur au bas de la chambre de melange.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     150,
+     158
+    ],
+    "anchor": [
+     58,
+     96
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/quantum_cryostat_open__se.png",
+      "mask": "masks/laboratories/quantum_cryostat_open__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/quantum_cryostat_open__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       2,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "service",
+      "tile": [
+       2,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -112
+     ],
+     [
+      64,
+      -80
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      0,
+      64
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -80
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 60
+    }
+   },
+   "sw": {
+    "size": [
+     150,
+     158
+    ],
+    "anchor": [
+     58,
+     96
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/quantum_cryostat_open__sw.png",
+      "mask": "masks/laboratories/quantum_cryostat_open__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/quantum_cryostat_open__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       2
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       2
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -112
+     ],
+     [
+      64,
+      -80
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      0,
+      64
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -80
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 60
+    }
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "metal": "steel"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "graphite",
+    "fixed": [
+     "steel"
+    ]
+   },
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "brass",
+     "copper",
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "quantum_cryostat_closed",
+  "category": "laboratories",
+  "subcategory": "quantum",
+  "name_fr": "Ordinateur quantique (cryostat ferme)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "quantum_cryostat_closed",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   2
+  ],
+  "size_su": null,
+  "height_px": 112,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "quantum",
+   "lab"
+  ],
+  "notes": "Meme chassis que la version ouverte, cuve cylindrique blanche, colliers, lignes de gaz, coffret electronique.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     150,
+     158
+    ],
+    "anchor": [
+     58,
+     96
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/quantum_cryostat_closed__se.png",
+      "mask": "masks/laboratories/quantum_cryostat_closed__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/quantum_cryostat_closed__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       2,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "service",
+      "tile": [
+       2,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -112
+     ],
+     [
+      64,
+      -80
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      0,
+      64
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -80
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 60
+    }
+   },
+   "sw": {
+    "size": [
+     150,
+     158
+    ],
+    "anchor": [
+     58,
+     96
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/quantum_cryostat_closed__sw.png",
+      "mask": "masks/laboratories/quantum_cryostat_closed__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen",
+       "accent"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/quantum_cryostat_closed__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      1,
+      0
+     ],
+     [
+      1,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       2
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       2
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -112
+     ],
+     [
+      64,
+      -80
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      0,
+      64
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -80
+     ]
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 60
+    }
+   }
+  },
+  "channels": {
+   "metal": "steel",
+   "primary": "plastic",
+   "accent": "sky",
+   "screen": "screen"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "plastic",
+    "fixed": [
+     "graphite",
+     "steel"
+    ]
+   },
+   {
+    "channel": "metal",
+    "kept": "steel",
+    "fixed": [
+     "copper",
+     "graphite"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "quantum_control_rack",
+  "category": "laboratories",
+  "subcategory": "quantum",
+  "name_fr": "Baie de controle micro-ondes",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "quantum_control_rack",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 100,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "quantum",
+   "lab"
+  ],
+  "notes": "Instruments micro-ondes (connecteurs SMA dores), faisceaux coaxiaux cuivre en boucle : distinct des baies serveurs.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     94,
+     128
+    ],
+    "anchor": [
+     28,
+     97
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/quantum_control_rack__se.png",
+      "mask": "masks/laboratories/quantum_control_rack__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/quantum_control_rack__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -100
+     ],
+     [
+      32,
+      -84
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -84
+     ]
+    ],
+    "screens": [
+     {
+      "name": "awg",
+      "quad_px": [
+       [
+        7,
+        -62
+       ],
+       [
+        19,
+        -68
+       ],
+       [
+        19,
+        -60
+       ],
+       [
+        7,
+        -54
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "sw": {
+    "size": [
+     94,
+     128
+    ],
+    "anchor": [
+     28,
+     97
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/quantum_control_rack__sw.png",
+      "mask": "masks/laboratories/quantum_control_rack__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/quantum_control_rack__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -100
+     ],
+     [
+      32,
+      -84
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -84
+     ]
+    ],
+    "screens": [
+     {
+      "name": "awg",
+      "quad_px": [
+       [
+        -19,
+        -68
+       ],
+       [
+        -7,
+        -62
+       ],
+       [
+        -7,
+        -54
+       ],
+       [
+        -19,
+        -60
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "nw": {
+    "size": [
+     94,
+     128
+    ],
+    "anchor": [
+     28,
+     97
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/quantum_control_rack__nw.png",
+      "mask": "masks/laboratories/quantum_control_rack__nw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/quantum_control_rack__nw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       -1,
+       0
+      ],
+      "user_facing": "se",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -100
+     ],
+     [
+      32,
+      -84
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -84
+     ]
+    ],
+    "screens": [
+     {
+      "name": "awg",
+      "quad_px": [
+       [
+        -7,
+        -81
+       ],
+       [
+        -19,
+        -75
+       ],
+       [
+        -19,
+        -67
+       ],
+       [
+        -7,
+        -73
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   },
+   "ne": {
+    "size": [
+     94,
+     128
+    ],
+    "anchor": [
+     28,
+     97
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/quantum_control_rack__ne.png",
+      "mask": "masks/laboratories/quantum_control_rack__ne__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/quantum_control_rack__ne__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       -1
+      ],
+      "user_facing": "sw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -100
+     ],
+     [
+      32,
+      -84
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -84
+     ]
+    ],
+    "screens": [
+     {
+      "name": "awg",
+      "quad_px": [
+       [
+        19,
+        -75
+       ],
+       [
+        7,
+        -81
+       ],
+       [
+        7,
+        -73
+       ],
+       [
+        19,
+        -67
+       ]
+      ],
+      "visible": false,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ],
+    "occlusion": {
+     "occludes_behind": true,
+     "fade_above_px": 40
+    }
+   }
+  },
+  "channels": {
+   "primary": "steel",
+   "screen": "screen",
+   "metal": "copper"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "steel",
+    "fixed": [
+     "graphite",
+     "plastic"
+    ]
+   },
+   {
+    "channel": "metal",
+    "kept": "copper",
+    "fixed": [
+     "graphite"
+    ]
+   },
+   {
+    "channel": "screen",
+    "kept": "screen",
+    "fixed": [
+     "display"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "cryo_support_unit",
+  "category": "laboratories",
+  "subcategory": "quantum",
+  "name_fr": "Unite de support cryogenique",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "cryo_support_unit",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   2,
+   1
+  ],
+  "size_su": null,
+  "height_px": 72,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "quantum",
+   "lab"
+  ],
+  "notes": "Compresseur a helium (ventilateur, manometres) + armoire de gestion des gaz (synoptique de vannes, ecran).",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     111,
+     115
+    ],
+    "anchor": [
+     60,
+     69
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/cryo_support_unit__se.png",
+      "mask": "masks/laboratories/cryo_support_unit__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/cryo_support_unit__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     2
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "nw",
+      "note": ""
+     },
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -72
+     ],
+     [
+      32,
+      -56
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      -32,
+      48
+     ],
+     [
+      -64,
+      32
+     ],
+     [
+      -64,
+      -40
+     ]
+    ],
+    "screens": [
+     {
+      "name": "ghs",
+      "quad_px": [
+       [
+        -3,
+        -33
+       ],
+       [
+        7,
+        -38
+       ],
+       [
+        7,
+        -30
+       ],
+       [
+        -3,
+        -25
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     113,
+     99
+    ],
+    "anchor": [
+     26,
+     54
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/cryo_support_unit__sw.png",
+      "mask": "masks/laboratories/cryo_support_unit__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "metal",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/cryo_support_unit__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     2,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ],
+     [
+      1,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "service",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     },
+     {
+      "kind": "service",
+      "tile": [
+       1,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -72
+     ],
+     [
+      64,
+      -40
+     ],
+     [
+      64,
+      32
+     ],
+     [
+      32,
+      48
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -56
+     ]
+    ],
+    "screens": [
+     {
+      "name": "ghs",
+      "quad_px": [
+       [
+        11,
+        -29
+       ],
+       [
+        21,
+        -24
+       ],
+       [
+        21,
+        -16
+       ],
+       [
+        11,
+        -21
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "plastic",
+   "metal": "steel",
+   "screen": "screen"
+  },
+  "fixed_parts": [
+   {
+    "channel": "primary",
+    "kept": "plastic",
+    "fixed": [
+     "graphite",
+     "navy"
+    ]
+   }
+  ],
+  "sockets_def": []
+ },
+ {
+  "id": "supervision_terminal",
+  "category": "laboratories",
+  "subcategory": "console",
+  "name_fr": "Terminal de supervision (pupitre debout)",
+  "pack_version": "1.0.0",
+  "usage": "current",
+  "kind": "floor",
+  "silhouette_group": "supervision_terminal",
+  "render_layer": "objects",
+  "footprint_tiles": [
+   1,
+   1
+  ],
+  "size_su": null,
+  "height_px": 48,
+  "walkable": false,
+  "symmetric": false,
+  "wall_mount": false,
+  "tags": [
+   "console",
+   "lab"
+  ],
+  "notes": "Pupitre sur colonne, ecran incline, tablette clavier ; supervision d'un labo ou d'une ligne.",
+  "provides": [],
+  "orientations": {
+   "se": {
+    "size": [
+     62,
+     74
+    ],
+    "anchor": [
+     19,
+     46
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/supervision_terminal__se.png",
+      "mask": "masks/laboratories/supervision_terminal__se__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/supervision_terminal__se__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       1,
+       0
+      ],
+      "user_facing": "nw",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -48
+     ],
+     [
+      32,
+      -32
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -32
+     ]
+    ],
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -10,
+        -26
+       ],
+       [
+        4,
+        -33
+       ],
+       [
+        14,
+        -17
+       ],
+       [
+        0,
+        -10
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   },
+   "sw": {
+    "size": [
+     62,
+     74
+    ],
+    "anchor": [
+     23,
+     46
+    ],
+    "layers": {
+     "base": {
+      "file": "assets/laboratories/supervision_terminal__sw.png",
+      "mask": "masks/laboratories/supervision_terminal__sw__mask.png",
+      "mask_channels": [
+       "primary",
+       "screen"
+      ]
+     },
+     "shadow": {
+      "file": "assets/laboratories/supervision_terminal__sw__shadow.png",
+      "blend": "shadow_layer"
+     }
+    },
+    "footprint_world_tiles": [
+     1,
+     1
+    ],
+    "collision_tiles": [
+     [
+      0,
+      0
+     ]
+    ],
+    "access": [
+     {
+      "kind": "work",
+      "tile": [
+       0,
+       1
+      ],
+      "user_facing": "ne",
+      "note": ""
+     }
+    ],
+    "selection_poly": [
+     [
+      0,
+      -48
+     ],
+     [
+      32,
+      -32
+     ],
+     [
+      32,
+      16
+     ],
+     [
+      0,
+      32
+     ],
+     [
+      -32,
+      16
+     ],
+     [
+      -32,
+      -32
+     ]
+    ],
+    "screens": [
+     {
+      "name": "screen",
+      "quad_px": [
+       [
+        -4,
+        -33
+       ],
+       [
+        10,
+        -26
+       ],
+       [
+        0,
+        -10
+       ],
+       [
+        -14,
+        -17
+       ]
+      ],
+      "visible": true,
+      "note": "coins : haut-gauche, haut-droit, bas-droit, bas-gauche (vus de face)"
+     }
+    ]
+   }
+  },
+  "channels": {
+   "primary": "graphite",
+   "screen": "display"
+  },
+  "sockets_def": []
+ }
+]

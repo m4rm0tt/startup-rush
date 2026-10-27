@@ -30,7 +30,7 @@ public class SaveTest
         }
     }
 
-    /// <summary>Une campagne bien remplie : local aménagé, contrat en cours, produit publié avec un brouillon, employé.</summary>
+    /// <summary>Une campagne bien remplie : local aménagé, employé, un projet en ligne avec une amélioration en cours, un jeu en développement.</summary>
     private static Campaign BusyCampaign()
     {
         var campaign = NewCampaign(7);
@@ -39,20 +39,17 @@ public class SaveTest
         var candidate = campaign.Candidates.First();
         candidate.NoticeWorkdays = 0;
         campaign.Hire(candidate.Person.Id);
-        var offer = AddOffer(campaign, design: 10, code: 30, test: 10);
-        campaign.AcceptContract(offer.Id, DeadlineOption.Safe, true);
-        campaign.Assign(candidate.Person.Id, AssignmentKind.Contract, offer.Id);
-
-        var (_, product) = campaign.CreateProduct(campaign.MainCompany.Id, "Factura", "freelances", RevenueModel.Subscription, 19);
-        var home = product!.Draft.Pages[0];
-        home.Theme = "sombre";
-        home.Accent = 9;
-        foreach (string id in new[] { "login", "dashboard", "subscribe" })
-            home.Modules.Add(ProductDesign.NewModule(product, id));
-        campaign.Assign(campaign.Founder.Id, AssignmentKind.Product, product.Id);
-        campaign.StartBuild(product.Id);
+        var app = NewProject(campaign);
+        app.Color = 9;
+        FinishQueue(campaign, app);
+        campaign.Launch(app.Id);
+        campaign.QueueComponent(app.Id, "export");
+        var game = NewProject(campaign, "casual");
+        campaign.Assign(candidate.Person.Id, game.Id);
+        campaign.SetUpkeep(app.Id, Upkeep.High);
+        campaign.Vacation(campaign.Founder.Id);
         campaign.AdvanceDays(3);
-        campaign.Advance(5 * 60 + 17); // en pleine journée : des gens marchent, travaillent
+        campaign.Advance(5 * 60 + 17);
         return campaign;
     }
 
@@ -91,19 +88,50 @@ public class SaveTest
     }
 
     [Test]
-    public void PagesDraftsAndVersionsSurviveAReload()
+    public void ComponentsQueuesAndSettingsSurviveAReload()
     {
         var campaign = BusyCampaign();
-        var product = campaign.Products.Single();
+        var app = campaign.Products[0];
 
         var copy = SaveStore.Deserialize(SaveStore.Serialize(campaign));
-        var reloaded = copy.Products.Single();
+        var reloaded = copy.Products[0];
 
-        Assert.That(reloaded.Draft.Pages[0].Theme, Is.EqualTo("sombre"));
-        Assert.That(reloaded.Draft.Pages[0].Accent, Is.EqualTo(9));
-        Assert.That(reloaded.Draft.AllModules.Select(m => m.DefId), Is.EquivalentTo(product.Draft.AllModules.Select(m => m.DefId)));
-        Assert.That(reloaded.Build!.WorkItemIds, Is.EqualTo(product.Build!.WorkItemIds));
-        Assert.That(copy.WorkFor(WorkOwner.Product, reloaded.Id).Sum(w => w.Progress), Is.EqualTo(campaign.WorkFor(WorkOwner.Product, product.Id).Sum(w => w.Progress)));
+        Assert.That(reloaded.Color, Is.EqualTo(9));
+        Assert.That(reloaded.Upkeep, Is.EqualTo(Upkeep.High));
+        Assert.That(reloaded.Components.Select(c => (c.DefId, c.Level)), Is.EqualTo(app.Components.Select(c => (c.DefId, c.Level))));
+        Assert.That(reloaded.Queue.Select(q => q.DefId), Is.EqualTo(app.Queue.Select(q => q.DefId)));
+        Assert.That(copy.People.Single(p => p.IsFounder).VacationUntil, Is.EqualTo(campaign.Founder.VacationUntil));
+        Assert.That(copy.Unlocked, Is.EquivalentTo(campaign.Unlocked));
+    }
+
+    [Test]
+    public void AnOldSaveWithContractsIsMigratedWithoutLosingMoney()
+    {
+        string path = Path.Combine(_root, "old", "manual-Partie.json");
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.Copy(Path.Combine(balance.BalanceReportTest.RootFolder(), "Tests", "fixtures", "campaign_v1.json"), path);
+        var old = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(path))!["Campaign"]!;
+        decimal cash = old["Ledger"]!["Cash"]!.GetValue<decimal>();
+        int invoices = old["Ledger"]!["Invoices"]!.AsArray().Count;
+
+        var campaign = new SaveStore(_root).Load(path);
+
+        Assert.That(campaign.Ledger.Cash, Is.EqualTo(cash), "aucune somme ajoutée ou retirée");
+        Assert.That(campaign.Ledger.Invoices, Has.Count.EqualTo(invoices), "les factures restent dues");
+        Assert.That(campaign.Work.All(w => w.Owner == WorkOwner.Product), Is.True, "plus de travail de contrat");
+        Assert.That(campaign.People.All(p => p.Assignment.Kind is AssignmentKind.None or AssignmentKind.Project), Is.True);
+        var product = campaign.Products.Single();
+        Assert.That(product.IsLive, Is.True);
+        Assert.That(product.Components.Select(c => c.DefId), Is.SupersetOf(new[] { "login", "dashboard", "subscribe", "ui" }));
+        Assert.That(product.Queue.Select(q => q.DefId), Is.EqualTo(new[] { "export" }), "la version en cours repart en file");
+        Assert.That(product.Color, Is.EqualTo(9));
+        Assert.That(campaign.MigrationNote, Does.Contain("prestation"));
+        Assert.That(File.Exists(Path.ChangeExtension(path, ".v1.json")), Is.True, "l'original est gardé");
+
+        // Et la campagne continue sans erreur ni pénalité de contrat
+        campaign.AdvanceDays(30);
+        Assert.That(campaign.Status, Is.EqualTo(CampaignStatus.Running));
+        Assert.That(SaveStore.Deserialize(SaveStore.Serialize(campaign)).Products.Single().Components.Count, Is.EqualTo(product.Components.Count));
     }
 
     [Test]

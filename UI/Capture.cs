@@ -72,183 +72,123 @@ public static class Capture
         await Wait(1);
         await Shot(window, folder, "01_menu_principal", report);
 
-        // Nouvelle campagne : l'appartement au premier matin
+        // Début de partie : l'appartement, aucun projet
         var campaign = Campaign.New("Capture", "Alex", "Studio Léman", FounderProfile.Developer, 2027);
         window.Store.Save(campaign, SaveKind.Manual, "Début");
         var game = window.StartGame(campaign, null);
-        campaign.Advance(95); // 9 h 35 : au travail
+        campaign.Advance(95);
         await Wait(1.2);
         game.Session.TogglePause();
-        await Shot(window, folder, "02_appartement_initial", report);
-
-        // Aménagement : outil bureau, survol d'une case valide puis d'une case invalide
-        game.OpenRoot(new BuildPanel());
-        game.Session.SetTool(new Game.BuildTool("desk"));
-        game.Scene.SetHover(new Cell(10, 5));
-        await Shot(window, folder, "03_amenagement_valide", report);
-        game.Scene.SetHover(new Cell(2, 6));
-        await Shot(window, folder, "04_amenagement_invalide", report);
-        var placed = campaign.BuyAndPlace("chair", 11, 4);
-        var desk = campaign.BuyAndPlace("desk", 11, 5);
-        var pc = campaign.BuyAndPlace("pc", 11, 5);
-        report.Add($"Poste posé : chaise {placed.Ok}, bureau {desk.Ok}, PC {pc.Ok} ; postes complets : {Layout.CompleteWorkstations(campaign.Premises).Count()}");
-        game.Session.SetTool(null);
+        await Shot(window, folder, "02_appartement_debut", report);
+        game.OpenRoot(new ProjectsPanel());
+        await Shot(window, folder, "03_portefeuille_vide", report);
+        game.PushPanel(new NewProjectPanel());
+        await Shot(window, folder, "04_nouveau_projet", report);
         game.ClosePanels();
 
-        // Contrat accepté, puis un produit avec deux pages personnalisées
-        var offer = campaign.Offers.First();
-        campaign.AcceptContract(offer.Id, Core.work.DeadlineOption.Safe, false);
-        var (_, product) = campaign.CreateProduct(campaign.MainCompany.Id, "Factura", "freelances", RevenueModel.Subscription, 19);
-        var home = product!.Draft.Pages[0];
-        home.Subtitle = "La facturation des indépendants, sans prise de tête";
-        home.Accent = 12;
-        foreach (string id in new[] { "login", "subscribe" })
-            home.Modules.Add(ProductDesign.NewModule(product, id));
-        var app = ProductDesign.NewPage(product, "Espace client");
-        app.Layout = "deux";
-        app.Theme = "sombre";
-        app.Accent = 10;
-        var dashboard = ProductDesign.NewModule(product, "dashboard");
-        dashboard.Options["widgets"] = "9";
-        app.Modules.Add(dashboard);
-        app.Modules.Add(ProductDesign.NewModule(product, "export"));
-        app.Modules.Add(ProductDesign.NewModule(product, "support"));
-        app.Links.Add(home.Id);
-        product.Draft.Pages.Add(app);
-        home.Links.Add(app.Id);
-
-        game.OpenRoot(new ProductsPanel());
-        var panel = new ProductPanel(product.Id);
-        game.PushPanel(panel);
-        await Shot(window, folder, "05_editeur_pages", report);
-        report.Add($"Brouillon : {product.Draft.Pages.Count} pages, {product.Draft.AllModules.Count()} modules, attrait estimé {ProductDesign.Appeal(product, product.Draft, _ => 0.6):P0}");
-
-        // Version : plan de travail et prévision
-        campaign.Assign(campaign.Founder.Id, AssignmentKind.Product, product.Id);
+        // Premier projet : développement automatique
+        var (_, app) = campaign.CreateProject("", "freelances", RevenueModel.Subscription);
+        campaign.Advance(4 * 60);
+        game.OpenRoot(new ProjectsPanel());
+        game.PushPanel(new ProjectPanel(app!.Id));
+        await Shot(window, folder, "05_projet_en_developpement", report);
         game.ClosePanels();
-        game.OpenRoot(new ProductsPanel());
-        var versionPanel = new ProductPanel(product.Id);
-        game.PushPanel(versionPanel);
-        SetTab(versionPanel, 1);
-        game.RefreshPanel();
-        await Shot(window, folder, "06_version_prevision", report);
+        await Shot(window, folder, "06_scene_travail", report);
+        int days = 0;
+        while (app.Queue.Count > 0 && days++ < 90)
+            campaign.AdvanceDays(1);
+        report.Add($"Premier projet prêt en {days} jours (fondateur seul, sans aucune affectation manuelle).");
+        game.OpenRoot(new ProjectsPanel());
+        await Shot(window, folder, "07_pret_a_sortir", report);
+        campaign.Launch(app.Id);
+        decimal cashAtLaunch = campaign.Ledger.Cash;
+        for (int i = 0; i < 50; i++)
+            campaign.AdvanceDays(1);
+        report.Add($"50 jours après la sortie : {app.Users:0} utilisateurs, {app.Paying:0} payants, revenus 30 j {app.History.TakeLast(30).Sum(d => d.Revenue):N0} CHF, argent {cashAtLaunch:N0} → {campaign.Ledger.Cash:N0}.");
+        var trend = Reviews.Trends(app, campaign.Minute, campaign.IsUnlocked).FirstOrDefault(t => !t.Positive);
+        report.Add($"Avis principal : {trend?.Text} → {trend?.Link}");
+        game.ClosePanels();
+        game.OpenRoot(new ProjectsPanel());
+        game.PushPanel(new ProjectPanel(app.Id).Show(ProjectPanel.Tab.Reviews));
+        await Shot(window, folder, "08_avis", report);
+        game.ClosePanels();
+        game.OpenRoot(new ProjectsPanel());
+        game.PushPanel(new ProjectPanel(app.Id).Show(ProjectPanel.Tab.Components, trend?.Link.StartsWith("component:") == true ? trend.Link["component:".Length..] : null));
+        await Shot(window, folder, "09_atelier_composants", report);
+        game.ClosePanels();
+        game.OpenRoot(new ProjectsPanel());
+        game.PushPanel(new ProjectPanel(app.Id).Show(ProjectPanel.Tab.Settings));
+        await Shot(window, folder, "10_reglages_projet", report);
+        game.ClosePanels();
+        game.OpenRoot(new ProjectsPanel());
+        game.PushPanel(new ProjectPanel(app.Id));
+        await Shot(window, folder, "11_apercu_projet", report);
         game.ClosePanels();
 
         // Sauvegarde, rechargement : même état
         string state = SaveStore.SerializeState(campaign);
-        game.Session.Save(SaveKind.Manual, "Avant reprise");
+        game.Session.Save(SaveKind.Manual, "Après la sortie");
         var reloaded = window.Store.Load(game.Session.LastSavePath!);
         report.Add($"Rechargement identique : {SaveStore.SerializeState(reloaded) == state}");
 
-        // Campagne avancée : 14 mois joués par une stratégie mixte, puis reprise dans l'interface
-        var advanced = Campaign.New("Capture avancée", "Alex", "Studio Léman", FounderProfile.Developer, 37);
-        var pilot = new Autopilot(Strategies.All.First(s => s.Name == "agence") with
-        {
-            ProductDay = 150, Segment = "smb", MarketingBudget = 1_500, MaxStaff = 6,
-            Modules = ["landing", "login", "dashboard", "subscribe", "support"],
-        });
-        pilot.Play(advanced, 420);
-        while (GameTime.IsWorkday(advanced.Minute) == false)
+        // Campagne avancée : plusieurs projets, une équipe, des déblocages
+        var advanced = Campaign.New("Capture avancée", "Alex", "Studio Léman", FounderProfile.Generalist, 37);
+        var pilot = new Autopilot(Strategies.All.First(s => s.Name == "plusieurs_petits") with { MaxStaff = 4, HireAbove = 15_000 });
+        pilot.Play(advanced, 480);
+        while (!GameTime.IsWorkday(advanced.Minute))
             advanced.AdvanceDays(1);
         advanced.Advance(10 * 60 + 15 - GameTime.MinuteOfDay(advanced.Minute));
-        report.Add($"Campagne avancée : {GameTime.FormatDate(advanced.Minute)}, {advanced.People.Count} personnes, {advanced.Premises.Name}, trésorerie {advanced.Ledger.Cash:N0}, état {advanced.Solvency.State}, produits {advanced.Products.Count(p => p.IsLive)}");
-        // Un peu d'ambiance là où il reste de la place (ce sont des achats normaux)
-        foreach (var (def, x, y) in new[] { ("plant", 15, 0), ("plant", 0, 9), ("coffee", 13, 0), ("whiteboard", 5, 0), ("sofa", 10, 0) })
+        foreach (var (def, x, y) in new[] { ("plant", 15, 0), ("plant", 0, 9), ("coffee", 13, 0), ("sofa", 10, 0) })
             advanced.BuyAndPlace(def, x, y);
+        report.Add($"Campagne avancée : {GameTime.FormatDate(advanced.Minute)}, {advanced.People.Count} personnes, {advanced.Premises.Name}, argent {advanced.Ledger.Cash:N0}, " +
+                   $"{advanced.Products.Count(p => p.IsLive)} projets en ligne, {advanced.Unlocked.Count} nœuds, {pilot.Actions} décisions en 16 mois.");
         window.Store.Save(advanced, SaveKind.Manual, "Avancée");
-        var advancedGame = window.StartGame(advanced, null);
+        var later = window.StartGame(advanced, null);
         await Wait(1);
-        advancedGame.Session.TogglePause();
-        await Shot(window, folder, "07_campagne_avancee", report);
-
-        advancedGame.OpenRoot(new FinancePanel());
-        await Shot(window, folder, "08_finances", report);
-        advancedGame.ClosePanels();
-
-        if (advanced.Products.FirstOrDefault() is { } live)
-        {
-            advancedGame.OpenRoot(new ProductsPanel());
-            var results = new ProductPanel(live.Id);
-            advancedGame.PushPanel(results);
-            SetTab(results, 2);
-            advancedGame.RefreshPanel();
-            await Shot(window, folder, "09_resultats_produit", report);
-            advancedGame.ClosePanels();
-        }
-
-        advancedGame.OpenRoot(new TeamPanel());
-        await Shot(window, folder, "10_equipe", report);
-        advancedGame.ClosePanels();
-        advancedGame.OpenRoot(new ProjectsPanel());
-        await Shot(window, folder, "11_petite_fenetre_projets", report, 960, 540);
-        advancedGame.ClosePanels();
-        await Shot(window, folder, "12_1080p", report, 1920, 1080);
-
-        // Les autres menus, pour la documentation
-        if (advanced.Products.FirstOrDefault() is { } shown)
-        {
-            advancedGame.OpenRoot(new ProductsPanel());
-            await Shot(window, folder, "m_produits_liste", report);
-            var operations = new ProductPanel(shown.Id);
-            advancedGame.PushPanel(operations);
-            SetTab(operations, 3);
-            advancedGame.RefreshPanel();
-            await Shot(window, folder, "m_produit_exploitation", report);
-            advancedGame.ClosePanels();
-        }
+        later.Session.TogglePause();
+        await Shot(window, folder, "12_campagne_avancee", report);
         foreach (var (name, open) in new (string, Func<Hud.GamePanel>)[]
                  {
-                     ("m_projets", () => new ProjectsPanel()), ("m_entreprise", () => new CompanyPanel()),
-                     ("m_marche", () => new MarketPanel()), ("m_journal", () => new NoticesPanel()),
-                     ("m_amenagement", () => new BuildPanel()), ("m_locaux", () => new PremisesPanel()),
+                     ("13_portefeuille", () => new ProjectsPanel()), ("14_equipe", () => new TeamPanel()), ("15_arbre", () => new TreePanel()),
+                     ("16_finances", () => new FinancePanel()), ("17_journal", () => new NoticesPanel()), ("18_amenagement", () => new BuildPanel()),
                  })
         {
-            advancedGame.OpenRoot(open());
+            later.OpenRoot(open());
             await Shot(window, folder, name, report);
-            advancedGame.ClosePanels();
+            later.ClosePanels();
         }
         if (advanced.Staff.FirstOrDefault() is { } someone)
         {
-            advancedGame.OpenRoot(new TeamPanel());
-            advancedGame.PushPanel(new PersonPanel(someone.Id));
-            await Shot(window, folder, "m_fiche_personne", report);
-            advancedGame.ClosePanels();
-            advancedGame.Session.Select(Game.SelectionKind.Person, someone.Id);
-            await Shot(window, folder, "m_selection_personne", report);
-            advancedGame.Session.ClearSelection();
+            later.OpenRoot(new TeamPanel());
+            later.PushPanel(new PersonPanel(someone.Id));
+            await Shot(window, folder, "19_fiche_personne", report);
+            later.ClosePanels();
         }
+        later.OpenRoot(new ProjectsPanel());
+        await Shot(window, folder, "20_petite_fenetre", report, 960, 540);
+        later.ClosePanels();
+        await Shot(window, folder, "21_1080p", report, 1920, 1080);
+        later.HandleKey(Avalonia.Input.Key.Escape, Avalonia.Input.KeyModifiers.None);
+        await Shot(window, folder, "22_pause", report);
+        later.HandleKey(Avalonia.Input.Key.Escape, Avalonia.Input.KeyModifiers.None);
 
-        advancedGame.HandleKey(Avalonia.Input.Key.Escape, Avalonia.Input.KeyModifiers.None);
-        await Shot(window, folder, "13_pause", report);
-        advancedGame.HandleKey(Avalonia.Input.Key.Escape, Avalonia.Input.KeyModifiers.None);
-
-        // Défaite : une campagne sans revenus menée jusqu'à la liquidation, sauvegardes intactes
-        var doomed = Campaign.New("Capture défaite", "Alex", "Studio Perdu", FounderProfile.Designer, 3);
-        doomed.Ledger.Cash = 0;
-        doomed.Ledger.Overdraft = 0;
-        doomed.Hire(doomed.Candidates.First().Person.Id);
+        // Faillite : trois embauches sans revenus
+        var doomed = Campaign.New("Capture faillite", "Alex", "Studio Perdu", FounderProfile.Designer, 3);
+        var reckless = new Autopilot(Strategies.All.First(s => s.Name == "recrutement_precoce"));
         window.Store.Save(doomed, SaveKind.Manual, "Avant la chute");
-        for (int i = 0; i < 160 && doomed.Status == CampaignStatus.Running; i++)
-            doomed.AdvanceDays(1);
+        reckless.Play(doomed, 200);
         var lost = window.StartGame(doomed, null);
         await Wait(1.5);
-        await Shot(window, folder, "14_liquidation", report);
-        report.Add($"Défaite : {doomed.Status}, sauvegardes de la campagne encore présentes : {window.Store.List(doomed.Id).Count}");
+        await Shot(window, folder, "23_faillite", report);
+        report.Add($"Faillite : {doomed.Status} le {GameTime.FormatDate(doomed.Minute)}, sauvegardes conservées : {window.Store.List(doomed.Id).Count}");
         lost.Leave();
-        window.ShowNewCampaign();
-        await Shot(window, folder, "m_nouvelle_partie", report);
-        window.ShowLoad();
-        await Shot(window, folder, "m_charger", report);
-        window.ShowSettings(() => { });
-        await Shot(window, folder, "m_reglages", report);
-        lock (Sfx.Played)
-            report.Add("Sons déclenchés (derniers) : " + string.Join(", ", Sfx.Played.Distinct()));
-        report.Add("Sauvegardes de capture : " + window.Store.Root);
-    }
 
-    private static void SetTab(ProductPanel panel, int tab)
-    {
-        var field = typeof(ProductPanel).GetField("_tab", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!;
-        field.SetValue(panel, Enum.ToObject(field.FieldType, tab));
+        window.ShowNewCampaign();
+        await Shot(window, folder, "24_nouvelle_partie", report);
+        window.ShowLoad();
+        await Shot(window, folder, "25_charger", report);
+        lock (Sfx.Played)
+            report.Add("Sons déclenchés : " + string.Join(", ", Sfx.Played.Distinct()));
+        report.Add("Sauvegardes de capture : " + window.Store.Root);
     }
 }

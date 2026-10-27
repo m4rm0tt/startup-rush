@@ -1,13 +1,12 @@
 using Core.finance;
 using Core.products;
 using Core.team;
-using Core.work;
 
 namespace Core.campaign;
 
 /// <summary>
-/// Ce qui se passe chaque nuit à minuit : marché des produits, échéances, encaissements, demandes de clients,
-/// moral et énergie, et la situation financière. Chaque événement périodique a une clé dans Processed :
+/// Ce qui se passe chaque nuit à minuit : marché des projets, avis, encaissements, échéances, équipe,
+/// points de développement et situation financière. Chaque événement périodique a une clé dans Processed :
 /// il ne peut pas se déclencher deux fois, même après un rechargement.
 /// </summary>
 public partial class Campaign
@@ -17,8 +16,7 @@ public partial class Campaign
         long yesterday = Day - 1;
         var date = GameTime.ToDate(Minute);
 
-        RunProducts(yesterday);
-        SupportToday.Clear();
+        RunProducts(yesterday, date.DayOfWeek == DayOfWeek.Monday);
 
         if (date.Day == 1)
             StartMonth(GameTime.MonthKey(Minute - 1));
@@ -29,20 +27,36 @@ public partial class Campaign
 
         CollectInvoices();
         PayDueBills();
-        UpdateContracts();
         UpdateTeam();
         UpdateMarket();
         UpdateSolvency();
         CheckMilestones();
     }
 
-    // ------------------------------------------------------------------ Produits
+    // ------------------------------------------------------------------ Projets
 
-    private void RunProducts(long day)
+    private void RunProducts(long day, bool weekly)
     {
-        foreach (var product in Products.Where(p => p.IsLive))
+        bool optimization = IsUnlocked("optimization");
+        foreach (var product in Products)
         {
-            var result = Market.Step(product, new DayInputs(SupportToday.GetValueOrDefault(product.Id), Competitors), day);
+            if (!product.IsLive)
+            {
+                Market.PreLaunch(product, IsUnlocked("launches"));
+                decimal preMarketing = product.MarketingBudget / 30;
+                if (preMarketing > 0)
+                    Ledger.Accrue(Category.Marketing, preMarketing);
+                if (!TeamOf(product).Any() && product.Queue.Count > 0)
+                    Notify(Severity.Warning, "projet", $"{product.Name} n'avance pas", "Personne ne travaille dessus : passe quelqu'un en automatique ou sur ce projet.",
+                        $"product:{product.Id}", key: $"noteam:{product.Id}");
+                else
+                    Resolve($"noteam:{product.Id}");
+                continue;
+            }
+
+            AdjustHosting(product);
+            var result = Market.Step(product, new DayInputs(product.SupportDone, Competitors, optimization, IsUnlocked("loyalty")), day);
+            product.SupportDone = 0;
             if (result.Revenue > 0)
             {
                 if (product.Model == RevenueModel.Ads)
@@ -50,7 +64,12 @@ public partial class Campaign
                 else
                 {
                     decimal fees = Math.Round(result.Revenue * (decimal)Tuning.Products.PaymentFees, 2);
-                    var category = product.Model == RevenueModel.Commission ? Category.Commissions : Category.Subscriptions;
+                    var category = product.Model switch
+                    {
+                        RevenueModel.Commission => Category.Commissions,
+                        RevenueModel.Purchase => Category.Sales,
+                        _ => Category.Subscriptions
+                    };
                     Post(result.Revenue - fees, category, $"{product.Name} : encaissements du jour", product.CompanyId);
                 }
             }
@@ -61,45 +80,47 @@ public partial class Campaign
             Ledger.Accrue(Category.Marketing, marketing);
             result.Costs = Math.Round(hosting + marketing, 2);
 
-            // Dette technique : sans maintenance, les bugs apparaissent peu à peu
-            double weeklyNeed = product.Live!.ActiveModules().Sum(m => m.Def.Maintenance * m.Factor(c => c.EffortFactor));
-            product.MaintenanceDebt = Math.Max(0, product.MaintenanceDebt + weeklyNeed / 7);
+            // Entretien : la maintenance faite corrige les bugs puis réduit la dette ; sans entretien, des bugs apparaissent
+            product.MaintenanceDebt = Math.Max(0, product.MaintenanceDebt + Design.MaintenancePerWeek(product) / 7);
             double done = product.MaintenanceDone;
             product.MaintenanceDone = 0;
             double fixedBugs = Math.Min(product.Bugs, done / 3);
             product.Bugs -= fixedBugs;
             product.MaintenanceDebt = Math.Max(0, product.MaintenanceDebt - (done - fixedBugs * 3));
-            double complexity = product.Live.ActiveModules().Sum(m => m.Def.Complexity);
-            double bugChance = product.MaintenanceDebt * 0.03 + complexity * 0.004 * (1 + product.Users / 5000);
+            double bugChance = product.MaintenanceDebt * 0.03 + Design.Complexity(product) * 0.002 * (1 + product.Users / 5000);
             if (Random.Chance(Math.Min(0.9, bugChance)))
                 product.Bugs += 1;
 
-            if (result.DowntimeHours > 0 && !Processed.Contains($"outage:{product.Id}:{Day / 3}"))
-            {
-                Processed.Add($"outage:{product.Id}:{Day / 3}");
-                Notify(Severity.Warning, "produit", $"{product.Name} : panne de {result.DowntimeHours:0} h",
-                    "Les serveurs ne suivent plus la charge. Passe à une offre d'hébergement plus grande ou optimise les performances.", $"product:{product.Id}");
-            }
-            else if (result.Performance < 1 && !Processed.Contains($"slow:{product.Id}:{Day / 7}"))
-            {
-                Processed.Add($"slow:{product.Id}:{Day / 7}");
-                Notify(Severity.Warning, "produit", $"{product.Name} ralentit", $"Serveurs chargés à {Market.Load(product, product.Live) / product.Hosting.Capacity:P0}.", $"product:{product.Id}");
-            }
+            // Problèmes : un seul message par cause, qui disparaît quand c'est réglé
+            if (result.DowntimeHours > 0)
+                Notify(Severity.Warning, "projet", $"{product.Name} tombe en panne", "Les serveurs sont débordés.", $"product:{product.Id}", key: $"outage:{product.Id}");
+            else if (result.Performance >= 0.97)
+                Resolve($"outage:{product.Id}");
+            if (product.SupportBacklog > result.Tickets * 4 && result.Tickets > 3)
+                Notify(Severity.Warning, "projet", $"{product.Name} : le support est débordé", "Augmente l'entretien ou l'équipe du projet.", $"product:{product.Id}", key: $"support:{product.Id}");
+            else if (product.SupportBacklog < result.Tickets * 1.5)
+                Resolve($"support:{product.Id}");
 
-            if (product.SupportBacklog > result.Tickets * 3 && result.Tickets > 3 && !Processed.Contains($"support:{product.Id}:{Day / 7}"))
-            {
-                Processed.Add($"support:{product.Id}:{Day / 7}");
-                Notify(Severity.Warning, "produit", $"{product.Name} : {product.SupportBacklog:0} tickets en attente",
-                    "Les utilisateurs sans réponse finissent par partir. Affecte quelqu'un au support.", $"product:{product.Id}");
-            }
+            if (weekly)
+                Reviews.Collect(product, Minute, Random, IsUnlocked);
 
-            // Délégation : correctifs créés automatiquement au-delà d'un seuil
-            if (product.AutoFixThreshold > 0 && product.Bugs >= product.AutoFixThreshold && !WorkFor(WorkOwner.Product, product.Id).Any(w => w.Kind == "fix"))
-            {
-                PlanBugFixes(product.Id);
-                Notify(Severity.Info, "produit", $"{product.Name} : correctifs planifiés automatiquement", $"Seuil de {product.AutoFixThreshold} bugs atteint.", $"product:{product.Id}");
-            }
+            // Paliers d'utilisateurs : récompensés une fois, et seulement s'ils sont tenus
+            AwardUsers(product);
         }
+    }
+
+    private void AwardUsers(Product product)
+    {
+        if (product.Users >= Tuning.Projects.AdoptionForPoints)
+            Award($"adopted:{product.Id}", 2, $"{product.Name} a trouvé son public ({Tuning.Projects.AdoptionForPoints} utilisateurs actifs).");
+        if (product.Users >= 500)
+            Award($"users500:{product.Id}", 1, $"{product.Name} dépasse 500 utilisateurs actifs.");
+        if (product.Users >= 5_000)
+            Award($"users5k:{product.Id}", 2, $"{product.Name} dépasse 5 000 utilisateurs actifs.");
+        if (product.Users >= 50_000)
+            Award($"users50k:{product.Id}", 3, $"{product.Name} dépasse 50 000 utilisateurs actifs.");
+        if (product.ArchetypeId == "game" && product.TotalBuyers >= 1_000)
+            Award($"sold1k:{product.Id}", 1, $"{product.Name} s'est vendu à 1 000 exemplaires.");
     }
 
     // ------------------------------------------------------------------ Mois, semaine, paie
@@ -128,7 +149,7 @@ public partial class Campaign
             if (!Processed.Add($"loan:{loan.Id}:{month}"))
                 continue;
             decimal payment = Math.Min(loan.MonthlyPayment, loan.Remaining);
-            AddBill(loan.Kind == LoanKind.Bank ? "Remboursement du prêt bancaire" : "Échéance du plan de redressement", Category.LoanRepayment, payment, Minute + 14L * GameTime.MinutesPerDay);
+            AddBill(loan.Kind == LoanKind.Bank ? "Remboursement du prêt" : "Échéance du plan de redressement", Category.LoanRepayment, payment, Minute + 14L * GameTime.MinutesPerDay);
             loan.Remaining -= payment;
             loan.MonthsLeft--;
             if (loan.Remaining <= 0.5m)
@@ -142,16 +163,22 @@ public partial class Campaign
                 product.AdsReceivable = 0;
             }
 
-        Notify(Severity.Info, "finance", $"Nouveau mois : {GameTime.ToDate(Minute):MMMM yyyy}", MonthSummary(previousMonth), "finance");
+        // Premier mois bénéficiaire : un vrai jalon
+        if (Ledger.Months.TryGetValue(previousMonth, out var totals) && OperatingResult(totals) > 0)
+            Award("profit", 2, "Premier mois bénéficiaire.");
+
+        Notify(Severity.Info, "finance", $"Bilan de {GameTime.ToDate(Minute - 1):MMMM}", MonthSummary(previousMonth), "finance");
     }
+
+    public static decimal OperatingResult(Dictionary<Category, decimal> totals) =>
+        totals.Where(t => t.Key is not (Category.Funding or Category.LoanReceived or Category.DepositRefund or Category.Deposit or Category.LoanRepayment)).Sum(t => t.Value);
 
     public string MonthSummary(string month)
     {
         if (!Ledger.Months.TryGetValue(month, out var totals))
-            return "Aucun mouvement le mois passé.";
-        decimal income = totals.Where(t => Ledger.IsIncome(t.Key) && t.Key is not (Category.Funding or Category.LoanReceived or Category.DepositRefund)).Sum(t => t.Value);
-        decimal spent = totals.Where(t => !Ledger.IsIncome(t.Key)).Sum(t => t.Value);
-        return $"Recettes d'exploitation {income:N0} CHF, dépenses {-spent:N0} CHF.";
+            return "Aucun mouvement.";
+        decimal result = OperatingResult(totals);
+        return result >= 0 ? $"Bénéfice : {result:N0} CHF." : $"Perte : {-result:N0} CHF.";
     }
 
     private void IssuePayroll()
@@ -164,12 +191,14 @@ public partial class Campaign
         {
             if (!Processed.Add($"salary:{person.Id}:{month}"))
                 continue;
-            // Premier mois : salaire au prorata des jours depuis l'arrivée
             double share = Math.Clamp((Minute - Math.Max(person.StartsAt, person.HiredAt)) / (30.0 * GameTime.MinutesPerDay), 0, 1);
             if (share > 0.02)
                 AddBill($"Salaire de {person.Name}", Category.Salaries, person.Salary * (decimal)share, due, person.Id);
         }
     }
+
+    /// <summary>Renommée de l'entreprise (0 à 100), tirée de l'audience de ses projets : elle attire de meilleurs candidats.</summary>
+    public double Renown => Math.Min(100, Products.Sum(p => p.Users) / 100);
 
     private void StartWeek()
     {
@@ -177,9 +206,10 @@ public partial class Campaign
         foreach (var person in People)
             person.PointsThisWeek = 0;
         Candidates.RemoveAll(c => c.ExpiresAt <= Minute);
-        int wanted = 3 + Math.Min(3, Staff.Count() / 3);
+        int wanted = 3 + Math.Min(3, Staff.Count() / 3) + (IsUnlocked("hiring") ? 2 : 0);
+        double renown = Renown + (IsUnlocked("hiring") ? 25 : 0);
         while (Candidates.Count < wanted)
-            Candidates.Add(Recruitment.Generate(Random, Minute, NewId(), MainCompany.Reputation));
+            Candidates.Add(Recruitment.Generate(Random, Minute, NewId(), renown));
     }
 
     // ------------------------------------------------------------------ Encaissements et paiements
@@ -196,28 +226,21 @@ public partial class Campaign
             else if (invoice.PaysAt == null && Minute > invoice.DueAt + 60L * GameTime.MinutesPerDay)
             {
                 invoice.WrittenOff = true;
-                Notify(Severity.Warning, "finance", $"Créance irrécouvrable : {invoice.Client}",
-                    $"{invoice.Amount:N0} CHF ne seront jamais payés ({invoice.Label}).", "finance");
-            }
-            else if (Minute > invoice.DueAt && Processed.Add($"late-invoice:{invoice.Id}"))
-            {
-                Notify(Severity.Info, "finance", $"{invoice.Client} paie en retard", $"{invoice.Amount:N0} CHF attendus depuis le {GameTime.FormatDate(invoice.DueAt)}.", "finance");
+                Notify(Severity.Info, "finance", $"Facture jamais payée : {invoice.Client}", $"{invoice.Amount:N0} CHF perdus.", "finance");
             }
         }
         if (Ledger.Invoices.Count > 300)
             Ledger.Invoices.RemoveAll(i => !i.Open && i.IssuedAt < Minute - 365L * GameTime.MinutesPerDay);
     }
 
-    /// <summary>Paie les dettes échues dans l'ordre de priorité, tant que le découvert autorisé le permet.</summary>
+    /// <summary>Paie automatiquement les dettes échues, dans l'ordre de priorité, tant que le découvert le permet.</summary>
     public void PayDueBills()
     {
         foreach (var bill in Ledger.Bills.Where(b => b.Open && b.DueAt <= Minute).OrderBy(b => b.Priority).ThenBy(b => b.DueAt).ToList())
         {
             if (!Ledger.CanSpend(bill.Amount))
             {
-                if (Processed.Add($"unpaid:{bill.Id}"))
-                    Notify(Severity.Critical, "finance", $"Impayé : {bill.Label}",
-                        $"{bill.Amount:N0} CHF n'ont pas pu être payés. Trouve de l'argent avant la mise en demeure.", "finance");
+                Notify(Severity.Critical, "finance", "Factures impayées", "Plus assez d'argent pour payer ce qui est dû. Ouvre Finances.", "finance", key: "unpaid");
                 continue;
             }
             bill.PaidAt = Minute;
@@ -225,53 +248,11 @@ public partial class Campaign
             if (bill.PersonId is int id && FindPerson(id) is { } person)
                 person.UnpaidDays = 0;
         }
+        if (!Ledger.Overdue(Minute).Any())
+            Resolve("unpaid");
         if (Ledger.Bills.Count > 400)
             Ledger.Bills.RemoveAll(b => !b.Open && b.IssuedAt < Minute - 365L * GameTime.MinutesPerDay);
     }
-
-    // ------------------------------------------------------------------ Contrats
-
-    private void UpdateContracts()
-    {
-        foreach (var offer in Offers.Where(o => o.OfferExpiresAt <= Minute).ToList())
-        {
-            offer.Status = ContractStatus.Expired;
-            offer.Outcome = "Le client a choisi quelqu'un d'autre.";
-        }
-
-        foreach (var contract in ActiveContracts.ToList())
-        {
-            int late = GameTime.WorkdaysBetween(contract.Deadline, Minute);
-            if (late == 1 && Processed.Add($"late:{contract.Id}"))
-                Notify(Severity.Warning, "contrat", $"Retard : {contract.Client}",
-                    $"Échéance dépassée. Pénalité de {Tuning.Contracts.LatePenaltyPerWorkday:P0} par jour ouvré ; le client rompt après {Tuning.Contracts.CancelAfterLateWorkdays} jours.", $"contract:{contract.Id}");
-            if (late == Tuning.Contracts.CancelAfterLateWorkdays - 3 && Processed.Add($"late-warning:{contract.Id}"))
-                Notify(Severity.Critical, "contrat", $"{contract.Client} menace de rompre",
-                    "Encore 3 jours ouvrés de retard et le contrat est annulé sans paiement du solde.", $"contract:{contract.Id}");
-            if (late >= Tuning.Contracts.CancelAfterLateWorkdays)
-                CancelByClient(contract);
-        }
-
-        if (GameTime.IsWorkday(Minute) && Offers.Count() < Tuning.Contracts.MaxOpenOffers
-            && Random.Chance(ContractMarket.DailyOfferChance(MainCompany.Reputation)))
-        {
-            var offer = ContractMarket.Generate(Random, NewId(), Minute, MainCompany.Reputation, TeamSpeedEstimate());
-            offer.CompanyId = MainCompany.Id;
-            Contracts.Add(offer);
-            Notify(Severity.Info, "contrat", $"Nouvelle demande : {offer.Client}", $"{offer.Title}, {offer.Price:N0} CHF, {offer.DurationWorkdays} jours ouvrés.", $"contract:{offer.Id}");
-        }
-
-        // On garde l'historique récent, pas une liste qui grandit sans fin
-        Contracts.RemoveAll(c => c.Status is ContractStatus.Expired or ContractStatus.Declined && c.OfferExpiresAt < Minute - 30L * GameTime.MinutesPerDay);
-        if (Contracts.Count(c => c.Status is ContractStatus.Completed or ContractStatus.Cancelled) > 60)
-        {
-            var old = Contracts.Where(c => c.Status is ContractStatus.Completed or ContractStatus.Cancelled).OrderBy(c => c.AcceptedAt).First();
-            Contracts.Remove(old);
-        }
-    }
-
-    /// <summary>Points par jour qu'une personne seule abat à peu près (sert à calibrer les délais demandés).</summary>
-    private double TeamSpeedEstimate() => Math.Max(5, WorkRate(Founder, Founder.BestDiscipline) * 60 * 7);
 
     // ------------------------------------------------------------------ Équipe
 
@@ -279,6 +260,8 @@ public partial class Campaign
     {
         bool weekend = !GameTime.IsWorkday(Minute);
         double shared = space.Layout.SharedMorale(Premises);
+        // Les pauses se font sur place : un coin pause rend un peu d'énergie chaque jour
+        double breakBonus = space.Layout.BreakRecovery(Premises, People.Count) - 3;
         var overdueSalaries = Ledger.Overdue(Minute).Where(b => b.Category == Category.Salaries).Select(b => b.PersonId).ToHashSet();
 
         foreach (var person in People.ToList())
@@ -286,7 +269,8 @@ public partial class Campaign
             person.Activity = person.TrainingDiscipline != null ? Activity.Training : Activity.Away;
             person.Path.Clear();
             person.Position = Premises.Outside;
-            person.Energy = Math.Min(100, person.Energy + (weekend ? Tuning.Work.EnergyWeekendRecovery : Tuning.Work.EnergyNightRecovery) * (person.Energy < 30 ? 0.8 : 1));
+            double recovery = weekend ? Tuning.Work.EnergyWeekendRecovery : Tuning.Work.EnergyNightRecovery + breakBonus;
+            person.Energy = OnVacation(person) ? 100 : Math.Min(100, person.Energy + recovery * (person.Energy < 30 ? 0.8 : 1));
 
             if (overdueSalaries.Contains(person.Id))
                 person.UnpaidDays++;
@@ -296,8 +280,7 @@ public partial class Campaign
             double target = 58 + Math.Min(10, shared) + (desk?.Def.Morale ?? 0);
             if (!person.IsFounder)
             {
-                decimal market = 3_800m + (decimal)person.Skill(person.BestDiscipline) * 70m;
-                target += Math.Clamp((double)((person.Salary - market) / market) * 40, -12, 12);
+                target += Math.Clamp((double)((person.Salary - MarketSalary(person)) / MarketSalary(person)) * 40, -12, 12);
                 target -= person.UnpaidDays * 4;
             }
             if (!hasPost && Minute >= person.StartsAt)
@@ -306,38 +289,55 @@ public partial class Campaign
                 target -= 6;
             if (person.Energy < 30)
                 target -= 10;
+            if (OnVacation(person))
+                target += 8;
             person.Morale = Math.Clamp(person.Morale + (target - person.Morale) * 0.1, 0, 100);
+
+            if (!hasPost && !person.IsFounder && Minute >= person.StartsAt)
+                Notify(Severity.Warning, "équipe", $"{person.Name} n'a pas de poste", "Installe un bureau complet dans Aménagement.", "build", key: $"nodesk:{person.Id}");
+            else
+                Resolve($"nodesk:{person.Id}");
 
             if (person.IsFounder)
                 continue;
 
             person.LowMoraleDays = person.Morale < 25 ? person.LowMoraleDays + 1 : 0;
+            if (person.Morale < 35)
+                Notify(Severity.Warning, "équipe", $"{person.Name} n'a plus le moral", "Un congé, une augmentation ou de meilleures conditions aideraient.", $"person:{person.Id}", key: $"morale:{person.Id}");
+            else if (person.Morale > 45)
+                Resolve($"morale:{person.Id}");
+
             if (person.LeavesAt == null && (person.LowMoraleDays >= 10 || person.UnpaidDays >= Tuning.Finance.UnpaidSalaryDaysBeforeQuitting))
             {
                 person.LeavesAt = person.UnpaidDays >= Tuning.Finance.UnpaidSalaryDaysBeforeQuitting ? Minute : GameTime.AddWorkdays(Minute, 10);
                 Notify(Severity.Critical, "équipe", $"{person.Name} démissionne",
-                    person.UnpaidDays >= Tuning.Finance.UnpaidSalaryDaysBeforeQuitting
-                        ? "Salaire impayé depuis trop longtemps : départ immédiat."
-                        : $"Moral au plus bas. Départ le {GameTime.FormatDate(person.LeavesAt.Value)} sauf si ses conditions s'améliorent nettement.", $"person:{person.Id}");
+                    person.UnpaidDays >= Tuning.Finance.UnpaidSalaryDaysBeforeQuitting ? "Salaire impayé : départ immédiat." : $"Départ le {GameTime.FormatDate(person.LeavesAt.Value)}, sauf si son moral remonte.",
+                    $"person:{person.Id}", key: $"leave:{person.Id}");
             }
             else if (person.LeavesAt != null && person.LeavesAt > Minute && person.Morale > 45)
             {
                 person.LeavesAt = null;
-                Notify(Severity.Good, "équipe", $"{person.Name} reste finalement", "Son moral est remonté.", $"person:{person.Id}");
+                Resolve($"leave:{person.Id}");
+                Notify(Severity.Good, "équipe", $"{person.Name} reste finalement", "", $"person:{person.Id}");
             }
 
             if (person.LeavesAt is long leaves && leaves <= Minute)
-                RemovePerson(person, $"{person.Name} est partie·i.");
+                RemovePerson(person, $"{person.Name} est parti·e.");
         }
 
         Candidates.RemoveAll(c => c.ExpiresAt <= Minute);
     }
+
+    /// <summary>Salaire de référence pour un niveau : le jeu le propose et le paie, sans négociation.</summary>
+    public static decimal MarketSalary(Person person) => 3_800m + (decimal)person.Skill(person.BestDiscipline) * 70m;
 
     private void RemovePerson(Person person, string message)
     {
         People.Remove(person);
         foreach (var desk in Premises.Desks.Where(d => d.AssignedPersonId == person.Id))
             desk.AssignedPersonId = null;
+        foreach (var notice in Notices.Where(n => n.Key.EndsWith($":{person.Id}") && n.Target == $"person:{person.Id}"))
+            notice.Resolved = true;
         Notify(Severity.Warning, "équipe", message, "", "team");
     }
 
@@ -348,21 +348,20 @@ public partial class Campaign
         foreach (var competitor in Competitors)
         {
             competitor.Appeal = Math.Min(0.75, competitor.Appeal + 0.0004);
+            bool relevant = Products.Any(p => p.IsLive && p.SegmentId == competitor.SegmentId);
             if (competitor.UpgradeAt is long at && at <= Minute)
             {
                 competitor.Appeal = Math.Min(0.8, competitor.Appeal + competitor.UpgradeGain);
                 competitor.UpgradeAt = null;
-                if (Products.Any(p => p.IsLive && p.SegmentId == competitor.SegmentId))
-                    Notify(Severity.Warning, "marché", $"{competitor.Name} sort sa nouvelle version",
-                        $"Son attrait passe à {competitor.Appeal:P0} sur « {ProductCatalog.Segment(competitor.SegmentId).Name} ».", "market");
+                if (relevant)
+                    Notify(Severity.Info, "marché", $"{competitor.Name} sort une nouvelle version", "Tes utilisateurs vont comparer.", "projects");
             }
             else if (competitor.UpgradeAt == null && Random.Chance(1 / 120.0))
             {
                 competitor.UpgradeAt = Minute + Random.Next(10, 21) * (long)GameTime.MinutesPerDay;
                 competitor.UpgradeGain = Math.Round(Random.Range(0.04, 0.1), 2);
-                if (Products.Any(p => p.IsLive && p.SegmentId == competitor.SegmentId))
-                    Notify(Severity.Info, "marché", $"Rumeur : {competitor.Name} prépare une nouvelle version",
-                        $"Sortie prévue vers le {GameTime.FormatDate(competitor.UpgradeAt.Value)}. Prépare une réponse (qualité, fonctions, prix).", "market");
+                if (relevant)
+                    Notify(Severity.Info, "marché", $"Rumeur : {competitor.Name} prépare une nouvelle version", $"Sortie vers le {GameTime.FormatDate(competitor.UpgradeAt.Value)}.", "projects");
             }
         }
 
@@ -378,24 +377,24 @@ public partial class Campaign
     public decimal MonthlyFixedCosts =>
         Tuning.Finance.FounderDraw + Tuning.Finance.Utilities + Premises.Rent * 1.04m
         + Staff.Sum(p => p.Salary)
-        + Products.Sum(p => p.Hosting.MonthlyCost + p.MarketingBudget)
+        + Products.Sum(p => (p.IsLive ? p.Hosting.MonthlyCost : 0) + p.MarketingBudget)
         + Ledger.Loans.Sum(l => Math.Min(l.MonthlyPayment, l.Remaining));
 
-    /// <summary>Revenus récurrents des 30 derniers jours (produits uniquement : les prestations ne sont pas récurrentes).</summary>
+    /// <summary>Revenus des projets sur les 30 derniers jours.</summary>
     public decimal RecurringRevenue30 =>
         Products.Sum(p => p.History.Skip(Math.Max(0, p.History.Count - 30)).Sum(d => d.Revenue));
 
     /// <summary>
-    /// Jours d'autonomie estimés : trésorerie et découvert, plus les factures clients attendues dans les 30 jours
-    /// (seulement si leur client est fiable), divisés par la consommation nette quotidienne.
+    /// Jours d'autonomie : argent disponible (avec le découvert, moins ce qui est dû, plus 85 % des factures attendues
+    /// sous 30 jours) divisé par la perte quotidienne (charges fixes moins revenus des projets).
     /// </summary>
     public (double Days, string Assumptions) Runway()
     {
         decimal burn = MonthlyFixedCosts - RecurringRevenue30;
-        decimal soon = Ledger.Invoices.Where(i => i.Open && i.DueAt <= Minute + 30L * GameTime.MinutesPerDay && i.DueAt >= Minute - 15L * GameTime.MinutesPerDay).Sum(i => i.Amount);
+        decimal soon = Ledger.Invoices.Where(i => i.Open && i.DueAt <= Minute + 30L * GameTime.MinutesPerDay).Sum(i => i.Amount);
         decimal available = Ledger.Cash + Ledger.Overdraft - Ledger.OpenBills + soon * 0.85m;
-        string assumptions = $"Trésorerie {Ledger.Cash:N0} + découvert {Ledger.Overdraft:N0} − dettes ouvertes {Ledger.OpenBills:N0} + 85 % des factures attendues sous 30 jours ({soon:N0}). " +
-                             $"Consommation : charges fixes {MonthlyFixedCosts:N0}/mois − revenus récurrents {RecurringRevenue30:N0}/mois. Les prestations futures ne sont pas comptées.";
+        string assumptions = $"Argent {Ledger.Cash:N0} + découvert {Ledger.Overdraft:N0} − à payer {Ledger.OpenBills:N0} + factures attendues {soon * 0.85m:N0}. " +
+                             $"Dépenses {MonthlyFixedCosts:N0}/mois, revenus des projets {RecurringRevenue30:N0}/mois.";
         if (burn <= 0)
             return (double.PositiveInfinity, assumptions);
         return (Math.Max(0, (double)(available / (burn / 30))), assumptions);
@@ -409,11 +408,14 @@ public partial class Campaign
         if (overdue.Count == 0)
         {
             if (Solvency.State == SolvencyState.Notice)
-                Notify(Severity.Good, "finance", "Mise en demeure levée", "Toutes les dettes échues sont payées.", "finance");
+                Notify(Severity.Good, "finance", "Mise en demeure levée", "Toutes les factures sont payées.", "finance");
+            Resolve("notice");
             Solvency.NoticeUntil = null;
             Solvency.State = Runway().Days < 30 || Ledger.Cash < 0 ? SolvencyState.Tight : SolvencyState.Healthy;
             if (Solvency.State == SolvencyState.Tight && previous == SolvencyState.Healthy)
-                Notify(Severity.Warning, "finance", "Trésorerie tendue", "Moins de 30 jours d'autonomie au rythme actuel.", "finance");
+                Notify(Severity.Warning, "finance", "L'argent va manquer", "Moins de 30 jours d'autonomie au rythme actuel.", "finance", key: "tight");
+            if (Solvency.State == SolvencyState.Healthy)
+                Resolve("tight");
             return;
         }
 
@@ -423,11 +425,11 @@ public partial class Campaign
 
         if (Solvency.State == SolvencyState.Notice && Solvency.NoticeUntil is long until)
         {
+            long left = (until - Minute) / GameTime.MinutesPerDay;
             if (Minute >= until)
                 Liquidate(total, overdue);
-            else if ((until - Minute) / GameTime.MinutesPerDay is 10 or 3 && Processed.Add($"notice-left:{until}:{(until - Minute) / GameTime.MinutesPerDay}"))
-                Notify(Severity.Critical, "finance", $"Liquidation dans {(until - Minute) / GameTime.MinutesPerDay} jours",
-                    $"Il reste {total:N0} CHF d'impayés à régulariser.", "finance");
+            else
+                Notify(Severity.Critical, "finance", $"Faillite dans {left} jours", $"{total:N0} CHF à payer avant le {GameTime.FormatDate(until)}.", "finance", key: "notice");
             return;
         }
 
@@ -437,8 +439,7 @@ public partial class Campaign
             Solvency.State = SolvencyState.Notice;
             Solvency.NoticeUntil = Minute + Tuning.Finance.NoticeDays * (long)GameTime.MinutesPerDay;
             Notify(Severity.Critical, "finance", "Mise en demeure",
-                $"{total:N0} CHF impayés depuis {overdueDays} jours. Sans régularisation avant le {GameTime.FormatDate(Solvency.NoticeUntil.Value)}, l'entreprise sera liquidée. " +
-                "Pistes : encaisser, vendre du matériel, réduire les charges, licencier, plan de redressement.", "finance");
+                $"{total:N0} CHF impayés. Sans paiement avant le {GameTime.FormatDate(Solvency.NoticeUntil.Value)}, c'est la faillite.", "finance", key: "notice");
         }
     }
 
@@ -448,48 +449,49 @@ public partial class Campaign
         Status = CampaignStatus.Liquidated;
         var lines = new List<string>
         {
-            $"Liquidation prononcée le {GameTime.FormatDate(Minute)}, après {Day} jours d'activité.",
-            $"Impayés au moment de la liquidation : {overdueTotal:N0} CHF ({string.Join(", ", overdue.Select(b => b.Label).Distinct().Take(5))}).",
-            $"Trésorerie : {Ledger.Cash:N0} CHF (découvert autorisé {Ledger.Overdraft:N0}). Créances ouvertes : {Ledger.OpenReceivables:N0} CHF. Prêts restants : {Ledger.LoanDebt:N0} CHF.",
-            $"Charges fixes mensuelles : {MonthlyFixedCosts:N0} CHF, revenus récurrents : {RecurringRevenue30:N0} CHF par mois.",
-            $"Équipe au moment de la liquidation : {People.Count} personne(s). Produits publiés : {Products.Count(p => p.IsLive)}. Contrats livrés : {Contracts.Count(c => c.Status == ContractStatus.Completed)}.",
+            $"Faillite prononcée le {GameTime.FormatDate(Minute)}, après {Day} jours.",
+            $"Impayés : {overdueTotal:N0} CHF ({string.Join(", ", overdue.Select(b => b.Label).Distinct().Take(4))}).",
+            $"Argent : {Ledger.Cash:N0} CHF. Dépenses : {MonthlyFixedCosts:N0} CHF par mois pour {RecurringRevenue30:N0} CHF de revenus.",
+            $"Équipe : {People.Count} personne(s). Projets en ligne : {Products.Count(p => p.IsLive)}.",
         };
         Solvency.LiquidationReport = string.Join("\n", lines);
-        Notify(Severity.Critical, "finance", "Entreprise liquidée", Solvency.LiquidationReport, "finance");
+        Notify(Severity.Critical, "finance", "Faillite", Solvency.LiquidationReport, "finance");
     }
 
     // ------------------------------------------------------------------ Jalons
 
     public static readonly (string Id, string Name, string Description)[] MilestoneDefs =
     [
-        ("first_contract", "Premier client", "Livrer une première prestation."),
-        ("first_launch", "En ligne", "Publier la première version d'un produit."),
+        ("first_launch", "Premier lancement", "Sortir un premier projet."),
         ("first_hire", "On est deux", "Embaucher une première personne."),
-        ("office", "De vrais locaux", "Quitter l'appartement pour un bureau."),
-        ("paying100", "Cent clients", "Avoir 100 clients payants sur un produit."),
-        ("mrr10k", "10 000 CHF récurrents", "Dépasser 10 000 CHF de revenus récurrents sur 30 jours."),
+        ("office", "De vrais locaux", "Quitter l'appartement."),
+        ("users1k", "Mille utilisateurs", "1 000 utilisateurs actifs sur un projet."),
+        ("mrr10k", "10 000 CHF par mois", "10 000 CHF de revenus des projets sur 30 jours."),
+        ("portfolio3", "Un vrai portefeuille", "Trois projets en ligne qui ont trouvé leur public."),
         ("team10", "Une vraie équipe", "Être 10 dans l'entreprise."),
-        ("users10k", "Dix mille utilisateurs", "Atteindre 10 000 utilisateurs actifs sur un produit."),
+        ("users50k", "Cinquante mille", "50 000 utilisateurs actifs au total."),
     ];
 
     private void CheckMilestones()
     {
-        void Reach(string id, bool condition)
+        void Reach(string id, bool condition, int points)
         {
             if (!condition || Milestones.ContainsKey(id))
                 return;
             Milestones[id] = Minute;
             var def = MilestoneDefs.First(m => m.Id == id);
-            Notify(Severity.Good, "entreprise", $"Jalon atteint : {def.Name}", def.Description, "company");
+            Notify(Severity.Good, "entreprise", $"Jalon : {def.Name}", def.Description, "tree");
+            if (points > 0)
+                Award($"milestone:{id}", points, def.Name);
         }
 
-        Reach("first_contract", Contracts.Any(c => c.Status == ContractStatus.Completed));
-        Reach("first_launch", Products.Any(p => p.IsLive));
-        Reach("first_hire", Staff.Any());
-        Reach("office", Premises.ListingId != space.RealEstate.Apartment);
-        Reach("paying100", Products.Any(p => p.Paying >= 100));
-        Reach("mrr10k", RecurringRevenue30 >= 10_000);
-        Reach("team10", People.Count >= 10);
-        Reach("users10k", Products.Any(p => p.Users >= 10_000));
+        Reach("first_launch", Products.Any(p => p.IsLive), 0);
+        Reach("first_hire", Staff.Any(), 1);
+        Reach("office", Premises.ListingId != space.RealEstate.Apartment, 1);
+        Reach("users1k", Products.Any(p => p.Users >= 1_000), 1);
+        Reach("mrr10k", RecurringRevenue30 >= 10_000, 2);
+        Reach("portfolio3", Products.Count(p => p.IsLive && p.Users >= Tuning.Projects.AdoptionForPoints) >= 3, 1);
+        Reach("team10", People.Count >= 10, 2);
+        Reach("users50k", Products.Sum(p => p.Users) >= 50_000, 2);
     }
 }

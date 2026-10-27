@@ -130,7 +130,8 @@ public class GameScreen : UserControl, IScreen
         while (Session.NewNotices.Count > 0)
         {
             var notice = Session.NewNotices.Dequeue();
-            if (notice.Severity != Severity.Info || notice.Category == "contrat")
+            // Les bulles ne montrent que ce qui compte : bonnes nouvelles et problèmes, une seule fois par problème
+            if (notice.Severity != Severity.Info && notice.Count == 1)
                 ToastNotice(notice);
         }
         UpdateToasts(deltaTime);
@@ -203,15 +204,19 @@ public class GameScreen : UserControl, IScreen
             SolvencyState.Overdue => Palette.Ember,
             _ => Palette.Blood
         };
-        string runwayText = double.IsInfinity(runway) ? "rentable" : $"{runway:0} j d'autonomie";
-        var cash = Ui.Column(0, Ui.Number(Ui.Chf(c.Ledger.Cash), 22, Ui.Signed(c.Ledger.Cash)), Ui.Muted(runwayText, 12));
+        decimal monthly = c.RecurringRevenue30 - c.MonthlyFixedCosts;
+        var cash = Ui.Column(0, Ui.Number(Ui.Chf(c.Ledger.Cash), 22, Ui.Signed(c.Ledger.Cash)), Ui.Text($"{Ui.SignedChf(monthly)} / mois", 12, Ui.Signed(monthly), wrap: false));
         ToolTip.SetTip(cash, assumptions);
-        var solvency = Ui.Button(Solvency.Name(state), () => OpenRoot(new FinancePanel()), "tab");
-        solvency.Foreground = stateColor;
-        ToolTip.SetTip(solvency, "Situation financière : cliquer pour les détails");
+        Control? solvency = null;
+        if (state != SolvencyState.Healthy)
+        {
+            var warning = Ui.Button(state == SolvencyState.Tight ? $"{runway:0} j d'argent" : Solvency.Name(state), () => OpenRoot(new FinancePanel()), "tab");
+            warning.Foreground = stateColor;
+            solvency = warning;
+        }
 
-        int unread = c.Notices.Count(n => !n.Read && n.Severity >= Severity.Warning);
-        var bell = Ui.Button(unread > 0 ? $"Alertes ({unread})" : "Journal", () => OpenRoot(new NoticesPanel()), unread > 0 ? "red" : "tab", tip: "Notifications (N)");
+        int problems = c.Notices.Count(n => n.IsProblem && !n.Resolved);
+        var bell = Ui.Button(problems > 0 ? $"À traiter ({problems})" : "Journal", () => OpenRoot(new NoticesPanel()), problems > 0 ? "red" : "tab", tip: "Journal (N)");
 
         var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto,*"), Margin = new Thickness(10, 6) };
         grid.Children.Add(left);
@@ -236,12 +241,10 @@ public class GameScreen : UserControl, IScreen
 
     private static readonly (string Label, string Icon, Key Key, Func<GamePanel> Create)[] Tools =
     [
-        ("Aménagement", "chair", Key.B, () => new BuildPanel()),
-        ("Entreprise", "building", Key.E, () => new CompanyPanel()),
-        ("Produits", "screen", Key.P, () => new ProductsPanel()),
-        ("Projets", "briefcase", Key.C, () => new ProjectsPanel()),
+        ("Projets", "screen", Key.P, () => new ProjectsPanel()),
         ("Équipe", "people", Key.T, () => new TeamPanel()),
-        ("Marché", "megaphone", Key.M, () => new MarketPanel()),
+        ("Aménagement", "chair", Key.B, () => new BuildPanel()),
+        ("Développement", "star", Key.D, () => new TreePanel()),
         ("Finances", "money", Key.F, () => new FinancePanel()),
     ];
 
@@ -250,7 +253,8 @@ public class GameScreen : UserControl, IScreen
         _toolbar.Children.Clear();
         foreach (var (label, icon, key, create) in Tools)
         {
-            var content = Ui.Row(6, Ui.Icon(icon, 24), Ui.Column(0, Ui.Text(label, 15, Palette.Snow, wrap: false), Ui.Muted(key.ToString(), 11)));
+            string badge = label == "Développement" && Session.Campaign.DevPoints > 0 ? $" ({Session.Campaign.DevPoints})" : "";
+            var content = Ui.Row(6, Ui.Icon(icon, 24), Ui.Column(0, Ui.Text(label + badge, 15, badge != "" ? Palette.Lemon : Palette.Snow, wrap: false), Ui.Muted(key.ToString(), 11)));
             var button = new Button { Content = content, Padding = new Thickness(10, 4, 12, 8) };
             bool active = _stack.Count > 0 && _stack[0].GetType() == create().GetType();
             if (active)
@@ -465,15 +469,12 @@ public class GameScreen : UserControl, IScreen
         int id = parts.Length > 1 && int.TryParse(parts[1], out int value) ? value : 0;
         switch (parts[0])
         {
-            case "contract" or "contracts":
-                OpenRoot(new ProjectsPanel());
-                break;
             case "product" when Session.Campaign.FindProduct(id) != null:
-                OpenRoot(new ProductsPanel());
-                PushPanel(new ProductPanel(id));
+                OpenRoot(new ProjectsPanel());
+                PushPanel(new ProjectPanel(id));
                 break;
-            case "product" or "products":
-                OpenRoot(new ProductsPanel());
+            case "product" or "products" or "projects":
+                OpenRoot(new ProjectsPanel());
                 break;
             case "person" when Session.Campaign.FindPerson(id) != null:
                 OpenRoot(new TeamPanel());
@@ -485,14 +486,11 @@ public class GameScreen : UserControl, IScreen
             case "finance":
                 OpenRoot(new FinancePanel());
                 break;
-            case "market":
-                OpenRoot(new MarketPanel());
-                break;
             case "build":
                 OpenRoot(new BuildPanel());
                 break;
-            case "company":
-                OpenRoot(new CompanyPanel());
+            case "tree" or "company":
+                OpenRoot(new TreePanel());
                 break;
             default:
                 OpenRoot(new NoticesPanel());

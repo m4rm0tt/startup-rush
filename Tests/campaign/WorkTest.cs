@@ -1,5 +1,6 @@
 using Core.campaign;
 using Core.finance;
+using Core.products;
 using Core.space;
 using Core.team;
 using Core.work;
@@ -9,72 +10,99 @@ namespace Tests.campaign;
 
 public class WorkTest
 {
+    private static double Progress(Campaign campaign, Product product) =>
+        campaign.WorkFor(WorkOwner.Product, product.Id).Sum(w => w.Progress);
+
     [Test]
-    public void TheFounderProducesOnlyAtACompleteWorkstationDuringWorkHours()
+    public void TheFounderWorksAutomaticallyOnTheNewProjectDuringWorkHours()
     {
         var campaign = NewCampaign();
-        var offer = AddOffer(campaign);
-        campaign.AcceptContract(offer.Id, DeadlineOption.Standard, false);
+        var product = NewProject(campaign);
 
-        campaign.Advance(60); // 8 h → 9 h : pas encore au travail
-        double before = campaign.WorkFor(WorkOwner.Contract, offer.Id).Sum(w => w.Progress);
+        campaign.Advance(60); // 8 h → 9 h
+        double before = Progress(campaign, product);
         campaign.Advance(3 * 60); // 9 h → 12 h
-        double morning = campaign.WorkFor(WorkOwner.Contract, offer.Id).Sum(w => w.Progress);
-        campaign.Advance(60); // pause de midi
-        double lunch = campaign.WorkFor(WorkOwner.Contract, offer.Id).Sum(w => w.Progress);
+        double morning = Progress(campaign, product);
+        campaign.Advance(60); // midi
+        double lunch = Progress(campaign, product);
 
+        Assert.That(campaign.Founder.Assignment.Kind, Is.EqualTo(AssignmentKind.None), "aucune affectation manuelle");
         Assert.That(before, Is.EqualTo(0).Within(0.05));
         Assert.That(morning, Is.GreaterThan(1.5).And.LessThan(4));
-        Assert.That(lunch - morning, Is.EqualTo(0).Within(0.05), "personne ne travaille à midi");
+        Assert.That(lunch - morning, Is.EqualTo(0).Within(0.05));
+    }
+
+    [Test]
+    public void DesignThenCodeThenTestsFollowWithoutReassignment()
+    {
+        var campaign = NewCampaign();
+        var product = NewProject(campaign);
+
+        FinishQueue(campaign, product);
+
+        Assert.That(product.Components.Select(c => c.DefId), Is.EquivalentTo(new[] { "login", "dashboard", "subscribe" }));
+        Assert.That(product.Components.All(c => c.Level == 1 && c.Quality > 0.3), Is.True);
+        Assert.That(campaign.Founder.Assignment.Kind, Is.EqualTo(AssignmentKind.None));
+    }
+
+    [Test]
+    public void TheFirstProjectIsReadyInAFewWeeksSolo()
+    {
+        var campaign = NewCampaign();
+        var product = NewProject(campaign);
+
+        int days = 0;
+        while (product.Queue.Count > 0 && days < 90)
+        {
+            campaign.AdvanceDays(1);
+            days++;
+        }
+
+        Assert.That(days, Is.InRange(14, 45), "un premier projet prend quelques semaines, pas des mois");
+        Assert.That(campaign.CanLaunch(product), Is.True);
     }
 
     [Test]
     public void WithoutAComputerNothingGetsDone()
     {
         var campaign = NewCampaign();
-        var laptop = campaign.Premises.Items.First(i => i.DefId == "laptop");
-        campaign.Premises.Items.Remove(laptop);
+        campaign.Premises.Items.Remove(campaign.Premises.Items.First(i => i.DefId == "laptop"));
         campaign.InvalidateLayout();
-        var offer = AddOffer(campaign);
-        campaign.AcceptContract(offer.Id, DeadlineOption.Standard, false);
+        var product = NewProject(campaign);
 
-        campaign.Advance(6 * 60); // jusqu'à 14 h
+        campaign.Advance(6 * 60);
 
-        Assert.That(campaign.WorkFor(WorkOwner.Contract, offer.Id).Sum(w => w.Progress), Is.EqualTo(0));
+        Assert.That(Progress(campaign, product), Is.EqualTo(0));
         Assert.That(campaign.Founder.Status, Does.Contain("ordinateur"));
     }
 
     [Test]
-    public void APersonHasOneAssignmentSoWorkIsNeverCountedTwice()
+    public void APersonWorksOnOneProjectAtATime()
     {
         var campaign = NewCampaign();
-        var a = AddOffer(campaign);
-        var b = AddOffer(campaign);
-        campaign.AcceptContract(a.Id, DeadlineOption.Standard, false);
-        campaign.AcceptContract(b.Id, DeadlineOption.Standard, false);
-        campaign.Assign(campaign.Founder.Id, AssignmentKind.Contract, b.Id);
+        var first = NewProject(campaign);
+        var second = NewProject(campaign, "casual");
+        campaign.Assign(campaign.Founder.Id, second.Id);
 
-        campaign.Advance(10 * 60);
+        campaign.Advance(6 * 60);
 
-        double onA = campaign.WorkFor(WorkOwner.Contract, a.Id).Sum(w => w.Progress);
-        double onB = campaign.WorkFor(WorkOwner.Contract, b.Id).Sum(w => w.Progress);
-        Assert.That(onA, Is.EqualTo(0));
-        Assert.That(onB, Is.GreaterThan(3));
-        Assert.That(onB, Is.LessThan(9), "une seule personne : au plus une journée de points");
+        Assert.That(Progress(campaign, first), Is.EqualTo(0));
+        Assert.That(Progress(campaign, second), Is.GreaterThan(2).And.LessThan(8));
     }
 
     [Test]
-    public void TasksWaitForTheirDependencies()
+    public void AutomaticModeFollowsThePortfolioPriority()
     {
         var campaign = NewCampaign();
-        var offer = AddOffer(campaign, design: 30, code: 10, test: 4);
-        campaign.AcceptContract(offer.Id, DeadlineOption.Standard, false);
+        var first = NewProject(campaign);
+        var second = NewProject(campaign, "casual");
+        campaign.MoveProject(second.Id, -1);
 
-        campaign.Advance(10 * 60);
+        campaign.Advance(6 * 60);
 
-        var items = campaign.WorkFor(WorkOwner.Contract, offer.Id).ToList();
-        Assert.That(items.Where(w => w.Discipline == Discipline.Code).Sum(w => w.Progress), Is.EqualTo(0));
-        Assert.That(items.Where(w => w.Discipline == Discipline.Design).Sum(w => w.Progress), Is.GreaterThan(0));
+        Assert.That(campaign.AutoTarget(), Is.SameAs(second));
+        Assert.That(Progress(campaign, first), Is.EqualTo(0));
+        Assert.That(Progress(campaign, second), Is.GreaterThan(2));
     }
 
     [Test]
@@ -93,8 +121,7 @@ public class WorkTest
     public void BetterComputersHelpWithDiminishingReturns()
     {
         var campaign = NewCampaign();
-        var desk = campaign.Premises.DeskOf(campaign.Founder.Id)!;
-        var computer = campaign.Premises.ComputerOn(desk)!;
+        var computer = campaign.Premises.ComputerOn(campaign.Premises.DeskOf(campaign.Founder.Id)!)!;
         double laptop = campaign.WorkRate(campaign.Founder, Discipline.Code);
         computer.DefId = "pc";
         double pc = campaign.WorkRate(campaign.Founder, Discipline.Code);
@@ -102,7 +129,7 @@ public class WorkTest
         double pro = campaign.WorkRate(campaign.Founder, Discipline.Code);
 
         Assert.That(pc, Is.GreaterThan(laptop));
-        Assert.That(pro - pc, Is.LessThan(pc - laptop), "le deuxième achat rapporte moins que le premier");
+        Assert.That(pro - pc, Is.LessThan(pc - laptop));
     }
 
     [Test]
@@ -112,31 +139,32 @@ public class WorkTest
         var candidate = campaign.Candidates.First();
         candidate.NoticeWorkdays = 0;
         campaign.Hire(candidate.Person.Id);
-        var offer = AddOffer(campaign, design: 0, code: 40, test: 0);
-        campaign.AcceptContract(offer.Id, DeadlineOption.Standard, false);
-        campaign.Assign(campaign.Founder.Id, AssignmentKind.None, 0);
-        campaign.Assign(candidate.Person.Id, AssignmentKind.Contract, offer.Id);
+        var product = NewProject(campaign);
+        campaign.Assign(campaign.Founder.Id, 0);
+        // Le fondateur part en congé : seule la recrue pourrait travailler
+        campaign.Vacation(campaign.Founder.Id);
 
         campaign.Advance(6 * 60);
 
-        Assert.That(campaign.WorkFor(WorkOwner.Contract, offer.Id).Sum(w => w.Progress), Is.EqualTo(0));
-        Assert.That(candidate.Person.Activity, Is.EqualTo(Activity.Idle).Or.EqualTo(Activity.Walking));
+        Assert.That(Progress(campaign, product), Is.EqualTo(0));
+        Assert.That(candidate.Person.Activity, Is.EqualTo(Activity.Idle));
+        Assert.That(candidate.Person.Status, Does.Contain("poste"));
     }
 
     [Test]
-    public void EmployeesWalkToTheirSeatThroughFreeCells()
+    public void SeatedPeopleAreAtTheirDesk()
     {
         var campaign = NewCampaign();
-        campaign.Advance(60 + 30); // 9 h 30
+        NewProject(campaign);
+        campaign.Advance(90);
 
-        var founder = campaign.Founder;
-        var seat = Premises.SeatCell(campaign.Premises.DeskOf(founder.Id)!);
-        Assert.That(founder.Activity, Is.EqualTo(Activity.Working));
-        Assert.That(founder.Position, Is.EqualTo(seat));
+        var seat = Premises.SeatCell(campaign.Premises.DeskOf(campaign.Founder.Id)!);
+        Assert.That(campaign.Founder.Activity, Is.EqualTo(Activity.Working));
+        Assert.That(campaign.Founder.Position, Is.EqualTo(seat));
     }
 
     [Test]
-    public void SalariesAndRentAreBilledOncePerMonthEvenIfDaysAreReplayed()
+    public void SalariesAndRentAreBilledOncePerMonth()
     {
         var campaign = NewCampaign();
         campaign.Ledger.Cash = 100_000;
@@ -147,6 +175,6 @@ public class WorkTest
         var draws = campaign.Ledger.Bills.Where(b => b.Category == Category.FounderDraw).ToList();
         Assert.That(rents.Select(b => GameTime.MonthKey(b.IssuedAt)).Distinct().Count(), Is.EqualTo(rents.Count));
         Assert.That(draws.Select(b => GameTime.MonthKey(b.IssuedAt)).Distinct().Count(), Is.EqualTo(draws.Count));
-        Assert.That(rents, Has.Count.EqualTo(2), "février et mars");
+        Assert.That(rents, Has.Count.EqualTo(2));
     }
 }

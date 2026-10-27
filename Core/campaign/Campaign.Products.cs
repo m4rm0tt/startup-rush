@@ -5,207 +5,189 @@ using Core.work;
 
 namespace Core.campaign;
 
-/// <summary>Produits : créer, concevoir les pages, développer une version, publier, piloter prix, serveurs et marketing.</summary>
+/// <summary>Projets : créer, choisir et améliorer les composants, lancer, puis régler prix, marketing, serveurs et entretien.</summary>
 public partial class Campaign
 {
-    public const decimal CompanyRegistrationCost = 800m;
+    public static readonly int[] ProjectColors = [17, 12, 9, 28, 10, 18, 13, 27];
 
-    public CommandResult CreateCompany(string name, string sector)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            return CommandResult.Fail("Il faut un nom.");
-        var paid = Spend(CompanyRegistrationCost, Category.Registration, $"Inscription au registre du commerce : {name}");
-        if (!paid.Ok)
-            return paid;
-        Companies.Add(new Company { Id = NewId(), Name = name.Trim(), Sector = sector, FoundedAt = Minute, Reputation = MainCompany.Reputation * 0.3 });
-        return CommandResult.Success();
-    }
+    public bool TypeAvailable(string typeId) => ProductCatalog.Type(typeId).UnlockNode is not { } node || IsUnlocked(node);
 
-    public CommandResult RenameCompany(int companyId, string name)
+    public (CommandResult Result, Product? Product) CreateProject(string name, string segmentId, RevenueModel model, decimal? price = null, IEnumerable<string>? starters = null)
     {
-        var company = FindCompany(companyId);
-        if (company == null || string.IsNullOrWhiteSpace(name))
-            return CommandResult.Fail("Nom invalide.");
-        company.Name = name.Trim();
-        return CommandResult.Success();
-    }
-
-    public (CommandResult Result, Product? Product) CreateProduct(int companyId, string name, string segmentId, RevenueModel model, decimal price)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            return (CommandResult.Fail("Il faut un nom."), null);
         var segment = ProductCatalog.Segment(segmentId);
-        var archetype = ProductCatalog.Archetype(segment.ArchetypeId);
-        if (!archetype.Models.Contains(model))
-            return (CommandResult.Fail($"{ProductCatalog.ModelName(model)} ne convient pas à ce type de produit."), null);
+        var type = ProductCatalog.Type(segment.TypeId);
+        if (!TypeAvailable(type.Id))
+            return (CommandResult.Fail($"{type.Name} : à débloquer dans Développement."), null);
+        if (!type.Models.Contains(model))
+            model = type.Models[0];
         var product = new Product
         {
             Id = NewId(),
-            CompanyId = FindCompany(companyId)?.Id ?? MainCompany.Id,
-            Name = name.Trim(),
-            ArchetypeId = archetype.Id,
+            CompanyId = MainCompany.Id,
+            Name = string.IsNullOrWhiteSpace(name) ? SuggestName(type.Id) : name.Trim(),
+            ArchetypeId = type.Id,
             SegmentId = segment.Id,
             Model = model,
-            Price = price,
+            Price = price ?? ProductCatalog.DefaultPrice(segment, model),
+            Color = ProjectColors[Products.Count % ProjectColors.Length],
             CreatedAt = Minute,
+            Priority = Products.Count == 0 ? 0 : Products.Max(p => p.Priority) + 1,
         };
-        product.Draft = ProductDesign.Starter(product);
         Products.Add(product);
+        foreach (string defId in starters ?? type.Starters)
+            QueueComponent(product.Id, defId);
+        Notify(Severity.Info, "projet", $"{product.Name} : c'est parti", "L'équipe s'y met toute seule.", $"product:{product.Id}");
         return (CommandResult.Success(), product);
     }
 
-    /// <summary>Le brouillon est modifiable tant qu'aucune version n'est en fabrication.</summary>
-    public bool CanEditDraft(Product product) => product.Build == null;
-
-    /// <summary>Qualité moyenne que l'équipe affectée au produit produirait (pour les prévisions).</summary>
-    public double AssumedQuality(Product product)
+    private string SuggestName(string typeId)
     {
-        var team = People.Where(p => p.Assignment.Is(AssignmentKind.Product, product.Id)).ToList();
-        if (team.Count == 0)
-            team = [Founder];
-        return team.Average(p => WorkQuality(p, Discipline.Code) * 0.6 + WorkQuality(p, Discipline.Design) * 0.4);
+        string[] apps = ["Factura", "Planio", "Notably", "Tempo", "Ledgr", "Fokus"];
+        string[] games = ["Pixel Quest", "Lac Rush", "Moon Garden", "Tiny Kingdom", "Sky Courier"];
+        string[] other = ["Agora", "Bazar", "Cercle", "Vitrine"];
+        var pool = typeId == "game" ? games : typeId == "saas" ? apps : other;
+        return pool.FirstOrDefault(n => Products.All(p => p.Name != n)) ?? $"Projet {Products.Count + 1}";
     }
 
-    public List<PlannedWork> PlanDraft(Product product) =>
-        ProductDesign.PlanWork(product, (FindCompany(product.CompanyId) ?? MainCompany).ReuseLevels);
-
-    public Forecast ForecastDraft(Product product)
-    {
-        var plan = PlanDraft(product);
-        double quality = AssumedQuality(product);
-        double bugs = ProductDesign.ExpectedBugs(plan, quality);
-        double support = People.Where(p => p.Assignment.Is(AssignmentKind.Support, product.Id)).Sum(p => WorkRate(p, Discipline.Support) * 60 * 7);
-        return Market.Forecast(product, product.Draft, quality, bugs, support, Competitors);
-    }
-
-    public CommandResult StartBuild(int productId)
+    /// <summary>Met en file l'ajout d'un composant, ou son niveau suivant. Les tâches (design → développement → tests) sont créées tout de suite.</summary>
+    public CommandResult QueueComponent(int productId, string defId)
     {
         var product = FindProduct(productId);
         if (product == null)
-            return CommandResult.Fail("Produit inconnu.");
-        if (product.Build != null)
-            return CommandResult.Fail("Une version est déjà en cours.");
-        var blocking = ProductDesign.Warnings(product, product.Draft).FirstOrDefault(w => w.Blocking);
-        if (blocking != null)
-            return CommandResult.Fail(blocking.Text);
-        var plan = PlanDraft(product);
-        if (plan.Count == 0)
-            return CommandResult.Fail("Rien n'a changé depuis la version publiée.");
+            return CommandResult.Fail("Projet inconnu.");
+        var (ok, reason, level) = Design.CanQueue(product, defId, IsUnlocked);
+        if (!ok)
+            return CommandResult.Fail(reason);
 
-        var build = new ProductBuild
+        var def = ProductCatalog.Component(defId);
+        var (design, code, test) = Design.Effort(def, level);
+        var queued = new QueuedWork { Id = NewId(), DefId = defId, ToLevel = level };
+        string title = level == 1 ? def.Name : $"{def.Name} niv. {level}";
+        var previous = new List<int>();
+        foreach (var (discipline, points) in new[] { (Discipline.Design, design), (Discipline.Code, code), (Discipline.Test, test) })
         {
-            Version = product.LiveVersion + 1,
-            Spec = product.Draft.Clone(),
-            StartedAt = Minute,
-            Forecast = ForecastDraft(product),
-        };
-
-        // Par module : design → développement → tests. Les retouches de pages sont indépendantes.
-        foreach (var group in plan.GroupBy(w => (w.ModuleId, w.Group)))
-        {
-            var previous = new List<int>();
-            foreach (var discipline in new[] { Discipline.Design, Discipline.Code, Discipline.Test })
-            {
-                var works = group.Where(w => w.Discipline == discipline).ToList();
-                if (works.Count == 0)
-                    continue;
-                var ids = new List<int>();
-                foreach (var w in works)
-                    ids.AddRange(AddChunks(WorkOwner.Product, product.Id, w.Title, discipline, w.Effort, previous, "module", w.ModuleId));
-                previous = ids;
-                build.WorkItemIds.AddRange(ids);
-            }
-        }
-        product.Build = build;
-        Notify(Severity.Info, "produit", $"{product.Name} v{build.Version} : développement lancé",
-            $"{plan.Sum(w => w.Effort):0} points de travail. Affecte des personnes au produit dans Équipe.", $"product:{product.Id}");
-        return CommandResult.Success();
-    }
-
-    public CommandResult CancelBuild(int productId)
-    {
-        var product = FindProduct(productId);
-        if (product?.Build == null)
-            return CommandResult.Fail("Aucune version en cours.");
-        Work.RemoveAll(w => product.Build.WorkItemIds.Contains(w.Id));
-        product.Build = null;
-        return CommandResult.Success("Version annulée : le travail fait est perdu, le brouillon est de nouveau modifiable.");
-    }
-
-    public bool BuildReady(Product product) =>
-        product.Build != null && product.Build.WorkItemIds.All(id => FindWork(id) is not { Done: false });
-
-    /// <summary>Étape d'un module dans la version en cours : brouillon, en développement, en test, prêt ou publié.</summary>
-    public string ModuleStage(Product product, ModuleInstance module)
-    {
-        if (product.Build != null)
-        {
-            var items = product.Build.WorkItemIds.Select(FindWork).Where(w => w != null && w.ModuleId == module.Id).ToList();
-            if (items.Count > 0)
-            {
-                if (items.All(w => w!.Done))
-                    return "Prêt";
-                if (items.Where(w => w!.Discipline != Discipline.Test).All(w => w!.Done))
-                    return "En test";
-                return "En développement";
-            }
-        }
-        if (product.Live?.AllModules.Any(m => m.Id == module.Id) == true)
-        {
-            var live = product.Live.AllModules.First(m => m.Id == module.Id);
-            bool changed = !live.Options.OrderBy(o => o.Key).SequenceEqual(module.Options.OrderBy(o => o.Key)) || live.Visible != module.Visible;
-            return changed ? "Modifié (brouillon)" : "Publié";
-        }
-        return "Brouillon";
-    }
-
-    public CommandResult Publish(int productId)
-    {
-        var product = FindProduct(productId);
-        if (product?.Build == null)
-            return CommandResult.Fail("Aucune version à publier.");
-        if (!BuildReady(product))
-            return CommandResult.Fail("La version n'est pas terminée.");
-
-        var build = product.Build;
-        var items = build.WorkItemIds.Select(FindWork).Where(w => w != null).Select(w => w!).ToList();
-        foreach (var group in items.Where(w => w.ModuleId != null).GroupBy(w => w.ModuleId!.Value))
-            product.ModuleQuality[group.Key] = Math.Round(group.Sum(w => w.QualityPoints) / Math.Max(1e-6, group.Sum(w => w.Progress)), 3);
-
-        // Bugs livrés : code écrit, complexité et qualité, moins ce que les tests ont attrapé
-        double bugs = 0;
-        foreach (var group in items.Where(w => w.ModuleId != null).GroupBy(w => w.ModuleId!.Value))
-        {
-            var module = build.Spec.AllModules.FirstOrDefault(m => m.Id == group.Key);
-            if (module == null)
+            if (points < 0.25)
                 continue;
-            double code = group.Where(w => w.Discipline == Discipline.Code).Sum(w => w.Effort);
-            double codeQuality = group.Where(w => w.Discipline == Discipline.Code).Sum(w => w.QualityPoints) / Math.Max(1e-6, code);
-            var tests = group.Where(w => w.Discipline == Discipline.Test).ToList();
-            double testQuality = tests.Sum(w => w.QualityPoints) / Math.Max(1e-6, tests.Sum(w => w.Effort));
-            double caught = Math.Min(0.85, tests.Sum(w => w.Effort) / Math.Max(1, code * 0.35) * 0.7 * testQuality / 0.6);
-            bugs += code * 0.12 * module.Def.Complexity * (1.2 - codeQuality) * (1 - caught);
+            var ids = AddChunks(product.Id, title, discipline, points, previous, queued.Id);
+            queued.WorkItemIds.AddRange(ids);
+            previous = ids;
         }
-        double expected = bugs;
-        bugs = Math.Max(0, bugs * Random.Range(0.6, 1.5));
-        product.Bugs += Math.Round(bugs);
+        product.Queue.Add(queued);
+        return CommandResult.Success(level == 1 ? $"{def.Name} ajouté à la file." : $"{def.Name} niveau {level} en file.");
+    }
 
-        bool first = product.Live == null;
-        product.Live = build.Spec.Clone();
-        product.LiveVersion = build.Version;
-        product.PublishedAt = Minute;
-        product.LastForecast = build.Forecast;
-        product.Draft = product.Live.Clone();
-        product.Build = null;
-        var liveIds = product.Live.AllModules.Select(m => m.Id).ToHashSet();
-        foreach (var id in product.ModuleQuality.Keys.Where(k => !liveIds.Contains(k)).ToList())
-            product.ModuleQuality.Remove(id);
-        Work.RemoveAll(w => build.WorkItemIds.Contains(w.Id));
+    /// <summary>Découpe un volume de travail en tâches d'au plus 10 points, dépendantes de l'étape précédente.</summary>
+    public List<int> AddChunks(int productId, string title, Discipline discipline, double points, List<int> dependsOn, int queueId)
+    {
+        var ids = new List<int>();
+        int chunks = Math.Max(1, (int)Math.Ceiling(points / 10));
+        for (int i = 0; i < chunks; i++)
+        {
+            var item = new WorkItem
+            {
+                Id = NewId(),
+                Owner = WorkOwner.Product,
+                OwnerId = productId,
+                Title = title,
+                Discipline = discipline,
+                Effort = Math.Round(points / chunks, 2),
+                DependsOn = dependsOn.ToList(),
+                Kind = "component",
+                ModuleId = queueId,
+            };
+            Work.Add(item);
+            ids.Add(item.Id);
+        }
+        return ids;
+    }
 
-        Notify(Severity.Good, "produit", first ? $"{product.Name} est en ligne !" : $"{product.Name} v{product.LiveVersion} publiée",
-            $"Qualité moyenne {product.ModuleQuality.Values.DefaultIfEmpty(0).Average():P0}. Bugs introduits : {Math.Round(bugs)} (attendus ~{expected:0}). " +
-            (build.Forecast != null ? $"Prévision à 90 jours : {build.Forecast.UsersLow:N0} à {build.Forecast.UsersHigh:N0} utilisateurs." : ""), $"product:{product.Id}");
+    public CommandResult CancelQueued(int productId, int queuedId)
+    {
+        var product = FindProduct(productId);
+        var queued = product?.Queue.FirstOrDefault(q => q.Id == queuedId);
+        if (product == null || queued == null)
+            return CommandResult.Fail("Rien à annuler.");
+        // Ce qui en dépend dans la file (niveau suivant, composant qui l'exige) part aussi
+        var removed = product.Queue.Where(q => q.Id == queuedId
+                                               || q.DefId == queued.DefId && q.ToLevel > queued.ToLevel
+                                               || queued.ToLevel == 1 && ProductCatalog.Component(q.DefId).Requires == queued.DefId && product.Level(queued.DefId) == 0).ToList();
+        foreach (var q in removed)
+        {
+            Work.RemoveAll(w => q.WorkItemIds.Contains(w.Id));
+            product.Queue.Remove(q);
+        }
+        return CommandResult.Success("Retiré de la file.");
+    }
+
+    public bool CanLaunch(Product product) => !product.IsLive && product.Components.Count(c => c.Level > 0) >= 2;
+
+    public CommandResult Launch(int productId)
+    {
+        var product = FindProduct(productId);
+        if (product == null || product.IsLive)
+            return CommandResult.Fail("Déjà lancé.");
+        if (!CanLaunch(product))
+            return CommandResult.Fail("Il faut au moins deux composants terminés.");
+        product.LaunchedAt = Minute;
+        product.Version = 1;
+        double buyers = Market.Launch(product);
+        if (buyers > 0)
+        {
+            decimal sales = Math.Round((decimal)buyers * product.Price * (1 - (decimal)Tuning.Products.PaymentFees), 2);
+            Post(sales, Category.Sales, $"{product.Name} : ventes du lancement");
+        }
+        product.LastForecast = Market.Forecast(product, Competitors, 0);
+        Resolve($"ready:{product.Id}");
+        Notify(Severity.Good, "projet", $"{product.Name} est sorti !",
+            buyers > 0 ? $"{buyers:N0} joueurs l'ont acheté le premier jour." : "Les premiers utilisateurs arrivent.", $"product:{product.Id}");
         return CommandResult.Success();
+    }
+
+    /// <summary>Une amélioration de la file est terminée : le composant gagne son niveau (et une mise à jour sort si le projet est en ligne).</summary>
+    private void CompleteQueued(Product product, QueuedWork queued)
+    {
+        var items = queued.WorkItemIds.Select(FindWork).Where(w => w != null).Select(w => w!).ToList();
+        double quality = items.Sum(w => w.QualityPoints) / Math.Max(1e-6, items.Sum(w => w.Progress));
+        var component = product.Component(queued.DefId);
+        if (component == null)
+        {
+            component = new ProjectComponent { DefId = queued.DefId, Level = 0, Quality = quality };
+            product.Components.Add(component);
+        }
+        // La qualité s'améliore avec chaque niveau (moyenne pondérée vers le travail le plus récent)
+        component.Quality = component.Level == 0 ? quality : Math.Round(component.Quality * 0.4 + quality * 0.6, 3);
+        component.Level = Math.Max(component.Level, queued.ToLevel);
+
+        // Bugs : code écrit × complexité × (1,2 − qualité), moins ce que les tests ont attrapé
+        double code = items.Where(w => w.Discipline == Discipline.Code).Sum(w => w.Effort);
+        double tests = items.Where(w => w.Discipline == Discipline.Test).Sum(w => w.Effort);
+        double caught = Math.Min(0.85, tests / Math.Max(1, code * 0.35) * 0.7 * quality / 0.6);
+        double bugs = code * 0.1 * component.Def.Complexity * (1.2 - quality) * (1 - caught) * Random.Range(0.6, 1.4);
+        product.Bugs += Math.Round(bugs, 1);
+
+        Work.RemoveAll(w => queued.WorkItemIds.Contains(w.Id));
+        product.Queue.Remove(queued);
+
+        string what = queued.ToLevel == 1 ? component.Def.Name : $"{component.Def.Name} niveau {queued.ToLevel}";
+        if (product.IsLive)
+        {
+            product.Version++;
+            product.LastUpdateAt = Minute;
+            Market.UpdateBoost(product);
+            Notify(Severity.Good, "projet", $"{product.Name} : mise à jour {product.Version}", $"{what} est en ligne.", $"product:{product.Id}", key: $"update:{product.Id}");
+        }
+        else if (product.Queue.Count == 0)
+        {
+            Notify(Severity.Info, "projet", $"{product.Name} est prêt à sortir", "Lance-le quand tu veux.", $"product:{product.Id}", key: $"ready:{product.Id}");
+        }
+    }
+
+    /// <summary>Termine les améliorations dont tout le travail est déjà fait (après une migration, par exemple).</summary>
+    public void CheckQueue(Product product)
+    {
+        foreach (var queued in product.Queue.ToList())
+            if (queued.WorkItemIds.All(id => FindWork(id) is not { Done: false }))
+                CompleteQueued(product, queued);
     }
 
     public CommandResult SetPrice(int productId, decimal price)
@@ -213,87 +195,154 @@ public partial class Campaign
         var product = FindProduct(productId);
         if (product == null || price <= 0)
             return CommandResult.Fail("Prix invalide.");
-        if (product.IsLive && price > product.Price && product.Model != RevenueModel.Ads)
+        if (product.IsLive && price > product.Price && product.Model is RevenueModel.Subscription or RevenueModel.Freemium)
         {
-            // Une hausse fait partir une partie des clients sensibles au prix
             double increase = (double)((price - product.Price) / product.Price);
-            double lost = product.Users * Math.Min(0.35, increase * product.Segment.PriceSensitivity * 0.25);
-            product.Users -= lost;
-            if (lost >= 1)
-                Notify(Severity.Info, "produit", $"{product.Name} : hausse de prix", $"{lost:0} utilisateurs sont partis tout de suite.", $"product:{product.Id}");
+            product.Users -= product.Users * Math.Min(0.35, increase * product.Segment.PriceSensitivity * 0.25);
         }
         product.Price = price;
         return CommandResult.Success();
     }
 
-    public CommandResult SetHosting(int productId, string planId)
-    {
-        var product = FindProduct(productId);
-        if (product == null)
-            return CommandResult.Fail("Produit inconnu.");
-        product.HostingId = ProductCatalog.Plan(planId).Id;
-        return CommandResult.Success();
-    }
-
-    public CommandResult SetMarketing(int productId, decimal monthlyBudget, string channelId, double sellerShare)
+    public CommandResult SetMarketing(int productId, decimal monthlyBudget, string? channelId = null)
     {
         var product = FindProduct(productId);
         if (product == null || monthlyBudget < 0)
             return CommandResult.Fail("Budget invalide.");
+        var channel = ProductCatalog.Channel(channelId ?? product.MarketingChannelId);
+        if (channel.UnlockNode != null && !IsUnlocked(channel.UnlockNode))
+            return CommandResult.Fail("Canal à débloquer dans Développement.");
         product.MarketingBudget = monthlyBudget;
-        product.MarketingChannelId = ProductCatalog.Channel(channelId).Id;
-        product.SellerMarketingShare = Math.Clamp(sellerShare, 0, 1);
+        product.MarketingChannelId = channel.Id;
         return CommandResult.Success();
     }
 
-    /// <summary>Planifie une série de correctifs : 3 points de code et 1 de test par bug, 10 bugs au plus.</summary>
-    public CommandResult PlanBugFixes(int productId)
-    {
-        var product = FindProduct(productId);
-        if (product is not { IsLive: true } || product.Bugs < 1)
-            return CommandResult.Fail("Aucun bug connu.");
-        if (WorkFor(WorkOwner.Product, product.Id).Any(w => w.Kind == "fix"))
-            return CommandResult.Fail("Des correctifs sont déjà prévus.");
-        int count = (int)Math.Min(10, Math.Ceiling(product.Bugs));
-        string title = $"Correctifs ({count} bugs)";
-        var code = AddChunks(WorkOwner.Product, product.Id, title, Discipline.Code, count * 3, [], "fix");
-        AddChunks(WorkOwner.Product, product.Id, title, Discipline.Test, count, code, "fix");
-        return CommandResult.Success();
-    }
-
-    public CommandResult PlanOptimization(int productId)
-    {
-        var product = FindProduct(productId);
-        if (product is not { IsLive: true })
-            return CommandResult.Fail("Produit non publié.");
-        if (product.Optimizations >= 3)
-            return CommandResult.Fail("Déjà optimisé au maximum.");
-        if (WorkFor(WorkOwner.Product, product.Id).Any(w => w.Kind == "optimize"))
-            return CommandResult.Fail("Une optimisation est déjà prévue.");
-        AddChunks(WorkOwner.Product, product.Id, $"Optimisation n° {product.Optimizations + 1}", Discipline.Code, 18 * (1 + product.Optimizations * 0.5), [], "optimize");
-        return CommandResult.Success();
-    }
-
-    public CommandResult SetAutoFix(int productId, int threshold)
+    public CommandResult SetUpkeep(int productId, Upkeep upkeep)
     {
         var product = FindProduct(productId);
         if (product == null)
-            return CommandResult.Fail("Produit inconnu.");
-        product.AutoFixThreshold = Math.Max(0, threshold);
+            return CommandResult.Fail("Projet inconnu.");
+        product.Upkeep = upkeep;
         return CommandResult.Success();
     }
 
-    /// <summary>Arrête un produit : plus de coûts, plus de revenus. Les utilisateurs partent.</summary>
+    public bool PlanAvailable(HostingPlan plan) => plan.UnlockNode == null || IsUnlocked(plan.UnlockNode);
+
+    public CommandResult SetHosting(int productId, bool auto, decimal cap, string? planId = null)
+    {
+        var product = FindProduct(productId);
+        if (product == null)
+            return CommandResult.Fail("Projet inconnu.");
+        product.HostingAuto = auto;
+        product.HostingCap = Math.Max(15, cap);
+        if (planId != null)
+        {
+            var plan = ProductCatalog.Plan(planId);
+            if (!PlanAvailable(plan))
+                return CommandResult.Fail("Offre à débloquer dans Développement.");
+            product.HostingId = plan.Id;
+        }
+        if (auto)
+            AdjustHosting(product);
+        return CommandResult.Success();
+    }
+
+    /// <summary>Hébergement automatique : la plus petite offre débloquée qui tient la charge avec une marge, sous le plafond.</summary>
+    private void AdjustHosting(Product product)
+    {
+        if (!product.HostingAuto)
+            return;
+        double load = Market.Load(product, IsUnlocked("optimization"));
+        var fitting = ProductCatalog.Hosting.Where(PlanAvailable).Where(h => h.MonthlyCost <= product.HostingCap).ToList();
+        var plan = fitting.FirstOrDefault(h => load < h.Capacity * 0.75) ?? fitting.LastOrDefault();
+        if (plan != null)
+            product.HostingId = plan.Id;
+        if (product.IsLive && load > product.Hosting.Capacity * 0.85)
+            Notify(Severity.Warning, "projet", $"{product.Name} : serveurs presque pleins",
+                fitting.Count < ProductCatalog.Hosting.Count(PlanAvailable) ? "Le plafond d'hébergement empêche de monter d'offre." : "Débloque une offre plus grande dans Développement.",
+                $"product:{product.Id}", key: $"hosting:{product.Id}");
+        else
+            Resolve($"hosting:{product.Id}");
+    }
+
+    public CommandResult MoveProject(int productId, int delta)
+    {
+        var ordered = Products.OrderBy(p => p.Priority).ToList();
+        int index = ordered.FindIndex(p => p.Id == productId);
+        int target = index + delta;
+        if (index < 0 || target < 0 || target >= ordered.Count)
+            return CommandResult.Fail("");
+        (ordered[index], ordered[target]) = (ordered[target], ordered[index]);
+        for (int i = 0; i < ordered.Count; i++)
+            ordered[i].Priority = i;
+        return CommandResult.Success();
+    }
+
+    public CommandResult Rename(int productId, string name)
+    {
+        var product = FindProduct(productId);
+        if (product == null || string.IsNullOrWhiteSpace(name))
+            return CommandResult.Fail("Nom invalide.");
+        product.Name = name.Trim();
+        return CommandResult.Success();
+    }
+
+    /// <summary>Ferme un projet : plus de coûts ni de revenus. Les composants et les avis disparaissent avec lui.</summary>
     public CommandResult Retire(int productId)
     {
         var product = FindProduct(productId);
         if (product == null)
-            return CommandResult.Fail("Produit inconnu.");
-        Work.RemoveAll(w => w.Owner == WorkOwner.Product && w.OwnerId == productId);
-        foreach (var person in People.Where(p => p.Assignment.TargetId == productId && p.Assignment.Kind is AssignmentKind.Product or AssignmentKind.Maintenance or AssignmentKind.Support))
+            return CommandResult.Fail("Projet inconnu.");
+        Work.RemoveAll(w => w.OwnerId == productId);
+        foreach (var person in People.Where(p => p.Assignment.Is(AssignmentKind.Project, productId)))
             person.Assignment = Assignment.None;
         Products.Remove(product);
-        Notify(Severity.Info, "produit", $"{product.Name} est arrêté", "Plus de serveurs ni de marketing à payer.", "products");
+        foreach (var notice in Notices.Where(n => n.Target == $"product:{productId}"))
+            notice.Resolved = true;
+        Notify(Severity.Info, "projet", $"{product.Name} est fermé", "Plus de serveurs ni de marketing à payer.", "projects");
         return CommandResult.Success();
+    }
+
+    /// <summary>Projet sur lequel travaillent les personnes en automatique : le premier du portefeuille qui a du travail en file.</summary>
+    public Product? AutoTarget() =>
+        Products.OrderBy(p => p.Priority).FirstOrDefault(p => p.Queue.Count > 0) ?? Products.OrderBy(p => p.Priority).FirstOrDefault(p => p.IsLive);
+
+    /// <summary>Les personnes qui travaillent sur ce projet (affectées, ou en automatique quand c'est la cible).</summary>
+    public IEnumerable<Person> TeamOf(Product product)
+    {
+        var auto = AutoTarget();
+        return People.Where(p => p.Assignment.Is(AssignmentKind.Project, product.Id) || p.Assignment.Kind == AssignmentKind.None && auto?.Id == product.Id);
+    }
+
+    /// <summary>Points restants dans la file et jours ouvrés estimés au rythme de l'équipe actuelle.</summary>
+    public (double Remaining, double Days) QueueEstimate(Product product)
+    {
+        double remaining = product.Queue.SelectMany(q => q.WorkItemIds).Select(FindWork).Where(w => w != null).Sum(w => w!.Remaining);
+        double share = product.IsLive ? 1 - UpkeepShare(product) : 1;
+        double speed = TeamOf(product).Sum(p => WorkRate(p, p.BestDiscipline) * 60 * 7) * share;
+        return (remaining, speed > 0 ? remaining / speed : double.PositiveInfinity);
+    }
+
+    public static double UpkeepShare(Product product) => product.Upkeep switch
+    {
+        Upkeep.Low => Tuning.Projects.UpkeepLow,
+        Upkeep.High => Tuning.Projects.UpkeepHigh,
+        _ => Tuning.Projects.UpkeepNormal
+    };
+
+    public double QueueProgress(QueuedWork queued)
+    {
+        var items = queued.WorkItemIds.Select(FindWork).Where(w => w != null).ToList();
+        return items.Sum(w => w!.Progress) / Math.Max(1e-6, items.Sum(w => w!.Effort));
+    }
+
+    public Forecast ForecastProject(Product product) =>
+        Market.Forecast(product, Competitors, TeamOf(product).Sum(p => WorkRate(p, Discipline.Support) * 60 * 7 * UpkeepShare(product)));
+
+    /// <summary>Résultat des 30 derniers jours d'un projet : revenus moins hébergement et marketing.</summary>
+    public static decimal Result30(Product product)
+    {
+        var days = product.History.Skip(Math.Max(0, product.History.Count - 30)).ToList();
+        return days.Sum(d => d.Revenue) - days.Sum(d => d.Costs);
     }
 }

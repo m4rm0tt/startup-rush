@@ -2,70 +2,49 @@ using Core.campaign;
 using Core.finance;
 using Core.products;
 using Core.space;
-using Core.team;
-using Core.work;
 
 namespace Core.bots;
 
 /// <summary>
-/// Une stratégie de joueur, décrite par quelques réglages. Elle ne sert qu'aux mesures d'équilibrage et aux captures :
-/// elle joue avec les mêmes commandes que l'interface, sans aucun accès privilégié.
+/// Une façon de jouer, décrite par quelques réglages. Elle ne sert qu'aux mesures d'équilibrage et aux captures :
+/// elle utilise les mêmes commandes que l'interface, sans accès privilégié.
 /// </summary>
 public record Strategy(string Name, string Description)
 {
-    /// <summary>Accepte des prestations (et combien en parallèle par personne libre).</summary>
-    public bool TakeContracts { get; init; } = true;
+    /// <summary>Projets à créer, dans l'ordre : public visé et composants de départ (null = ceux par défaut).</summary>
+    public (string Segment, string[]? Starters)[] Projects { get; init; } = [("freelances", null)];
 
-    public int MaxContracts { get; init; } = 1;
-    public DeadlineOption Deadline { get; init; } = DeadlineOption.Standard;
+    /// <summary>Jours entre deux nouveaux projets (0 : tous dès le départ).</summary>
+    public int ProjectInterval { get; init; } = 120;
 
-    /// <summary>Plus petite et plus grosse demande acceptée (points).</summary>
-    public double MaxContractSize { get; init; } = 400;
-
-    public bool Capitalize { get; init; }
-
-    /// <summary>Jour où commence le produit (-1 : jamais).</summary>
-    public int ProductDay { get; init; } = -1;
-
-    public string Segment { get; init; } = "freelances";
-    public RevenueModel Model { get; init; } = RevenueModel.Subscription;
-    public string[] Modules { get; init; } = ["login", "dashboard", "subscribe", "support"];
-
-    /// <summary>Modules ajoutés version après version.</summary>
-    public string[] LaterModules { get; init; } = ["export", "notifications", "stats", "search"];
-
-    /// <summary>Trésorerie au-dessus de laquelle on embauche, et taille maximale de l'équipe.</summary>
-    public decimal HireAbove { get; init; } = 40_000;
-
+    public decimal Marketing { get; init; } = 300;
+    public decimal PreLaunchMarketing { get; init; }
     public int MaxStaff { get; init; }
-    public decimal MarketingBudget { get; init; }
-    public bool KeepSupport { get; init; } = true;
-    public bool FixBugs { get; init; } = true;
-    public bool UpgradeComputers { get; init; }
+    public decimal HireAbove { get; init; } = 30_000;
 
-    /// <summary>Le fondateur reste sur les prestations même quand le produit existe.</summary>
-    public bool FounderOnContracts { get; init; } = true;
-
-    /// <summary>Utilise les leviers de redressement (plan, coupes) quand ça va mal.</summary>
-    public bool Recover { get; init; } = true;
-
-    public decimal PriceFactor { get; init; } = 1;
-
-    /// <summary>N'embauche que si les recettes du mois écoulé couvrent les charges fixes après l'embauche.</summary>
+    /// <summary>N'embauche que si les revenus et la réserve couvrent le nouveau salaire.</summary>
     public bool CarefulHiring { get; init; } = true;
 
-    /// <summary>Emprunte à la banque quand la trésorerie devient tendue.</summary>
+    /// <summary>Lit les avis et améliore ce qu'ils signalent.</summary>
+    public bool ListenToReviews { get; init; } = true;
+
+    public bool Recover { get; init; } = true;
     public bool Borrow { get; init; } = true;
+
+    /// <summary>Débloque des nœuds de l'arbre dès que possible, dans cet ordre.</summary>
+    public string[] TreeOrder { get; init; } = ["advanced", "cloud_m", "search_ads", "optimization", "hiring", "loyalty", "leads", "quality_lab"];
 }
 
-/// <summary>Joue une stratégie, une décision par jour ouvré à 8 h.</summary>
+/// <summary>Joue une stratégie : une décision par jour ouvré à 8 h.</summary>
 public class Autopilot(Strategy strategy)
 {
     public Strategy Strategy { get; } = strategy;
-    public int? ProductId { get; private set; }
-    private int _laterIndex;
+    private long _lastProjectDay = -10_000;
+    private int _created;
 
-    /// <summary>Fait tourner la campagne pendant un nombre de jours, en décidant chaque matin.</summary>
+    /// <summary>Nombre de décisions prises (pour mesurer la quantité d'actions routinières).</summary>
+    public int Actions { get; private set; }
+
     public void Play(Campaign campaign, int days)
     {
         for (int d = 0; d < days && campaign.Status == CampaignStatus.Running; d++)
@@ -76,136 +55,148 @@ public class Autopilot(Strategy strategy)
         }
     }
 
+    private void Act(CommandResult result)
+    {
+        if (result.Ok)
+            Actions++;
+    }
+
     public void Decide(Campaign campaign)
     {
-        if (Strategy.UpgradeComputers)
-            UpgradeComputers(campaign);
-        Contracts(campaign);
-        Product(campaign);
+        CreateProjects(campaign);
+        foreach (var product in campaign.Products.ToList())
+            RunProject(campaign, product);
+        Tree(campaign);
         Hiring(campaign);
-        Assign(campaign);
         if (Strategy.Recover)
             Recovery(campaign);
     }
 
-    private void Contracts(Campaign campaign)
+    private void CreateProjects(Campaign campaign)
     {
-        if (!Strategy.TakeContracts)
+        if (_created >= Strategy.Projects.Length)
             return;
-        // Fondateur concentré sur le produit : de nouvelles prestations seulement si la trésorerie l'exige
-        if (!Strategy.FounderOnContracts && ProductId != null && campaign.Ledger.Cash > 8_000 && !campaign.Staff.Any())
+        if (_created > 0 && campaign.Day - _lastProjectDay < Strategy.ProjectInterval)
             return;
-        var workers = ContractWorkers(campaign);
-        int capacity = Math.Max(1, workers.Count) * Strategy.MaxContracts;
-        double speed = workers.Sum(p => campaign.WorkRate(p, p.BestDiscipline) * 60 * 6);
-        double backlog = campaign.ActiveContracts.Sum(c => campaign.WorkFor(WorkOwner.Contract, c.Id).Sum(w => w.Remaining));
-        foreach (var offer in campaign.Offers.OrderByDescending(o => o.Price / (decimal)Math.Max(1, o.TotalEffort)).ToList())
+        var (segment, starters) = Strategy.Projects[_created];
+        var type = ProductCatalog.Segment(segment).TypeId;
+        if (!campaign.TypeAvailable(type))
+            return;
+        var (result, product) = campaign.CreateProject("", segment, ProductCatalog.Type(type).Models[0], starters: starters);
+        Act(result);
+        if (product != null)
         {
-            if (campaign.ActiveContracts.Count() >= capacity)
-                break;
-            if (offer.TotalEffort > Strategy.MaxContractSize)
-                continue;
-            // Un joueur raisonnable ne signe que ce que son équipe peut livrer à temps
-            if (Strategy.CarefulHiring && backlog + offer.TotalEffort > speed * offer.Terms(Strategy.Deadline).Workdays * 0.85)
-                continue;
-            if (campaign.AcceptContract(offer.Id, Strategy.Deadline, Strategy.Capitalize).Ok)
-                backlog += offer.TotalEffort;
+            _created++;
+            _lastProjectDay = campaign.Day;
+            // Le nouveau projet passe en tête du portefeuille : l'équipe en automatique s'y met
+            while (campaign.Products.OrderBy(p => p.Priority).First().Id != product.Id && campaign.MoveProject(product.Id, -1).Ok)
+            {
+            }
+            if (Strategy.PreLaunchMarketing > 0)
+                campaign.SetMarketing(product.Id, Strategy.PreLaunchMarketing);
         }
     }
 
-    private List<Person> ContractWorkers(Campaign campaign) =>
-        campaign.People.Where(p => p.IsFounder ? Strategy.FounderOnContracts || ProductId == null : p.Assignment.Kind is AssignmentKind.Contract or AssignmentKind.None).ToList();
-
-    private void Product(Campaign campaign)
+    private void RunProject(Campaign campaign, Product product)
     {
-        if (Strategy.ProductDay < 0 || campaign.Day < Strategy.ProductDay)
-            return;
-        var product = ProductId is int id ? campaign.FindProduct(id) : null;
-        if (product == null)
+        if (!product.IsLive)
         {
-            var segment = ProductCatalog.Segment(Strategy.Segment);
-            decimal price = Strategy.Model == RevenueModel.Commission ? 10 : segment.ReferencePrice * Strategy.PriceFactor;
-            var (_, created) = campaign.CreateProduct(campaign.MainCompany.Id, "Produit " + Strategy.Name, Strategy.Segment, Strategy.Model, price);
-            product = created!;
-            ProductId = product.Id;
-            var home = product.Draft.Pages[0];
-            foreach (string module in Strategy.Modules)
-                home.Modules.Add(ProductDesign.NewModule(product, module));
-            campaign.StartBuild(product.Id);
-            return;
-        }
-
-        if (product.Build != null && campaign.BuildReady(product))
-            campaign.Publish(product.Id);
-
-        if (product.IsLive)
-        {
-            product.MarketingBudget = Strategy.MarketingBudget;
-            product.MarketingChannelId = product.ArchetypeId == "saas" ? "search" : "social";
-            // Hébergement ajusté à la charge, avec une marge
-            double load = Market.Load(product, product.Live!);
-            var plan = ProductCatalog.Hosting.FirstOrDefault(h => load < h.Capacity * 0.7) ?? ProductCatalog.Hosting[^1];
-            product.HostingId = plan.Id;
-            if (Strategy.FixBugs && product.Bugs >= 6)
-                campaign.PlanBugFixes(product.Id);
-
-            // Version suivante quand la précédente est publiée depuis un mois
-            if (product.Build == null && _laterIndex < Strategy.LaterModules.Length && campaign.Minute - (product.PublishedAt ?? 0) > 30L * GameTime.MinutesPerDay)
+            if (product.Queue.Count == 0 && campaign.CanLaunch(product))
             {
-                var page = product.Draft.Pages[0];
-                if (page.Modules.Count >= 5)
-                {
-                    var next = ProductDesign.NewPage(product, $"Page {product.Draft.Pages.Count + 1}");
-                    product.Draft.Pages.Add(next);
-                    page.Links.Add(next.Id);
-                    page = next;
-                }
-                page.Modules.Add(ProductDesign.NewModule(product, Strategy.LaterModules[_laterIndex++]));
-                campaign.StartBuild(product.Id);
+                Act(campaign.Launch(product.Id));
+                Act(campaign.SetMarketing(product.Id, Strategy.Marketing));
             }
+            return;
         }
+        if (product.Queue.Count > 0)
+            return;
+
+        // Une amélioration à la fois : d'après les avis, sinon ce qui manque le plus
+        string? link = null;
+        if (Strategy.ListenToReviews)
+            link = Reviews.Trends(product, campaign.Minute, campaign.IsUnlocked).FirstOrDefault(t => !t.Positive)?.Link;
+        switch (link)
+        {
+            case "hosting":
+                Act(campaign.SetHosting(product.Id, true, product.HostingCap * 2));
+                return;
+            case "upkeep":
+                if (product.Upkeep != Upkeep.High)
+                {
+                    Act(campaign.SetUpkeep(product.Id, Upkeep.High));
+                    return;
+                }
+                break;
+            case "price":
+                Act(campaign.SetPrice(product.Id, Math.Max(1, Math.Round(product.Price * 0.85m))));
+                return;
+            case { } component when component.StartsWith("component:"):
+                var result = campaign.QueueComponent(product.Id, component["component:".Length..]);
+                if (result.Ok)
+                {
+                    Act(result);
+                    return;
+                }
+                break;
+        }
+        var (_, _, fix) = Design.WeakestNeed(product, campaign.IsUnlocked);
+        if (fix != null)
+            Act(campaign.QueueComponent(product.Id, fix.Id));
+        else
+        {
+            // Plus rien de mieux pour le besoin le plus faible : on monte d'un niveau le meilleur composant
+            var next = product.Components.OrderBy(c => c.Level).Select(c => c.DefId).FirstOrDefault(id => Design.CanQueue(product, id, campaign.IsUnlocked).Ok);
+            if (next != null)
+                Act(campaign.QueueComponent(product.Id, next));
+        }
+    }
+
+    private void Tree(Campaign campaign)
+    {
+        foreach (string id in Strategy.TreeOrder)
+        {
+            if (campaign.IsUnlocked(id))
+                continue;
+            var node = progress.DevTree.Node(id);
+            if (campaign.CanUnlock(node).Ok)
+                Act(campaign.Unlock(id));
+            break;
+        }
+        // Les types de projet prévus par la stratégie se débloquent avant le reste
+        foreach (var (segment, _) in Strategy.Projects)
+            if (ProductCatalog.Type(ProductCatalog.Segment(segment).TypeId).UnlockNode is { } node && !campaign.IsUnlocked(node))
+            {
+                var def = progress.DevTree.Node(node);
+                if (def.Requires != null && !campaign.IsUnlocked(def.Requires) && campaign.CanUnlock(progress.DevTree.Node(def.Requires)).Ok)
+                    Act(campaign.Unlock(def.Requires));
+                else if (campaign.CanUnlock(def).Ok)
+                    Act(campaign.Unlock(node));
+            }
     }
 
     private void Hiring(Campaign campaign)
     {
         if (campaign.Staff.Count() >= Strategy.MaxStaff || campaign.Ledger.Cash < Strategy.HireAbove || campaign.Solvency.State != SolvencyState.Healthy)
             return;
-        if (Strategy.CarefulHiring)
-        {
-            string month = GameTime.ToDate(campaign.Minute).AddMonths(-1).ToString("yyyy-MM");
-            decimal income = campaign.Ledger.Months.GetValueOrDefault(month)?
-                .Where(t => t.Key is Category.Contracts or Category.Subscriptions or Category.Ads or Category.Commissions).Sum(t => t.Value) ?? 0;
-            // Il faut que les recettes, plus six mois de réserve, couvrent les charges avec le nouveau salaire
-            decimal salary = campaign.Candidates.FirstOrDefault()?.Person.Salary ?? 7_000;
-            if (income + campaign.Ledger.Cash / 6 < campaign.MonthlyFixedCosts + salary)
-                return;
-        }
         var candidate = campaign.Candidates.OrderByDescending(c => c.Person.Skill(c.Person.BestDiscipline) / (double)c.Person.Salary).FirstOrDefault();
         if (candidate == null)
             return;
+        if (Strategy.CarefulHiring && campaign.RecurringRevenue30 + campaign.Ledger.Cash / 8 < campaign.MonthlyFixedCosts + candidate.Person.Salary)
+            return;
         if (!EnsureWorkstation(campaign))
             return;
-        campaign.Hire(candidate.Person.Id);
+        Act(campaign.Hire(candidate.Person.Id));
     }
 
-    /// <summary>Trouve une place pour un poste complet ; déménage si le local est plein et que la trésorerie le permet.</summary>
+    /// <summary>Trouve la place d'un poste complet ; déménage si le local est plein et que l'argent le permet.</summary>
     public static bool EnsureWorkstation(Campaign campaign)
     {
         if (campaign.Premises.Desks.Any(d => d.AssignedPersonId == null && Layout.Check(campaign.Premises, d) == WorkstationIssue.None))
             return true;
         for (int attempt = 0; attempt < 2; attempt++)
         {
-            var spot = FindDeskSpot(campaign.Premises);
-            if (spot != null)
-            {
-                var (x, y) = spot.Value;
-                if (!campaign.BuyAndPlace("chair", x, y - 1).Ok)
-                    return false;
-                if (!campaign.BuyAndPlace("desk", x, y).Ok || !campaign.BuyAndPlace("pc", x, y).Ok)
-                    return false;
-                return true;
-            }
-            // Plus de place : le local suivant
+            if (FindDeskSpot(campaign.Premises) is var (x, y))
+                return campaign.BuyAndPlace("chair", x, y - 1).Ok && campaign.BuyAndPlace("desk", x, y).Ok && campaign.BuyAndPlace("pc", x, y).Ok;
             var next = RealEstate.Listings.SkipWhile(l => l.Id != campaign.Premises.ListingId).Skip(1).FirstOrDefault();
             if (next == null || !campaign.MoveTo(next.Id).Ok)
                 return false;
@@ -214,16 +205,13 @@ public class Autopilot(Strategy strategy)
         return false;
     }
 
-    /// <summary>Après un déménagement : réinstalle les postes depuis les cartons, puis le reste.</summary>
+    /// <summary>Après un déménagement : réinstalle les postes depuis les cartons.</summary>
     public static void Reinstall(Campaign campaign)
     {
-        var desks = campaign.Storage.Where(s => FurnitureCatalog.Get(s.DefId).Kind == FurnitureKind.Desk).ToList();
-        foreach (var desk in desks)
+        foreach (var desk in campaign.Storage.Where(s => FurnitureCatalog.Get(s.DefId).Kind == FurnitureKind.Desk).ToList())
         {
-            var spot = FindDeskSpot(campaign.Premises);
-            if (spot == null)
+            if (FindDeskSpot(campaign.Premises) is not var (x, y))
                 break;
-            var (x, y) = spot.Value;
             var chair = campaign.Storage.FirstOrDefault(s => FurnitureCatalog.Get(s.DefId).Kind == FurnitureKind.Chair);
             if (chair == null || !campaign.PlaceFromStorage(chair.Id, x, y - 1).Ok)
                 break;
@@ -240,97 +228,39 @@ public class Autopilot(Strategy strategy)
         }
     }
 
-    /// <summary>Une place de bureau (x, y) dont la chaise (x, y−1) est libre, en rangées régulières pour garder des allées.</summary>
     public static (int X, int Y)? FindDeskSpot(Premises premises)
     {
         for (int y = 2; y < premises.Height - 1; y += 3)
         for (int x = Math.Max(premises.LivingWidth, 1); x + 1 < premises.Width; x += 3)
         {
-            if (Layout.CanPlace(premises, FurnitureCatalog.Get("chair"), x, y - 1).Ok)
-            {
-                // Vérifie aussi le bureau en simulant la chaise posée
-                var chair = new PlacedItem { Id = -99, DefId = "chair", X = x, Y = y - 1 };
-                premises.Items.Add(chair);
-                bool ok = Layout.CanPlace(premises, FurnitureCatalog.Get("desk"), x, y).Ok;
-                premises.Items.Remove(chair);
-                if (ok)
-                    return (x, y);
-            }
+            if (!Layout.CanPlace(premises, FurnitureCatalog.Get("chair"), x, y - 1).Ok)
+                continue;
+            var chair = new PlacedItem { Id = -99, DefId = "chair", X = x, Y = y - 1 };
+            premises.Items.Add(chair);
+            bool ok = Layout.CanPlace(premises, FurnitureCatalog.Get("desk"), x, y).Ok;
+            premises.Items.Remove(chair);
+            if (ok)
+                return (x, y);
         }
         return null;
     }
 
-    private static void UpgradeComputers(Campaign campaign)
-    {
-        if (campaign.Ledger.Cash < 15_000)
-            return;
-        var laptop = campaign.Premises.Items.FirstOrDefault(i => i.DefId == "laptop");
-        if (laptop == null)
-            return;
-        var desk = campaign.Premises.Find(laptop.HostId ?? -1);
-        if (desk == null)
-            return;
-        campaign.Store(laptop.Id);
-        campaign.BuyAndPlace("pc", desk.X, desk.Y);
-    }
-
-    private void Assign(Campaign campaign)
-    {
-        var product = ProductId is int id ? campaign.FindProduct(id) : null;
-        var contracts = campaign.ActiveContracts.OrderBy(c => c.Deadline).ToList();
-        int i = 0;
-        bool supportTaken = false;
-        foreach (var person in campaign.People)
-        {
-            // Les engagements passent d'abord : le fondateur finit ses contrats avant de retourner au produit
-            bool contractsCovered = contracts.All(c => campaign.People.Any(p => !p.IsFounder && p.Assignment.Is(AssignmentKind.Contract, c.Id)));
-            bool productPerson = product != null && (!person.IsFounder || contracts.Count == 0 || ProductBlocked(campaign, product) && contractsCovered);
-            if (product != null && product.IsLive && Strategy.KeepSupport && !supportTaken && !person.IsFounder && product.Users > 300)
-            {
-                campaign.Assign(person.Id, AssignmentKind.Support, product.Id);
-                supportTaken = true;
-                continue;
-            }
-            if (productPerson && (product!.Build != null || campaign.WorkFor(WorkOwner.Product, product.Id).Any(w => !w.Done)))
-            {
-                campaign.Assign(person.Id, AssignmentKind.Product, product.Id);
-                continue;
-            }
-            if (productPerson && product!.IsLive && !person.IsFounder)
-            {
-                campaign.Assign(person.Id, AssignmentKind.Maintenance, product.Id);
-                continue;
-            }
-            if (contracts.Count > 0)
-            {
-                campaign.Assign(person.Id, AssignmentKind.Contract, contracts[i++ % contracts.Count].Id);
-                continue;
-            }
-            if (product != null)
-                campaign.Assign(person.Id, product.IsLive ? AssignmentKind.Maintenance : AssignmentKind.Product, product.Id);
-        }
-    }
-
-    /// <summary>L'équipe produit ne peut rien faire (compétence manquante) : le fondateur vient débloquer.</summary>
-    private static bool ProductBlocked(Campaign campaign, Product product) =>
-        campaign.WorkFor(WorkOwner.Product, product.Id).Any(w => !w.Done)
-        && campaign.People.Where(p => !p.IsFounder && p.Assignment.Is(AssignmentKind.Product, product.Id))
-            .All(p => p.Status.StartsWith("Bloqué") || p.Status.StartsWith("Aucune tâche"));
-
     private void Recovery(Campaign campaign)
     {
-        if (Strategy.Borrow && campaign.Solvency.State != SolvencyState.Healthy && campaign.LoanTerms().Max > 0)
-            campaign.TakeLoan(campaign.LoanTerms().Max);
+        if (campaign.Solvency.State == SolvencyState.Healthy)
+            return;
+        if (Strategy.Borrow && campaign.LoanTerms().Max > 0)
+            Act(campaign.TakeLoan(campaign.LoanTerms().Max));
         if (campaign.Solvency.State is not (SolvencyState.Overdue or SolvencyState.Notice))
             return;
         if (campaign.RecoveryPlanTerms().Allowed)
         {
-            campaign.RequestRecoveryPlan();
+            Act(campaign.RequestRecoveryPlan());
             return;
         }
-        foreach (var product in campaign.Products)
-            product.MarketingBudget = 0;
+        foreach (var product in campaign.Products.Where(p => p.MarketingBudget > 0))
+            Act(campaign.SetMarketing(product.Id, 0));
         if (campaign.Solvency.State == SolvencyState.Notice && campaign.Staff.Any())
-            campaign.Fire(campaign.Staff.OrderByDescending(p => p.Salary).First().Id);
+            Act(campaign.Fire(campaign.Staff.OrderByDescending(p => p.Salary).First().Id));
     }
 }

@@ -3,8 +3,9 @@ namespace Core.campaign;
 public enum Severity { Info, Good, Warning, Critical }
 
 /// <summary>
-/// Une notification du jeu. « Target » renvoie vers ce qui est concerné (« contract:12 », « product:3 », « finance »)
-/// pour que l'interface ouvre directement le bon menu.
+/// Une notification du jeu. « Target » renvoie vers ce qui est concerné (« product:3 », « finance », « person:7 »)
+/// pour que l'interface ouvre directement le bon endroit. Un problème a une clé : répété, il est regroupé ;
+/// réglé, il est marqué résolu et quitte la liste des choses à traiter.
 /// </summary>
 public class Notice
 {
@@ -16,21 +17,25 @@ public class Notice
     public string Detail { get; set; } = "";
     public string Target { get; set; } = "";
     public bool Read { get; set; }
+
+    /// <summary>Clé de regroupement d'un problème (« outage:3 », « unpaid »...).</summary>
+    public string Key { get; set; } = "";
+
+    /// <summary>Nombre d'occurrences regroupées.</summary>
+    public int Count { get; set; } = 1;
+
+    public bool Resolved { get; set; }
+
+    public bool IsProblem => Severity >= Severity.Warning;
 }
 
-/// <summary>Une entreprise du joueur : un nom, un secteur, une réputation et ses composants réutilisables.</summary>
+/// <summary>Une entreprise du joueur.</summary>
 public class Company
 {
     public int Id { get; set; }
     public string Name { get; set; } = "";
     public string Sector { get; set; } = "";
     public long FoundedAt { get; set; }
-
-    /// <summary>Réputation d'agence (0 à 100) : elle attire des demandes plus grosses et des candidats plus expérimentés.</summary>
-    public double Reputation { get; set; } = 5;
-
-    /// <summary>Niveau de code réutilisable par type de prestation (0 à 3).</summary>
-    public Dictionary<string, int> ReuseLevels { get; set; } = new();
 }
 
 /// <summary>Une proposition d'investisseur, valable un temps limité.</summary>

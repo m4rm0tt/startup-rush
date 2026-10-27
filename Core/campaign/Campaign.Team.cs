@@ -1,6 +1,5 @@
 using Core.finance;
 using Core.team;
-using Core.work;
 
 namespace Core.campaign;
 
@@ -50,19 +49,24 @@ public partial class Campaign
         return CommandResult.Success();
     }
 
-    public CommandResult Assign(int personId, AssignmentKind kind, int targetId)
+    /// <summary>Affecte une personne à un projet, ou en automatique (projectId 0) : elle suit alors la priorité du portefeuille.</summary>
+    public CommandResult Assign(int personId, int projectId)
     {
         var person = FindPerson(personId);
         if (person == null)
             return CommandResult.Fail("Personne inconnue.");
-        if (kind is AssignmentKind.Contract && FindContract(targetId) is not { Status: ContractStatus.Active })
-            return CommandResult.Fail("Ce contrat n'est pas en cours.");
-        if (kind is AssignmentKind.Product or AssignmentKind.Maintenance or AssignmentKind.Support && FindProduct(targetId) == null)
-            return CommandResult.Fail("Produit inconnu.");
-        // Une seule affectation : changer de cible remplace l'ancienne
-        person.Assignment = new Assignment { Kind = kind, TargetId = targetId };
+        if (projectId != 0 && FindProduct(projectId) == null)
+            return CommandResult.Fail("Projet inconnu.");
+        person.Assignment = projectId == 0 ? Assignment.None : new Assignment { Kind = AssignmentKind.Project, TargetId = projectId };
         person.CurrentWorkItemId = null;
         return CommandResult.Success();
+    }
+
+    /// <summary>Tout le monde en automatique.</summary>
+    public void AssignAllAuto()
+    {
+        foreach (var person in People)
+            Assign(person.Id, 0);
     }
 
     public CommandResult SetSchedule(int personId, WorkSchedule schedule)
@@ -79,20 +83,24 @@ public partial class Campaign
         var person = FindPerson(personId);
         if (person == null)
             return CommandResult.Fail("Personne inconnue.");
+        if (lead && !IsUnlocked("leads"))
+            return CommandResult.Fail("À débloquer dans Développement : Responsables.");
         if (lead && person.Skill(person.BestDiscipline) < 55)
             return CommandResult.Fail("Il faut au moins un niveau confirmé (55) pour encadrer une équipe.");
         person.IsLead = lead;
         return CommandResult.Success();
     }
 
+    public decimal TrainingPrice => IsUnlocked("academy") ? TrainingCost / 2 : TrainingCost;
+
     public CommandResult Train(int personId, Discipline discipline)
     {
         var person = FindPerson(personId);
         if (person == null)
             return CommandResult.Fail("Personne inconnue.");
-        if (person.TrainingDiscipline != null)
-            return CommandResult.Fail("Déjà en formation.");
-        var paid = Spend(TrainingCost, Category.Training, $"Formation {Person.DisciplineName(discipline)} : {person.Name}");
+        if (person.TrainingDiscipline != null || OnVacation(person))
+            return CommandResult.Fail("Pas disponible en ce moment.");
+        var paid = Spend(TrainingPrice, Category.Training, $"Formation {Person.DisciplineName(discipline)} : {person.Name}");
         if (!paid.Ok)
             return paid;
         person.TrainingDiscipline = discipline;
@@ -100,13 +108,52 @@ public partial class Campaign
         return CommandResult.Success($"En formation jusqu'au {GameTime.FormatDate(person.TrainingUntil)}.");
     }
 
-    public CommandResult Raise(int personId, decimal percent)
+    public const int VacationWorkdays = 5;
+
+    /// <summary>Congés : une semaine sans travailler (le salaire continue), l'énergie revient au maximum et le moral remonte.</summary>
+    public CommandResult Vacation(int personId)
     {
         var person = FindPerson(personId);
-        if (person == null || person.IsFounder)
-            return CommandResult.Fail("Impossible.");
-        person.Salary = Math.Round(person.Salary * (1 + percent) / 50m) * 50m;
-        person.Morale = Math.Min(100, person.Morale + (double)percent * 60);
-        return CommandResult.Success($"Nouveau salaire : {person.Salary:N0} CHF.");
+        if (person == null)
+            return CommandResult.Fail("Personne inconnue.");
+        if (OnVacation(person) || person.TrainingDiscipline != null)
+            return CommandResult.Fail("Pas disponible en ce moment.");
+        person.VacationUntil = GameTime.StartOfDay(GameTime.Day(GameTime.AddWorkdays(Minute, VacationWorkdays))) + 8 * 60;
+        person.Morale = Math.Min(100, person.Morale + 6);
+        return CommandResult.Success($"En congé jusqu'au {GameTime.FormatDate(person.VacationUntil)}.");
+    }
+
+    public const decimal RaiseShare = 0.08m;
+    public const int MaxRaisesPerYear = 2;
+
+    /// <summary>
+    /// Ce que coûterait une augmentation et ce qu'elle apporterait : +8 % de salaire ; le moral gagne 15 points,
+    /// la moitié si une autre augmentation a eu lieu dans l'année. Deux par an au plus.
+    /// </summary>
+    public (bool Allowed, decimal ExtraPerMonth, double Morale, string Reason) RaiseTerms(Person person)
+    {
+        long yearAgo = Minute - 365L * GameTime.MinutesPerDay;
+        int recent = person.RaiseDates.Count(d => d > yearAgo);
+        decimal extra = Math.Round(person.Salary * RaiseShare / 50m) * 50m;
+        double morale = 15 * Math.Pow(0.5, recent);
+        if (person.IsFounder)
+            return (false, 0, 0, "Ta rémunération est fixe.");
+        if (recent >= MaxRaisesPerYear)
+            return (false, extra, 0, "Déjà deux augmentations cette année.");
+        return (true, extra, morale, "");
+    }
+
+    public CommandResult Raise(int personId)
+    {
+        var person = FindPerson(personId);
+        if (person == null)
+            return CommandResult.Fail("Personne inconnue.");
+        var (allowed, extra, morale, reason) = RaiseTerms(person);
+        if (!allowed)
+            return CommandResult.Fail(reason);
+        person.Salary += extra;
+        person.Morale = Math.Min(100, person.Morale + morale);
+        person.RaiseDates.Add(Minute);
+        return CommandResult.Success($"Nouveau salaire : {person.Salary:N0} CHF par mois.");
     }
 }

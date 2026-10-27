@@ -1,123 +1,170 @@
-using System.Collections.Generic;
+using System;
 using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Layout;
+using Avalonia.Media;
 using Core.campaign;
-using Core.team;
-using Core.work;
+using Core.products;
 using UI.Pixel;
+using Design = Core.products.Design;
 
 namespace UI.Hud.Panels;
 
-/// <summary>Projets clients : demandes à étudier (avec négociation du délai), contrats en cours, historique.</summary>
+/// <summary>Le portefeuille : une carte par projet, lisible en quelques secondes, et la création d'un nouveau projet.</summary>
 public class ProjectsPanel : GamePanel
 {
-    public override string Title => "Projets clients";
-    public override string Context => $"{Campaign.MainCompany.Name} · réputation {Campaign.MainCompany.Reputation:0}/100";
+    public override string Title => "Projets";
+    public override string Context => $"{Campaign.Products.Count} projet(s)";
+    public override bool Large => true;
 
-    private readonly Dictionary<int, DeadlineOption> _options = new();
-    private readonly HashSet<int> _capitalize = new();
+    public static string Stage(Campaign campaign, Product product)
+    {
+        if (product.IsLive)
+            return product.Queue.Count > 0 ? $"En ligne · v{product.Version} · mise à jour en cours" : $"En ligne · v{product.Version}";
+        if (product.Queue.Count == 0)
+            return campaign.CanLaunch(product) ? "Prêt à sortir" : "En conception";
+        return "En développement";
+    }
 
     public override Control Build()
     {
-        var column = Ui.Column(8);
-
-        var active = Campaign.ActiveContracts.ToList();
-        var activeList = Ui.Column(8);
-        foreach (var contract in active)
-            activeList.Children.Add(ActiveCard(contract));
-        if (active.Count == 0)
-            activeList.Children.Add(Ui.Muted("Aucun contrat en cours."));
-        column.Children.Add(Ui.Section($"En cours ({active.Count})", activeList));
-
-        var offers = Campaign.Offers.OrderBy(o => o.OfferExpiresAt).ToList();
-        var offerList = Ui.Column(8);
-        foreach (var offer in offers)
-            offerList.Children.Add(OfferCard(offer));
-        if (offers.Count == 0)
-            offerList.Children.Add(Ui.Muted("Aucune demande pour l'instant. Elles arrivent les jours ouvrés, plus souvent quand la réputation monte."));
-        column.Children.Add(Ui.Section($"Demandes ({offers.Count})", offerList));
-
-        var history = Campaign.Contracts.Where(c => c.Status is ContractStatus.Completed or ContractStatus.Cancelled).OrderByDescending(c => c.DeliveredAt ?? c.AcceptedAt).Take(8).ToList();
-        if (history.Count > 0)
-        {
-            var list = Ui.Column(4);
-            foreach (var c in history)
-                list.Children.Add(Ui.Column(0, Ui.Text($"{c.Client} — {c.Title}", 14, c.Status == ContractStatus.Completed ? Palette.Cloud : Palette.Ember),
-                    Ui.Muted($"{c.Outcome} {(c.Status == ContractStatus.Completed ? $"Qualité {c.DeliveredQuality:P0}, pénalités {c.Penalty:N0} CHF." : "")}", 12)));
-            column.Children.Add(Ui.Section("Historique", list));
-        }
+        var column = Ui.Column(10, Hint("projects", "Chaque projet avance tout seul : choisis ses composants, l'équipe les développe, puis lance-le."));
+        var wrap = new WrapPanel();
+        foreach (var product in Campaign.Products.OrderBy(p => p.Priority))
+            wrap.Children.Add(Card(product));
+        wrap.Children.Add(NewCard());
+        column.Children.Add(wrap);
+        if (Campaign.Products.Count > 1)
+            column.Children.Add(Ui.Muted("Les personnes en automatique travaillent sur le premier projet qui a du travail en file. Change l'ordre avec ◀ ▶.", 13));
         return column;
     }
 
-    private Control OfferCard(Contract offer)
+    private Control Card(Product product)
     {
-        var option = _options.GetValueOrDefault(offer.Id, DeadlineOption.Standard);
-        bool capitalize = _capitalize.Contains(offer.Id);
-        var (price, workdays) = offer.Terms(option);
-        var company = Campaign.MainCompany;
-        int reuse = company.ReuseLevels.GetValueOrDefault(offer.KindId);
-        double speed = Campaign.People.Where(p => p.Assignment.Kind == AssignmentKind.None || p.IsFounder)
-            .Sum(p => Campaign.WorkRate(p, p.BestDiscipline) * 60 * 7);
-        double days = offer.TotalEffort / System.Math.Max(1, speed);
+        var type = product.Archetype;
+        var (_, days) = Campaign.QueueEstimate(product);
+        decimal result = Campaign.Result30(product);
+        bool problem = Campaign.Notices.Any(n => n.IsProblem && !n.Resolved && n.Target == $"product:{product.Id}");
 
-        string scope = string.Join(", ", offer.Scope.Select(s => $"{Person.DisciplineName(s.Key).ToLowerInvariant()} {s.Value:0}"));
-        var card = Ui.Column(4,
-            Ui.Row(Ui.Text(offer.Client, 16, Palette.Snow, bold: true), Ui.Tag(offer.Title, Palette.Sky)),
-            Ui.Muted($"Travail : {offer.TotalEffort:0} points ({scope}). Qualité attendue {offer.ExpectedQuality:P0}." +
-                     (reuse > 0 ? $" Code réutilisable niveau {reuse} : −{reuse * 10} % de développement." : "")),
-            Ui.Muted($"Estimation : environ {days:0.0} jours ouvrés avec la personne disponible la plus rapide. Paiement client {(offer.Reliability >= 0.85 ? "fiable" : offer.Reliability >= 0.7 ? "parfois en retard" : "peu fiable")}."),
-            Ui.Choice([(DeadlineOption.Safe, "Délai sûr"), (DeadlineOption.Standard, "Standard"), (DeadlineOption.Rush, "Rapide")], option, o =>
-            {
-                _options[offer.Id] = o;
-                Refresh();
-            }),
-            Ui.Pair("Prix", Ui.Chf(price), Palette.Lemon),
-            Ui.Pair("Délai", $"{workdays} jours ouvrés (le client rompt après {Tuning.Contracts.CancelAfterLateWorkdays} jours de retard)"),
-            Ui.Pair("Acompte à la signature", Ui.Chf(System.Math.Round(price * (decimal)Tuning.Contracts.DepositShare))),
-            Ui.Choice([(false, "Code jetable"), (true, "Capitaliser (+15 % de dev)")], capitalize, v =>
-            {
-                if (v)
-                    _capitalize.Add(offer.Id);
-                else
-                    _capitalize.Remove(offer.Id);
-                Refresh();
-            }),
-            Ui.Muted($"Expire le {GameTime.FormatDate(offer.OfferExpiresAt)}."),
-            Ui.Row(Ui.Button("Accepter", () => Run(Campaign.AcceptContract(offer.Id, option, capitalize), $"Contrat signé avec {offer.Client}."), "green"),
-                Ui.Button("Refuser", () => Run(Campaign.DeclineContract(offer.Id)), "red")));
-        return Ui.Card(card);
+        Control progress;
+        if (product.Queue.Count > 0)
+        {
+            double fraction = Campaign.QueueProgress(product.Queue[0]);
+            string eta = double.IsInfinity(days) ? "personne dessus" : $"~{Math.Ceiling(days)} j";
+            progress = Ui.Column(2, Ui.Bar(fraction, Palette.Gold, 8), Ui.Muted($"{product.Queue.Count} en file · {eta}", 12));
+        }
+        else if (!product.IsLive && Campaign.CanLaunch(product))
+            progress = Ui.Button("Lancer !", () => Run(Campaign.Launch(product.Id)), "gold");
+        else
+            progress = Ui.Muted(product.IsLive ? "Rien en file" : "Ajoute des composants", 12);
+
+        Control numbers = product.IsLive
+            ? Ui.Row(14,
+                Ui.Column(0, Ui.Muted(product.ArchetypeId == "game" ? "Joueurs" : "Utilisateurs", 11), Ui.Number($"{product.Users:N0}", 20)),
+                Ui.Column(0, Ui.Muted("Résultat 30 j", 11), Ui.Number(Ui.SignedChf(result), 20, Ui.Signed(result))),
+                Ui.Column(0, Ui.Muted("Note", 11), Ui.Number($"{Reviews.Rating(product):0.0}★", 20, Palette.Lemon)))
+            : Ui.Muted(product.ArchetypeId == "game" && product.Wishlist > 1 ? $"{product.Wishlist:N0} intéressés avant la sortie" : $"{product.Components.Count(c => c.Level > 0)} composant(s) prêt(s)", 13);
+
+        int index = Campaign.Products.OrderBy(p => p.Priority).ToList().IndexOf(product);
+        var header = Ui.Row(10, Ui.IconTile(type.Icon, Palette.At(product.Color)),
+            Ui.Column(1, Ui.Text(product.Name, 18, Palette.Snow, bold: true, wrap: false),
+                Ui.Row(4, Ui.Tag(type.Name, Palette.Sky), Ui.Tag(product.Segment.Name, Palette.Steel, Palette.Snow))),
+            problem ? Ui.Icon("warning", 22) : null);
+        var body = Ui.Column(8, header,
+            Ui.Text(Stage(Campaign, product), 14, product.IsLive ? Palette.Leaf : Palette.Lemon),
+            numbers, progress,
+            Ui.Row(4,
+                Ui.Button("Ouvrir", () => Open(new ProjectPanel(product.Id)), "gold"),
+                Campaign.Products.Count > 1 ? Ui.Button("◀", () => Run(Campaign.MoveProject(product.Id, -1)), "tab", index > 0, "Plus prioritaire") : null,
+                Campaign.Products.Count > 1 ? Ui.Button("▶", () => Run(Campaign.MoveProject(product.Id, 1)), "tab", index < Campaign.Products.Count - 1, "Moins prioritaire") : null));
+        return new PixelPanel { Skin = "inset", Padding = new Thickness(12, 10), Margin = new Thickness(0, 0, 10, 10), Width = 300, Child = body, BorderBrush = problem ? Palette.Ember : null, BorderThickness = new Thickness(problem ? 2 : 0) };
     }
 
-    private Control ActiveCard(Contract contract)
+    private Control NewCard()
     {
-        var items = Campaign.WorkFor(WorkOwner.Contract, contract.Id).ToList();
-        double effort = items.Sum(w => w.Effort), progress = items.Sum(w => w.Progress);
-        var team = Campaign.People.Where(p => p.Assignment.Is(AssignmentKind.Contract, contract.Id)).ToList();
-        int left = GameTime.WorkdaysBetween(Campaign.Minute, contract.Deadline);
-        double speed = team.Sum(p => Campaign.WorkRate(p, p.BestDiscipline) * 60 * 7);
-        double need = (effort - progress) / System.Math.Max(0.1, speed);
-        bool risky = team.Count == 0 || need > left;
+        var content = Ui.Column(8, Ui.Icon("plus", 40), Ui.Title(Campaign.Products.Count == 0 ? "Créer ton premier projet" : "Nouveau projet", 17), Ui.Muted("Une application, un jeu…", 13));
+        foreach (var child in content.Children)
+            child.HorizontalAlignment = HorizontalAlignment.Center;
+        var button = new Button { Content = content, Width = 300, Height = 200, Margin = new Thickness(0, 0, 10, 10) };
+        button.Classes.Add(Campaign.Products.Count == 0 ? "gold" : "tab");
+        button.Click += (_, _) => Open(new NewProjectPanel());
+        return button;
+    }
+}
 
-        var disciplines = Ui.Column(2);
-        foreach (var group in items.GroupBy(w => w.Discipline))
+/// <summary>Créer un projet : type, public, et c'est tout. Les valeurs par défaut sont viables ; le reste se règle plus tard.</summary>
+public class NewProjectPanel : GamePanel
+{
+    public override string Title => "Nouveau projet";
+    public override bool Large => true;
+
+    private string _type = "saas";
+    private string _segment = "freelances";
+    private string _name = "";
+
+    public override Control Build()
+    {
+        var segment = ProductCatalog.Segment(_segment);
+        if (segment.TypeId != _type)
+            _segment = ProductCatalog.Segments.First(s => s.TypeId == _type).Id;
+        segment = ProductCatalog.Segment(_segment);
+        var type = ProductCatalog.Type(_type);
+
+        // 1. Le type
+        var types = new WrapPanel();
+        foreach (var t in ProductCatalog.Types)
         {
-            double done = group.Sum(w => w.Progress), total = group.Sum(w => w.Effort);
-            disciplines.Children.Add(Ui.Row(Ui.Text(Person.DisciplineName(group.Key), 13, Palette.Fog), Ui.Bar(done / total, Palette.Sky, 6, 160), Ui.Muted($"{done:0}/{total:0}", 12)));
+            bool available = Campaign.TypeAvailable(t.Id);
+            bool chosen = t.Id == _type;
+            var content = Ui.Column(4,
+                Ui.Row(8, Ui.Icon(available ? t.Icon : "lock", 28), Ui.Text(t.Name, 16, chosen ? Palette.Ink : available ? Palette.Snow : Palette.Fog, bold: true, wrap: false)),
+                Ui.Text(available ? t.Pitch : $"À débloquer : {Core.progress.DevTree.Node(t.UnlockNode!).Name}", 12, chosen ? Palette.Ink : Palette.Fog));
+            var button = new Button { Content = content, Width = 260, Margin = new Thickness(0, 0, 8, 8), IsEnabled = available, HorizontalContentAlignment = HorizontalAlignment.Left };
+            button.Classes.Add("tab");
+            if (t.Id == _type)
+                button.Classes.Add("selected");
+            button.Click += (_, _) =>
+            {
+                _type = t.Id;
+                Refresh();
+            };
+            types.Children.Add(button);
         }
 
-        var card = Ui.Column(4,
-            Ui.Row(Ui.Text(contract.Client, 16, Palette.Snow, bold: true), Ui.Tag(contract.Title, Palette.Sky), contract.ReworkRequested ? Ui.Tag("Corrections", Palette.Ember) : null),
-            Ui.Bar(progress / System.Math.Max(1, effort), Palette.Leaf, 10),
-            disciplines,
-            Ui.Pair("Échéance", $"{GameTime.FormatDate(contract.Deadline)} ({(left >= 0 ? $"{left} j ouvrés" : $"{-left} j de RETARD")})", left < 0 ? Palette.Blood : left < 3 ? Palette.Lemon : null),
-            Ui.Pair("Équipe", team.Count == 0 ? "personne !" : string.Join(", ", team.Select(p => p.Name)), team.Count == 0 ? Palette.Blood : null),
-            Ui.Muted(team.Count == 0 ? "Affecte quelqu'un dans Équipe : sans personne, rien n'avance."
-                : $"Au rythme actuel : ~{need:0.0} jours ouvrés restants. Goulot : {Campaign.Bottleneck(WorkOwner.Contract, contract.Id)}."),
-            risky && team.Count > 0 ? Ui.Text("Risque de retard : renforce l'équipe ou passe en horaire étendu.", 13, Palette.Ember) : null,
-            Ui.Row(Ui.Button("Affecter le fondateur", () => Run(Campaign.Assign(Campaign.Founder.Id, AssignmentKind.Contract, contract.Id))),
-                Ui.Button("Abandonner", () => Screen.Confirm($"Abandonner {contract.Client} ?",
-                    "La réputation baisse, et l'acompte correspondant au travail non fait doit être remboursé.", "Abandonner",
-                    () => Run(Campaign.AbandonContract(contract.Id))), "red")));
-        return Ui.Card(card, risky ? Palette.Ember : null);
+        // 2. Le public
+        var publics = Ui.Choice(ProductCatalog.Segments.Where(s => s.TypeId == _type).Select(s => (s.Id, s.Name)), _segment, id =>
+        {
+            _segment = id;
+            Refresh();
+        });
+
+        // 3. Ce qui sera fait, et combien de temps
+        var starters = type.Starters.Select(ProductCatalog.Component).ToList();
+        double points = starters.Sum(c => Design.TotalEffort(c, 1));
+        double speed = Campaign.People.Where(p => p.Assignment.Kind == Core.team.AssignmentKind.None).Sum(p => Campaign.WorkRate(p, p.BestDiscipline) * 60 * 7);
+        var model = type.Models[0];
+        decimal price = ProductCatalog.DefaultPrice(segment, model);
+        var startersRow = new WrapPanel();
+        foreach (var c in starters)
+            startersRow.Children.Add(new Border { Margin = new Thickness(0, 0, 6, 6), Child = Ui.Row(4, Ui.Icon(c.Icon, 20), Ui.Text(c.Name, 14, Palette.Cloud, wrap: false)) });
+
+        var column = Ui.Column(10,
+            Ui.Section("1. Quoi ?", types),
+            Ui.Section("2. Pour qui ?", publics, Ui.Muted($"{segment.Pitch} {segment.Size:N0} personnes.", 13)),
+            Ui.Section("3. Pour commencer", startersRow,
+                Ui.Muted($"{ProductCatalog.ModelName(model)}{(price > 0 ? $" à {price:0} {(model == RevenueModel.Commission ? "%" : model == RevenueModel.Purchase ? "CHF" : "CHF/mois")}" : "")} · environ {(speed > 0 ? Math.Ceiling(points / speed) : 0)} jours de travail · aucun coût en plus", 13)),
+            Ui.Section("Nom", Ui.Input(_name, v => _name = v, "Laisse vide pour un nom proposé", 320)),
+            Ui.Button("Créer et commencer", () =>
+            {
+                var (result, product) = Campaign.CreateProject(_name, _segment, model);
+                Run(result, result.Ok ? null : "");
+                if (product != null)
+                {
+                    Screen.PopPanel();
+                    Open(new ProjectPanel(product.Id));
+                }
+            }, "gold big"));
+        return column;
     }
 }

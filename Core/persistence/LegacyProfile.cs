@@ -57,6 +57,9 @@ public class Settings
 
     public bool MigratedFromLegacy { get; set; }
 
+    /// <summary>Petites aides déjà lues (une phrase à la première ouverture d'un outil).</summary>
+    public HashSet<string> SeenHints { get; set; } = new();
+
     private static readonly JsonSerializerOptions Options = new() { WriteIndented = true };
 
     public static string DefaultPath =>

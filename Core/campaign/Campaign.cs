@@ -2,6 +2,7 @@ using Core.finance;
 using Core.products;
 using Core.space;
 using Core.team;
+using Core.progress;
 using Core.work;
 
 namespace Core.campaign;
@@ -46,7 +47,6 @@ public partial class Campaign
     public List<StoredItem> Storage { get; set; } = new();
     public List<Person> People { get; set; } = new();
     public List<Candidate> Candidates { get; set; } = new();
-    public List<Contract> Contracts { get; set; } = new();
     public List<WorkItem> Work { get; set; } = new();
     public List<Product> Products { get; set; } = new();
     public List<Competitor> Competitors { get; set; } = new();
@@ -65,6 +65,18 @@ public partial class Campaign
 
     /// <summary>Jalons atteints et leur date.</summary>
     public Dictionary<string, long> Milestones { get; set; } = new();
+
+    /// <summary>Points de développement à dépenser dans l'arbre.</summary>
+    public int DevPoints { get; set; } = DevTree.StartingPoints;
+
+    /// <summary>Nœuds débloqués dans l'arbre de développement.</summary>
+    public HashSet<string> Unlocked { get; set; } = new();
+
+    /// <summary>Accomplissements déjà récompensés (un même accomplissement ne rapporte qu'une fois).</summary>
+    public HashSet<string> Awarded { get; set; } = new();
+
+    /// <summary>Message de migration d'une ancienne sauvegarde, affiché une fois au chargement.</summary>
+    public string MigrationNote { get; set; } = "";
 
     /// <summary>Travail de support et de maintenance fait aujourd'hui, par produit (points).</summary>
     public Dictionary<int, double> SupportToday { get; set; } = new();
@@ -125,15 +137,11 @@ public partial class Campaign
         campaign.People.Add(founder);
 
         campaign.SeedCompetitors();
-        // Deux premières demandes pour ne pas commencer dans le vide
-        for (int i = 0; i < 2; i++)
-            campaign.Contracts.Add(ContractMarket.Generate(campaign.Random, campaign.NewId(), campaign.Minute, 0, 6));
         for (int i = 0; i < 3; i++)
             campaign.Candidates.Add(Recruitment.Generate(campaign.Random, campaign.Minute, campaign.NewId(), 0));
 
         campaign.Notify(Severity.Info, "entreprise", $"Bienvenue chez {companyName}",
-            "Tu travailles depuis ton appartement. Accepte une prestation pour faire rentrer de l'argent, ou commence ton propre produit. " +
-            "Tes charges fixes : environ 2 360 CHF par mois.", "contracts");
+            "Crée ton premier projet : une application ou un jeu.", "projects");
         return campaign;
     }
 
@@ -143,7 +151,7 @@ public partial class Campaign
         int n = 0;
         foreach (var segment in ProductCatalog.Segments)
         {
-            int count = segment.ArchetypeId == "social" ? 2 : Random.Next(1, 3);
+            int count = segment.TypeId == "social" ? 2 : Random.Next(1, 3);
             for (int i = 0; i < count; i++)
                 Competitors.Add(new Competitor
                 {
@@ -165,18 +173,28 @@ public partial class Campaign
 
     public Company? FindCompany(int id) => Companies.FirstOrDefault(c => c.Id == id);
     public Person? FindPerson(int id) => People.FirstOrDefault(p => p.Id == id);
-    public Contract? FindContract(int id) => Contracts.FirstOrDefault(c => c.Id == id);
     public Product? FindProduct(int id) => Products.FirstOrDefault(p => p.Id == id);
     public WorkItem? FindWork(int id) => Work.FirstOrDefault(w => w.Id == id);
 
-    public IEnumerable<Contract> ActiveContracts => Contracts.Where(c => c.Status == ContractStatus.Active);
-    public IEnumerable<Contract> Offers => Contracts.Where(c => c.Status == ContractStatus.Offered);
     public IEnumerable<Person> Staff => People.Where(p => !p.IsFounder);
 
     public IEnumerable<WorkItem> WorkFor(WorkOwner owner, int ownerId) => Work.Where(w => w.Owner == owner && w.OwnerId == ownerId);
 
-    public Notice Notify(Severity severity, string category, string title, string detail = "", string target = "")
+    /// <summary>
+    /// Ajoute une notification. Un problème avec une clé déjà signalé et pas encore résolu est regroupé
+    /// (compteur et date mis à jour) au lieu de s'empiler.
+    /// </summary>
+    public Notice Notify(Severity severity, string category, string title, string detail = "", string target = "", string key = "")
     {
+        if (key != "" && Notices.LastOrDefault(n => n.Key == key && !n.Resolved) is { } existing)
+        {
+            existing.Count++;
+            existing.Minute = Minute;
+            existing.Title = title;
+            existing.Detail = detail;
+            existing.Read = false;
+            return existing;
+        }
         var notice = new Notice
         {
             Id = NewId(),
@@ -186,12 +204,31 @@ public partial class Campaign
             Title = title,
             Detail = detail,
             Target = target,
+            Key = key,
         };
         Notices.Add(notice);
         if (Notices.Count > MaxNotices)
-            Notices.RemoveRange(0, Notices.Count - MaxNotices);
+            Notices.RemoveAt(Notices.FindIndex(n => !n.IsProblem || n.Resolved) is int i and >= 0 ? i : 0);
         Noticed?.Invoke(notice);
         return notice;
+    }
+
+    /// <summary>Marque comme résolus les problèmes dont la clé commence ainsi.</summary>
+    public void Resolve(string key)
+    {
+        foreach (var notice in Notices.Where(n => n.Key == key && !n.Resolved))
+            notice.Resolved = true;
+    }
+
+    public bool IsUnlocked(string node) => Unlocked.Contains(node);
+
+    /// <summary>Accorde des points de développement pour un accomplissement, une seule fois.</summary>
+    public void Award(string key, int points, string why)
+    {
+        if (!Awarded.Add(key))
+            return;
+        DevPoints += points;
+        Notify(Severity.Good, "développement", $"+{points} point{(points > 1 ? "s" : "")} de développement", why, "tree");
     }
 
     /// <summary>Enregistre un mouvement de trésorerie à la date du jour.</summary>

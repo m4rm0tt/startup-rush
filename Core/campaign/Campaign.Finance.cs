@@ -13,7 +13,7 @@ public partial class Campaign
         decimal total = 0;
         foreach (var month in months)
             if (Ledger.Months.TryGetValue(month, out var totals))
-                total += totals.Where(t => t.Key is Category.Contracts or Category.Subscriptions or Category.Ads or Category.Commissions).Sum(t => t.Value);
+                total += totals.Where(t => t.Key is Category.Contracts or Category.Subscriptions or Category.Ads or Category.Commissions or Category.Sales).Sum(t => t.Value);
         return total / 3;
     }
 

@@ -4,8 +4,11 @@ namespace Core.team;
 
 public enum Discipline { Design, Code, Test, Support }
 
-/// <summary>Ce sur quoi une personne travaille. Une personne n'a qu'une seule affectation à la fois.</summary>
-public enum AssignmentKind { None, Contract, Product, Maintenance, Support }
+/// <summary>
+/// Ce sur quoi une personne travaille : un projet précis, ou « automatique » (le projet prioritaire du portefeuille).
+/// Une personne ne travaille que sur un projet à la fois.
+/// </summary>
+public enum AssignmentKind { None, Project }
 
 public enum WorkSchedule { Normal, Extended }
 
@@ -16,7 +19,7 @@ public class Assignment
 {
     public AssignmentKind Kind { get; set; }
 
-    /// <summary>Contrat ou produit visé (0 si aucun).</summary>
+    /// <summary>Projet visé (0 en automatique).</summary>
     public int TargetId { get; set; }
 
     public static Assignment None => new();
@@ -49,6 +52,12 @@ public class Person
     public bool IsLead { get; set; }
 
     public WorkSchedule Schedule { get; set; } = WorkSchedule.Normal;
+
+    /// <summary>En congé jusqu'à cette date (exclue).</summary>
+    public long VacationUntil { get; set; }
+
+    /// <summary>Dates des augmentations (pour en limiter l'effet et le nombre).</summary>
+    public List<long> RaiseDates { get; set; } = new();
 
     public Discipline? TrainingDiscipline { get; set; }
     public long TrainingUntil { get; set; }

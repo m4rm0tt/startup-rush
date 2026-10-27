@@ -3,7 +3,7 @@ namespace Core.finance;
 public enum Category
 {
     // Recettes
-    Contracts, Subscriptions, Ads, Commissions, Funding, LoanReceived, Resale, DepositRefund,
+    Contracts, Subscriptions, Ads, Commissions, Sales, Funding, LoanReceived, Resale, DepositRefund,
 
     // Dépenses
     Salaries, FounderDraw, Rent, Utilities, Equipment, Hosting, Marketing, Training, Severance,

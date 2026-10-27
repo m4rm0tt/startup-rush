@@ -34,6 +34,32 @@ public abstract class GamePanel
 
     protected void Open(GamePanel panel) => Screen.PushPanel(panel);
 
+    /// <summary>
+    /// Une aide d'une phrase, affichée seulement à la première ouverture de cet outil, avec un bouton pour la fermer.
+    /// Renvoie null une fois lue : rien n'oblige à la lire pour jouer.
+    /// </summary>
+    protected Control? Hint(string key, string text)
+    {
+        var settings = Screen.Window.Settings;
+        if (settings.SeenHints.Contains(key))
+            return null;
+        var row = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto") };
+        row.Children.Add(Ui.Icon("star", 20));
+        var label = Ui.Text(text, 14, UI.Pixel.Palette.Lemon);
+        label.Margin = new Avalonia.Thickness(8, 0);
+        Grid.SetColumn(label, 1);
+        row.Children.Add(label);
+        var ok = Ui.Button("Compris", () =>
+        {
+            settings.SeenHints.Add(key);
+            Screen.Window.SaveSettings();
+            Refresh();
+        }, "tab");
+        Grid.SetColumn(ok, 2);
+        row.Children.Add(ok);
+        return Ui.Card(row, UI.Pixel.Palette.Lemon);
+    }
+
     /// <summary>Exécute une commande, affiche son message, puis redessine le menu.</summary>
     protected void Run(CommandResult result, string? success = null)
     {

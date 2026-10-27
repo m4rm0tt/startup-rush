@@ -139,6 +139,8 @@ public static class Ui
     public static TextBox Input(string value, Action<string> changed, string? watermark = null, double width = double.NaN)
     {
         var box = new TextBox { Text = value, PlaceholderText = watermark, Width = width, MinWidth = 120 };
+        if (!double.IsNaN(width))
+            box.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
         box.TextChanged += (_, _) => changed(box.Text ?? "");
         return box;
     }
@@ -158,6 +160,43 @@ public static class Ui
     }
 
     public static string Chf(decimal amount) => $"{amount:N0} CHF";
+
+    /// <summary>Montant signé lisible : « +1 200 CHF », « −300 CHF ».</summary>
+    public static string SignedChf(decimal amount) => amount >= 0 ? $"+{amount:N0} CHF" : $"−{-amount:N0} CHF";
+
+    /// <summary>Section repliée par défaut : les détails pour qui veut comprendre, jamais nécessaires pour jouer.</summary>
+    public static Expander Details(string title, Control content, bool open = false) => new()
+    {
+        Header = Text(title, 14, Palette.Fog, wrap: false),
+        Content = content,
+        IsExpanded = open,
+        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+        Margin = new Thickness(0, 6, 0, 0),
+    };
+
+    /// <summary>Un chiffre clé : petite étiquette au-dessus, gros nombre dessous.</summary>
+    public static PixelPanel Stat(string label, string value, IBrush? color = null, double width = 150, string? tip = null)
+    {
+        var panel = new PixelPanel { Skin = "inset", Padding = new Thickness(10, 6), Margin = new Thickness(0, 0, 6, 6), Width = width, Child = Column(0, Text(label, 12, Palette.Fog, wrap: false), Number(value, 22, color)) };
+        if (tip != null)
+            ToolTip.SetTip(panel, tip);
+        return panel;
+    }
+
+    /// <summary>Pastilles de niveau (●●○) : se lisent sans couleur.</summary>
+    public static TextBlock Pips(int level, int max = 3, IBrush? color = null) =>
+        Text(new string('●', Math.Max(0, level)) + new string('○', Math.Max(0, max - level)), 14, color ?? Palette.Gold, wrap: false);
+
+    /// <summary>Carré de couleur avec une icône : l'identité visuelle d'un projet.</summary>
+    public static Border IconTile(string icon, Color color, double size = 44) => new()
+    {
+        Width = size,
+        Height = size,
+        Background = new SolidColorBrush(color),
+        BorderBrush = Palette.Ink,
+        BorderThickness = new Thickness(2),
+        Child = Icon(icon, size * 0.6),
+    };
 
     public static IBrush Signed(decimal amount) => amount < 0 ? Palette.Blood : amount > 0 ? Palette.Leaf : Palette.Cloud;
 

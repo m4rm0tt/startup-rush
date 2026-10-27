@@ -83,6 +83,11 @@ public partial class MainWindow : Window
         Show(screen, Music.Work);
         if (!string.IsNullOrEmpty(message))
             screen.Toast(message, true);
+        if (!string.IsNullOrEmpty(campaign.MigrationNote))
+        {
+            screen.Toast(campaign.MigrationNote, true);
+            campaign.MigrationNote = "";
+        }
         return screen;
     }
 

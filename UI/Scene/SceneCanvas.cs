@@ -323,24 +323,23 @@ public class SceneCanvas : Control
         }
     }
 
-    /// <summary>Petite icône au-dessus de la tête : ce que la personne fait vraiment en ce moment.</summary>
+    /// <summary>
+    /// Au-dessus de la tête : une petite icône de ce que la personne fait vraiment, et la barre de progression
+    /// de sa tâche en cours (développement d'un composant).
+    /// </summary>
     private void DrawBubble(DrawingContext context, Person person, double centerX, double top)
     {
         string? icon = person.Activity switch
         {
-            Activity.Break => "coffee",
             Activity.Idle => "warning",
-            Activity.Working when person.Status.StartsWith("Bloqué") || person.Status.StartsWith("Sans") || person.Status.StartsWith("Rien") || person.Status.StartsWith("Aucun") => "hourglass",
-            Activity.Working => person.Assignment.Kind switch
+            Activity.Working when person.Status.Contains("répond") => "mail",
+            Activity.Working when person.Status.Contains("maintenance") => "bolt",
+            Activity.Working when person.CurrentWorkItemId == null => "hourglass",
+            Activity.Working => CurrentDiscipline(person) switch
             {
-                AssignmentKind.Support => "mail",
-                AssignmentKind.Maintenance => "bolt",
-                _ => CurrentDiscipline(person) switch
-                {
-                    Discipline.Design => "gem",
-                    Discipline.Test => "check",
-                    _ => "computer"
-                }
+                Discipline.Design => "gem",
+                Discipline.Test => "check",
+                _ => "computer"
             },
             _ => null
         };
@@ -348,10 +347,17 @@ public class SceneCanvas : Control
             return;
         var bitmap = Icons.Get(icon);
         double size = 10;
-        var rect = ToScreen(centerX - size / 2, top - size - 1, size, size);
+        var rect = ToScreen(centerX - size / 2, top - size - 5, size, size);
         context.FillRectangle(Palette.Ink, rect.Inflate(Scale));
         context.FillRectangle(Palette.Snow, rect.Inflate(Scale * 0.5));
         context.DrawImage(bitmap, new Rect(0, 0, bitmap.PixelSize.Width, bitmap.PixelSize.Height), rect);
+
+        if (person.CurrentWorkItemId is int id && Campaign.FindWork(id) is { } item)
+        {
+            var track = ToScreen(centerX - 8, top - 3, 16, 2);
+            context.FillRectangle(Palette.Ink, track.Inflate(Scale * 0.5));
+            context.FillRectangle(Palette.Gold, new Rect(track.X, track.Y, track.Width * item.Fraction, track.Height));
+        }
     }
 
     private Discipline? CurrentDiscipline(Person person) =>

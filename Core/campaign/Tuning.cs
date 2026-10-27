@@ -8,8 +8,11 @@ public static class Tuning
 {
     public static class Start
     {
-        /// <summary>Économies du fondateur placées dans l'entreprise : environ trois mois de charges fixes sans aucun revenu.</summary>
-        public const decimal Cash = 7_000m;
+        /// <summary>
+        /// Économies et petit prêt d'honneur : environ 8 mois de charges fixes. De quoi sortir un premier projet
+        /// (2 à 4 semaines) et voir ses premiers résultats avant d'être à court.
+        /// </summary>
+        public const decimal Cash = 18_000m;
 
         /// <summary>Découvert bancaire autorisé : un solde légèrement négatif ne bloque rien.</summary>
         public const decimal Overdraft = 2_000m;
@@ -27,8 +30,11 @@ public static class Tuning
         /// <summary>Un point de travail = une heure d'une personne de niveau 50 sur un ordinateur standard.</summary>
         public const double PointsPerHourAtLevel50 = 1.0;
 
-        /// <summary>Niveau minimal dans une discipline pour pouvoir y travailler.</summary>
-        public const int MinimumSkill = 15;
+        /// <summary>
+        /// Niveau minimal dans une discipline pour y travailler. 0 : tout le monde peut tout faire (plus lentement et moins bien
+        /// hors de sa spécialité), pour qu'un projet ne soit jamais bloqué faute d'une compétence.
+        /// </summary>
+        public const int MinimumSkill = 0;
 
         /// <summary>Au-delà de ce nombre de personnes sur une même cible, la coordination coûte (sans responsable).</summary>
         public const int CoordinationFreeTeam = 3;
@@ -44,26 +50,19 @@ public static class Tuning
         public const double EnergyWeekendRecovery = 30;
     }
 
-    public static class Contracts
+    public static class Projects
     {
-        public const int MaxOpenOffers = 6;
+        /// <summary>Part du temps de l'équipe d'un projet en ligne consacrée au support et à la maintenance, selon l'entretien choisi.</summary>
+        public const double UpkeepLow = 0.1;
 
-        /// <summary>Part payée à la signature, facturée avec 10 jours de délai de paiement.</summary>
-        public const double DepositShare = 0.3;
+        public const double UpkeepNormal = 0.25;
+        public const double UpkeepHigh = 0.45;
 
-        public const int DepositPaymentDays = 10;
-        public const int InvoicePaymentDays = 30;
-        public const double LatePenaltyPerWorkday = 0.02;
-        public const double MaxLatePenalty = 0.3;
+        /// <summary>Utilisateurs actifs à atteindre pour qu'un lancement rapporte des points de développement (pas de points pour un projet vide).</summary>
+        public const int AdoptionForPoints = 50;
 
-        /// <summary>Jours ouvrés de retard au-delà desquels le client rompt le contrat.</summary>
-        public const int CancelAfterLateWorkdays = 12;
-
-        /// <summary>Effort supplémentaire pour rendre le code réutilisable, et gain sur les projets suivants du même type.</summary>
-        public const double CapitalizeExtraEffort = 0.15;
-
-        public const double ReuseGainPerLevel = 0.1;
-        public const int MaxReuseLevel = 3;
+        /// <summary>Multiplicateur d'effort des composants : un premier projet prend 3 à 5 semaines au fondateur seul.</summary>
+        public const double EffortScale = 2.2;
     }
 
     public static class Products
@@ -86,7 +85,7 @@ public static class Tuning
     public static class Finance
     {
         /// <summary>Rémunération minimale du fondateur, logement compris (l'appartement n'a donc pas de loyer séparé).</summary>
-        public const decimal FounderDraw = 2_200m;
+        public const decimal FounderDraw = 2_000m;
 
         public const decimal Utilities = 160m;
         public const decimal OverdraftMonthlyRate = 0.01m;

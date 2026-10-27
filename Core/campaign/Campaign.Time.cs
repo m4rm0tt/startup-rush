@@ -7,8 +7,9 @@ using Core.work;
 namespace Core.campaign;
 
 /// <summary>
-/// Le temps qui passe, minute par minute : arrivées et départs, déplacements dans le local, pauses et travail.
-/// Le travail ne vient que des personnes présentes à un poste complet, pendant leurs heures.
+/// Le temps qui passe, minute par minute. Chacun s'installe à son poste en arrivant, travaille tout seul sur son projet
+/// (ou sur le projet prioritaire en automatique) et enchaîne design, développement et tests sans réaffectation.
+/// Sur un projet en ligne, une part du temps va automatiquement au support et à la maintenance.
 /// </summary>
 public partial class Campaign
 {
@@ -16,16 +17,14 @@ public partial class Campaign
 
     /// <summary>Quelqu'un est-il au local en ce moment ? (L'interface accélère les nuits quand personne n'est là.)</summary>
     [JsonIgnore]
-    public bool AnyoneInOffice => People.Any(p => p.Activity != Activity.Away && p.Activity != Activity.Training);
+    public bool AnyoneInOffice => People.Any(p => p.Activity is Activity.Working or Activity.Idle);
 
-    /// <summary>Avance la campagne d'un nombre de minutes de jeu. Rien ne se passe après une liquidation.</summary>
     public void Advance(long minutes)
     {
         for (long i = 0; i < minutes && Status == CampaignStatus.Running; i++)
             Tick();
     }
 
-    /// <summary>Avance jusqu'à une minute donnée (utilisé par les tests et les bots).</summary>
     public void AdvanceDays(int days) => Advance((long)days * GameTime.MinutesPerDay);
 
     private void Tick()
@@ -38,15 +37,15 @@ public partial class Campaign
         UpdatePeople();
     }
 
-    /// <summary>À appeler après tout changement d'aménagement : les chemins sont recalculés.</summary>
+    /// <summary>À appeler après tout changement d'aménagement.</summary>
     public void InvalidateLayout() => _blocked = null;
 
     private bool[,] Blocked => _blocked ??= Premises.Occupancy();
 
-    private int ArrivalMinute(Person person) => 8 * 60 + 25 + person.Id * 7 % 30;
+    private int ArrivalMinute(Person person) => 8 * 60 + 30 + person.Id * 7 % 30;
 
     private int EndMinute(Person person) =>
-        (person.Schedule == WorkSchedule.Extended ? Tuning.Work.ExtendedEndHour : Tuning.Work.DayEndHour) * 60 + person.Id * 3 % 10;
+        (person.Schedule == WorkSchedule.Extended ? Tuning.Work.ExtendedEndHour : Tuning.Work.DayEndHour) * 60;
 
     private static bool IsWorkMinute(int minuteOfDay, Person person)
     {
@@ -55,18 +54,19 @@ public partial class Campaign
         return hour >= Tuning.Work.DayStartHour && hour < end && hour != Tuning.Work.LunchHour;
     }
 
+    public bool OnVacation(Person person) => Minute < person.VacationUntil;
+
     private void UpdatePeople()
     {
         int minuteOfDay = GameTime.MinuteOfDay(Minute);
         bool workday = GameTime.IsWorkday(Minute);
 
-        // Qui travaille sur quoi en ce moment (pour la coordination des équipes)
-        var crowd = new Dictionary<(AssignmentKind, int), (int Count, bool Lead)>();
+        var crowd = new Dictionary<int, (int Count, bool Lead)>();
         foreach (var p in People.Where(p => p.Activity == Activity.Working))
         {
-            var key = (p.Assignment.Kind, p.Assignment.TargetId);
+            int key = CurrentProject(p)?.Id ?? 0;
             var current = crowd.GetValueOrDefault(key);
-            crowd[key] = (current.Count + 1, current.Lead || p.IsLead);
+            crowd[key] = (current.Count + 1, current.Lead || p.IsLead && IsUnlocked("leads"));
         }
 
         foreach (var person in People)
@@ -81,83 +81,42 @@ public partial class Campaign
                     continue;
                 }
             }
-
-            switch (person.Activity)
+            if (OnVacation(person))
             {
-                case Activity.Away or Activity.Training:
-                    person.Activity = Activity.Away;
-                    if (workday && Minute >= person.StartsAt && person.LastArrivalDay != Day
-                        && minuteOfDay >= ArrivalMinute(person) && minuteOfDay < EndMinute(person) - 30)
-                    {
-                        person.LastArrivalDay = Day;
-                        person.Position = Premises.Outside;
-                        GoToPost(person);
-                    }
-                    break;
+                person.Activity = Activity.Away;
+                person.Status = $"En congé jusqu'au {GameTime.FormatDate(person.VacationUntil)}";
+                continue;
+            }
 
-                case Activity.Walking:
-                    StepWalk(person);
-                    break;
-
-                case Activity.Working or Activity.Idle:
-                    if (minuteOfDay >= EndMinute(person) || !workday)
-                    {
-                        WalkTo(person, Premises.Outside, Activity.Away);
-                        person.Status = "Rentre chez soi";
-                        break;
-                    }
-                    if (minuteOfDay == Tuning.Work.LunchHour * 60 || (minuteOfDay == person.NextBreakAt % GameTime.MinutesPerDay && person.NextBreakAt / GameTime.MinutesPerDay == Day))
-                    {
-                        if (TakeBreak(person, minuteOfDay == Tuning.Work.LunchHour * 60 ? 60 : 15))
-                            break;
-                    }
-                    if (person.Activity == Activity.Working && IsWorkMinute(minuteOfDay, person))
-                    {
-                        var info = crowd.GetValueOrDefault((person.Assignment.Kind, person.Assignment.TargetId));
-                        DoWork(person, Math.Max(1, info.Count), info.Lead);
-                    }
-                    break;
-
-                case Activity.Break:
-                    if (Minute >= person.BreakUntil)
-                        GoToPost(person);
-                    break;
+            bool present = workday && Minute >= person.StartsAt && minuteOfDay >= ArrivalMinute(person) && minuteOfDay < EndMinute(person);
+            if (!present)
+            {
+                person.Activity = Activity.Away;
+                continue;
+            }
+            if (person.Activity is Activity.Away or Activity.Training or Activity.Walking or Activity.Break)
+                TakePlace(person);
+            if (person.Activity == Activity.Working && IsWorkMinute(minuteOfDay, person))
+            {
+                var info = crowd.GetValueOrDefault(CurrentProject(person)?.Id ?? 0);
+                DoWork(person, Math.Max(1, info.Count), info.Lead);
             }
         }
     }
 
-    private bool TakeBreak(Person person, int minutes)
-    {
-        var spots = Layout.BreakSpots(Premises).ToList();
-        if (spots.Count == 0)
-            return false;
-        var spot = spots[(person.Id + (int)Day) % spots.Count];
-        var front = Premises.FrontCell(spot.Def, spot.X, spot.Y);
-        var target = NearbyFreeCell(front, person.Id) ?? front;
-        double recovery = Layout.BreakRecovery(Premises, People.Count(p => p.Activity != Activity.Away));
-        if (!WalkTo(person, target, Activity.Break))
-            return false;
-        person.BreakUntil = Minute + person.Path.Count + minutes;
-        person.Energy = Math.Min(100, person.Energy + recovery * (minutes >= 60 ? 1.5 : 1));
-        person.Status = minutes >= 60 ? "Pause de midi" : "Pause café";
-        return true;
-    }
-
-    /// <summary>Va à son poste s'il est complet, sinon reste debout quelque part en attendant.</summary>
-    private void GoToPost(Person person)
+    /// <summary>S'installe à son poste s'il est complet, sinon attend près de l'entrée (personnages assis, pas de déplacements).</summary>
+    private void TakePlace(Person person)
     {
         var desk = Premises.DeskOf(person.Id);
         if (desk != null && Layout.Check(Premises, desk) == WorkstationIssue.None)
         {
-            if (WalkTo(person, Premises.SeatCell(desk), Activity.Working))
-            {
-                person.NextBreakAt = Day * GameTime.MinutesPerDay + (GameTime.MinuteOfDay(Minute) < 12 * 60 ? 10 * 60 + 30 : 15 * 60) + person.Id % 20;
-                return;
-            }
+            person.Position = Premises.SeatCell(desk);
+            person.Activity = Activity.Working;
+            return;
         }
-        var spot = NearbyFreeCell(Premises.Entrance.Offset(0, -2), person.Id) ?? Premises.Entrance;
-        WalkTo(person, spot, Activity.Idle);
-        person.Status = desk == null ? "Sans poste de travail attribué" : Layout.Describe(Layout.Check(Premises, desk));
+        person.Position = NearbyFreeCell(Premises.Entrance.Offset(0, -2), person.Id) ?? Premises.Entrance;
+        person.Activity = Activity.Idle;
+        person.Status = desk == null ? "Pas de poste de travail" : Layout.Describe(Layout.Check(Premises, desk));
     }
 
     private Cell? NearbyFreeCell(Cell around, int salt)
@@ -177,40 +136,11 @@ public partial class Campaign
         return candidates[salt % Math.Min(candidates.Count, 6)];
     }
 
-    private bool WalkTo(Person person, Cell target, Activity goal)
-    {
-        var path = Pathfinder.FindPath(Premises, Blocked, person.Position, target);
-        if (path == null)
-        {
-            // Plus de chemin (meuble déplacé entre-temps) : on se replace à l'entrée
-            person.Position = Premises.InBounds(person.Position) ? Premises.Entrance : person.Position;
-            path = Pathfinder.FindPath(Premises, Blocked, person.Position, target);
-            if (path == null)
-                return false;
-        }
-        person.Path = path;
-        person.PathIndex = 0;
-        person.WalkGoal = goal;
-        person.Activity = path.Count <= 1 ? goal : Activity.Walking;
-        return true;
-    }
+    /// <summary>Le projet de la personne : celui où elle est affectée, ou le projet prioritaire en automatique.</summary>
+    public Product? CurrentProject(Person person) =>
+        person.Assignment.Kind == AssignmentKind.Project ? FindProduct(person.Assignment.TargetId) : AutoTarget();
 
-    private void StepWalk(Person person)
-    {
-        person.PathIndex++;
-        if (person.PathIndex < person.Path.Count)
-            person.Position = person.Path[person.PathIndex];
-        if (person.PathIndex >= person.Path.Count - 1)
-        {
-            person.Activity = person.WalkGoal;
-            person.Path.Clear();
-            person.PathIndex = 0;
-            if (person.Activity == Activity.Working)
-                person.Status = "";
-        }
-    }
-
-    /// <summary>Points de travail par minute de cette personne, à ce poste, dans son état actuel.</summary>
+    /// <summary>Points de travail par minute de cette personne à son poste.</summary>
     public double WorkRate(Person person, Discipline discipline, int teamSize = 1, bool lead = false)
     {
         var desk = Premises.DeskOf(person.Id);
@@ -219,16 +149,19 @@ public partial class Campaign
         double energy = person.Energy >= 40 ? 1 : 0.6 + person.Energy / 100;
         double morale = 0.85 + person.Morale / 100 * 0.3;
         double overtime = GameTime.Hour(Minute) >= Tuning.Work.DayEndHour ? 0.9 : 1;
-        int free = (lead ? Tuning.Work.CoordinationFreeTeamWithLead : Tuning.Work.CoordinationFreeTeam) + Layout.CoordinationBonus(Premises);
+        int free = (lead ? Tuning.Work.CoordinationFreeTeamWithLead : Tuning.Work.CoordinationFreeTeam) + Layout.CoordinationBonus(Premises)
+                   + (IsUnlocked("bigteam") ? 2 : 0);
         double coordination = teamSize <= free ? 1 : 1 / (1 + Tuning.Work.CoordinationLossPerExtraPerson * (teamSize - free));
-        return Tuning.Work.PointsPerHourAtLevel50 * skill * (computer?.Output ?? 0) * energy * morale * overtime * coordination / 60;
+        double tools = IsUnlocked("ai_tools") ? 1.1 : 1;
+        return Tuning.Work.PointsPerHourAtLevel50 * skill * (computer?.Output ?? 0) * energy * morale * overtime * coordination * tools / 60;
     }
 
     public double WorkQuality(Person person, Discipline discipline)
     {
         var desk = Premises.DeskOf(person.Id);
         var computer = desk == null ? null : Premises.ComputerOn(desk)?.Def;
-        double quality = 0.3 + person.Skill(discipline) * 0.006 + (computer?.Quality ?? 0) + (person.Morale - 50) / 1000;
+        double quality = 0.3 + person.Skill(discipline) * 0.006 + (computer?.Quality ?? 0) + (person.Morale - 50) / 1000
+                         + (IsUnlocked("quality_lab") ? 0.05 : 0);
         if (person.Energy < 40)
             quality -= 0.1;
         if (GameTime.Hour(Minute) >= Tuning.Work.DayEndHour)
@@ -240,152 +173,95 @@ public partial class Campaign
     {
         var desk = Premises.DeskOf(person.Id)!;
         var chair = Premises.ChairAt(Premises.SeatCell(desk))?.Def;
-        double overtime = GameTime.Hour(Minute) >= Tuning.Work.DayEndHour ? Tuning.Work.EnergyPerOvertimeHour : Tuning.Work.EnergyPerHour;
-        person.Energy = Math.Max(0, person.Energy - overtime * (chair?.EnergyDrain ?? 1) / 60);
+        double drain = GameTime.Hour(Minute) >= Tuning.Work.DayEndHour ? Tuning.Work.EnergyPerOvertimeHour : Tuning.Work.EnergyPerHour;
+        person.Energy = Math.Max(0, person.Energy - drain * (chair?.EnergyDrain ?? 1) / 60);
 
-        var assignment = person.Assignment;
-        switch (assignment.Kind)
+        var product = CurrentProject(person);
+        if (product == null)
         {
-            case AssignmentKind.Contract or AssignmentKind.Product:
-            {
-                var owner = assignment.Kind == AssignmentKind.Contract ? WorkOwner.Contract : WorkOwner.Product;
-                var item = PickWork(person, owner, assignment.TargetId);
-                if (item == null)
-                    return;
-                double rate = WorkRate(person, item.Discipline, teamSize, lead);
-                double points = Math.Min(rate, item.Remaining);
-                item.Progress += points;
-                item.QualityPoints += points * WorkQuality(person, item.Discipline);
-                person.PointsThisWeek += points;
-                person.Status = $"{Person.DisciplineName(item.Discipline)} : {item.Title}";
-                if (item.Done)
-                {
-                    person.CurrentWorkItemId = null;
-                    OnWorkItemDone(item);
-                }
-                break;
-            }
-            case AssignmentKind.Maintenance:
-            {
-                var product = FindProduct(assignment.TargetId);
-                if (product is not { IsLive: true })
-                {
-                    person.Status = "Rien à maintenir (produit non publié)";
-                    return;
-                }
-                var discipline = person.Skill(Discipline.Code) >= person.Skill(Discipline.Test) ? Discipline.Code : Discipline.Test;
-                double points = WorkRate(person, discipline, teamSize, lead);
-                product.MaintenanceDone += points * WorkQuality(person, discipline) / 0.6;
-                person.PointsThisWeek += points;
-                person.Status = $"Maintenance de {product.Name}";
-                break;
-            }
-            case AssignmentKind.Support:
-            {
-                var product = FindProduct(assignment.TargetId);
-                if (product is not { IsLive: true })
-                {
-                    person.Status = "Aucun utilisateur à aider (produit non publié)";
-                    return;
-                }
-                double points = WorkRate(person, Discipline.Support, teamSize, lead);
-                SupportToday[product.Id] = SupportToday.GetValueOrDefault(product.Id) + points;
-                person.PointsThisWeek += points;
-                person.Status = $"Support de {product.Name}";
-                break;
-            }
-            default:
-                person.Status = "Sans affectation : choisis un projet dans Équipe";
-                break;
+            person.CurrentWorkItemId = null;
+            person.Status = Products.Count == 0 ? "Attend un premier projet" : "Rien à faire : mets une amélioration en file";
+            return;
+        }
+
+        // Sur un projet en ligne, une part fixe du temps va à l'entretien (support et maintenance), sans action du joueur
+        bool upkeepTurn = product.IsLive && (Minute + person.Id) % 20 < UpkeepShare(product) * 20;
+        var item = upkeepTurn ? null : PickWork(person, product);
+        if (item == null)
+        {
+            if (product.IsLive)
+                DoUpkeep(person, product, teamSize, lead);
+            return;
+        }
+
+        double rate = WorkRate(person, item.Discipline, teamSize, lead);
+        double points = Math.Min(rate, item.Remaining);
+        item.Progress += points;
+        item.QualityPoints += points * WorkQuality(person, item.Discipline);
+        person.PointsThisWeek += points;
+        person.Status = $"{product.Name} : {item.Title}";
+        if (item.Done)
+        {
+            person.CurrentWorkItemId = null;
+            OnWorkItemDone(product, item);
         }
     }
 
-    /// <summary>Choisit la prochaine tâche : prête (dépendances finies), dans une discipline maîtrisée, la meilleure d'abord.</summary>
-    private WorkItem? PickWork(Person person, WorkOwner owner, int ownerId)
+    /// <summary>Entretien : répondre aux utilisateurs et corriger les bugs, en alternance quand les deux sont nécessaires.</summary>
+    private void DoUpkeep(Person person, Product product, int teamSize, bool lead)
     {
-        if (person.CurrentWorkItemId is int current && FindWork(current) is { Done: false } kept
-            && kept.Owner == owner && kept.OwnerId == ownerId && IsReady(kept))
+        // Moitié support, moitié maintenance quand les deux sont nécessaires ; tout à l'un si l'autre n'a besoin de rien
+        bool needsMaintenance = product.Bugs >= 1 || product.MaintenanceDebt > 1;
+        bool needsSupport = product.SupportBacklog > 1;
+        bool support = needsSupport && (!needsMaintenance || (Minute / 30 + person.Id) % 2 == 0);
+        var discipline = support ? Discipline.Support : person.Skill(Discipline.Code) >= person.Skill(Discipline.Test) ? Discipline.Code : Discipline.Test;
+        double points = WorkRate(person, discipline, teamSize, lead);
+        if (support)
+            product.SupportDone += points;
+        else
+            product.MaintenanceDone += points * WorkQuality(person, discipline) / 0.6;
+        person.PointsThisWeek += points;
+        person.CurrentWorkItemId = null;
+        person.Status = support ? $"{product.Name} : répond aux utilisateurs" : $"{product.Name} : maintenance";
+    }
+
+    /// <summary>La prochaine tâche prête du projet, dans l'ordre de la file, de préférence dans la spécialité de la personne.</summary>
+    private WorkItem? PickWork(Person person, Product product)
+    {
+        if (person.CurrentWorkItemId is int current && FindWork(current) is { Done: false } kept && kept.OwnerId == product.Id && IsReady(kept))
             return kept;
 
-        var open = WorkFor(owner, ownerId).Where(w => !w.Done).ToList();
-        if (open.Count == 0)
+        var order = product.Queue.Select((q, i) => (q.Id, i)).ToDictionary(x => x.Id, x => x.i);
+        var ready = WorkFor(WorkOwner.Product, product.Id).Where(w => !w.Done && IsReady(w)).ToList();
+        if (ready.Count == 0)
         {
             person.CurrentWorkItemId = null;
-            person.Status = owner == WorkOwner.Product ? "Rien à développer : lance une version dans Produits" : "Projet terminé";
             return null;
         }
-
-        var choice = open
-            .Where(w => IsReady(w) && person.Skill(w.Discipline) >= Tuning.Work.MinimumSkill)
-            .OrderByDescending(w => person.Skill(w.Discipline))
+        double best = ready.Max(w => person.Skill(w.Discipline));
+        var choice = ready
+            .OrderBy(w => person.Skill(w.Discipline) >= best * 0.7 ? 0 : 1)
+            .ThenBy(w => order.GetValueOrDefault(w.ModuleId ?? 0, int.MaxValue))
             .ThenBy(w => w.Id)
-            .FirstOrDefault();
-        person.CurrentWorkItemId = choice?.Id;
-        if (choice == null)
-        {
-            var waiting = open.FirstOrDefault(w => !IsReady(w));
-            person.Status = waiting != null && open.All(w => !IsReady(w) || person.Skill(w.Discipline) < Tuning.Work.MinimumSkill)
-                ? $"Bloqué : attend {Bottleneck(owner, ownerId)}"
-                : "Aucune tâche dans ses compétences";
-        }
+            .First();
+        person.CurrentWorkItemId = choice.Id;
         return choice;
     }
 
     public bool IsReady(WorkItem item) => item.DependsOn.All(id => FindWork(id) is not { Done: false });
 
-    /// <summary>Le goulot d'une cible : la discipline dont les tâches prêtes attendent le plus.</summary>
-    public string Bottleneck(WorkOwner owner, int ownerId)
+    private void OnWorkItemDone(Product product, WorkItem item)
     {
-        var ready = WorkFor(owner, ownerId).Where(w => !w.Done && IsReady(w)).ToList();
-        if (ready.Count == 0)
-            return "rien";
-        var top = ready.GroupBy(w => w.Discipline).OrderByDescending(g => g.Sum(w => w.Remaining)).First();
-        return $"{Person.DisciplineName(top.Key).ToLowerInvariant()} ({top.Sum(w => w.Remaining):0} pts)";
-    }
-
-    private void OnWorkItemDone(WorkItem item)
-    {
-        if (item.Owner == WorkOwner.Contract)
-        {
-            var contract = FindContract(item.OwnerId);
-            if (contract is { Status: ContractStatus.Active } && WorkFor(WorkOwner.Contract, contract.Id).All(w => w.Done))
-                DeliverContract(contract);
-            return;
-        }
-
-        var product = FindProduct(item.OwnerId);
-        if (product == null)
-            return;
-        switch (item.Kind)
-        {
-            case "fix":
-                if (WorkFor(WorkOwner.Product, product.Id).Where(w => w.Kind == "fix" && w.Title == item.Title).All(w => w.Done))
-                {
-                    var batch = WorkFor(WorkOwner.Product, product.Id).Where(w => w.Kind == "fix" && w.Title == item.Title).ToList();
-                    double quality = batch.Sum(w => w.QualityPoints) / Math.Max(1e-6, batch.Sum(w => w.Progress));
-                    double fixedBugs = Math.Min(product.Bugs, batch.Where(w => w.Discipline == Discipline.Code).Sum(w => w.Effort) / 3 * Math.Min(1, quality / 0.6));
-                    product.Bugs = Math.Max(0, product.Bugs - fixedBugs);
-                    Work.RemoveAll(w => batch.Contains(w));
-                    Notify(Severity.Good, "produit", $"{product.Name} : {fixedBugs:0} bugs corrigés", $"Il en reste {product.Bugs:0}.", $"product:{product.Id}");
-                }
-                break;
-            case "optimize":
-                product.Optimizations = Math.Min(3, product.Optimizations + 1);
-                Work.Remove(item);
-                Notify(Severity.Good, "produit", $"{product.Name} : performances optimisées", "La charge serveur baisse de 15 %.", $"product:{product.Id}");
-                break;
-            default:
-                if (product.Build != null && product.Build.WorkItemIds.All(id => FindWork(id) is not { Done: false }))
-                    Notify(Severity.Good, "produit", $"{product.Name} v{product.Build.Version} prête", "Tout est développé et testé : tu peux la publier.", $"product:{product.Id}");
-                break;
-        }
+        var queued = product.Queue.FirstOrDefault(q => q.Id == item.ModuleId);
+        if (queued != null && queued.WorkItemIds.All(id => FindWork(id) is not { Done: false }))
+            CompleteQueued(product, queued);
     }
 
     private void FinishTraining(Person person)
     {
         var discipline = person.TrainingDiscipline!.Value;
         double level = person.Skill(discipline);
-        double gain = 7 * (1 + Layout.TrainingBonus(Premises)) * Math.Max(0.15, 1 - level / 110);
+        double gain = 7 * (1 + Layout.TrainingBonus(Premises)) * (IsUnlocked("academy") ? 1.3 : 1) * Math.Max(0.15, 1 - level / 110);
         person.Skills[discipline] = Math.Round(Math.Min(95, level + gain), 1);
         person.TrainingDiscipline = null;
         person.Activity = Activity.Away;

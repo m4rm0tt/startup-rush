@@ -1,54 +1,39 @@
-using Core.products;
-using Core.work;
-
 namespace Core.bots;
 
-/// <summary>Les stratégies contrastées mesurées par la campagne d'équilibrage (BALANCE_REPORT.md).</summary>
+/// <summary>Les façons de jouer mesurées par la campagne d'équilibrage (BALANCE_REPORT.md).</summary>
 public static class Strategies
 {
     public static readonly IReadOnlyList<Strategy> All =
     [
-        new("freelance", "Freelance prudent : seulement des prestations, délai sûr, personne d'embauché.")
+        new("un_projet", "Se concentrer sur une application, l'améliorer d'après les avis, embaucher quand elle rapporte.")
         {
-            Deadline = DeadlineOption.Safe, MaxStaff = 0,
+            Projects = [("freelances", null)], Marketing = 300, MaxStaff = 2,
         },
-        new("agence", "Agence : prestations en continu, code capitalisé, embauches dès que la trésorerie le permet.")
+        new("plusieurs_petits", "Plusieurs petits projets l'un après l'autre (application, jeu, application pour PME).")
         {
-            Capitalize = true, MaxStaff = 5, HireAbove = 25_000, MaxContracts = 1, UpgradeComputers = true,
+            Projects = [("freelances", null), ("casual", null), ("smb", null)], ProjectInterval = 75, Marketing = 200, MaxStaff = 1,
         },
-        new("produit_tot", "Produit lancé tôt : un SaaS minimal dès la 2e semaine, le fondateur dessus, quelques prestations pour survivre.")
+        new("ambitieux", "Un jeu ambitieux pour passionnés : beaucoup de composants, une embauche dès le départ, promotion avant la sortie.")
         {
-            ProductDay = 10, FounderOnContracts = false, MaxStaff = 2, HireAbove = 30_000, MarketingBudget = 300,
-            Modules = ["login", "dashboard", "subscribe"],
+            Projects = [("core", ["gameplay", "content", "graphics", "audio", "ui", "achievements"])],
+            PreLaunchMarketing = 800, Marketing = 800, MaxStaff = 1, HireAbove = 0, CarefulHiring = false,
         },
-        new("produit_soigne", "Produit très soigné : prestations d'abord, puis un SaaS complet avec support et correctifs.")
+        new("jeu_simple", "Un petit jeu grand public, puis des mises à jour régulières.")
         {
-            ProductDay = 60, MaxStaff = 3, HireAbove = 30_000, MarketingBudget = 600,
-            Modules = ["landing", "login", "dashboard", "subscribe", "support", "export"],
+            Projects = [("casual", null)], Marketing = 300, MaxStaff = 1,
         },
-        new("croissance", "Croissance financée : embauches rapides et marketing agressif sur un produit communautaire.")
+        new("marketing_excessif", "Erreur : 6 000 CHF de marketing par mois dès la sortie d'une petite application.")
         {
-            ProductDay = 20, MaxStaff = 6, HireAbove = 12_000, MarketingBudget = 3_000, Segment = "creators", Model = RevenueModel.Ads, CarefulHiring = false,
-            Modules = ["login", "feed", "profile", "search"], LaterModules = ["messaging", "notifications", "reviews"],
+            Projects = [("freelances", null)], Marketing = 6_000, MaxStaff = 0, Recover = false, Borrow = false,
         },
-        new("embauche_rapide", "Embauche rapide sans produit : beaucoup de salaires, des prestations pour les payer.")
+        new("recrutement_precoce", "Erreur : trois embauches dès le départ, avant le moindre revenu.")
         {
-            MaxStaff = 6, HireAbove = 6_000, MaxContracts = 1, Deadline = DeadlineOption.Rush, CarefulHiring = false, Borrow = false,
+            Projects = [("freelances", null)], Marketing = 300, MaxStaff = 3, HireAbove = 0, CarefulHiring = false, Borrow = false,
         },
-        new("marketing", "Marketing agressif sur une place de marché, sans gros soin du produit.")
+        new("trop_de_projets", "Erreur : cinq projets ouverts d'un coup, chacun avec 1 500 CHF de promotion par mois avant même sa sortie.")
         {
-            ProductDay = 15, MaxStaff = 3, HireAbove = 20_000, MarketingBudget = 8_000, Segment = "crafts", Model = RevenueModel.Commission, CarefulHiring = false,
-            Modules = ["login", "listings", "checkout", "catalog"], FixBugs = false,
-        },
-        new("sous_qualite", "Sous-investissement dans la qualité : SaaS sans tests de support ni correctifs, promesses rapides.")
-        {
-            ProductDay = 20, MaxStaff = 2, HireAbove = 25_000, MarketingBudget = 1_000, FixBugs = false, KeepSupport = false, CarefulHiring = false, Borrow = false,
-            Deadline = DeadlineOption.Rush, Modules = ["login", "dashboard", "subscribe", "search", "messaging", "feed", "stats"],
-        },
-        new("mixte", "Stratégie mixte : prestations pour financer, SaaS PME bien construit, croissance mesurée.")
-        {
-            ProductDay = 40, MaxStaff = 4, HireAbove = 30_000, MarketingBudget = 1_000, Segment = "smb", Capitalize = true, UpgradeComputers = true,
-            Modules = ["landing", "login", "dashboard", "subscribe", "support"],
+            Projects = [("freelances", null), ("casual", null), ("smb", null), ("core", null), ("consumers", null)],
+            ProjectInterval = 0, PreLaunchMarketing = 1_500, Marketing = 1_500, MaxStaff = 0, Borrow = false, Recover = false,
         },
     ];
 }

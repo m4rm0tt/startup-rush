@@ -81,13 +81,18 @@ public static class SelectionInspector
     private static Control Person(GameScreen screen, Campaign campaign, Person person)
     {
         var look = Atlas.Cropped($"person{person.Look % 5}");
-        string assignment = TeamPanel.AssignmentText(campaign, person);
         var column = Ui.Column(6,
             Ui.Row(look != null ? Ui.Image(look, look.SourceRect.Width * 2, look.SourceRect.Height * 2) : null,
-                Ui.Column(2, Ui.Title(person.Name, 18), Ui.Muted(person.Title, 13), Ui.Text(assignment, 14, Palette.Lemon))),
+                Ui.Column(2, Ui.Title(person.Name, 18), Ui.Muted(person.Title, 13))),
             Ui.Text(string.IsNullOrEmpty(person.Status) ? ActivityText(person) : person.Status, 14, Palette.Cloud),
             Ui.Row(Ui.Muted("Énergie", 13), Ui.Bar(person.Energy / 100, person.Energy < 35 ? Palette.Ember : Palette.Leaf, 8, 90),
                 Ui.Muted("Moral", 13), Ui.Bar(person.Morale / 100, person.Morale < 35 ? Palette.Blood : Palette.Sky, 8, 90)),
+            TeamPanel.AssignmentChoice(campaign, person, id =>
+            {
+                var result = campaign.Assign(person.Id, id);
+                screen.Toast(result.Ok ? $"{person.Name} : {TeamPanel.AssignmentText(campaign, person)}" : result.Message, result.Ok);
+                screen.Session.Select(SelectionKind.Person, person.Id);
+            }),
             Ui.Button("Ouvrir la fiche", () =>
             {
                 screen.OpenRoot(new TeamPanel());
@@ -101,7 +106,7 @@ public static class SelectionInspector
         Activity.Walking => "Se déplace",
         Activity.Working => "Au travail",
         Activity.Break => "En pause",
-        Activity.Idle => "Attend",
+        Activity.Idle => "Attend un poste",
         Activity.Training => "En formation",
         _ => "Absent·e"
     };

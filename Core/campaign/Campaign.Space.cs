@@ -149,7 +149,7 @@ public partial class Campaign
         desk.AssignedPersonId = personId;
         var person = personId is int pid ? FindPerson(pid) : null;
         if (person != null && person.Activity is Activity.Working or Activity.Idle)
-            GoToPost(person);
+            TakePlace(person);
         var issue = Layout.Check(Premises, desk);
         return CommandResult.Success(issue == WorkstationIssue.None ? "Poste attribué." : $"Poste attribué, mais incomplet : {Layout.Describe(issue)}.");
     }

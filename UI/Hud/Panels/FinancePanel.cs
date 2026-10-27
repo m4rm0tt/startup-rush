@@ -1,9 +1,9 @@
-using System.Collections.Generic;
-using Avalonia.Media;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Core.campaign;
 using Core.finance;
 using UI.Pixel;
@@ -11,8 +11,8 @@ using UI.Pixel;
 namespace UI.Hud.Panels;
 
 /// <summary>
-/// Finances : trésorerie, créances et dettes séparées, résultat mensuel, autonomie (avec ses hypothèses),
-/// situation de solvabilité et leviers de redressement.
+/// Finances : d'abord l'argent, la tendance du mois, les grosses dépenses et la marge. Les créances, dettes, tableaux
+/// mensuels et financements sont repliés dans les détails.
 /// </summary>
 public class FinancePanel : GamePanel
 {
@@ -25,79 +25,108 @@ public class FinancePanel : GamePanel
     {
         var ledger = Campaign.Ledger;
         var (runway, assumptions) = Campaign.Runway();
-        string lastMonth = GameTime.ToDate(Campaign.Minute).AddMonths(-1).ToString("yyyy-MM");
+        decimal monthlyBalance = Campaign.RecurringRevenue30 - Campaign.MonthlyFixedCosts;
 
-        var kpis = new WrapPanel();
-        void Kpi(string label, string value, IBrush? color = null, string? tip = null)
-        {
-            var panel = new PixelPanel { Skin = "inset", Padding = new Thickness(10, 6), Margin = new Thickness(0, 0, 6, 6), Width = 190, Child = Ui.Column(0, Ui.Muted(label, 12), Ui.Number(value, 22, color)) };
-            if (tip != null)
-                ToolTip.SetTip(panel, tip);
-            kpis.Children.Add(panel);
-        }
-        Kpi("Trésorerie", Ui.Chf(ledger.Cash), Ui.Signed(ledger.Cash), $"Découvert autorisé : {ledger.Overdraft:N0} CHF");
-        Kpi("Créances clients", Ui.Chf(ledger.OpenReceivables), Palette.Sky, "Factures émises mais pas encore payées : ce n'est pas de l'argent disponible.");
-        Kpi("Dettes à payer", Ui.Chf(ledger.OpenBills), Palette.Ember);
-        Kpi("Prêts restants", Ui.Chf(ledger.LoanDebt));
-        Kpi("Charges fixes / mois", Ui.Chf(Campaign.MonthlyFixedCosts));
-        Kpi("Revenus récurrents 30 j", Ui.Chf(Campaign.RecurringRevenue30), Palette.Leaf);
-        Kpi("Autonomie", double.IsInfinity(runway) ? "rentable" : $"{runway:0} jours", runway < 30 ? Palette.Ember : null, assumptions);
-        Kpi("Valeur estimée", Ui.Chf(Campaign.Valuation()), null,
-            $"Actif net plus 3 ans du bénéfice récurrent actuel des produits. Ta part : {Campaign.FounderEquity:P0}.");
+        var stats = new WrapPanel();
+        stats.Children.Add(Ui.Stat("Argent", Ui.Chf(ledger.Cash), Ui.Signed(ledger.Cash), 190));
+        stats.Children.Add(Ui.Stat("Chaque mois", Ui.SignedChf(monthlyBalance), Ui.Signed(monthlyBalance), 190, "Revenus des projets (30 derniers jours) moins dépenses fixes."));
+        stats.Children.Add(Ui.Stat("Revenus / mois", Ui.Chf(Campaign.RecurringRevenue30), Palette.Leaf, 190));
+        stats.Children.Add(Ui.Stat("Dépenses / mois", Ui.Chf(Campaign.MonthlyFixedCosts), Palette.Ember, 190));
+        stats.Children.Add(Ui.Stat("Tiens encore", double.IsInfinity(runway) ? "sans limite" : $"{runway:0} jours", runway < 60 ? Palette.Ember : null, 190, assumptions));
 
-        var left = Ui.Column(8, kpis, Ui.Muted("Autonomie : " + assumptions, 12), Solvency(), MonthTable(lastMonth));
-        var right = Ui.Column(8, Bills(), Invoices(), Funding());
+        var column = Ui.Column(10, stats);
+        var situation = Situation();
+        if (situation != null)
+            column.Children.Add(situation);
 
-        var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*,16,*") };
-        grid.Children.Add(left);
-        Grid.SetColumn(right, 2);
-        grid.Children.Add(right);
-        return grid;
+        column.Children.Add(Ui.Section("Où va l'argent chaque mois", Costs()));
+        column.Children.Add(Ui.Section("D'où il vient", Incomes()));
+        column.Children.Add(Ui.Details("Détails : factures, mois par mois, financement", Ui.Column(10, Bills(), MonthTable(), Funding())));
+        return column;
     }
 
-    private Control Solvency()
+    private Control? Situation()
     {
         var s = Campaign.Solvency;
-        var overdue = Campaign.Ledger.Overdue(Campaign.Minute).ToList();
-        IBrush color = s.State switch
+        if (s.State == SolvencyState.Healthy)
+            return null;
+        var (text, color) = s.State switch
         {
-            SolvencyState.Healthy => Palette.Leaf,
-            SolvencyState.Tight => Palette.Lemon,
-            SolvencyState.Overdue => Palette.Ember,
-            _ => Palette.Blood
+            SolvencyState.Tight => ("L'argent va manquer : moins de 30 jours devant toi.", Palette.Lemon),
+            SolvencyState.Overdue => ("Des factures n'ont pas pu être payées. Au bout de 20 jours, c'est la mise en demeure.", Palette.Ember),
+            SolvencyState.Notice => ($"Mise en demeure : tout payer avant le {GameTime.FormatDate(s.NoticeUntil ?? Campaign.Minute)}, sinon faillite.", Palette.Blood),
+            _ => ("Faillite.", Palette.Blood)
         };
-        string explanation = s.State switch
-        {
-            SolvencyState.Healthy => "Tout est payé et plus d'un mois d'autonomie.",
-            SolvencyState.Tight => "Tout est payé, mais l'autonomie est courte ou le compte est dans le découvert.",
-            SolvencyState.Overdue => $"{overdue.Sum(b => b.Amount):N0} CHF échus et impayés. Au-delà de {Tuning.Finance.OverdueDaysBeforeNotice} jours de retard, une mise en demeure est envoyée.",
-            SolvencyState.Notice => $"Mise en demeure : tout régulariser avant le {GameTime.FormatDate(s.NoticeUntil ?? Campaign.Minute)}, sinon liquidation.",
-            _ => "L'entreprise a été liquidée.",
-        };
-        var column = Ui.Column(4,
-            Ui.Row(Ui.Text("Situation :", 15, Palette.Fog), Ui.Tag(Core.finance.Solvency.Name(s.State), color)),
-            Ui.Text(explanation, 14),
-            Ui.Muted("Règle : un solde négatif n'est pas grave tant que tout est payé. Une obligation impayée (salaire, loyer, facture, échéance) ouvre la procédure : " +
-                     $"impayés → mise en demeure après {Tuning.Finance.OverdueDaysBeforeNotice} jours → liquidation {Tuning.Finance.NoticeDays} jours plus tard si rien n'est régularisé. " +
-                     $"Les salariés impayés depuis {Tuning.Finance.UnpaidSalaryDaysBeforeQuitting} jours démissionnent.", 12));
+        var actions = Ui.Muted("Pour réagir : baisser le marketing (Projets → Réglages), fermer un projet qui perd de l'argent, " +
+                               "revendre du matériel (Aménagement), réduire l'équipe ou déménager plus petit.", 13);
+        var column = Ui.Column(6, Ui.Text(text, 16, color, bold: true), actions);
         if (s.State is SolvencyState.Overdue or SolvencyState.Notice)
         {
             var (allowed, condition) = Campaign.RecoveryPlanTerms();
-            column.Children.Add(Ui.Section("Leviers de redressement",
-                Ui.Muted("Encaisser (relancer des prestations), revendre du matériel (Aménagement), réduire marketing et hébergement, licencier (avec indemnité), " +
-                         "déménager dans plus petit, ou demander un plan de redressement.", 13),
-                Ui.Text(condition, 13, allowed ? Palette.Cloud : Palette.Ember),
-                Ui.Button("Demander un plan de redressement", () => Screen.Confirm("Plan de redressement", condition + " Un seul plan tous les deux ans.", "Demander",
-                    () => Run(Campaign.RequestRecoveryPlan()), danger: false), "gold", allowed)));
+            column.Children.Add(Ui.Row(8, Ui.Button("Plan de redressement", () => Screen.Confirm("Plan de redressement", condition, "Demander",
+                () => Run(Campaign.RequestRecoveryPlan()), danger: false), "gold", allowed), Ui.Muted(condition, 12)));
         }
         return Ui.Card(column, color);
     }
 
-    private Control MonthTable(string lastMonth)
+    private Control Costs()
+    {
+        var items = new List<(string Label, decimal Amount)>
+        {
+            ("Ta rémunération", Tuning.Finance.FounderDraw),
+            ("Salaires", Campaign.Staff.Sum(p => p.Salary)),
+            ("Loyer et charges", Campaign.Premises.Rent * 1.04m + Tuning.Finance.Utilities),
+            ("Serveurs", Campaign.Products.Where(p => p.IsLive).Sum(p => p.Hosting.MonthlyCost)),
+            ("Marketing", Campaign.Products.Sum(p => p.MarketingBudget)),
+            ("Remboursements", Campaign.Ledger.Loans.Sum(l => Math.Min(l.MonthlyPayment, l.Remaining))),
+        };
+        return Bars(items.Where(i => i.Amount > 0).OrderByDescending(i => i.Amount).ToList(), Palette.Ember);
+    }
+
+    private Control Incomes()
+    {
+        var items = Campaign.Products.Select(p => (p.Name, p.History.Skip(Math.Max(0, p.History.Count - 30)).Sum(d => d.Revenue))).Where(i => i.Item2 > 0).OrderByDescending(i => i.Item2).ToList();
+        return items.Count == 0 ? Ui.Muted("Aucun revenu pour l'instant : sors un premier projet.", 13) : Bars(items, Palette.Leaf);
+    }
+
+    private static Control Bars(List<(string Label, decimal Amount)> items, IBrush color)
+    {
+        decimal max = items.Count == 0 ? 1 : items.Max(i => i.Amount);
+        var column = Ui.Column(4);
+        foreach (var (label, amount) in items)
+        {
+            var row = new Grid { ColumnDefinitions = new ColumnDefinitions("180,*,110") };
+            row.Children.Add(Ui.Text(label, 14, Palette.Cloud, wrap: false));
+            var bar = Ui.Bar((double)(amount / Math.Max(1, max)), color, 10);
+            bar.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            Grid.SetColumn(bar, 1);
+            row.Children.Add(bar);
+            var value = Ui.Text(Ui.Chf(amount), 14, Palette.Snow, wrap: false);
+            value.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right;
+            Grid.SetColumn(value, 2);
+            row.Children.Add(value);
+            column.Children.Add(row);
+        }
+        return column;
+    }
+
+    private Control Bills()
+    {
+        var list = Ui.Column(2);
+        foreach (var bill in Campaign.Ledger.Bills.Where(b => b.Open).OrderBy(b => b.DueAt).Take(10))
+            list.Children.Add(Ui.Pair($"{GameTime.FormatDate(bill.DueAt)} · {bill.Label}", Ui.Chf(bill.Amount), bill.DueAt < Campaign.Minute ? Palette.Blood : null));
+        foreach (var invoice in Campaign.Ledger.Invoices.Where(i => i.Open).OrderBy(i => i.DueAt).Take(6))
+            list.Children.Add(Ui.Pair($"{GameTime.FormatDate(invoice.DueAt)} · à recevoir : {invoice.Label}", Ui.Chf(invoice.Amount), Palette.Sky));
+        if (list.Children.Count == 0)
+            list.Children.Add(Ui.Muted("Rien à payer ni à recevoir.", 13));
+        return Ui.Section("À payer et à recevoir", list, Ui.Muted("Tout est payé automatiquement à l'échéance, s'il y a l'argent.", 12));
+    }
+
+    private Control MonthTable()
     {
         var months = Campaign.Ledger.Months.Keys.OrderByDescending(k => k).Take(4).ToList();
         if (months.Count == 0)
-            return Ui.Muted("Aucun mouvement pour l'instant.");
+            return Ui.Muted("Aucun mois terminé.", 13);
         var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*" + string.Concat(Enumerable.Repeat(",110", months.Count))) };
         int row = 0;
         void AddRow(string label, Func<string, decimal?> value, bool bold = false)
@@ -117,33 +146,30 @@ public class FinancePanel : GamePanel
             }
             row++;
         }
-        decimal Get(string month, Category category) => Campaign.Ledger.Months[month].GetValueOrDefault(category);
         AddRow("Mois", _ => null, true);
-        foreach (var category in Enum.GetValues<Category>().Where(c => months.Any(m => Get(m, c) != 0)))
-            AddRow(CategoryName(category), m => Get(m, category));
-        AddRow("Résultat d'exploitation", m => Campaign.Ledger.Months[m]
-            .Where(t => t.Key is not (Category.Funding or Category.LoanReceived or Category.DepositRefund or Category.Deposit or Category.LoanRepayment)).Sum(t => t.Value), true);
-        AddRow("Variation de trésorerie", m => Campaign.Ledger.Months[m].Values.Sum(), true);
-        return Ui.Section("Mois par mois (mouvements réels)", grid,
-            Ui.Muted("Le résultat d'exploitation exclut financements, prêts et garanties.", 12));
+        foreach (var category in Enum.GetValues<Category>().Where(c => months.Any(m => Campaign.Ledger.Months[m].GetValueOrDefault(c) != 0)))
+            AddRow(CategoryName(category), m => Campaign.Ledger.Months[m].GetValueOrDefault(category));
+        AddRow("Résultat", m => Campaign.OperatingResult(Campaign.Ledger.Months[m]), true);
+        return Ui.Section("Mois par mois", grid);
     }
 
     public static string CategoryName(Category category) => category switch
     {
-        Category.Contracts => "Prestations",
+        Category.Contracts => "Prestations (ancienne version)",
         Category.Subscriptions => "Abonnements",
         Category.Ads => "Publicité",
         Category.Commissions => "Commissions",
+        Category.Sales => "Ventes",
         Category.Funding => "Levée de fonds",
         Category.LoanReceived => "Prêt reçu",
         Category.Resale => "Reventes",
         Category.DepositRefund => "Garantie rendue",
         Category.Salaries => "Salaires",
-        Category.FounderDraw => "Rémunération fondateur",
+        Category.FounderDraw => "Ta rémunération",
         Category.Rent => "Loyer",
-        Category.Utilities => "Charges et services",
+        Category.Utilities => "Charges",
         Category.Equipment => "Matériel",
-        Category.Hosting => "Hébergement",
+        Category.Hosting => "Serveurs",
         Category.Marketing => "Marketing",
         Category.Training => "Formations",
         Category.Severance => "Indemnités",
@@ -156,35 +182,6 @@ public class FinancePanel : GamePanel
         _ => "Registre du commerce"
     };
 
-    private Control Bills()
-    {
-        var open = Campaign.Ledger.Bills.Where(b => b.Open).OrderBy(b => b.DueAt).Take(12).ToList();
-        var list = Ui.Column(2);
-        foreach (var bill in open)
-        {
-            bool late = bill.DueAt < Campaign.Minute;
-            list.Children.Add(Ui.Pair($"{GameTime.FormatDate(bill.DueAt)} · {bill.Label}", Ui.Chf(bill.Amount), late ? Palette.Blood : null));
-        }
-        if (open.Count == 0)
-            list.Children.Add(Ui.Muted("Rien à payer pour l'instant."));
-        var upcoming = Ui.Muted($"Prochaines échéances fixes : loyer le 1er (payable le 5), salaires et rémunération le 25, hébergement et marketing du mois écoulé le 1er (payables le 10).", 12);
-        return Ui.Section("Dettes à payer (échéance)", list, upcoming);
-    }
-
-    private Control Invoices()
-    {
-        var open = Campaign.Ledger.Invoices.Where(i => i.Open).OrderBy(i => i.DueAt).Take(12).ToList();
-        var list = Ui.Column(2);
-        foreach (var invoice in open)
-        {
-            bool late = invoice.DueAt < Campaign.Minute;
-            list.Children.Add(Ui.Pair($"{GameTime.FormatDate(invoice.DueAt)} · {invoice.Client} · {invoice.Label}", Ui.Chf(invoice.Amount) + (late ? " (en retard)" : ""), late ? Palette.Ember : Palette.Sky));
-        }
-        if (open.Count == 0)
-            list.Children.Add(Ui.Muted("Aucune facture en attente."));
-        return Ui.Section("Factures clients en attente (échéance)", list, Ui.Muted("Un client peu fiable peut payer tard, parfois jamais (créance irrécouvrable après 60 jours).", 12));
-    }
-
     private Control Funding()
     {
         var column = Ui.Column(6);
@@ -194,30 +191,19 @@ public class FinancePanel : GamePanel
         column.Children.Add(Ui.Text("Prêt bancaire", 14, Palette.Snow, bold: true));
         column.Children.Add(Ui.Muted(condition, 13));
         if (max > 0)
-        {
-            var amounts = new[] { 0.25m, 0.5m, 1m }.Select(f => Math.Floor(max * f / 500m) * 500m).Where(a => a >= 500).Distinct();
-            column.Children.Add(Ui.Choice(amounts.Select(a => (a, Ui.Chf(a))), _loan, a => { _loan = a; Refresh(); }));
             column.Children.Add(Ui.Button($"Emprunter {_loan:N0} CHF", () => Screen.Confirm("Emprunter ?",
-                $"{_loan:N0} CHF tout de suite, remboursés en {Tuning.Finance.LoanMonths} mensualités avec {Tuning.Finance.LoanYearlyRate:P0} d'intérêts par an.", "Emprunter",
+                $"{_loan:N0} CHF tout de suite, puis {_loan * (1 + Tuning.Finance.LoanYearlyRate) / Tuning.Finance.LoanMonths:N0} CHF par mois pendant {Tuning.Finance.LoanMonths} mois.", "Emprunter",
                 () => Run(Campaign.TakeLoan(_loan))), "gold"));
-        }
         foreach (var loan in Campaign.Ledger.Loans)
-            column.Children.Add(Ui.Pair(loan.Kind == LoanKind.Bank ? "Prêt bancaire" : "Plan de redressement", $"{loan.Remaining:N0} CHF, {loan.MonthlyPayment:N0}/mois"));
-
+            column.Children.Add(Ui.Pair(loan.Kind == LoanKind.Bank ? "Prêt en cours" : "Plan de redressement", $"{loan.Remaining:N0} CHF ({loan.MonthlyPayment:N0}/mois)"));
         column.Children.Add(Ui.Text("Investisseurs", 14, Palette.Snow, bold: true));
         if (Campaign.Investor is { } offer)
-        {
             column.Children.Add(Ui.Card(Ui.Column(4,
-                Ui.Text($"{offer.Investor} propose {offer.Amount:N0} CHF contre {offer.Equity:P0} du capital.", 14, Palette.Lemon),
-                Ui.Muted($"Valable jusqu'au {GameTime.FormatDate(offer.ExpiresAt)}. Une seule levée possible.", 12),
-                Ui.Row(Ui.Button("Accepter", () => Screen.Confirm("Lever des fonds ?", $"Ta part passera de {Campaign.FounderEquity:P0} à {Campaign.FounderEquity * (1 - offer.Equity):P0}.", "Accepter",
-                        () => Run(Campaign.AcceptInvestor()), danger: false), "green"),
-                    Ui.Button("Refuser", () => { Campaign.DeclineInvestor(); Refresh(); }, "red"))), Palette.Gold));
-        }
+                Ui.Text($"{offer.Investor} propose {offer.Amount:N0} CHF contre {offer.Equity:P0} de l'entreprise.", 14, Palette.Lemon),
+                Ui.Row(Ui.Button("Accepter", () => Screen.Confirm("Lever des fonds ?", $"Ta part passe à {Campaign.FounderEquity * (1 - offer.Equity):P0}.", "Accepter",
+                    () => Run(Campaign.AcceptInvestor()), danger: false), "green"), Ui.Button("Refuser", () => { Campaign.DeclineInvestor(); Refresh(); }, "red"))), Palette.Gold));
         else
-            column.Children.Add(Ui.Muted(Campaign.InvestorRoundDone
-                ? "Levée de fonds déjà faite."
-                : "Un investisseur se manifeste quand un produit a 1 500 utilisateurs actifs ou 100 clients payants et a grandi de 20 % en 30 jours.", 13));
+            column.Children.Add(Ui.Muted(Campaign.InvestorRoundDone ? "Levée déjà faite." : "Un investisseur viendra si un projet décolle (1 500 utilisateurs ou 100 payants, +20 % en un mois).", 13));
         return Ui.Section("Financement", column);
     }
 }

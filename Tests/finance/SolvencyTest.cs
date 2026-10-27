@@ -42,7 +42,8 @@ public class SolvencyTest
         Assert.That(sawNotice, Is.EqualTo(SolvencyState.Notice), "la mise en demeure précède toujours la liquidation");
         Assert.That(campaign.Status, Is.EqualTo(CampaignStatus.Liquidated));
         Assert.That(campaign.Solvency.LiquidationReport, Does.Contain("Impayés"));
-        Assert.That(campaign.Notices.Any(n => n.Title.StartsWith("Liquidation dans")), Is.True, "compte à rebours annoncé");
+        Assert.That(campaign.Notices.Any(n => n.Key == "notice"), Is.True, "compte à rebours annoncé");
+        Assert.That(campaign.Notices.Count(n => n.Key == "unpaid"), Is.LessThanOrEqualTo(2), "les impayés sont regroupés");
     }
 
     [Test]
@@ -68,7 +69,7 @@ public class SolvencyTest
         Assert.That(campaign.Solvency.State, Is.EqualTo(SolvencyState.Notice));
 
         // Un gros client paie enfin : tout est régularisé à l'échéance suivante
-        campaign.Post(20_000, Category.Contracts, "Paiement tardif d'un client");
+        campaign.Post(20_000, Category.Funding, "Apport du fondateur");
         campaign.AdvanceDays(1);
 
         Assert.That(campaign.Ledger.Overdue(campaign.Minute), Is.Empty);
@@ -91,7 +92,7 @@ public class SolvencyTest
         Assert.That(refused.Condition, Does.Contain("revenus récurrents"));
 
         // Un produit qui rapporte assez rend le plan possible
-        var (_, product) = campaign.CreateProduct(campaign.MainCompany.Id, "Agenda", "smb", Core.products.RevenueModel.Subscription, 59);
+        var (_, product) = campaign.CreateProject("Agenda", "smb", Core.products.RevenueModel.Subscription);
         product!.History.AddRange(Enumerable.Range(0, 30).Select(i => new Core.products.ProductDay { Day = i, Revenue = 60 }));
         var accepted = campaign.RequestRecoveryPlan();
         Assert.That(accepted.Ok, Is.True, accepted.Message);
@@ -128,7 +129,7 @@ public class SolvencyTest
 
         campaign.AdvanceDays(100);
         foreach (var month in new[] { "2027-01", "2027-02", "2027-03" })
-            campaign.Ledger.Months[month] = new() { [Category.Contracts] = 6_000 };
+            campaign.Ledger.Months[month] = new() { [Category.Subscriptions] = 6_000 };
 
         var (max, _) = campaign.LoanTerms();
         Assert.That(max, Is.EqualTo(18_000));
@@ -143,7 +144,7 @@ public class SolvencyTest
         var campaign = NewCampaign();
         var (days, assumptions) = campaign.Runway();
 
-        Assert.That(days, Is.GreaterThan(60).And.LessThan(150));
-        Assert.That(assumptions, Does.Contain("Les prestations futures ne sont pas comptées"));
+        Assert.That(days, Is.GreaterThan(200).And.LessThan(320), "environ 8 mois d'autonomie au départ");
+        Assert.That(assumptions, Does.Contain("Dépenses"));
     }
 }

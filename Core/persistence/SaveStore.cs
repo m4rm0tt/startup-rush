@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Core.campaign;
 using Core.finance;
@@ -40,7 +41,7 @@ public record SaveEntry(string Path, SaveKind Kind, string Label, SaveSummary? S
 /// </summary>
 public class SaveStore
 {
-    public const int CurrentFormat = 1;
+    public const int CurrentFormat = 2;
     public const int AutosaveSlots = 3;
 
     private static readonly JsonSerializerOptions Options = new()
@@ -82,16 +83,34 @@ public class SaveStore
     /// <summary>La campagne seule, sans l'en-tête horodaté (pour comparer deux états).</summary>
     public static string SerializeState(Campaign campaign) => JsonSerializer.Serialize(campaign, Options);
 
-    public static Campaign Deserialize(string json)
+    public static Campaign Deserialize(string json) => Deserialize(json, out _);
+
+    /// <summary>Lit une sauvegarde ; une sauvegarde au format 1 est convertie (voir Migration) et migrated vaut true.</summary>
+    public static Campaign Deserialize(string json, out bool migrated)
     {
-        var file = JsonSerializer.Deserialize<SaveFile>(json, Options) ?? throw new InvalidDataException("Fichier vide.");
-        if (file.Game != "StartupRush-simulation")
+        migrated = false;
+        var root = JsonNode.Parse(json) as JsonObject ?? throw new InvalidDataException("Fichier vide.");
+        if (root["Game"]?.GetValue<string>() != "StartupRush-simulation")
             throw new InvalidDataException("Ce n'est pas une sauvegarde de campagne.");
-        if (file.Format > CurrentFormat)
-            throw new InvalidDataException($"Sauvegarde d'une version plus récente du jeu (format {file.Format}).");
-        if (file.Campaign.People.Count == 0 || file.Campaign.Companies.Count == 0)
+        int format = root["Format"]?.GetValue<int>() ?? 0;
+        if (format > CurrentFormat)
+            throw new InvalidDataException($"Sauvegarde d'une version plus récente du jeu (format {format}).");
+        if (root["Campaign"] is not JsonObject campaignNode)
+            throw new InvalidDataException("Campagne absente.");
+
+        List<Migration.Pending> pending = [];
+        List<string> notes = [];
+        if (format == 1)
+        {
+            (pending, notes) = Migration.FromV1(campaignNode);
+            migrated = true;
+        }
+        var campaign = campaignNode.Deserialize<Campaign>(Options) ?? throw new InvalidDataException("Campagne illisible.");
+        if (campaign.People.Count == 0 || campaign.Companies.Count == 0)
             throw new InvalidDataException("Campagne incomplète.");
-        return file.Campaign;
+        if (migrated)
+            Migration.Finish(campaign, pending, notes);
+        return campaign;
     }
 
     /// <summary>Écrit une sauvegarde de façon atomique. Renvoie le chemin écrit.</summary>
@@ -127,7 +146,19 @@ public class SaveStore
             File.Move(temporary, path);
     }
 
-    public Campaign Load(string path) => Deserialize(File.ReadAllText(path));
+    /// <summary>Charge une sauvegarde. Si elle vient d'une ancienne version, l'original est d'abord copié en .v1.json (jamais écrasé).</summary>
+    public Campaign Load(string path)
+    {
+        string json = File.ReadAllText(path);
+        var campaign = Deserialize(json, out bool migrated);
+        if (migrated)
+        {
+            string backup = Path.ChangeExtension(path, ".v1.json");
+            if (!File.Exists(backup))
+                File.Copy(path, backup);
+        }
+        return campaign;
+    }
 
     /// <summary>Toutes les sauvegardes, les plus récentes d'abord, y compris celles qui sont abîmées (signalées).</summary>
     public List<SaveEntry> List(string? campaignId = null)

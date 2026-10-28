@@ -203,7 +203,7 @@ public static class Capture
         foreach (var (name, open) in new (string, Func<Hud.GamePanel>)[]
                  {
                      ("13_portefeuille", () => new ProjectsPanel()), ("14_equipe", () => new TeamPanel()), ("15_arbre", () => new TreePanel()),
-                     ("16_finances", () => new FinancePanel()), ("17_journal", () => new NoticesPanel()), ("18_amenagement", () => new BuildPanel()),
+                     ("16_finances", () => new FinancePanel()), ("17_journal", () => new NoticesPanel()), ("17b_journal_bonnes_nouvelles", () => new NoticesPanel().ShowGoodNews()), ("18_amenagement", () => new BuildPanel()),
                  })
         {
             later.OpenRoot(open());

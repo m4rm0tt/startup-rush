@@ -116,6 +116,15 @@ public static class Ui
         return button;
     }
 
+    /// <summary>Rangée de liste du pack (hud_list_row) qui contient ses propres boutons ; elle s'éclaire au survol.</summary>
+    public static PixelPanel ListRow(Control content)
+    {
+        var row = new PixelPanel { Skin = "pack:hud_list_row:normal", Padding = new Thickness(10, 6, 10, 9), Child = content };
+        row.PointerEntered += (_, _) => row.Skin = "pack:hud_list_row:hover";
+        row.PointerExited += (_, _) => row.Skin = "pack:hud_list_row:normal";
+        return row;
+    }
+
     /// <summary>Bloc encadré (cadre 9-slice en creux).</summary>
     public static PixelPanel Card(Control content, IBrush? border = null) => new()
     {

@@ -19,6 +19,13 @@ public class NoticesPanel : GamePanel
 
     private Filter _filter = Filter.Problems;
 
+    /// <summary>Ouvre le journal sur les bonnes nouvelles (au lieu de ce qui est à traiter).</summary>
+    public NoticesPanel ShowGoodNews()
+    {
+        _filter = Filter.Good;
+        return this;
+    }
+
     public override Control Build()
     {
         int problems = Campaign.Notices.Count(n => n.IsProblem && !n.Resolved);
@@ -35,26 +42,33 @@ public class NoticesPanel : GamePanel
         };
         foreach (var notice in notices.Reverse().Take(40))
         {
-            IBrush color = notice.Severity switch
+            // Le sens se lit à l'icône, pas seulement à la couleur
+            string icon = notice.Severity switch
             {
-                Severity.Critical => Palette.Blood,
-                Severity.Warning => Palette.Ember,
-                Severity.Good => Palette.Leaf,
-                _ => Palette.Sky
+                Severity.Critical => "icon_error",
+                Severity.Warning => "icon_warning",
+                Severity.Good => "icon_success",
+                _ => "icon_info"
             };
-            var content = Ui.Column(2,
+            var text = Ui.Column(2,
                 Ui.Row(6, Ui.Text(notice.Title + (notice.Count > 1 ? $" (×{notice.Count})" : ""), 14, notice.Resolved ? Palette.Fog : Palette.Snow, bold: true),
                     notice.Resolved ? Ui.Tag("réglé", Palette.Leaf) : null),
                 string.IsNullOrEmpty(notice.Detail) ? null : Ui.Muted(notice.Detail, 12),
                 Ui.Muted(GameTime.Format(notice.Minute), 11));
+            var mark = Ui.Icon(icon, 24);
+            mark.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+            mark.Margin = new Thickness(0, 0, 10, 0);
+            var content = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*") };
+            content.Children.Add(mark);
+            Grid.SetColumn(text, 1);
+            content.Children.Add(text);
             var button = new Button
             {
-                Content = new Border { BorderBrush = color, BorderThickness = new Thickness(3, 0, 0, 0), Padding = new Thickness(8, 0, 0, 0), Child = content },
+                Content = content,
                 HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-                HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Left,
-                Padding = new Thickness(6, 4, 6, 8),
+                Padding = new Thickness(10, 6, 10, 9),
             };
-            button.Classes.Add("tab");
+            button.Classes.Add("row");
             var n = notice;
             button.Click += (_, _) => Screen.Navigate(n);
             column.Children.Add(button);

@@ -273,7 +273,7 @@ public class LoadScreen : MenuScreen
                     grid.Children.Add(button);
                     line = grid;
                 }
-                list.Children.Add(Ui.Card(line));
+                list.Children.Add(Ui.ListRow(line));
             }
         }
         var scroll = Ui.Scroll(list);

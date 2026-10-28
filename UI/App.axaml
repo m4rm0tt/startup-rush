@@ -213,6 +213,16 @@
         <Style Selector="Button.tabs:pointerover /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_tabs:hover"/></Style>
         <Style Selector="Button.tabs.selected /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_tabs:active"/></Style>
 
+        <!-- Rangées de liste cliquables (journal) -->
+        <Style Selector="Button.row">
+            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+        <Style Selector="Button.row /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_list_row:normal"/></Style>
+        <Style Selector="Button.row:pointerover /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_list_row:hover"/></Style>
+        <Style Selector="Button.row.selected /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_list_row:selected"/></Style>
+        <Style Selector="Button.row:pressed /template/ ContentPresenter#PART_ContentPresenter"><Setter Property="RenderTransform" Value="none"/></Style>
+
         <!-- Boutons à icône (pause, vitesses, fermer, retour) -->
         <Style Selector="Button.icon">
             <Setter Property="Padding" Value="6,4,6,7"/>

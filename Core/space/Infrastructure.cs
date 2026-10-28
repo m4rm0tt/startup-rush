@@ -149,6 +149,8 @@ public static class Infrastructure
                 issues.Add($"{def.Name} : un tiroir de disques demande un stockage 2U dans la même baie.");
         }
 
+        // Le faux plancher distribue mieux le froid qui existe (Finishes) : il n'en crée pas
+        cooling *= 1 + Finishes.CoolingBonus(premises);
         if (coolers > 0)
             draw += coolers * Math.Clamp(cooling > 0 ? heat / cooling : 1, 0.25, 1);
         double orgScore = racks == 0 ? Math.Min(1, organization / 2) : Math.Min(1, organization / (racks * OrganizationPerRack));

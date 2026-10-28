@@ -91,6 +91,12 @@ public class Premises
     public decimal Deposit { get; set; }
     public List<PlacedItem> Items { get; set; } = new();
 
+    /// <summary>Sol refait sur toute la surface (« floor_parquet »), null : les sols du plan (voir Finishes).</summary>
+    public string? FloorMaterial { get; set; }
+
+    /// <summary>Habillage des deux murs du fond (« pattern_wood_panels »), null : les motifs du plan.</summary>
+    public string? WallPattern { get; set; }
+
     public Cell Entrance => new(EntranceX, EntranceY);
 
     /// <summary>Juste dehors, derrière la porte : là où l'on se trouve hors des heures de travail.</summary>

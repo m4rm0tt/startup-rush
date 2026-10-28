@@ -371,6 +371,62 @@ public static class PackLibrary
         return Icons[key] = img.ToBitmap();
     }
 
+    private static readonly Dictionary<string, Bitmap> FinishTiles = new();
+
+    /// <summary>
+    /// Vignette 18 × 18 d'une finition, pour la pastille hud_pattern_cell : le cœur d'une dalle de sol, ou le motif posé sur un
+    /// mur plein, avec les couleurs du mur.
+    /// </summary>
+    public static Bitmap FinishTile(string id, IReadOnlyDictionary<string, string> wallSwatches)
+    {
+        string key = Key(id, wallSwatches);
+        if (FinishTiles.TryGetValue(key, out var bitmap))
+            return bitmap;
+        var asset = Asset(id);
+        Img source;
+        int cx, cy;
+        if (asset.TryGetProperty("variants", out var variants))
+        {
+            source = Layer(variants.EnumerateObject().First().Value.GetProperty("layers").GetProperty("base"), new Dictionary<string, string>());
+            (cx, cy) = (source.W / 2, source.H / 2);
+        }
+        else
+        {
+            var wall = Orient(Asset("wall_plain"), "se");
+            var layer = wall.GetProperty("layers").GetProperty("base");
+            var mask = Png(layer.GetProperty("mask").GetString()!);
+            var po = Orient(asset, "se");
+            var ov = Png(po.GetProperty("layers").GetProperty("overlay").GetProperty("file").GetString()!);
+            var (a0x, a0y) = Anchor(wall);
+            var (pax, pay) = Anchor(po);
+            source = WallPattern(Png(layer.GetProperty("file").GetString()!), mask, ov, wallSwatches, [(a0x - pax, a0y - pay)]);
+            // Le centre de la face qui reçoit le motif
+            long sx = 0, sy = 0, n = 0;
+            for (int y = 0; y < mask.H; y++)
+                for (int x = 0; x < mask.W; x++)
+                {
+                    int i = (y * mask.W + x) * 4;
+                    if (mask.P[i + 3] > 0 && (mask.P[i + 2] & 1) == 1)
+                    {
+                        sx += x;
+                        sy += y;
+                        n++;
+                    }
+                }
+            (cx, cy) = n == 0 ? (source.W / 2, source.H / 2) : ((int)(sx / n), (int)(sy / n));
+        }
+        var tile = new Img(18, 18);
+        for (int y = 0; y < 18; y++)
+            for (int x = 0; x < 18; x++)
+            {
+                int sxp = cx - 9 + x, syp = cy - 9 + y;
+                if (sxp < 0 || syp < 0 || sxp >= source.W || syp >= source.H)
+                    continue;
+                Array.Copy(source.P, (syp * source.W + sxp) * 4, tile.P, (y * 18 + x) * 4, 4);
+            }
+        return FinishTiles[key] = tile.ToBitmap();
+    }
+
     private static readonly Dictionary<string, Bitmap> Thumbnails = new();
 
     /// <summary>Vignette d'un asset (son calque de base dans l'orientation par défaut), pour les catalogues.</summary>

@@ -243,6 +243,23 @@ public static class Capture
         later.Session.SetTool(null);
         later.Scene.SetHover(null);
         later.ClosePanels();
+        // Lot 7 : finitions du local (pastilles du pack, confirmation, puis le local refait)
+        advanced.Ledger.Cash += 40_000;
+        later.OpenRoot(new BuildPanel());
+        await Wait(0.3);
+        window.UpdateLayout();
+        Avalonia.VisualTree.VisualExtensions.GetVisualDescendants(window).OfType<TextBlock>().FirstOrDefault(t => t.Text?.StartsWith("Le faux plancher") == true)?.BringIntoView();
+        await Shot(window, folder, "18d_finitions", report);
+        later.Confirm("Refaire le sol : Parquet à bâtons ?", $"{Finishes.Get("floor_parquet").Effect} Coût : {Finishes.Cost(advanced.Premises, Finishes.Get("floor_parquet")):N0} CHF.", "Faire les travaux", () => { }, danger: false);
+        await Shot(window, folder, "18e_finitions_confirmation", report);
+        later.CloseModal();
+        later.ClosePanels();
+        var parquet = advanced.SetFinish("floor_parquet");
+        var panels = advanced.SetFinish("pattern_wood_panels");
+        report.Add($"Finitions : sol {parquet.Ok} ({parquet.Message}), murs {panels.Ok} ({panels.Message}) ; ambiance {advanced.SiteComfort().Ambiance:0.#}.");
+        later.Scene.ResetCamera();
+        await Wait(0.5);
+        await Shot(window, folder, "18f_local_refait", report);
         if (advanced.Staff.FirstOrDefault() is { } someone)
         {
             later.OpenRoot(new TeamPanel());

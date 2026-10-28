@@ -83,7 +83,7 @@ public partial class SceneCanvas : Control
 
     private string Signature(Dictionary<int, Seated> seated)
     {
-        var sb = new StringBuilder(Premises.PlanId);
+        var sb = new StringBuilder(Premises.PlanId).Append('|').Append(Premises.FloorMaterial).Append('|').Append(Premises.WallPattern);
         foreach (var i in Premises.Items)
             sb.Append('|').Append(i.Id).Append(i.DefId).Append(i.X).Append(',').Append(i.Y).Append(i.Facing).Append(i.HostId).Append(i.Socket)
                 .Append(string.Join(",", i.Swatches.Select(kv => kv.Key + kv.Value)));

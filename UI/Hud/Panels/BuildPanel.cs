@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -85,6 +86,7 @@ public class BuildPanel : GamePanel
             column.Children.Add(InfraSection(infra));
         if (!RealEstate.Get(premises.ListingId).Technical)
             column.Children.Add(ComfortSection());
+        column.Children.Add(FinishesSection());
 
         // Catalogue, une rubrique à la fois
         var groups = FurnitureCatalog.Buyable.GroupBy(GroupOf).ToList();
@@ -202,6 +204,65 @@ public class BuildPanel : GamePanel
             contributors.Children.Add(Ui.Muted("Rien pour l'instant.", 13));
         string title = $"Confort du local ({c.People} personne{(c.People > 1 ? "s" : "")})";
         return Ui.Section(title, grid, Ui.Details("Ce qui y contribue", contributors));
+    }
+
+    /// <summary>
+    /// Finitions du site affiché : le sol et l'habillage des murs du fond, en pastilles du pack (hud_pattern_cell). Ce qui est
+    /// en place est sélectionné ; les travaux se confirment (ils se paient par case ou par segment de mur).
+    /// </summary>
+    private Control FinishesSection()
+    {
+        var premises = Campaign.Premises;
+        var wall = new Dictionary<string, string>(Pack.FindPlan(premises.PlanId)?.LeftSwatches ?? new Dictionary<string, string>());
+        WrapPanel Cells(FinishKind kind)
+        {
+            var wrap = new WrapPanel();
+            foreach (var finish in Finishes.Catalog.Where(f => f.Kind == kind))
+                wrap.Children.Add(FinishCell(finish, wall));
+            return wrap;
+        }
+        string Name(string? id) => id != null && Finishes.Has(id) ? Finishes.Get(id).Name : "celui du plan";
+        string floor = premises.FloorMaterial is { } m ? Name(m) : "ceux du plan";
+        string left = Name(Finishes.Pattern(premises, "left")), right = Name(Finishes.Pattern(premises, "right"));
+        return Ui.Section("Finitions",
+            Ui.Text($"Sol : {floor}", 14, Palette.Cloud), Cells(FinishKind.Floor),
+            Ui.Text(left == right ? $"Murs : {left}" : $"Murs : {left} à gauche, {right} à droite", 14, Palette.Cloud), Cells(FinishKind.Wall),
+            Ui.Muted("Le faux plancher distribue mieux le froid existant ; le lambris ajoute de l'ambiance. Le reste fait l'identité du local.", 12));
+    }
+
+    private Control FinishCell(FinishDef finish, Dictionary<string, string> wall)
+    {
+        var premises = Campaign.Premises;
+        bool current = Finishes.IsCurrent(premises, finish);
+        bool locked = finish.UnlockNode is { } node && !Campaign.IsUnlocked(node);
+        decimal cost = Finishes.Cost(premises, finish);
+        bool floor = finish.Kind == FinishKind.Floor;
+        var frame = Ui.Image(PackSkins.Sprite("hud_pattern_cell", current ? "selected" : "normal"), 52, 52);
+        var tile = Ui.Image(PackLibrary.FinishTile(finish.Id, floor ? new Dictionary<string, string>() : RoomRenderer.PatternColors(finish.Id, wall)), 36, 36);
+        tile.Margin = new Thickness(8);
+        tile.HorizontalAlignment = HorizontalAlignment.Left;
+        tile.VerticalAlignment = VerticalAlignment.Top;
+        var content = new Panel { Width = 52, Height = 52, Children = { frame, tile }, Opacity = locked ? 0.5 : 1 };
+        var button = new Button { Content = content, Padding = new Thickness(0), Margin = new Thickness(0, 0, 4, 4), IsEnabled = !locked };
+        button.Classes.Add("plain");
+        if (!current)
+        {
+            button.PointerEntered += (_, _) => frame.Source = PackSkins.Sprite("hud_pattern_cell", "hover");
+            button.PointerExited += (_, _) => frame.Source = PackSkins.Sprite("hud_pattern_cell", "normal");
+        }
+        string unit = floor ? $"{finish.Price:N0} CHF la case, {premises.Width * premises.Height} cases" : $"{finish.Price:N0} CHF le segment, {Finishes.WallSegments(premises)} segments";
+        ToolTip.SetTip(button, locked ? $"{finish.Name} — à débloquer : {Core.campaign.Campaign.UnlockName(finish.UnlockNode!)}."
+            : current ? $"{finish.Name} — en place. {finish.Effect}"
+            : $"{finish.Name} — {finish.Effect} {cost:N0} CHF ({unit}).");
+        button.Click += (_, _) =>
+        {
+            if (current)
+                return;
+            Screen.Confirm(floor ? $"Refaire le sol : {finish.Name} ?" : $"Habiller les murs : {finish.Name} ?",
+                $"{finish.Effect} Coût : {cost:N0} CHF ({unit}). {(floor ? "Tout le sol est refait, zones de service comprises." : "Les deux murs du fond sont refaits.")}",
+                "Faire les travaux", () => Run(Campaign.SetFinish(finish.Id)), danger: false);
+        };
+        return button;
     }
 
     private Control CatalogButton(FurnitureDef def)

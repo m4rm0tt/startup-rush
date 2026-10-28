@@ -72,6 +72,9 @@ public record PlanChild(string Socket, string Asset, bool HasCharacter);
 /// <summary>Un objet mural d'un plan : mur du fond (« left » : U = 0, « right » : V = 0) et rang le long de ce mur.</summary>
 public record PlanWallItem(string Asset, string Wall, int Index);
 
+/// <summary>Une zone de sol d'un plan : matériau du pack (« floor_vinyl ») sur un rectangle de cases, avec ses couleurs.</summary>
+public record PlanFloor(string Material, int U, int V, int Width, int Depth, IReadOnlyDictionary<string, string> Swatches);
+
 /// <summary>
 /// Un plan de pièce du pack (rooms/*.json) : taille, entrée, objets livrés, et les segments des deux murs du fond
 /// (« plain », « window », « window_wide », « door », null pour la suite d'une grande fenêtre).
@@ -81,6 +84,19 @@ public record RoomPlan(string Id, string NameFr, int Width, int Depth, Cell Entr
     public IReadOnlyList<string?> LeftWall { get; init; } = [];
     public IReadOnlyList<string?> RightWall { get; init; } = [];
     public IReadOnlyList<PlanWallItem> WallItems { get; init; } = [];
+
+    /// <summary>Les zones de sol, dans l'ordre de pose : une zone recouvre les précédentes.</summary>
+    public IReadOnlyList<PlanFloor> Floors { get; init; } = [];
+
+    /// <summary>Motif de chaque mur du fond (identifiant du pack, « pattern_paint »), null pour un mur nu.</summary>
+    public string? LeftPattern { get; init; }
+
+    public string? RightPattern { get; init; }
+
+    /// <summary>Couleurs de chaque mur du fond (« wall » → « cream »).</summary>
+    public IReadOnlyDictionary<string, string> LeftSwatches { get; init; } = new Dictionary<string, string>();
+
+    public IReadOnlyDictionary<string, string> RightSwatches { get; init; } = new Dictionary<string, string>();
 
     /// <summary>Le segment de mur à ce rang (null : hors du mur ou suite d'une grande fenêtre).</summary>
     public string? Segment(string wall, int index)
@@ -104,6 +120,9 @@ public static class Pack
 
     public static RoomPlan Plan(string id) => PlansById.Value[id];
 
+    /// <summary>Le plan, ou null (local sans plan connu, comme dans certaines vieilles sauvegardes).</summary>
+    public static RoomPlan? FindPlan(string id) => PlansById.Value.GetValueOrDefault(id);
+
     private static readonly Lazy<HashSet<string>> AcceptedTypes = new(() =>
         AssetsById.Value.Values.SelectMany(a => a.Facings.Values).SelectMany(f => f.Sockets.Values).SelectMany(t => t).ToHashSet());
 
@@ -114,6 +133,15 @@ public static class Pack
         Assembly.GetExecutingAssembly().GetManifestResourceStream(name) ?? throw new InvalidOperationException($"Ressource du pack absente : {name}");
 
     private static Cell CellOf(JsonElement e) => new(e[0].GetInt32(), e[1].GetInt32());
+
+    private static Dictionary<string, string> Swatches(JsonElement e)
+    {
+        var d = new Dictionary<string, string>();
+        if (e.TryGetProperty("swatches", out var s) && s.ValueKind == JsonValueKind.Object)
+            foreach (var p in s.EnumerateObject())
+                d[p.Name] = p.Value.GetString()!;
+        return d;
+    }
 
     private static Cell Direction(string dir) => dir switch
     {
@@ -203,12 +231,27 @@ public static class Pack
             var wallItems = root.TryGetProperty("wall_items", out var wi) && wi.ValueKind == JsonValueKind.Array
                 ? wi.EnumerateArray().Select(x => new PlanWallItem(x.GetProperty("asset").GetString()!, x.GetProperty("wall").GetString()!, x.GetProperty("index").GetInt32())).ToList()
                 : [];
+            var floors = root.TryGetProperty("floor", out var fl) && fl.ValueKind == JsonValueKind.Array
+                ? fl.EnumerateArray().Select(x =>
+                {
+                    var r = x.GetProperty("rect");
+                    return new PlanFloor(x.GetProperty("material").GetString()!, r[0].GetInt32(), r[1].GetInt32(), r[2].GetInt32(), r[3].GetInt32(), Swatches(x));
+                }).ToList()
+                : [];
+            JsonElement? Wall(string wall) => root.TryGetProperty("walls", out var w) && w.TryGetProperty(wall, out var side) ? side : null;
+            string? Pattern(string wall) => Wall(wall) is { } side && side.TryGetProperty("pattern", out var p) && p.ValueKind == JsonValueKind.String
+                ? "pattern_" + p.GetString() : null;
             result[id] = new RoomPlan(id, root.GetProperty("name_fr").GetString()!, size[0].GetInt32(), size[1].GetInt32(),
                 CellOf(entrance.GetProperty("access_tile")), entrance.GetProperty("wall").GetString()!, objects)
             {
                 LeftWall = Segments("left"),
                 RightWall = Segments("right"),
                 WallItems = wallItems,
+                Floors = floors,
+                LeftPattern = Pattern("left"),
+                RightPattern = Pattern("right"),
+                LeftSwatches = Wall("left") is { } l ? Swatches(l) : new Dictionary<string, string>(),
+                RightSwatches = Wall("right") is { } rw ? Swatches(rw) : new Dictionary<string, string>(),
             };
         }
         return result;

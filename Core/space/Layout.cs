@@ -295,7 +295,9 @@ public static class Layout
         var items = premises.Items;
         double Covered(IEnumerable<PlacedItem> list) => Math.Min(1, list.Sum(i => i.Def.Covers) / (double)people);
 
-        double ambiance = Math.Min(MaxAmbiance, items.Where(i => i.Def.Kind is FurnitureKind.Plant or FurnitureKind.Ambiance).Sum(i => i.Def.Morale));
+        // Les murs comptent aussi (lambris), dans le même plafond
+        double ambiance = Math.Min(MaxAmbiance, items.Where(i => i.Def.Kind is FurnitureKind.Plant or FurnitureKind.Ambiance).Sum(i => i.Def.Morale)
+                                                + Finishes.Ambiance(premises));
         var lounge = items.Where(i => i.Def.Kind == FurnitureKind.Lounge).ToList();
         // Une table basse complète un coin pause : seule, elle ne sert à rien
         bool seated = lounge.Any(i => i.Def.Id != "table_coffee");

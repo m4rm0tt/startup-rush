@@ -68,7 +68,7 @@ public sealed class RoomRenderer
     {
         var r = new RoomRenderer(premises.Width, premises.Height);
         var plan = PackLibrary.Room(premises.PlanId);
-        r.Structure(plan, premises.Width, premises.Height);
+        r.Structure(plan, premises);
         foreach (var item in premises.Floor)
         {
             var asset = PackLibrary.Asset(item.DefId);
@@ -84,14 +84,15 @@ public sealed class RoomRenderer
         return new RoomImage(r.Compose(), r._ox, r._oy, r._hits, r._heads);
     }
 
-    /// <summary>Sols, bords de dalle, murs avec motifs, objets muraux : la structure du plan.</summary>
-    private void Structure(JsonElement plan, int width, int depth)
+    /// <summary>
+    /// Sols, bords de dalle, murs avec motifs : la structure du plan, avec les finitions refaites du local (Finishes). Les
+    /// couleurs des murs restent celles du plan ; un motif apporte ses couleurs par défaut (le bois du lambris).
+    /// </summary>
+    private void Structure(JsonElement plan, Premises premises)
     {
-        foreach (var f in plan.GetProperty("floor").EnumerateArray())
-        {
-            var rect = f.GetProperty("rect");
-            FloorRect(f.GetProperty("material").GetString()!, rect[0].GetInt32(), rect[1].GetInt32(), rect[2].GetInt32(), rect[3].GetInt32(), Sw(f, "swatches"));
-        }
+        int width = premises.Width, depth = premises.Height;
+        foreach (var f in Finishes.FloorZones(premises))
+            FloorRect(f.Material, f.U, f.V, f.Width, f.Depth, new Dictionary<string, string>(f.Swatches));
         if (plan.TryGetProperty("floor_overlays", out var overlays))
             foreach (var f in overlays.EnumerateArray())
                 FloorOverlay(f.GetProperty("asset").GetString()!, f.GetProperty("key").GetString()!, f.GetProperty("tile")[0].GetInt32(), f.GetProperty("tile")[1].GetInt32(), Sw(f, "swatches"));
@@ -105,20 +106,22 @@ public sealed class RoomRenderer
         var walls = plan.GetProperty("walls");
         var left = walls.GetProperty("left");
         var right = walls.GetProperty("right");
-        string? Pattern(JsonElement w) => w.TryGetProperty("pattern", out var p) && p.ValueKind == JsonValueKind.String ? p.GetString() : null;
+        string? leftPattern = Finishes.Pattern(premises, "left"), rightPattern = Finishes.Pattern(premises, "right");
+        var leftSw = PatternColors(leftPattern, Sw(left, "swatches"));
+        var rightSw = PatternColors(rightPattern, Sw(right, "swatches"));
         Wall("wall_corner_inner", "all", 0, 0, null, Sw(left, "swatches"));
         int vi = 0;
         foreach (var k in left.GetProperty("segments").EnumerateArray())
         {
             if (k.ValueKind == JsonValueKind.String)
-                Wall(k.GetString()!, "se", 0, vi, Pattern(left), Sw(left, "swatches"));
+                Wall(k.GetString()!, "se", 0, vi, leftPattern, leftSw);
             vi++;
         }
         int ui = 0;
         foreach (var k in right.GetProperty("segments").EnumerateArray())
         {
             if (k.ValueKind == JsonValueKind.String)
-                Wall(k.GetString()!, "sw", ui, 0, Pattern(right), Sw(right, "swatches"));
+                Wall(k.GetString()!, "sw", ui, 0, rightPattern, rightSw);
             ui++;
         }
         Wall("wall_end", "se", 0, depth, null, Sw(left, "swatches"));
@@ -156,6 +159,16 @@ public sealed class RoomRenderer
             }
     }
 
+    /// <summary>Les couleurs d'un mur habillé : celles du plan, complétées par les couleurs par défaut du motif.</summary>
+    public static Dictionary<string, string> PatternColors(string? pattern, Dictionary<string, string> wall)
+    {
+        var sw = new Dictionary<string, string>(wall);
+        if (pattern != null && PackLibrary.Has(pattern) && PackLibrary.Asset(pattern).TryGetProperty("defaults", out var d) && d.ValueKind == JsonValueKind.Object)
+            foreach (var p in d.EnumerateObject())
+                sw.TryAdd(p.Name, p.Value.GetString()!);
+        return sw;
+    }
+
     private void FloorOverlay(string aid, string key, int u, int v, Dictionary<string, string> sw)
     {
         var o = PackLibrary.Asset(aid).GetProperty("orientations").GetProperty(key);
@@ -176,7 +189,7 @@ public sealed class RoomRenderer
             var mask = PackLibrary.Png(mm.GetString()!);
             if (pattern != null && orient is "se" or "sw")
             {
-                var po = PackLibrary.Asset("pattern_" + pattern).GetProperty("orientations").GetProperty(orient);
+                var po = PackLibrary.Asset(pattern).GetProperty("orientations").GetProperty(orient);
                 var ov = PackLibrary.Png(po.GetProperty("layers").GetProperty("overlay").GetProperty("file").GetString()!);
                 var (a0x, a0y) = PackLibrary.Anchor(o);
                 var (pax, pay) = PackLibrary.Anchor(po);

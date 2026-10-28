@@ -181,6 +181,8 @@ public class Premises
         post.Desk.Def.Kind == FurnitureKind.Lab ? post.Desk
         : ChildAt(post.Desk, "laptop" + post.Suffix) is { Def.Kind: FurnitureKind.Laptop } laptop ? laptop
         : post.Suffix == "" && ChildAt(post.Desk, "tower_floor") is { Def.Kind: FurnitureKind.Tower } tower ? tower
+        // Le mini-PC se pose sur le bureau (pas d'emplacement de tour) : il sert d'ordinateur au poste principal
+        : post.Suffix == "" && Children(post.Desk).FirstOrDefault(c => c.DefId == "mini_pc") is { } mini ? mini
         : null;
 
     /// <summary>Les écrans du poste (le principal, le second, ceux de l'arrière du bureau).</summary>

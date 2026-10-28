@@ -19,7 +19,7 @@ public class BuildPanel : GamePanel
     private static string GroupOf(FurnitureDef def) => def.Kind switch
     {
         FurnitureKind.Desk or FurnitureKind.Chair => "Bureaux et chaises",
-        FurnitureKind.Laptop or FurnitureKind.Tower or FurnitureKind.Monitor or FurnitureKind.Keyboard => "Informatique",
+        FurnitureKind.Laptop or FurnitureKind.Tower or FurnitureKind.Monitor or FurnitureKind.Keyboard or FurnitureKind.Peripheral => "Informatique",
         FurnitureKind.Coffee or FurnitureKind.Lounge or FurnitureKind.Kitchen or FurnitureKind.Refreshment => "Pauses",
         FurnitureKind.Whiteboard or FurnitureKind.Bookshelf or FurnitureKind.Meeting or FurnitureKind.Reception => "Organisation",
         FurnitureKind.Storage or FurnitureKind.Sanitary => "Confort de base",

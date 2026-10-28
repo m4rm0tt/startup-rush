@@ -67,6 +67,12 @@ public enum FurnitureKind
     /// <summary>Studio audiovisuel (caméra, fond vert, éclairage, micro, enceintes) : qualité du contenu et de la présentation.</summary>
     Studio,
 
+    /// <summary>
+    /// Périphérique posé sur un bureau (tablette graphique, casque, station d'accueil, bancs de test) : un petit plus pour le
+    /// poste (plafonné), ou un banc de test qui retire des défauts.
+    /// </summary>
+    Peripheral,
+
     /// <summary>Zone de test XR (casque, balises, tapis) : tests immersifs simulés.</summary>
     Xr,
 
@@ -379,6 +385,21 @@ public static class FurnitureCatalog
         new("quantum_cryostat_closed", "Ordinateur quantique (cryostat fermé)", FurnitureKind.Quantum, 380_000m,
             "Installation stabilisée : 20 unités de calcul quantique à vendre, après 14 jours de mise en route. Avec une baie de contrôle et un support cryogénique. 8 kW.") { Power = 8, UnlockNode = "res_cryo" },
 
+        // Lot 7 : l'informatique du pack qui n'avait pas encore d'usage
+        new("laptop_gaming", "Portable de jeu", FurnitureKind.Laptop, 2_400m, "Production ×1,05 et qualité +0,03. 0,15 kW.") { Output = 1.05, Quality = 0.03, Power = 0.15 },
+        new("mini_pc", "Mini-PC", FurnitureKind.Tower, 600m, "Sur le bureau : production ×0,95, très sobre (0,02 kW). Demande un écran et un clavier.") { Output = 0.95, Power = 0.02 },
+        new("workstation_creative", "Station créative", FurnitureKind.Tower, 3_200m, "Production ×1,05 et qualité +0,05. 0,3 kW. Demande un écran et un clavier.") { Output = 1.05, Quality = 0.05, Power = 0.3 },
+        new("monitor_ultrawide", "Écran ultralarge", FurnitureKind.Monitor, 520m, "Production +5 % (6 % au plus par poste).") { ScreenBonus = 0.05 },
+        new("graphics_tablet", "Tablette graphique", FurnitureKind.Peripheral, 320m, "Sur un bureau : qualité du travail +0,02 (0,03 au plus par poste).") { Quality = 0.02 },
+        new("headset_stand", "Casque audio", FurnitureKind.Peripheral, 140m, "Sur un bureau : production +2 % (3 % au plus par poste).") { Focus = 0.02 },
+        new("docking_station", "Station d'accueil", FurnitureKind.Peripheral, 180m, "Sur un bureau avec un portable : production +2 % (3 % au plus par poste).") { Focus = 0.02 },
+        new("console_test_kit", "Kit de test console", FurnitureKind.Peripheral, 1_400m, "Sur un bureau : 15 % de défauts en moins à chaque amélioration d'un jeu."),
+        new("device_test_rack", "Banc d'appareils mobiles", FurnitureKind.Peripheral, 1_600m, "Sur un bureau : 15 % de défauts en moins à chaque amélioration d'une application."),
+        new("webcam", "Webcam", FurnitureKind.Meeting, 90m, "Sur un écran : réunions à distance, coordination +0,25 (petits supports, 1 au plus).") { Coordination = 0.25 },
+        new("speakerphone", "Pieuvre de conférence", FurnitureKind.Meeting, 260m, "Sur une table de réunion : coordination +0,25 (petits supports, 1 au plus).") { Coordination = 0.25 },
+        new("videoconf_bar", "Barre de visioconférence", FurnitureKind.Meeting, 900m, "Sur l'écran de présentation : une salle de visio, coordination +0,5.") { Coordination = 0.5 },
+        new("printer_mfp", "Imprimante multifonction", FurnitureKind.Meeting, 650m, "Documents et maquettes papier : coordination +0,25 (petits supports, 1 au plus). 0,05 kW.") { Coordination = 0.25, Power = 0.05 },
+        new("capture_device", "Boîtier de capture", FurnitureKind.Studio, 240m, "Sur un bureau : capture de démos et de jeux, compte comme la caméra du studio.") { UnlockNode = "studio" },
         new("workstation_compute", "Poste de calcul avancé", FurnitureKind.Tower, 3_900m, "Production ×1,05 ; apporte 12 unités de calcul au site. 0,4 kW. Demande un écran et un clavier.") { Output = 1.05, Compute = 12, Power = 0.4 },
     ];
 

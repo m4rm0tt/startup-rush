@@ -36,7 +36,10 @@ public class SitesTest
         Assert.That(cash - campaign.Ledger.Cash, Is.EqualTo(Campaign.OpeningCost(listing)));
         Assert.That(campaign.Ledger.DepositHeld, Is.EqualTo(listing.Deposit));
         Assert.That(RealEstate.Offers(campaign.Sites).Count(o => o.Listing.Id == "small"), Is.EqualTo(offers - 1), "une adresse de moins");
-        Assert.That(campaign.MonthlyFixedCosts - NewCampaign().MonthlyFixedCosts, Is.EqualTo(listing.Rent * 1.04m));
+        // Le loyer, plus l'électricité de l'équipement fourni avec le plan (imprimante multifonction du petit bureau, lot 7)
+        decimal energy = campaign.Infra().MonthlyEnergy - NewCampaign().Infra().MonthlyEnergy;
+        Assert.That(campaign.MonthlyFixedCosts - NewCampaign().MonthlyFixedCosts, Is.EqualTo(listing.Rent * 1.04m + energy));
+        Assert.That(energy, Is.LessThan(20m), "quelques francs d'électricité, pas plus");
 
         // Le mois suivant : un loyer pour ce site, aucun pour la chambre
         campaign.AdvanceDays(31);

@@ -21,6 +21,9 @@ public static class Layout
     public const double MaxPersonal = 1;
 
     public const double MaxScreenBonus = 0.06;
+
+    /// <summary>Périphériques d'un poste (casque, station d'accueil ; tablette graphique) : plafonds par poste.</summary>
+    public const double MaxPeripheralFocus = 0.03, MaxPeripheralQuality = 0.03;
     public const int MaxUsefulBookshelves = 2;
 
     /// <summary>Moral au plus des coins détente (canapés, fauteuils).</summary>
@@ -254,6 +257,17 @@ public static class Layout
     /// <summary>Gain des écrans en plus (grand écran, second écran), plafonné par poste.</summary>
     public static double ScreenBonus(Premises premises, Workstation post) =>
         Math.Min(MaxScreenBonus, premises.MonitorsOf(post).Sum(m => m.Def.ScreenBonus));
+
+    /// <summary>
+    /// Ce que les périphériques posés sur le bureau d'un poste apportent : production (casque ; station d'accueil seulement avec
+    /// un portable) et qualité (tablette graphique), chacun plafonné par poste.
+    /// </summary>
+    public static (double Focus, double Quality) Peripherals(Premises premises, Workstation post)
+    {
+        bool laptop = premises.ComputerOf(post)?.Def.Kind == FurnitureKind.Laptop;
+        var items = premises.Children(post.Desk).Where(c => c.Def.Kind == FurnitureKind.Peripheral && (c.Def.Id != "docking_station" || laptop)).ToList();
+        return (Math.Min(MaxPeripheralFocus, items.Sum(i => i.Def.Focus)), Math.Min(MaxPeripheralQuality, items.Sum(i => i.Def.Quality)));
+    }
 
     /// <summary>Personnes de plus par équipe sans perte de coordination (tableaux, planning, réunions, petits supports).</summary>
     public static int CoordinationBonus(Premises premises) => (int)Math.Floor(Comfort(premises, 1).Coordination);

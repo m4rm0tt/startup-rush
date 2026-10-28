@@ -188,7 +188,7 @@ public partial class Campaign
         var (site, post) = PostOf(person);
         if (post == null || site.ComputerOf(post)?.Def is not { } computer)
             return 0;
-        return computer.Output * (1 + Layout.ScreenBonus(site, post)) * (1 + SiteComfort(site).Focus);
+        return computer.Output * (1 + Layout.ScreenBonus(site, post)) * (1 + SiteComfort(site).Focus) * (1 + Layout.Peripherals(site, post).Focus);
     }
 
     public double WorkRate(Person person, Discipline discipline, int teamSize = 1, bool lead = false)
@@ -208,7 +208,8 @@ public partial class Campaign
     {
         var (site, post) = PostOf(person);
         var computer = post == null ? null : site.ComputerOf(post)?.Def;
-        double quality = 0.3 + person.Skill(discipline) * 0.006 + (computer?.Quality ?? 0) + (person.Morale - 50) / 1000
+        double quality = 0.3 + person.Skill(discipline) * 0.006 + (computer?.Quality ?? 0) + (post == null ? 0 : Layout.Peripherals(site, post).Quality)
+                         + (person.Morale - 50) / 1000
                          + (IsUnlocked("quality_lab") ? 0.05 : 0);
         if (person.Energy < 40)
             quality -= 0.1;

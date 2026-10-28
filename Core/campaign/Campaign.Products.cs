@@ -10,6 +10,11 @@ public partial class Campaign
 {
     public static readonly int[] ProjectColors = [17, 12, 9, 28, 10, 18, 13, 27];
 
+    /// <summary>Part des défauts retirée par un banc de test du pack (kit console, banc d'appareils mobiles).</summary>
+    public const double TestBenchCut = 0.15;
+
+    private bool HasAnywhere(string defId) => Sites.Any(s => s.Items.Any(i => i.DefId == defId));
+
     public bool TypeAvailable(string typeId) => ProductCatalog.Type(typeId).UnlockNode is not { } node || IsUnlocked(node);
 
     public (CommandResult Result, Product? Product) CreateProject(string name, string segmentId, RevenueModel model, decimal? price = null, IEnumerable<string>? starters = null)
@@ -186,6 +191,10 @@ public partial class Campaign
         // Les tests immersifs de la zone XR font disparaître une part des défauts d'un produit XR
         if (product.ArchetypeId == "xr_app")
             bugs *= 1 - BestXr().DefectCut;
+        // Bancs de test du pack : kit console pour les jeux, appareils mobiles pour les applications (un seul compte)
+        if (product.ArchetypeId == "game" && HasAnywhere("console_test_kit")
+            || product.ArchetypeId is "saas" or "social" or "marketplace" or "ai" && HasAnywhere("device_test_rack"))
+            bugs *= 1 - TestBenchCut;
         if (component.DefId is "ai_core" or "ai_feature")
             AutoLinkAi(product);
         product.Bugs += Math.Round(bugs, 1);

@@ -56,7 +56,8 @@ public partial class Campaign
 
     public StudioSummary StudioOf(Premises site)
     {
-        bool camera = Count(site, "camera_tripod") > 0, green = Count(site, "greenscreen_backdrop") > 0;
+        // Le boîtier de capture (démos, jeux) fait office de caméra
+        bool camera = Count(site, "camera_tripod") + Count(site, "capture_device") > 0, green = Count(site, "greenscreen_backdrop") > 0;
         int lights = Math.Min(2, Count(site, "softbox_light"));
         bool mic = Count(site, "mic_stand") > 0, monitors = Count(site, "studio_monitors") > 0;
         bool acoustic = Count(site, "partition_acoustic") > 0;

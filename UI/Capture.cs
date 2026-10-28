@@ -338,6 +338,68 @@ public static class Capture
         await Shot(window, folder, "33_materiel", report);
         later.ClosePanels();
 
+        // Lot 6 : une IA entraînée puis publiée, un studio, une zone XR et une installation quantique
+        advanced.Ledger.Cash += 6_000_000;
+        advanced.CheatUnlockAll();
+        void Place(string def)
+        {
+        {
+            if (advanced.FindSpot(FurnitureCatalog.Get(def)) is not var (px, py, pf))
+                report.Add($"Pas de place pour {def}");
+            else if (advanced.BuyAndPlace(def, px, py, pf) is { Ok: false } failed)
+                report.Add($"Pose de {def} refusée : {failed.Message}");
+        }
+        }
+        var aiModel = advanced.CreateAiModel("Assistant Léman", Core.ai.AiGoal.Assistant, "small").Model;
+        later.OpenRoot(new AiPanel());
+        await Shot(window, folder, "34_ia_nouveau_modele", report);
+        later.ClosePanels();
+        if (aiModel != null)
+        {
+            var training = advanced.StartAiTraining(aiModel.Id, "public", external: true);
+            later.OpenRoot(new AiPanel());
+            await Shot(window, folder, "35_ia_entrainement", report);
+            later.ClosePanels();
+            advanced.AdvanceDays(8);
+            Hud.ChallengeView.ShowEvaluation(later, aiModel.Id);
+            await Shot(window, folder, "36_ia_evaluation", report);
+            later.CloseModal();
+            var evaluation = advanced.EvaluationChallenge(aiModel.Id);
+            var evaluated = advanced.EvaluateAi(aiModel.Id, evaluation.Score(evaluation.Answer));
+            var published = advanced.PublishAi(aiModel.Id);
+            later.OpenRoot(new AiPanel());
+            await Shot(window, folder, "37_ia_publiee", report);
+            later.ClosePanels();
+            report.Add($"IA : entraînement {training.Ok}, évaluation {evaluated.Ok}, publication {published.Ok}, version en service {aiModel.Live?.Number}, qualité {Campaign.AiQualityFor(aiModel):0.00}.");
+        }
+        var labSite = advanced.RentSite("advanced_lab");
+        report.Add($"Laboratoire avancé loué : {labSite.Ok} {labSite.Message}");
+        foreach (string def in new[] { "desk_simple", "mic_stand", "camera_tripod", "greenscreen_backdrop", "softbox_light", "softbox_light", "partition_acoustic",
+                                       "xr_base_station", "xr_base_station", "xr_play_mat",
+                                       "power_distribution_cabinet", "crac_unit", "quantum_cryostat_closed", "quantum_control_rack", "cryo_support_unit" })
+            Place(def);
+        if (advanced.Premises.Items.FirstOrDefault(i => i.DefId == "desk_simple") is { } labDesk)
+            foreach (string def in new[] { "studio_monitors", "xr_headset_stand" })
+                if (advanced.BuyAndAttach(def, labDesk.Id) is { Ok: false } refused)
+                    report.Add($"Pose de {def} sur le bureau refusée : {refused.Message}");
+        advanced.AdvanceDays(1);
+        var studio = advanced.StudioOf(advanced.Premises);
+        var xr = advanced.XrOf(advanced.Premises);
+        report.Add($"Studio : score {studio.Score:0.00}, bonus {studio.Bonus:P0}, manque {string.Join(", ", studio.Missing)} ; XR : capacité {xr.Capacity:0.0}, défauts retirés {xr.DefectCut:P0}, manque {string.Join(", ", xr.Missing)} ; " +
+                   $"unités quantiques prises en charge {advanced.SiteInfra(advanced.Premises).QuantumUnits}.");
+        later.Scene.ResetCamera();
+        await Wait(0.5);
+        await Shot(window, folder, "38_scene_studio_xr", report);
+        later.OpenRoot(new LabPanel());
+        await Shot(window, folder, "39_laboratoire", report);
+        if (advanced.QuantumSites.FirstOrDefault() is { } quantum)
+        {
+            Hud.ChallengeView.ShowQuantum(later, quantum.SiteId);
+            await Shot(window, folder, "40_quantique_signaux", report);
+            later.CloseModal();
+        }
+        later.ClosePanels();
+
         // Faillite : trois embauches sans revenus
         var doomed = Campaign.New("Capture faillite", "Alex", "Studio Perdu", FounderProfile.Designer, 3);
         var reckless = new Autopilot(Strategies.All.First(s => s.Name == "recrutement_precoce"));

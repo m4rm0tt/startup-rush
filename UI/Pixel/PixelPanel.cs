@@ -130,7 +130,8 @@ public class PixelPanel : Decorator, Avalonia.Rendering.ICustomHitTest
         }
     }
 
-    private static void DrawNineSlice(DrawingContext context, Bitmap image, int[] slice, Size size, double unit)
+    /// <summary>Dessine une image 9-slice sur toute la taille donnée (aussi utilisé par les graphiques).</summary>
+    public static void DrawNineSlice(DrawingContext context, Bitmap image, int[] slice, Size size, double unit)
     {
         double w = image.PixelSize.Width;
         double h = image.PixelSize.Height;

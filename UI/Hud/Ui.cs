@@ -292,6 +292,19 @@ public static class Ui
         return Row(4, layered, Row(0, arrow, popover));
     }
 
+    /// <summary>Onglets du pack (hud_tabs) : l'actif, clair, déborde sur le contenu ; les autres restent en retrait.</summary>
+    public static Control Tabs<T>(IEnumerable<(T Value, string Label)> options, T current, Action<T> pick)
+    {
+        var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 2, Margin = new Thickness(0, 0, 0, -4) };
+        foreach (var (value, label) in options)
+        {
+            bool selected = EqualityComparer<T>.Default.Equals(value, current);
+            row.Children.Add(Button(label, () => pick(value), selected ? "tabs selected" : "tabs"));
+        }
+        // Le filet sous les onglets : l'onglet actif le recouvre
+        return new StackPanel { Children = { row, new Border { Height = 2, Background = Palette.Steel } } };
+    }
+
     /// <summary>Choix exclusif parmi quelques valeurs : contrôle segmenté du pack, le choisi en sarcelle.</summary>
     public static WrapPanel Choice<T>(IEnumerable<(T Value, string Label)> options, T current, Action<T> pick, bool enabled = true)
     {

@@ -61,6 +61,10 @@ public static class Capture
         if (window.Current is GameScreen game)
             game.ApplyScale();
         await Wait(0.4);
+        // Mise en page complète avant l'image : un panneau tout juste ouvert peut ne pas encore être disposé
+        window.UpdateLayout();
+        await Wait(0.2);
+        window.UpdateLayout();
         var size = window.ClientSize;
         using var bitmap = new RenderTargetBitmap(new PixelSize((int)size.Width, (int)size.Height), new Vector(96, 96));
         bitmap.Render(window);
@@ -163,6 +167,13 @@ public static class Capture
         game.PushPanel(new ProjectPanel(app.Id));
         await Shot(window, folder, "11_apercu_projet", report);
         game.ClosePanels();
+        // Courbes du projet (graphiques du pack), dans la section dépliable de l'aperçu
+        Hud.Ui.SetDetailsOpen("Détails : tendances, courbes, concurrents", true);
+        game.OpenRoot(new ProjectsPanel());
+        game.PushPanel(new ProjectPanel(app.Id));
+        await Shot(window, folder, "11b_courbes_projet", report);
+        game.ClosePanels();
+        Hud.Ui.SetDetailsOpen("Détails : tendances, courbes, concurrents", false);
 
         // Sauvegarde, rechargement : même état
         string state = SaveStore.SerializeState(campaign);

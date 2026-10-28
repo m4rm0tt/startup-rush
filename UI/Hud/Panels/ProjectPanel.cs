@@ -44,7 +44,7 @@ public class ProjectPanel(int productId) : GamePanel
         if (product == null)
             return Ui.Muted("Ce projet n'existe plus.");
         int problems = Reviews.Trends(product, Campaign.Minute, Campaign.IsUnlocked).Count(t => !t.Positive);
-        var tabs = Ui.Choice([(Tab.Overview, "Aperçu"), (Tab.Components, "Composants"), (Tab.Reviews, problems > 0 ? $"Avis ({problems})" : "Avis"), (Tab.Settings, "Réglages")], Current, t =>
+        var tabs = Ui.Tabs([(Tab.Overview, "Aperçu"), (Tab.Components, "Composants"), (Tab.Reviews, problems > 0 ? $"Avis ({problems})" : "Avis"), (Tab.Settings, "Réglages")], Current, t =>
         {
             Current = t;
             _highlight = null;

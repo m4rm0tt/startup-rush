@@ -41,7 +41,7 @@
 
 ```
 dotnet build StartupRush.sln
-dotnet test Tests/Tests.csproj                                   # 161 tests (lot 6 revu)
+dotnet test Tests/Tests.csproj                                   # 173 tests (lot 7 : finitions du local)
 dotnet test Tests/Tests.csproj --filter Name=WriteBalanceReport  # réécrit BALANCE_REPORT.md (bots, ~2 min)
 dotnet test Tests/Tests.csproj --filter Name=ProbeLong           # sonde quantique sur 36 mois (Probe : 18 mois, une stratégie)
 UI.exe --capture <dossier>                                       # parcours scripté dans le vrai jeu, 46 captures + rapport
@@ -200,7 +200,15 @@ lots de `docs/V1_ETAT.md`, et le §11 ci-dessous pour ce que le lot 6 laisse en 
   rangée horizontale ne revient pas à la ligne : utiliser une grille `Auto,*`. La capture journalise Avalonia dans
   `avalonia_trace.txt` (créé seulement s'il y a un avertissement).
 - Registre : ajouter les identifiants branchés dans `tools/registry_lot7.py` (« partiel » tant qu'il n'y a pas de test d'interface).
-- Suite et ordre conseillé : « Reste » de la section Lot 7 de `docs/V1_ETAT.md` (prochaine étape : finitions du local).
+- Suite et ordre conseillé : « Reste » de la section Lot 7 de `docs/V1_ETAT.md` (prochaine étape : modules de pièce,
+  `moving_box` et derniers morceaux de murs et de sols).
+- **Finitions du local** (fait) : format de sauvegarde **7**. Sols et motifs se lisent via `Finishes.FloorZones(site)` /
+  `Finishes.Pattern(site, mur)` (le local refait, sinon le plan), jamais directement dans le JSON du plan. Les motifs sont des
+  identifiants complets (`pattern_paint`) dans le moteur ; `RoomRenderer.PatternColors` ajoute les couleurs par défaut du motif
+  (sinon le lambris est invisible sur un mur sans canal « wood »). Un changement de finition passe par `InvalidateLayout` (les
+  caches de confort et d'infrastructure se recalculent) et par la signature de `SceneCanvas`.
+- Piège d'environnement : un hook (« GateGuard ») refuse la première modification de chaque fichier tant qu'on n'a pas listé ses
+  appelants ; il suffit de les présenter puis de recommencer.
 - Autres pièges vus : un bureau n'a que deux emplacements d'objets ; un portable exige de retirer écran et clavier ; le fondateur
   commence sur une tour. Les objets d'un plan du pack entrent dans le jeu dès qu'ils sont au catalogue (coûts d'énergie, effets).
   Heredoc bash avec apostrophes : écrire le script Python avec l'outil d'écriture de fichiers.

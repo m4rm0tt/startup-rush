@@ -295,22 +295,30 @@ Fait ensuite (même lot) :
   Le plan du petit bureau fournit une imprimante qui consomme désormais (test des sites mis à jour). 167 tests.
 - Registre : non implémentés 301 → 103 ; validés 110 → 124.
 
+Fait ensuite (même lot) : **finitions du local**. Format de sauvegarde **7**.
+- `RoomPlan` lit les zones de sol, les motifs et les couleurs des murs (`Core/space/Pack.cs`) ; `Premises.FloorMaterial` /
+  `WallPattern` (null : le plan) ; `Core/space/Finishes.cs` (catalogue de 9 sols et 8 habillages, prix par case ou par segment,
+  grille de sol effective, effets) ; commande `Campaign.SetFinish` (`Campaign.Finishes.cs`), payante, déblocage « Salle serveur »
+  pour le faux plancher.
+- Effets plafonnés : faux plancher +5 % du froid existant (+10 % avec dalles perforées), à proportion de la surface, sans créer de
+  froid (`Infrastructure.Of`) ; lambris +0,5 d'ambiance par mur dans le plafond de 6 (`Layout.Comfort`). Les plans livrés en
+  profitent : salle serveur et datacenter +10 % de froid, siège +0,5 d'ambiance.
+- Interface : section « Finitions » d'Aménagement, une pastille `hud_pattern_cell` par finition (vignette 18 × 18 rendue par
+  `PackLibrary.FinishTile`), confirmation avant les travaux ; le rendu du local lit les finitions (`RoomRenderer.Structure`) et la
+  scène se recompose quand elles changent. Captures 18d, 18e, 18f relues.
+- Tests : `Tests/space/FinishesTest.cs` (6) ; 173 tests. Registre : validés 124 → 141, non implémentés 103 → 96.
+
 Reste (dans l'ordre conseillé) :
-1. **Finitions du local** (conçu, pas commencé) : `RoomPlan` lit sols et motifs ; `Premises.FloorMaterial` / `WallPattern` ;
-   `Campaign.SetFinish` (payant, sauvegardé, format 7) ; effets plafonnés : lambris +1 d'ambiance, faux plancher : froid
-   existant mieux distribué (+5 %, +10 % avec dalles perforées ; multiplier `cooling` dans `Infrastructure.Of`, ligne ~150) ;
-   section Aménagement avec `hud_pattern_cell` ; rendu (`RoomRenderer.Structure`). Couvre `floor_vinyl`, `floor_raised(_vent)`,
-   `pattern_*` restants.
-2. Modules de pièce (6), `moving_box` (cartons du déménagement), `wall_corner_outer`, `wall_opening`, `floor_marking`, `floor_threshold`.
-3. Graphe de dépendances des composants (`link_*`, `port_*`) ; `comp_api`, `comp_storage`, `comp_game_menu` (trois nouveaux
+1. Modules de pièce (6), `moving_box` (cartons du déménagement), `wall_corner_outer`, `wall_opening`, `floor_marking`, `floor_threshold`.
+2. Graphe de dépendances des composants (`link_*`, `port_*`) ; `comp_api`, `comp_storage`, `comp_game_menu` (trois nouveaux
    composants à équilibrer et tester).
-4. HUD restants : liste déroulante, champ numérique et flèches, multiligne, recherche (catalogues), menu contextuel, jauge,
+3. HUD restants : liste déroulante, champ numérique et flèches, multiligne, recherche (catalogues), menu contextuel, jauge,
    bandeau, puce sombre, séparateurs, barre de titre, panneau secondaire, carte, barres de graphique, défilement horizontal,
    rayures ; icônes restantes ; `cursor_busy`, `cursor_resize_v/d1/d2` sans usage trouvé pour l'instant.
-5. Accessibilité, performance, migrations, build Release et dossier de sortie ; équilibrage du lot 6 (décision de l'utilisateur).
+4. Accessibilité, performance, migrations, build Release et dossier de sortie ; équilibrage du lot 6 (décision de l'utilisateur).
 
 ## Couverture du registre
 
-586 lignes : **110 validées**, 175 partielles (branchées sans test d'effet, ou vérifiées seulement en capture), 301 non
-implémentées (dont les décors des plans, affichés mais sans fonction pour l'instant). Lot 3 : `tools/registry_lot3.py` ;
+586 lignes : **141 validées**, 349 partielles (branchées sans test d'effet, ou vérifiées seulement en capture), 96 non
+implémentées (comptes de `tools/registry_lot7.py` après les finitions du local). Lot 3 : `tools/registry_lot3.py` ;
 lot 4 : `tools/registry_lot4.py` ; lot 5 : `tools/registry_lot5.py`. Une ligne passe à « validé » seulement quand elle nomme un consommateur réel dans le jeu, son fichier de définition et un scénario de test qui vérifie une conséquence (avant/après pour un objet de gameplay, action et état pour un contrôle d'interface). Le contrôle `AssetRegistryTest` est statique : il vérifie les IDs et les fichiers cités, pas les effets.

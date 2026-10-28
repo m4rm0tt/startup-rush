@@ -112,6 +112,21 @@ Les objets muraux se posent sur les murs du fond (un mur plein ; les stores sur 
 luminaire au plafond ; ni l'un ni l'autre ne prend de case au sol. Le trophée (premier lancement) et la plaque (10 000 CHF par
 mois) arrivent dans les cartons et ne se revendent pas.
 
+**Finitions** (lot 7, `Core/space/Finishes.cs`, Aménagement › Finitions) : un local porte les sols et les motifs muraux de son
+plan. On peut refaire **tout le sol** (prix ⚙️ par case : béton ciré 20, vinyle 25, moquette 30, dalles de moquette 35,
+carrelage 45, lames 50, parquet 60, faux plancher 120, faux plancher perforé 160) ou **habiller les deux murs du fond** (prix ⚙️
+par segment : peinture 40, papier peint 60, deux tons 70, bandes 70, béton banché 80, brique 110, lambris 140, panneaux
+acoustiques 160). Les travaux restent au local ; un déménagement repart du plan du nouveau local. Effets, plafonnés :
+
+| Finition | Effet ⚙️ |
+|---|---|
+| Faux plancher (nœud « Salle serveur ») | froid du site +5 % (perforé : +10 %), à proportion de la surface couverte ; il ne crée pas de froid (0 reste 0) |
+| Lambris | +0,5 d'ambiance par mur, dans le plafond d'ambiance de 6 |
+| Les autres | décoratives : l'identité du local |
+
+La salle serveur et le datacenter sont livrés avec un faux plancher perforé (+10 % de froid), le laboratoire avancé avec un quart
+de faux plancher (+1,25 %), le siège avec un mur en lambris (+0,5 d'ambiance).
+
 ## 4 ter. Sites, infrastructure et cloud
 
 ✅ Une seule entreprise, plusieurs sites. Le premier est le siège. On ouvre un site de plus (nœud « Plusieurs sites »), on

@@ -99,6 +99,22 @@ for icon in ["icon_success", "icon_warning", "icon_error"]:
     updates[icon] = row("Journal et notifications : sens d'un événement (succès, attention, problème)", "gravité lisible sans la couleur",
                         "UI/Hud/Panels/NoticesPanel.cs;" + SCREEN, "17b, 30")
 
+# Icônes des boutons (règle commune de Ui.Button : le libellé donne l'icône) et des chiffres clés (Ui.Stat)
+BUTTONS = "UI/Hud/Ui.cs (ButtonIcons)"
+for icon, what in {"icon_save": "Sauvegarder", "icon_load": "Charger une partie", "icon_nav_menu": "Menu principal", "icon_cancel": "Annuler, Refuser",
+                   "icon_confirm": "Valider", "icon_recruit": "Recruter", "icon_training": "Former, Entraîner un modèle", "icon_unlock": "Débloquer un nœud",
+                   "icon_delete": "Licencier, Jeter une version", "icon_edit": "Renommer", "icon_loan": "Emprunter ; poste Remboursements",
+                   "icon_debt": "Plan de redressement", "icon_publish": "Lancer un projet", "icon_rotate": "Tourner un objet", "icon_move": "Déplacer un objet",
+                   "icon_packaging": "Ranger dans les cartons", "icon_place": "Poser", "icon_eye": "Fiche, Voir, Ouvrir la fiche",
+                   "icon_manufacturing": "Production et stocks", "icon_stock": "Stock cible", "icon_storage": "Réserves d'un ordre",
+                   "icon_refresh": "Essayer de récupérer une sauvegarde", "icon_team": "Déléguer", "icon_statistics": "Évaluer un modèle",
+                   "icon_version": "Améliorer un composant", "icon_minus": "boutons −", "icon_chevron_left": "ordre des projets (plus prioritaire)",
+                   "icon_chevron_up": "remonter"}.items():
+    updates[icon] = row("Boutons : " + what, "action du bouton, même pictogramme partout", BUTTONS, "13, 16, 19, 22, 34 (même règle pour tous les boutons)")
+for icon, what in {"icon_income": "Revenus ; revenus par projet", "icon_expense": "Dépenses", "icon_profit": "Résultat, Chaque mois", "icon_cpu": "Calcul (CPU)",
+                   "icon_gpu": "GPU des sites", "icon_sell": "Ventes au total", "icon_salary": "poste Salaires", "icon_server": "poste Serveurs"}.items():
+    updates[icon] = row("Chiffres clés et postes de dépense : " + what, "nature du chiffre", "UI/Hud/Ui.cs (StatIcons);UI/Hud/Panels/FinancePanel.cs", "16, 34")
+
 # Icônes de l'interface
 for i, where in {"icon_pause": "bouton pause", "icon_speed_1": "vitesse 1", "icon_speed_2": "vitesse 2", "icon_speed_3": "vitesses 3 et 4 (avec le chiffre)",
                  "icon_bell": "journal / « À traiter »", "icon_settings": "menu et réglages", "icon_back": "retour d'un panneau", "icon_close": "fermer",

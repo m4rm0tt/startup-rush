@@ -190,6 +190,20 @@ Stocks et achats ⚙️ : stock par site (40 + rack 150, palette 40, bac 10, ét
 après le délai du fournisseur. Les réserves automatiques recommandent jusqu'à leur niveau (stock + en route), sous un plafond par
 mois civil ; la matière la plus en manque d'abord, chacune limitée à sa part de la place.
 
+## 4 quinquies. IA, studio, XR et quantique
+
+Détail et limites : `docs/V1_ETAT.md`, « Lot 6 ». En bref :
+
+- **Modèle d'IA** : objectif + taille + jeu de données → qualité = plafond de la taille × (0,4 + 0,6 × qualité des données) × adéquation à
+  l'objectif (un petit modèle spécialisé bat un gros modèle mal nourri). Entraînement : 600 / 2 400 / 9 000 points ; un GPU en fournit 20
+  par nuit, la location 150 par jour à 0,50 CHF. Évaluation : jusqu'à 0,08 de qualité retrouvée. La version en service reste jusqu'à la
+  publication de la suivante.
+- **Inférence** : un produit d'IA charge le GPU selon la taille du modèle (0,5 / 1,5 / 5 pour 1 000 utilisateurs) ; l'audience servie est
+  plafonnée par la capacité (interne d'abord, puis location sous plafond). Ordre de la nuit : hébergement, inférence, entraînement, offres cloud.
+- **Studio** : +30 % de qualité du contenu et +15 % de portée marketing au plus ; **zone XR** : jusqu'à −60 % de défauts d'un produit XR.
+- **Quantique** : un cryostat fermé avec sa baie de contrôle et son support cryogénique, 14 jours de mise en route si le froid et l'énergie
+  suivent, 20 unités vendables ; +25 % seulement sur les recherches de calcul intensif.
+
 ## 5. Automatismes
 
 | Ce qui est automatique | Règle | Ce que le joueur règle |

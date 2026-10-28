@@ -41,8 +41,8 @@ Ce fichier sert à reprendre le travail : il dit ce qui existe vraiment dans le 
 | Personnages en couches, coiffures, peaux | **fait (lot 2)** | `Core/team/Person.cs` (`Appearance`), `UI/Iso/Portraits.cs`, choix à la nouvelle campagne | Recoloration des tenues |
 | Matériel, usine, stocks, approvisionnement, canaux de vente | **fait (lot 5)** | `Core/industry/Industry.cs`, `Core/campaign/Campaign.Industry.cs`, familles matérielles de `ProductCatalog.cs`, `UI/Hud/Panels/IndustryPanel.cs` | Kits XR (lot 6) ; transferts de stock entre sites ; rentabilité (lot 7) |
 | Infrastructure interne, racks, énergie, refroidissement, offres cloud | **fait (lot 4)** | `Core/space/Infrastructure.cs`, `Core/campaign/Campaign.Infra.cs`, `Core/campaign/Campaign.Cloud.cs`, `UI/Hud/Panels/CloudPanel.cs` | Usage du calcul et des GPU par l'IA et la recherche (lots 5 et 6) ; quantique (lot 6) |
-| IA simulée | absent | — | Lot 6 |
-| Recherche, laboratoires, studio, XR, quantique | **recherche et labos faits (lot 5)** | `Core/campaign/Campaign.Research.cs`, `UI/Hud/Panels/ResearchPanel.cs` | Studio, XR, quantique (lot 6) |
+| IA simulée | **fait (lot 6)** | `Core/ai/AiCatalog.cs`, `Core/campaign/Campaign.Ai.cs`, `UI/Hud/Panels/AiPanel.cs`, `UI/Hud/ChallengeView.cs` | Équilibrage de la rentabilité (lot 7) |
+| Recherche, laboratoires, studio, XR, quantique | **fait (lots 5 et 6)** | `Core/campaign/Campaign.Research.cs`, `Core/campaign/Campaign.Lab.cs`, `UI/Hud/Panels/LabPanel.cs` | Équilibrage, captures du lot 6 (lot 7) |
 | Bots d'équilibrage et rapport | partiel | `Core/bots/`, `Tests/balance/` (terminal, délégation, mots tapés mesurés) | Nouvelles branches (lots 4 à 6) |
 | Captures du vrai jeu | fait | `UI/Capture.cs` (`--capture`) | Refaire après chaque lot visuel |
 
@@ -57,7 +57,7 @@ Le pack fournit un compositeur C# de référence (`assets/StartupRushOriginalAss
 | 3 | Employés automatiques, délégation, mini-jeux sans spam, arbre et confort utiles | **fait**, voir « Lot 3 » (mini-jeux matériel, IA et quantique avec les lots 5 et 6) |
 | 4 | Multisite, réseau, racks, hébergement interne et externe, offres cloud | **fait**, voir « Lot 4 » |
 | 5 | Recherche, prototypage, gamme matérielle, flux d'usine, stocks, approvisionnement, canaux de vente | **fait**, voir « Lot 5 » |
-| 6 | IA simulées, studio, XR, calcul avancé et quantique | à faire |
+| 6 | IA simulées, studio, XR, calcul avancé et quantique | **fait**, voir « Lot 6 » (captures du vrai jeu et bot d'équilibrage restent à faire) |
 | 7 | Couverture de tous les IDs, équilibrage, performance, accessibilité, migrations, candidat de sortie | à faire |
 
 ## Lot 2 : ce qui a été fait
@@ -204,8 +204,52 @@ Limites et suite :
 - Le fondateur ne prépare pas la recherche au terminal (prévu par la spécification, pas fait).
 - Les objets studio, XR, quantique et le calcul avancé du plan de laboratoire restent pour le lot 6.
 
+## Lot 6 : ce qui a été fait, ce qui reste
+
+Testé par `Tests/lab/Lot6Test.cs` (33 tests). **Pas encore vu dans le vrai jeu** : le parcours `--capture` n'a pas été étendu aux
+nouveaux écrans (panneau IA, panneau Studio/XR/quantique, deux mini-jeux), et l'interface n'a été que compilée.
+
+- **IA** (`Core/ai/AiCatalog.cs`, `Core/campaign/Campaign.Ai.cs`) : un modèle = objectif (assistant, génération, analyse, API) + taille
+  (petit, moyen, grand ; les deux derniers demandent les recherches « Apprentissage automatique » et « Grands modèles »). On
+  l'entraîne avec un jeu de données (public, acheté, curé) sur tes GPU (part réglable, `TrainingShare`) ou en calcul loué
+  (0,50 CHF le point, 150 points par jour au plus). Version entraînée → évaluation (mini-jeu « associer échantillons et résultats »,
+  `EvaluationChallenge`, jusqu'à 0,08 de qualité retrouvée, ou délégation) → publication. **La version en service continue de
+  servir tant que la suivante n'est pas publiée.** Qualité = plafond de la taille × données × adéquation à l'objectif : un petit
+  modèle spécialisé sur de bonnes données bat un gros modèle sur des données médiocres (testé).
+- **Produits d'IA** : nouveau type `ai` (4 publics) dont le composant `ai_core` prend la qualité du modèle publié ; composant
+  `ai_feature` pour les autres applications (une part de la charge). Le modèle se branche (`SetProductAiModel`, automatique au premier
+  composant d'IA). **Inférence** : chaque nuit (`AllocateAi`), après l'hébergement et avant les offres cloud, les produits prennent du
+  GPU (avec 25 % de marge), puis l'entraînement ; ce qui manque se loue sous un plafond mensuel (60 CHF l'unité). La capacité plafonne
+  l'audience servie (`Market.Step`, `AiService`), les avis blâment la lenteur (cause `ai_capacity`, lien `ai`). Aucune vente interne
+  n'est comptée.
+- **Studio** (`Campaign.Lab.cs`, `StudioOf`) : caméra, fond vert, 2 éclairages, micro, enceintes, séparation acoustique ; score vidéo/audio,
+  moitié si personne ne travaille sur le site. Effet plafonné : +30 % de qualité des composants graphics/audio/content/immersion
+  (`Design.StudioBoosted`) et +15 % de portée marketing. Le meilleur studio compte, pas la somme.
+- **Zone XR** (`XrOf`) : casque seul = 40 % (prototype), + 2 balises + tapis + quelqu'un sur place = 100 %. Retire jusqu'à 60 % des
+  défauts à chaque amélioration d'une application XR, et 40 % des pannes de série d'un kit XR. Nouveaux types `xr_app` (public XR) et
+  `xr_kit` (matériel, recherche « Suivi immersif »).
+- **Laboratoire avancé et quantique** : local `advanced_lab` (nœud « Recherches avancées »), calculateur avancé (120 unités de calcul),
+  cryostat ouvert (équipement de recherche) et fermé (installation stabilisée, après la recherche « Calibration cryogénique »), baie de
+  contrôle et support cryogénique (un de chaque par cryostat), terminal de supervision. Un cryostat fermé pris en charge démarre
+  après 14 jours de mise en route, seulement si le froid et l'énergie du site suivent (`RunQuantum`) ; le mini-jeu « signaux » la
+  raccourcit de moitié au mieux, une fois (`QuantumChallenge`, `StabilizeQuantum`). Fournit 20 unités quantiques, vendues par l'offre
+  `CloudKind.Quantum` (nœud « Service quantique »). Le quantique n'accélère que les recherches de calcul intensif (+25 %, `ResearchDef.Quantum`).
+  Type `quantum` (matériel de fin de progression, recherche « Systèmes quantiques »).
+- **Format 6** : rien à convertir (données ajoutées), copie `.v5.json` gardée.
+- **Arbre** : `studio`, `xr`, `ai_models`, `advanced_lab`, `quantum_offers`. Recherches : `res_ml`, `res_data`, `res_ml_large`, `res_xr`,
+  `res_cryo`, `res_qsystems`.
+
+Limites et suite (à faire au lot 7) :
+- **Équilibrage non mesuré** : aucun bot ne joue encore l'IA, le studio, la XR ou le quantique ; `BALANCE_REPORT.md` date du lot 5. Les
+  prix (cryostat 380 000 CHF, offre quantique 900 CHF l'unité, location d'inférence 60 CHF) sont des premiers réglages sans mesure.
+- **Pas de captures** : étendre `UI/Capture.cs` (IA entraînée et publiée, évaluation, panneau Studio/XR/quantique, mise en route
+  quantique) puis relire les images ; vérifier la mise en page des deux panneaux et des deux mini-jeux.
+- Le fondateur ne prépare toujours pas la recherche au terminal. Pas de transferts de stock entre sites. `moving_box` sans fonction.
+- Le studio ne demande pas d'employé précis (« quelqu'un sur le site » suffit) ; les motifs muraux (`pattern_acoustic`) ne sont pas posables.
+- Les icônes `icon_gpu`, `icon_server`, `icon_training` sont mappées (`Icons.cs`) mais pas encore utilisées.
+
 ## Couverture du registre
 
-586 lignes : **98 validées**, 169 partielles (branchées sans test d'effet, ou vérifiées seulement en capture), 319 non
+586 lignes : **110 validées**, 175 partielles (branchées sans test d'effet, ou vérifiées seulement en capture), 301 non
 implémentées (dont les décors des plans, affichés mais sans fonction pour l'instant). Lot 3 : `tools/registry_lot3.py` ;
 lot 4 : `tools/registry_lot4.py` ; lot 5 : `tools/registry_lot5.py`. Une ligne passe à « validé » seulement quand elle nomme un consommateur réel dans le jeu, son fichier de définition et un scénario de test qui vérifie une conséquence (avant/après pour un objet de gameplay, action et état pour un contrôle d'interface). Le contrôle `AssetRegistryTest` est statique : il vérifie les IDs et les fichiers cités, pas les effets.

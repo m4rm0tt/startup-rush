@@ -27,7 +27,7 @@
 
 - Commits **au nom de l'utilisateur**, sans toucher à sa config git :
   `git -c user.name="m4rm0tt" -c user.email="esteban.madrazo-bb@proton.me" commit ...`
-  avec la ligne `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>` à la fin du message.
+  avec la ligne `Co-Authored-By` demandée par la session en cours à la fin du message. Identité confirmée par l'utilisateur : `m4rm0tt` / `esteban.madrazo-bb@proton.me` (réglée dans la config **locale** du dépôt).
 - Branche de travail : `new-assets` (remote `origin` = github.com/m4rm0tt/startup-rush). Pousser avec `git push`.
   Pas de force push, pas de fusion automatique.
 - Séparer dans les commits le code, l'équilibrage mesuré et la documentation.
@@ -41,7 +41,7 @@
 
 ```
 dotnet build StartupRush.sln
-dotnet test Tests/Tests.csproj                                   # 126 tests à la fin du lot 5
+dotnet test Tests/Tests.csproj                                   # 160 tests à la fin du lot 6
 dotnet test Tests/Tests.csproj --filter Name=WriteBalanceReport  # réécrit BALANCE_REPORT.md (bots, ~1 min)
 UI.exe --capture <dossier>                                       # parcours scripté dans le vrai jeu, 37 captures + rapport
 ```
@@ -103,13 +103,15 @@ Pièges connus :
 - `tools/build_asset_registry.py` ajoute les nouveaux IDs sans écraser ; `tools/registry_lot2.py` montre comment marquer
   ce qui a été branché. `Tests/space/AssetRegistryTest.cs` vérifie les IDs et que chaque ligne validée cite des fichiers
   existants (contrôle **statique**, à présenter comme tel).
+- À la fin du lot 6 : 110 validées, 175 partielles, 301 non implémentées (`tools/registry_lot6.py`).
 - À la fin du lot 2 : 36 validées, 96 partielles, 454 non implémentées. À la fin du lot 3 : 59 validées, 124 partielles,
   403 non implémentées (`tools/registry_lot3.py`). À la fin du lot 4 : 77 validées, 142 partielles, 367 non implémentées
   (`tools/registry_lot4.py`). À la fin du lot 5 : 98 validées, 169 partielles, 319 non implémentées (`tools/registry_lot5.py`).
 
 ## 7. Où on en est
 
-Voir le tableau des lots de `docs/V1_ETAT.md` et la section « Lot 3 » ci-dessous (complétée par le dernier modèle).
+Lots 1 à 6 faits ; reste le **lot 7** (couverture, équilibrage, performance, accessibilité, candidat de sortie). Voir le tableau des
+lots de `docs/V1_ETAT.md`, et le §11 ci-dessous pour ce que le lot 6 laisse en suspens (captures, équilibrage).
 
 ## 8. Lot 3 et la suite
 
@@ -150,9 +152,32 @@ Voir le tableau des lots de `docs/V1_ETAT.md` et la section « Lot 3 » ci-desso
 - Ordre conseillé ensuite : lot 6 (IA simulées sur le calcul/GPU du lot 4 et les stations GPU, studio audiovisuel, zone XR et kits
   XR, calcul avancé et quantique dans le laboratoire avancé, mini-jeux IA et quantique ; format 6), puis lot 7 (couverture,
   équilibrage dont la rentabilité du matériel et de la salle serveur, performance, accessibilité, candidat de sortie).
-- Points à vérifier signalés au lot 2 (toujours ouverts) : personnages assis moins nombreux que les postes sur la capture de
+- (Ordre conseillé écrit avant le lot 6, aujourd'hui fait.) Points à vérifier signalés au lot 2 (toujours ouverts) : personnages assis moins nombreux que les postes sur la capture de
   la campagne avancée ; police pixel floue à certaines tailles ; « marketing excessif » trop peu puni (2/5 faillites).
 - Piège d'outillage : certains heredocs bash avec des apostrophes françaises échouent (« unexpected EOF ») ; écrire les scripts
   de modification dans un fichier .py du dossier temporaire (remplacements exacts, une occurrence) plutôt qu'en ligne.
 - Avant chaque commit : `dotnet test Tests/Tests.csproj`, le parcours `--capture` pour tout changement visible, mise à jour
   de `docs/V1_ETAT.md`, du registre si des assets gagnent une fonction, et de cette passation.
+
+## 11. Lot 6 et la suite
+
+- Lot 6 fait : voir « Lot 6 » dans `docs/V1_ETAT.md`. Format de sauvegarde **6**. 160 tests passent (`Tests/lab/Lot6Test.cs` : 33).
+- **IA** : `Core/ai/AiCatalog.cs` (bases, jeux de données, objectifs, formule de qualité, entités sauvegardées `AiModel`, `AiVersion`,
+  `AiTraining`) et `Campaign.Ai.cs` (commandes `CreateAiModel`, `StartAiTraining`, `EvaluateAi`, `PublishAi`, `SetProductAiModel`,
+  `SetInference` ; répartition de la nuit `AllocateAi`, appelée par `RunInfrastructure` **avant** `AllocateCloud` : `AiGpuUsed` et
+  `AiComputeUsed` sont déduits de `CloudCapacity`). Un produit d'IA a `Product.AiModelId` ; `RefreshAiComponents` recopie la qualité du
+  modèle dans les composants `ai_core` / `ai_feature` chaque nuit. `Market.Step` lit `DayInputs.Ai` (`AiService`).
+- **Studio, XR, quantique** : `Campaign.Lab.cs` (`StudioOf`, `XrOf`, `QuantumSites`, `RunQuantum`, `RunStudio`). Le bonus studio passe par
+  `Product.StudioBonus` (écrit chaque nuit, lu par `Design.Coverage` et `Market.Reach`). `Infrastructure.Of` calcule les unités quantiques
+  prises en charge (`QuantumUnits`) ; `Campaign.Infra()` n'en compte que les installations mises en route.
+- **Mini-jeux** : `LaunchChallenge` a de nouveaux genres, `match` (évaluation) et `signals` (quantique), avec `Options` et `Start` ;
+  l'interface est dans `UI/Hud/ChallengeView.cs`. Panneaux : `UI/Hud/Panels/AiPanel.cs`, `LabPanel.cs` ; entrées par l'arbre, la fiche
+  d'un projet, le portefeuille et `GameScreen.Navigate` (cibles `ai`, `lab`).
+- **Pièges** : un nœud d'arbre OU une recherche peut débloquer un objet (`UnlockNode = "res_cryo"`) : ne jamais appeler `DevTree.Node(...)`
+  sur ce champ, passer par `Campaign.UnlockName(id)`. `short` est un mot réservé C# (nom de variable de test). Le champ
+  `ResearchDef.Quantum` est une propriété `init`, pas un paramètre positionnel.
+- **À faire en premier au prochain lot** (rien de ceci n'a été fait) :
+  1. étendre `UI/Capture.cs` aux écrans du lot 6 et **regarder les images** : l'interface du lot 6 n'a été que compilée ;
+  2. ajouter des bots (stratégies « ia », « studio_xr », « quantique ») à `Core/bots/` et régénérer `BALANCE_REPORT.md` : prix et
+     rentabilité du lot 6 ne sont pas mesurés ;
+  3. (README, DESIGN_SIMULATION §4 quinquies et SAVES sont déjà à jour pour le lot 6.)

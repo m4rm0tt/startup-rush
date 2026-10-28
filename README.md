@@ -73,5 +73,5 @@ Documents : [DESIGN_SIMULATION.md](DESIGN_SIMULATION.md), [SAVES.md](SAVES.md), 
 - **Testé seulement sur Windows 11 x64**, avec une mise à l'échelle de 100 %.
 - **Équilibrage mesuré par des bots** (voir VALIDATION.md). Le plaisir de jeu n'a pas été validé par des humains.
 - **Sons non écoutés** : ils se chargent et se déclenchent (vérifié), mais je ne les ai pas validés à l'oreille.
-- **V1 en cours** (voir [docs/V1_ETAT.md](docs/V1_ETAT.md)) : lots 1 et 2 faits (pack original, vue isométrique, HUD « Papier », terminal du fondateur). Pas encore de mini-jeux ni de délégation, un seul site, pas de matériel, d'usine, de datacenter, d'IA ni de recherche.
+- **V1 en cours** (voir [docs/V1_ETAT.md](docs/V1_ETAT.md)) : lots 1 à 6 faits (isométrique, terminal, délégation, multisite et cloud, recherche, matériel et usine, IA, studio, XR, quantique). Reste le lot 7 : équilibrage mesuré, performance, accessibilité, version de sortie. Les écrans du lot 6 n'ont pas encore été vérifiés dans le vrai jeu.
 - La police pixel est un peu floue à certaines tailles de texte.

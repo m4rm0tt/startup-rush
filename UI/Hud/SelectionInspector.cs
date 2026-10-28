@@ -122,7 +122,7 @@ public static class SelectionInspector
     private static Control Person(GameScreen screen, Campaign campaign, Person person)
     {
         var column = Ui.Column(6,
-            Ui.Row(Ui.Image(Portraits.Of(person.Appearance), 64, 64),
+            Ui.Row(Ui.Portrait(Portraits.Of(person.Appearance)),
                 Ui.Column(2, Ui.Title(person.Name, 18), Ui.Muted(person.Title, 13))),
             Ui.Text(string.IsNullOrEmpty(person.Status) ? ActivityText(person) : person.Status, 14, Palette.Cloud),
             Ui.Row(Ui.Muted("Énergie", 13), Ui.Bar(person.Energy / 100, person.Energy < 35 ? Palette.Ember : Palette.Leaf, 8, 90),

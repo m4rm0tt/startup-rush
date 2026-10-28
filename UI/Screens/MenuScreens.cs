@@ -166,18 +166,26 @@ public class NewCampaignScreen : MenuScreen
             Ui.Choice(profiles, _profile, p => { _profile = p; _touched = true; Build(); }),
             Ui.Muted(profileText),
             Ui.Text("Ton apparence (sans effet sur le jeu)", 14, Palette.Fog),
-            Ui.Row(12, Ui.Image(UI.Iso.Portraits.Of(_look), 64, 64), Ui.Column(4,
+            Ui.Row(12, Ui.Portrait(UI.Iso.Portraits.Of(_look)), Ui.Column(4,
                 Ui.Choice(new[] { ("player_m", "Présentation masculine"), ("player_f", "Présentation féminine") }, _look.Base, b => { _look.Base = b; Build(); }),
                 Ui.Choice(Core.team.Appearance.Hairs.Select(h => (h, HairName(h))), _look.Hair, h => { _look.Hair = h; Build(); }),
-                Ui.Row(6,
-                    Ui.Choice(Core.team.Appearance.HairRamps.Select(r => (r, RampName(r))), _look.HairRamp, r => { _look.HairRamp = r; Build(); }),
-                    Ui.Choice(Core.team.Appearance.Skins.Select((k, i) => (k, $"Peau {i + 1}")), _look.Skin, k => { _look.Skin = k; Build(); })))),
+                // Couleurs des cheveux et de la peau : cases de couleur du pack, nommées en infobulle
+                Swatches(Core.team.Appearance.HairRamps, _look.HairRamp, RampName, r => { _look.HairRamp = r; Build(); }),
+                Swatches(Core.team.Appearance.Skins, _look.Skin, k => $"Peau {Array.IndexOf(Core.team.Appearance.Skins, k) + 1}", k => { _look.Skin = k; Build(); }))),
             Ui.Text("Nom de la campagne (facultatif)", 14, Palette.Fog),
             Ui.Input(_campaign, v => { _campaign = v; _touched = true; }),
             Ui.Text("Graine (facultatif, pour rejouer exactement la même partie)", 14, Palette.Fog),
             Ui.Input(_seed, v => { _seed = v; _touched = true; }, "aléatoire"),
             Ui.Row(Ui.Button("Commencer", Start, "gold"), Ui.Button("Retour", Back)));
         Content = Frame(form, 560);
+    }
+
+    private static Control Swatches(string[] ramps, string current, Func<string, string> name, Action<string> pick)
+    {
+        var row = new StackPanel { Orientation = Orientation.Horizontal };
+        foreach (string ramp in ramps)
+            row.Children.Add(Ui.Swatch(UI.Iso.PackLibrary.RampColor(ramp), ramp == current, () => pick(ramp), name(ramp)));
+        return row;
     }
 
     private static string HairName(string id) => id switch

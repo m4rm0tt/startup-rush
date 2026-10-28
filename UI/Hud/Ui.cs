@@ -292,6 +292,38 @@ public static class Ui
         return Row(4, layered, Row(0, arrow, popover));
     }
 
+    /// <summary>Case de couleur du pack (hud_swatch_cell) : la couleur peinte sous le cadre, survol et sélection du cadre.</summary>
+    public static Button Swatch(Color color, bool selected, Action pick, string tip)
+    {
+        var frame = Image(PackSkins.Sprite("hud_swatch_cell", selected ? "selected" : "normal"), 36, 36);
+        var fill = new Border { Background = new SolidColorBrush(color), Width = 20, Height = 20, Margin = new Thickness(8), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+        var button = new Button { Content = new Panel { Width = 36, Height = 36, Children = { fill, frame } }, Padding = new Thickness(0), Margin = new Thickness(0, 0, 4, 0) };
+        button.Classes.Add("plain");
+        if (!selected)
+        {
+            button.PointerEntered += (_, _) => frame.Source = PackSkins.Sprite("hud_swatch_cell", "hover");
+            button.PointerExited += (_, _) => frame.Source = PackSkins.Sprite("hud_swatch_cell", "normal");
+        }
+        button.Click += (_, _) =>
+        {
+            Sfx.Play(Sound.Select);
+            pick();
+        };
+        ToolTip.SetTip(button, tip);
+        return button;
+    }
+
+    /// <summary>Un portrait dans son cadre du pack (hud_portrait_frame) : le visage dessous, la fenêtre de 32 px par-dessus.</summary>
+    public static Control Portrait(IImage portrait, bool selected = false) => new Panel
+    {
+        Width = 76, Height = 76,
+        Children =
+        {
+            new Border { Margin = new Thickness(6), Child = Image(portrait, 64, 64) },
+            Image(PackSkins.Sprite("hud_portrait_frame", selected ? "selected" : "normal"), 76, 76),
+        },
+    };
+
     /// <summary>Onglets du pack (hud_tabs) : l'actif, clair, déborde sur le contenu ; les autres restent en retrait.</summary>
     public static Control Tabs<T>(IEnumerable<(T Value, string Label)> options, T current, Action<T> pick)
     {

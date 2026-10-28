@@ -68,7 +68,7 @@ public class TeamPanel : GamePanel
         {
             var p = candidate.Person;
             var row = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto") };
-            row.Children.Add(Ui.Image(Portraits.Of(p.Appearance), 48, 48));
+            row.Children.Add(Ui.Portrait(Portraits.Of(p.Appearance)));
             var info = Ui.Column(0, Ui.Text($"{p.Name} · {p.Title}", 14, Palette.Snow, bold: true),
                 Ui.Muted($"{p.Salary:N0} CHF/mois{(candidate.NoticeWorkdays > 0 ? $" · arrive dans {candidate.NoticeWorkdays} j" : "")}", 12));
             info.Margin = new Thickness(8, 0);
@@ -100,7 +100,7 @@ public class TeamPanel : GamePanel
     {
         string state = Campaign.OnVacation(person) ? "En congé" : person.TrainingDiscipline != null ? "En formation" : person.StartsAt > Campaign.Minute ? $"Arrive le {GameTime.FormatDate(person.StartsAt)}" : "";
         var header = Ui.Row(10,
-            Ui.Image(Portraits.Of(person.Appearance), 64, 64),
+            Ui.Portrait(Portraits.Of(person.Appearance)),
             Ui.Column(2,
                 Ui.Row(6, Ui.Text(person.Name, 16, Palette.Snow, bold: true, wrap: false), state != "" ? Ui.Tag(state, Palette.Sky) : null,
                     person.LeavesAt != null ? Ui.Tag("Veut partir", Palette.Blood) : null),

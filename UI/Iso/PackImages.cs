@@ -333,6 +333,15 @@ public static class PackLibrary
         return (a[0].GetInt32(), a[1].GetInt32());
     }
 
+    /// <summary>La nuance représentative d'une rampe de la palette (celle du milieu), pour les cases de couleur.</summary>
+    public static Avalonia.Media.Color RampColor(string ramp)
+    {
+        EnsureLoaded();
+        var shades = Ramps[ramp];
+        var c = shades[shades.Length / 2];
+        return Avalonia.Media.Color.FromRgb(c[0], c[1], c[2]);
+    }
+
     /// <summary>Le fichier d'un composant d'interface dans un état (« hover », « on_normal »…), ou son fichier unique.</summary>
     public static string StateFile(JsonElement asset, string? state)
     {

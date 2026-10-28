@@ -20,6 +20,10 @@ public partial class Campaign
             return (CommandResult.Fail($"{type.Name} : à débloquer dans Développement."), null);
         if (!type.Models.Contains(model))
             model = type.Models[0];
+        // Sans modèle publié, le composant d'IA de départ serait refusé en silence : on refuse le projet avec la raison
+        var initial = (starters ?? type.Starters).ToList();
+        if (initial.Contains("ai_core") && !PublishedModels.Any())
+            return (CommandResult.Fail("Un produit d'IA a besoin d'un modèle publié : entraîne-en un depuis le menu IA."), null);
         var product = new Product
         {
             Id = NewId(),
@@ -44,7 +48,7 @@ public partial class Campaign
                 });
         if (type.Hardware && IsUnlocked("online_shop"))
             product.SalesChannels.Add("shop");
-        foreach (string defId in starters ?? type.Starters)
+        foreach (string defId in initial)
             QueueComponent(product.Id, defId);
         Notify(Severity.Info, "projet", $"{product.Name} : c'est parti", "L'équipe s'y met toute seule.", $"product:{product.Id}");
         return (CommandResult.Success(), product);

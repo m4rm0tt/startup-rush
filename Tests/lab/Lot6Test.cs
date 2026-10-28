@@ -148,6 +148,23 @@ public class Lot6Test
     }
 
     [Test]
+    public void AnAiProductIsRefusedWithItsReasonBeforeAnyModelIsPublished()
+    {
+        var campaign = WithAi();
+        var (result, product) = campaign.CreateProject("", "ai_analytics", RevenueModel.Subscription);
+        Assert.That(result.Ok, Is.False, "sinon le composant d'IA de départ disparaît sans un mot");
+        Assert.That(product, Is.Null);
+        Assert.That(campaign.Products, Is.Empty);
+        var model = NewModel(campaign);
+        campaign.StartAiTraining(model.Id, "public", true);
+        campaign.AdvanceDays(6);
+        campaign.PublishAi(model.Id);
+        (result, product) = campaign.CreateProject("", "ai_analytics", RevenueModel.Subscription);
+        Assert.That(result.Ok, Is.True, result.Message);
+        Assert.That(product!.Queue.Any(q => q.DefId == "ai_core") || product.Level("ai_core") > 0, Is.True);
+    }
+
+    [Test]
     public void AnAiProductNeedsAPublishedModelAndTakesItsQuality()
     {
         var campaign = WithAi();

@@ -57,7 +57,7 @@ public static class Infrastructure
     /// <summary>Points de sécurité pour une cage complète.</summary>
     public const double FullSecurity = 8;
 
-    /// <summary>Unités de calcul quantique d'une installation stabilisée (cryostat fermé) en service ⚙️.</summary>
+    /// <summary>Unités de calcul quantique d'une installation stabilisée (cryostat fermé) en service.</summary>
     public const double QuantumPerUnit = 20;
 
     /// <summary>

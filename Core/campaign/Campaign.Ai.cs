@@ -234,7 +234,7 @@ public partial class Campaign
             component.Quality = Math.Round(quality, 3);
     }
 
-    /// <summary>Débranche rien : relie à l'un des modèles publiés (le meilleur) un produit qui vient de recevoir un composant d'IA.</summary>
+    /// <summary>Relie au meilleur modèle publié un produit qui vient de recevoir un composant d'IA (sans toucher à un lien encore valide).</summary>
     private void AutoLinkAi(Product product)
     {
         if (product.AiModelId != 0 && FindAiModel(product.AiModelId)?.Live != null)

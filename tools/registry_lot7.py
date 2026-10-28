@@ -128,6 +128,25 @@ for i, label in {"term_cursor_block": "bloc (par défaut)", "term_cursor_bar": "
     updates[i] = row("Terminal : curseur au point atteint dans le mot, forme " + label + " (réglage Accessibilité, clignote sauf effets réduits)",
                      "position dans le mot à taper", TERM + ";UI/Screens/MenuScreens.cs;Core/persistence/LegacyProfile.cs", "05 (bloc), 25b (les trois au réglage)")
 
+# Scène : cases, anneaux, particules, curseurs
+SCENE = "UI/Scene/SceneEffects.cs;UI/Scene/SceneCanvas.cs"
+for i, what, seen in [("vfx_tile_valid", "emprise d'un objet posable (pulse)", "18b"), ("vfx_tile_footprint", "cases d'accès à laisser libres", "18b"),
+                      ("vfx_tile_invalid", "emprise d'un objet qui ne peut pas aller là", "dessiné par le même code que 18b, non capturé"),
+                      ("vfx_tile_selected", "cases de l'objet sélectionné", "non capturé"), ("vfx_tile_hover", "case survolée hors aménagement (pulse)", "non capturé"),
+                      ("vfx_select_ring", "anneau sous la personne sélectionnée", "12b"), ("vfx_hover_ring", "anneau sous la personne survolée (deux tailles)", "non capturé (survol souris)"),
+                      ("vfx_work", "bouffée de travail au-dessus de qui travaille (toutes les 2 à 4 s)", "12b"), ("vfx_code", "bouffée quand la tâche est du code", "même code que 12b"),
+                      ("vfx_idea", "idée au-dessus d'un chercheur", "même code que 12b"), ("vfx_heart_morale", "cœur quand le moral monte", "événement, non capturé"),
+                      ("vfx_success", "coche quand une tâche se termine", "événement, non capturé"), ("vfx_coin", "pièces les jours avec des revenus", "événement, non capturé"),
+                      ("vfx_sparkle_large", "étincelle quand un objet est posé", "événement, non capturé"), ("vfx_sparkle_small", "petites étincelles qui clignotent à la pose", "événement, non capturé"),
+                      ("vfx_alert", "alerte qui pulse au-dessus de qui attend sans poste", "état, non capturé")]:
+    updates[i] = dict(consommateur="Scène : " + what + " ; coupé ou figé par « réduire les effets »", fichier_definition=SCENE, deblocage="toujours",
+                      indicateur_ou_interaction="retour visuel d'un état ou d'un événement réel (ne change rien à la simulation)", etat="partiel",
+                      scenario_test=f"vu : {seen} ; pas de test automatisé d'interface")
+for i, what in {"cursor_normal": "souris sur la scène", "cursor_select": "au-dessus d'une personne ou d'un objet cliquable",
+                "cursor_place_valid": "objet posable sous la souris", "cursor_place_invalid": "objet impossible à poser ici",
+                "cursor_move": "déplacement d'un objet"}.items():
+    updates[i] = row("Curseur (export ×2 du pack) : " + what, "ce que ferait un clic", SCENE, "curseur système non visible dans les captures")
+
 # Icônes de l'interface
 for i, where in {"icon_pause": "bouton pause", "icon_speed_1": "vitesse 1", "icon_speed_2": "vitesse 2", "icon_speed_3": "vitesses 3 et 4 (avec le chiffre)",
                  "icon_bell": "journal / « À traiter »", "icon_settings": "menu et réglages", "icon_back": "retour d'un panneau", "icon_close": "fermer",

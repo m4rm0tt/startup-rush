@@ -67,6 +67,28 @@ for i in ["hud_slider_track", "hud_slider_fill", "hud_slider_knob"]:
     updates[i] = row("Réglages : volumes de la musique et des bruitages", "volume appliqué pendant le glissement", SETTINGS + ";UI/App.axaml", "25b")
 updates["hud_popover"] = row("Réglages : bulle de valeur à côté des glissières", "valeur en pour cent", SETTINGS, "25b")
 
+# Onglets et graphiques
+updates["hud_tabs"] = row("Onglets d'une fiche de projet (aperçu, composants, avis, réglages)", "onglet actif clair, les autres en retrait", UI_KIT + ";UI/Hud/Panels/ProjectPanel.cs", "09, 11, 11b")
+for i in ["hud_chart_frame", "hud_chart_grid_h", "hud_chart_axis_h", "hud_chart_point", "hud_chart_legend"]:
+    updates[i] = row("Courbes d'un projet (utilisateurs, revenus par jour) : cadre, grille, axe, légende, dernier point", "historique de 120 jours, maximum écrit",
+                     "UI/Hud/LineChart.cs", "11b")
+for card in ["comp_card"]:
+    updates[card] = row("Atelier de composants : carte d'un composant, en-tête selon l'état (pas encore, en développement, en service, demandé, verrouillé)",
+                        "état du composant écrit en toutes lettres", "UI/Hud/Panels/ProjectPanel.cs", "09")
+for game, pack in {"ui": "comp_home", "performance": "comp_infrastructure", "support": "comp_support", "login": "comp_auth",
+                   "notifications": "comp_notifications", "cloudsave": "comp_savegame", "dashboard": "comp_admin", "subscribe": "comp_subscription",
+                   "search": "comp_search", "messaging": "comp_messaging", "export": "comp_integration", "stats": "comp_analytics",
+                   "gameplay": "comp_engine", "content": "comp_progression", "leaderboard": "comp_leaderboard", "multiplayer": "comp_netplay",
+                   "feed": "comp_feed", "profile": "comp_profile", "moderation": "comp_security", "listings": "comp_inventory",
+                   "catalog": "comp_catalog", "checkout": "comp_payment", "reviews": "comp_reviews", "ai_core": "comp_processing",
+                   "ai_feature": "comp_automation"}.items():
+    updates[pack] = row(f"Atelier de composants : aperçu et pictogramme du composant « {game} » (mêmes effets que ce composant du jeu)",
+                        "besoins couverts par le composant (Core/products/ProductCatalog.cs)", "UI/Hud/ComponentArt.cs;Core/products/ProductCatalog.cs", "09")
+for icon in ["icon_comp_admin", "icon_comp_auth", "icon_comp_automation", "icon_comp_catalog", "icon_comp_engine", "icon_comp_feed", "icon_comp_infrastructure",
+             "icon_comp_integration", "icon_comp_inventory", "icon_comp_leaderboard", "icon_comp_messaging", "icon_comp_netplay", "icon_comp_payment",
+             "icon_comp_processing", "icon_comp_profile", "icon_comp_progression", "icon_comp_reviews"]:
+    updates[icon] = row("Atelier de composants : pictogramme d'état de la carte du composant correspondant", "état du composant", "UI/Hud/ComponentArt.cs", "09")
+
 # Icônes de l'interface
 for i, where in {"icon_pause": "bouton pause", "icon_speed_1": "vitesse 1", "icon_speed_2": "vitesse 2", "icon_speed_3": "vitesses 3 et 4 (avec le chiffre)",
                  "icon_bell": "journal / « À traiter »", "icon_settings": "menu et réglages", "icon_back": "retour d'un panneau", "icon_close": "fermer",

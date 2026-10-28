@@ -232,6 +232,13 @@ public static class Capture
         later.HandleKey(Avalonia.Input.Key.F12, Avalonia.Input.KeyModifiers.None);
         await Shot(window, folder, "22b_menu_test", report);
         later.HandleKey(Avalonia.Input.Key.F12, Avalonia.Input.KeyModifiers.None);
+        // Dialogue de confirmation (composition « hud_confirm_dialog » du pack)
+        if (advanced.Staff.FirstOrDefault() is { } leaving)
+        {
+            later.Confirm($"Licencier {leaving.Name} ?", $"{leaving.Name} quittera l'entreprise à la fin de la journée.", "Licencier", () => { });
+            await Shot(window, folder, "22c_confirmation", report);
+            later.CloseModal();
+        }
 
         // Lot 4 : une salle serveur en plus, deux baies équipées, le projet principal sur ses serveurs, une offre cloud
         advanced.Ledger.Cash += 150_000;
@@ -418,6 +425,8 @@ public static class Capture
         await Shot(window, folder, "24_nouvelle_partie", report);
         window.ShowLoad();
         await Shot(window, folder, "25_charger", report);
+        window.ShowSettings(() => window.ShowTitle());
+        await Shot(window, folder, "25b_reglages", report);
         lock (Sfx.Played)
             report.Add("Sons déclenchés : " + string.Join(", ", Sfx.Played.Distinct()));
         report.Add("Sauvegardes de capture : " + window.Store.Root);

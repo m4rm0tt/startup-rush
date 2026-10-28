@@ -294,6 +294,34 @@
             <Setter Property="Foreground" Value="{StaticResource Paper}"/>
         </Style>
 
+        <!-- Glissière : le contrôle ne porte que le bouton du pack ; piste et remplissage sont dessinés dessous par Ui.Slider -->
+        <Style Selector="Slider:horizontal">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Grid Height="28" Background="Transparent">
+                        <Track Name="PART_Track" Orientation="Horizontal"
+                               Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}"
+                               Value="{TemplateBinding Value, Mode=TwoWay}">
+                            <Track.DecreaseButton><RepeatButton Name="PART_DecreaseButton" Classes="slider"/></Track.DecreaseButton>
+                            <Track.IncreaseButton><RepeatButton Name="PART_IncreaseButton" Classes="slider"/></Track.IncreaseButton>
+                            <Thumb Classes="knob" Width="20" Height="28"/>
+                        </Track>
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="Slider RepeatButton.slider">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template"><ControlTemplate><Border Background="Transparent"/></ControlTemplate></Setter>
+        </Style>
+        <Style Selector="Slider Thumb.knob">
+            <Setter Property="Template"><ControlTemplate><px:PixelPanel Skin="{TemplateBinding Tag}"/></ControlTemplate></Setter>
+            <Setter Property="Tag" Value="pack:hud_slider_knob:normal"/>
+        </Style>
+        <Style Selector="Slider Thumb.knob:pointerover"><Setter Property="Tag" Value="pack:hud_slider_knob:hover"/></Style>
+        <Style Selector="Slider Thumb.knob:pressed"><Setter Property="Tag" Value="pack:hud_slider_knob:pressed"/></Style>
+        <Style Selector="Slider:disabled Thumb.knob"><Setter Property="Tag" Value="pack:hud_slider_knob:disabled"/></Style>
+
         <!-- Barres de défilement du pack : piste, curseur avec sa poignée, flèches -->
         <Style Selector="ScrollBar">
             <Setter Property="AllowAutoHide" Value="False"/>

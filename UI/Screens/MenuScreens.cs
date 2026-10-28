@@ -315,7 +315,6 @@ public class SettingsScreen : MenuScreen
     public static Control SettingsForm(MainWindow window, Action rebuild, Action? back)
     {
         var s = window.Settings;
-        (double, string)[] volumes = [(0, "Coupé"), (0.2, "20 %"), (0.4, "40 %"), (0.6, "60 %"), (0.8, "80 %"), (1, "100 %")];
         (double, string)[] scales = [(0, "Auto"), (0.8, "80 %"), (1, "100 %"), (1.2, "120 %"), (1.4, "140 %")];
         void Change(Action apply)
         {
@@ -323,25 +322,39 @@ public class SettingsScreen : MenuScreen
             window.SaveSettings();
             rebuild();
         }
+        // Glissières : la valeur s'applique tout de suite, sans reconstruire le formulaire
+        void Volume(Action apply)
+        {
+            apply();
+            window.SaveSettings();
+        }
+        static string Percent(double v) => v <= 0 ? "Coupé" : $"{v:P0}";
+        var scaleRow = new WrapPanel();
+        foreach (var (value, label) in scales)
+        {
+            var radio = Ui.Radio(label, Math.Abs(s.UiScale - value) < 0.01, () => Change(() => s.UiScale = value));
+            radio.Margin = new Thickness(0, 0, 14, 4);
+            scaleRow.Children.Add(radio);
+        }
         var column = Ui.Column(8,
             Ui.Title("Réglages"),
-            Ui.Text("Musique", 14, Palette.Fog),
-            Ui.Choice(volumes, Math.Round(s.MusicVolume, 1), v => Change(() => s.MusicVolume = v)),
-            Ui.Text("Bruitages", 14, Palette.Fog),
-            Ui.Choice(volumes, Math.Round(s.SoundVolume, 1), v => Change(() => s.SoundVolume = v)),
-            Ui.Text("Taille de l'interface", 14, Palette.Fog),
-            Ui.Choice(scales, s.UiScale, v => Change(() => s.UiScale = v)),
-            Ui.Text("Grands menus (produits, finances)", 14, Palette.Fog),
-            Ui.Choice([(true, "Mettent le temps en pause"), (false, "Le temps continue")], s.PauseInLargeMenus, v => Change(() => s.PauseInLargeMenus = v)),
-            Ui.Text("Nuits et week-ends sans personne au bureau", 14, Palette.Fog),
-            Ui.Choice([(true, "Accélérés ×8"), (false, "Vitesse normale")], s.FastNights, v => Change(() => s.FastNights = v)),
-            Ui.Text("Pendant la saisie au terminal (accessibilité)", 14, Palette.Fog),
-            Ui.Choice([(false, "L'entreprise continue"), (true, "L'entreprise attend")], s.PauseDuringTerminal, v => Change(() => s.PauseDuringTerminal = v)),
-            Ui.Muted("Le rendement d'un mot ne dépend jamais du temps qui passe : ce réglage change seulement ce qui arrive pendant que tu tapes.", 13),
-            Ui.Text("Saisie au terminal (accessibilité)", 14, Palette.Fog),
-            Ui.Choice([(false, "Je tape les mots"), (true, "Saisie simplifiée")], s.SimplifiedTyping, v => Change(() => s.SimplifiedTyping = v)),
-            Ui.Muted("Saisie simplifiée : le mot s'écrit tout seul et Entrée le valide. Chaque mot rapporte comme une frappe lente (×0,85) : " +
-                     "moins qu'une frappe rapide, assez pour mener la campagne.", 13));
+            Ui.Section("Son",
+                Ui.Text("Musique", 14, Palette.Fog),
+                Ui.Slider(s.MusicVolume, 0, 1, 0.1, v => Volume(() => s.MusicVolume = v), Percent),
+                Ui.Text("Bruitages", 14, Palette.Fog),
+                Ui.Slider(s.SoundVolume, 0, 1, 0.1, v => Volume(() => s.SoundVolume = v), Percent)),
+            Ui.Section("Affichage",
+                Ui.Text("Taille de l'interface", 14, Palette.Fog),
+                scaleRow),
+            Ui.Section("Temps",
+                Ui.Switch("Les grands menus (produits, finances) mettent le temps en pause", s.PauseInLargeMenus, v => Change(() => s.PauseInLargeMenus = v)),
+                Ui.Switch("Nuits et week-ends sans personne au bureau accélérés ×8", s.FastNights, v => Change(() => s.FastNights = v))),
+            Ui.Section("Accessibilité",
+                Ui.CheckBox("L'entreprise attend pendant la saisie au terminal", s.PauseDuringTerminal, v => Change(() => s.PauseDuringTerminal = v)),
+                Ui.Muted("Le rendement d'un mot ne dépend jamais du temps qui passe : ce réglage change seulement ce qui arrive pendant que tu tapes.", 13),
+                Ui.CheckBox("Saisie simplifiée au terminal", s.SimplifiedTyping, v => Change(() => s.SimplifiedTyping = v)),
+                Ui.Muted("Saisie simplifiée : le mot s'écrit tout seul et Entrée le valide. Chaque mot rapporte comme une frappe lente (×0,85) : " +
+                         "moins qu'une frappe rapide, assez pour mener la campagne.", 13)));
         if (back != null)
             column.Children.Add(Ui.Button("Retour", back));
         return column;

@@ -224,6 +224,74 @@ public static class Ui
         return new Panel { Children = { frame, magnifier }, HorizontalAlignment = frame.HorizontalAlignment };
     }
 
+    /// <summary>Case à cocher du pack (hud_checkbox) et son libellé ; un clic bascule.</summary>
+    public static Button CheckBox(string label, bool on, Action<bool> changed, bool enabled = true) => StateToggle("hud_checkbox", label, on, changed, enabled);
+
+    /// <summary>Interrupteur du pack (hud_switch) et son libellé.</summary>
+    public static Button Switch(string label, bool on, Action<bool> changed, bool enabled = true) => StateToggle("hud_switch", label, on, changed, enabled);
+
+    /// <summary>Bouton radio du pack (hud_radio) : un choix parmi plusieurs, chacun avec son libellé.</summary>
+    public static Button Radio(string label, bool on, Action pick, bool enabled = true) => StateToggle("hud_radio", label, on, _ => pick(), enabled);
+
+    /// <summary>Un contrôle à états du pack (« on_normal », « off_hover »…) affiché au double, suivi de son libellé.</summary>
+    private static Button StateToggle(string id, string label, bool on, Action<bool> changed, bool enabled)
+    {
+        string prefix = on ? "on" : "off";
+        var normal = PackSkins.Sprite(id, $"{prefix}_{(enabled ? "normal" : "disabled")}");
+        var image = Image(normal, normal.PixelSize.Width * 2, normal.PixelSize.Height * 2);
+        image.VerticalAlignment = VerticalAlignment.Center;
+        var caption = Text(label, 15, enabled ? Palette.Ink : Palette.Fog);
+        caption.VerticalAlignment = VerticalAlignment.Center;
+        var button = new Button { Content = Row(8, image, caption), IsEnabled = enabled, Padding = new Thickness(2, 2, 6, 2), HorizontalAlignment = HorizontalAlignment.Left };
+        button.Classes.Add("plain");
+        if (enabled)
+        {
+            button.PointerEntered += (_, _) => image.Source = PackSkins.Sprite(id, $"{prefix}_hover");
+            button.PointerExited += (_, _) => image.Source = normal;
+        }
+        button.Click += (_, _) =>
+        {
+            Sfx.Play(Sound.Select);
+            changed(!on);
+        };
+        return button;
+    }
+
+    /// <summary>
+    /// Glissière du pack (piste, remplissage, bouton) avec sa valeur dans une bulle (hud_popover). La valeur s'applique pendant
+    /// qu'on glisse, sans reconstruire le menu (sinon la glissière disparaîtrait sous le pointeur).
+    /// </summary>
+    public static Control Slider(double value, double min, double max, double step, Action<double> changed, Func<double, string> format, double width = 260)
+    {
+        var bubble = Text(format(value), 14, Palette.Ink, wrap: false);
+        var slider = new Avalonia.Controls.Slider
+        {
+            Minimum = min, Maximum = max, Value = value, TickFrequency = step, IsSnapToTickEnabled = true, Width = width,
+            VerticalAlignment = VerticalAlignment.Center,
+        };
+        // Piste et remplissage du pack sous le bouton : le remplissage va du début de la piste au centre du bouton (20 de large)
+        var track = new PixelPanel { Skin = "pack:hud_slider_track", Height = 12, Width = width - 20, Margin = new Thickness(10, 0, 0, 0), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center };
+        var fill = new PixelPanel { Skin = "pack:hud_slider_fill", Height = 12, Margin = new Thickness(10, 0, 0, 0), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center };
+        void Fill() => fill.Width = (slider.Value - min) / Math.Max(1e-9, max - min) * (width - 20);
+        Fill();
+        slider.PropertyChanged += (_, e) =>
+        {
+            if (e.Property != Avalonia.Controls.Primitives.RangeBase.ValueProperty)
+                return;
+            bubble.Text = format(slider.Value);
+            Fill();
+            changed(slider.Value);
+        };
+        var layered = new Panel { Width = width, Children = { track, fill, slider } };
+        // La bulle et sa pointe tournée vers la glissière (la pointe recouvre le bord de 1 px)
+        var popover = new PixelPanel { Skin = "pack:hud_popover", Padding = new Thickness(12, 5, 12, 9), Child = bubble, VerticalAlignment = VerticalAlignment.Center };
+        var arrowBitmap = PackSkins.Extra("hud_popover", "popover_arrow_left");
+        var arrow = Image(arrowBitmap, arrowBitmap.PixelSize.Width * 2, arrowBitmap.PixelSize.Height * 2);
+        arrow.VerticalAlignment = VerticalAlignment.Center;
+        arrow.Margin = new Thickness(0, 0, -2, 0);
+        return Row(4, layered, Row(0, arrow, popover));
+    }
+
     /// <summary>Choix exclusif parmi quelques valeurs : contrôle segmenté du pack, le choisi en sarcelle.</summary>
     public static WrapPanel Choice<T>(IEnumerable<(T Value, string Label)> options, T current, Action<T> pick, bool enabled = true)
     {

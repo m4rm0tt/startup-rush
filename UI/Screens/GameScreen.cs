@@ -578,7 +578,8 @@ public class GameScreen : UserControl, IScreen
         // En bas à gauche, au-dessus de la barre d'outils (comme la maquette du pack) : la plus récente en bas
         _toasts.Children.Add(frame);
         _toastAges.Add((frame, 0));
-        while (_toasts.Children.Count > 4)
+        // Un panneau ouvert : seulement les deux plus récentes, pour ne pas couvrir son contenu (tout reste dans le journal)
+        while (_toasts.Children.Count > (_stack.Count > 0 ? 2 : 4))
             _toasts.Children.RemoveAt(0);
     }
 

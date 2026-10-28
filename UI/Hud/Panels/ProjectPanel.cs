@@ -312,18 +312,45 @@ public class ProjectPanel(int productId) : GamePanel
         var button = Ui.Button(ok ? $"{action} · ~{(speed > 0 ? Math.Ceiling(points / speed) : 0)} j" : action == "En file" ? "En file" : "Verrouillé",
             () => Run(Campaign.QueueComponent(product.Id, def.Id)), ok ? (requested ? "gold" : "green") : "tab", ok, ok ? null : reason);
 
-        var content = Ui.Column(4,
-            Ui.Row(8, Ui.Icon(ok || level > 0 ? def.Icon : "lock", 28), Ui.Column(0, Ui.Text(def.Name, 15, Palette.Snow, bold: true, wrap: false), Ui.Pips(planned, ProductCatalog.MaxLevel))),
+        // Carte de composant du pack : la couleur d'en-tête dit l'état, le libellé le redit en toutes lettres
+        bool locked = !ok && level == 0 && planned == level;
+        var (state, label) = planned > level ? ("in_dev", "En développement")
+            : requested && level > 0 ? ("bug", "Demandé dans les avis")
+            : level > 0 ? ("done", "En service")
+            : locked ? ("locked", "Verrouillé")
+            : ("planned", requested ? "Demandé dans les avis" : "Pas encore");
+        var header = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto"), Height = 28 };
+        var title = Ui.Text(def.Name, 15, Palette.Ink, bold: true, wrap: false);
+        title.VerticalAlignment = VerticalAlignment.Center;
+        title.TextTrimming = TextTrimming.CharacterEllipsis;
+        header.Children.Add(title);
+        var pips = Ui.Pips(planned, ProductCatalog.MaxLevel, Palette.Ink);
+        pips.VerticalAlignment = VerticalAlignment.Center;
+        Grid.SetColumn(pips, 1);
+        header.Children.Add(pips);
+
+        Control picture = ComponentArt.Preview(def.Id) is { } preview && !locked
+            ? Ui.Image(preview, 96, 64)
+            : Ui.Icon(locked ? "lock" : ComponentArt.Icon(def.Id, def.Icon), 32);
+        double quality = product.Component(def.Id)?.Quality ?? 0;
+        var status = Ui.Column(4,
+            Ui.Row(6, Ui.Icon(ComponentArt.Icon(def.Id, def.Icon), 16), Ui.Text(label, 13, Palette.Ink, bold: true, wrap: false)),
+            level > 0 ? Ui.Column(1, Ui.Text($"Qualité {quality:P0}", 12, Palette.Fog, wrap: false), Ui.Bar(quality, quality < 0.4 ? Palette.Ember : Palette.Leaf, 8, 110)) : null);
+        var body = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*") };
+        picture.Margin = new Thickness(0, 0, 10, 0);
+        picture.VerticalAlignment = VerticalAlignment.Top;
+        body.Children.Add(picture);
+        Grid.SetColumn(status, 1);
+        body.Children.Add(status);
+
+        var content = Ui.Column(6,
+            header,
+            body,
             Ui.Text(def.Role, 13, Palette.Cloud),
             Ui.Text(effect, 12, Palette.Sky),
-            requested ? Ui.Tag("Demandé dans les avis", Palette.Lemon) : null,
             !ok && planned == level ? Ui.Muted(reason, 12) : null,
             button);
-        var card = new PixelPanel
-        {
-            Skin = "inset", Padding = new Thickness(10, 8), Margin = new Thickness(0, 0, 8, 8), Width = 250, Child = content,
-            BorderBrush = requested ? Palette.Lemon : null, BorderThickness = new Thickness(requested ? 2 : 0),
-        };
+        var card = new PixelPanel { Skin = $"pack:comp_card:{state}", Padding = new Thickness(12, 4, 12, 12), Margin = new Thickness(0, 0, 8, 8), Width = 260, Child = content };
         ToolTip.SetTip(card, $"Travail : {points:0} points. Serveurs : {def.Load:0.0} par 1 000 utilisateurs. Support : {def.Tickets:0.0}. " +
                              $"Entretien : {def.Maintenance:0.0} pt/semaine.{(def.Requires != null ? $" Demande : {ProductCatalog.Component(def.Requires).Name}." : "")}");
         return card;

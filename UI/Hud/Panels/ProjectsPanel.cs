@@ -37,6 +37,17 @@ public class ProjectsPanel : GamePanel
         column.Children.Add(wrap);
         if (Campaign.Products.Count > 1)
             column.Children.Add(Ui.Muted("Les personnes en automatique travaillent sur le premier projet qui a du travail en file. Change l'ordre avec ◀ ▶.", 13));
+        // Les activités du lot 6 apparaissent avec leur déblocage
+        if (Campaign.IsUnlocked("ai_models"))
+            column.Children.Add(Ui.Section("Intelligence artificielle", Ui.Row(10,
+                Ui.Muted(Campaign.AiModels.Count == 0 ? "Entraîne ton premier modèle, puis crée des produits d'IA."
+                    : $"{Campaign.AiModels.Count} modèle(s), {Campaign.PublishedModels.Count()} en service.", 14),
+                Ui.Button("Ouvrir", () => Open(new AiPanel()), "gold"))));
+        if (Campaign.IsUnlocked("studio") || Campaign.IsUnlocked("xr") || Campaign.IsUnlocked("advanced_lab"))
+            column.Children.Add(Ui.Section("Studio, XR et quantique", Ui.Row(10,
+                Ui.Muted($"Studio {Campaign.BestStudio().Score:P0} · zone XR {Campaign.BestXr().Capacity:P0}" +
+                         (Campaign.IsUnlocked("advanced_lab") ? $" · {Campaign.QuantumUnitsOnline} installation(s) quantique(s)" : ""), 14),
+                Ui.Button("Ouvrir", () => Open(new LabPanel()), "gold"))));
         // Les services cloud apparaissent avec leur déblocage
         if (Campaign.IsUnlocked("cloud_offers"))
             column.Children.Add(Ui.Section("Services cloud", Ui.Row(10,
@@ -108,6 +119,16 @@ public class NewProjectPanel : GamePanel
     private string _type = "saas";
     private string _segment = "freelances";
     private string _name = "";
+
+    /// <summary>Ouvre la création avec un type déjà choisi (par exemple « ai » depuis le menu IA).</summary>
+    public NewProjectPanel(string? type = null)
+    {
+        if (type != null && ProductCatalog.Types.Any(t => t.Id == type))
+        {
+            _type = type;
+            _segment = ProductCatalog.Segments.First(s => s.TypeId == type).Id;
+        }
+    }
 
     public override Control Build()
     {

@@ -72,6 +72,9 @@ public static class RealEstate
         new("factory", "Usine",
             "Une halle avec salle propre, aspiration, refroidissement, armoires de contrôle et racks livrés ; la ligne du plan est une disposition conseillée.",
             "room_factory_hall", 0, 14_000m, 3, 5_000m, ["Crissier-Sud", "Aclens"], "industry"),
+        new("advanced_lab", "Laboratoire avancé",
+            "Un laboratoire pour la recherche avancée et l'installation quantique : froid, calcul et énergie à ta charge. Ses machines du plan ne sont qu'un aperçu.",
+            "room_advanced_lab", 0, 9_500m, 3, 4_000m, ["Dorigny", "Écublens-EPFL"], "advanced_lab"),
         new("hq", "Siège",
             "Un étage complet : accueil, cafétéria, sanitaires, salles de réunion et cloisons livrés. Jusqu'à 60 postes.",
             "room_hq_floor", 0, 26_000m, 3, 8_000m, ["Lausanne-Gare"], "multisite"),
@@ -91,7 +94,8 @@ public static class RealEstate
         def.Kind is FurnitureKind.Desk or FurnitureKind.Chair or FurnitureKind.Laptop or FurnitureKind.Tower or FurnitureKind.Monitor
             or FurnitureKind.Keyboard or FurnitureKind.Personal or FurnitureKind.Coffee or FurnitureKind.Supervision
             or FurnitureKind.Rack or FurnitureKind.RackModule or FurnitureKind.Server or FurnitureKind.Backup
-            or FurnitureKind.Lab or FurnitureKind.Station or FurnitureKind.Conveyor;
+            or FurnitureKind.Lab or FurnitureKind.Station or FurnitureKind.Conveyor
+            or FurnitureKind.Studio or FurnitureKind.Xr or FurnitureKind.Quantum;
 
     /// <summary>
     /// Crée le local d'une offre à partir de son plan. Ta chambre est livrée avec tes affaires (lit, bureau, vieille tour) ;

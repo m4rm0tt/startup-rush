@@ -17,7 +17,7 @@ public partial class Campaign
         if (!def.Buyable)
             return CommandResult.Fail("Cet objet ne s'achète pas.");
         if (def.UnlockNode is { } node && !IsUnlocked(node))
-            return CommandResult.Fail($"À débloquer dans Développement : {progress.DevTree.Node(node).Name}.");
+            return CommandResult.Fail($"À débloquer : {UnlockName(node)}.");
         string f = facing ?? def.Pack.DefaultFacing;
         var check = Layout.CanPlace(Premises, def, x, y, f);
         if (!check.Ok)
@@ -49,7 +49,7 @@ public partial class Campaign
         if (!def.Buyable)
             return CommandResult.Fail("Cet objet ne s'achète pas.");
         if (def.UnlockNode is { } node && !IsUnlocked(node))
-            return CommandResult.Fail($"À débloquer dans Développement : {progress.DevTree.Node(node).Name}.");
+            return CommandResult.Fail($"À débloquer : {UnlockName(node)}.");
         var (check, host, s) = AttachCheck(def, hostId, socket, null);
         if (!check.Ok)
             return CommandResult.Fail(check.Reason);

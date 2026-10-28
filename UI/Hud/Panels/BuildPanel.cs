@@ -27,6 +27,9 @@ public class BuildPanel : GamePanel
         FurnitureKind.Personal => "Objets personnels",
         FurnitureKind.Rack or FurnitureKind.RackModule or FurnitureKind.Server => "Serveurs et baies",
         FurnitureKind.Lab => "Laboratoire",
+        FurnitureKind.Studio => "Studio audiovisuel",
+        FurnitureKind.Xr => "Zone XR",
+        FurnitureKind.Quantum => "Quantique",
         FurnitureKind.Station or FurnitureKind.Conveyor or FurnitureKind.Warehouse or FurnitureKind.Facility => "Production",
         FurnitureKind.Utility or FurnitureKind.Backup or FurnitureKind.Cabling or FurnitureKind.Supervision => "Énergie et réseau",
         _ => "Ambiance"
@@ -133,6 +136,7 @@ public class BuildPanel : GamePanel
             Ui.Pair("Hébergement", $"{infra.Hosting:0.#} unité(s)"),
             Ui.Pair("Calcul · GPU", $"{infra.Compute:0.#} · {infra.Gpu:0.#}"),
             Ui.Pair("Stockage", $"{infra.Storage:0.#} To"),
+            infra.QuantumUnits > 0 ? Ui.Pair("Quantique", $"{Campaign.QuantumOnline(Campaign.Premises)} en service sur {infra.QuantumUnits} installation(s)") : null,
             Ui.Pair("Électricité", $"{infra.PowerDraw:0.#} kW utilisés sur {infra.PowerSupply:0.#}", infra.PowerDraw > infra.PowerSupply ? Palette.Ember : null),
             Ui.Pair("Froid", $"{infra.Heat:0.#} kW de chaleur, {infra.Cooling:0.#} évacués", infra.Heat > infra.Cooling ? Palette.Ember : null),
             Ui.Pair("Réseau", $"{infra.NetworkNeeded:0} demandés sur {infra.Network:0}", infra.NetworkNeeded > infra.Network ? Palette.Ember : null),
@@ -225,7 +229,7 @@ public class BuildPanel : GamePanel
             : def.Pack.Ceiling ? $"{def.Name} — {def.Effect} Au plafond."
             : $"{def.Name} — {def.Effect} Emprise : {cells} case(s).");
         if (locked)
-            ToolTip.SetTip(button, $"{def.Name} — à débloquer dans Développement : {Core.progress.DevTree.Node(def.UnlockNode!).Name}.");
+            ToolTip.SetTip(button, $"{def.Name} — à débloquer : {Core.campaign.Campaign.UnlockName(def.UnlockNode!)}.");
         button.Click += (_, _) =>
         {
             Session.SetTool(selected ? null : new BuildTool(def.Id));

@@ -17,9 +17,15 @@ public class Competitor
 /// <summary>Ce que l'entreprise apporte au projet ce jour-là, et les déblocages qui comptent pour le marché.</summary>
 public record DayInputs(double SupportPoints, IReadOnlyList<Competitor> Competitors, bool Optimization = false, bool Loyalty = false)
 {
+    /// <summary>IA : capacité d'inférence disponible et charge demandée (null hors IA). L'audience servie est plafonnée par la capacité.</summary>
+    public AiService? Ai { get; init; }
+
     /// <summary>Matériel : stock vendable, visibilité et capacité des canaux, commission moyenne (null pour un logiciel).</summary>
     public HardwareSales? Sales { get; init; }
 }
+
+/// <summary>L'inférence d'un produit d'IA aujourd'hui : puissance disponible et puissance demandée par ses utilisateurs.</summary>
+public record AiService(double Capacity, double Load);
 
 /// <summary>Ce qui limite les ventes d'un produit matériel aujourd'hui.</summary>
 public record HardwareSales(int Stock, double Visibility, double PerDay, double Commission);
@@ -58,7 +64,8 @@ public static class Market
     {
         var channel = ProductCatalog.Channel(product.MarketingChannelId);
         double budgetPerDay = (double)product.MarketingBudget / 30;
-        return budgetPerDay * channel.ReachPerChf.GetValueOrDefault(product.ArchetypeId, 0.1) / (1 + budgetPerDay / channel.Saturation);
+        return budgetPerDay * channel.ReachPerChf.GetValueOrDefault(product.ArchetypeId, 0.1) / (1 + budgetPerDay / channel.Saturation)
+               * (1 + 0.5 * product.StudioBonus);
     }
 
     /// <summary>Avant la sortie d'un jeu : le marketing et un peu de bouche-à-oreille remplissent la liste de souhaits.</summary>
@@ -101,6 +108,14 @@ public static class Market
         double baseAppeal = Design.Appeal(product);
         double bugPenalty = Math.Min(0.45, product.Bugs * 0.012);
         double utilization = Load(product, inputs.Optimization) / Math.Max(0.01, product.Capacity);
+        // IA : l'inférence plafonne l'audience servie ; une capacité dépassée se voit comme un hébergement saturé
+        double aiUtilization = 0, aiServed = 1;
+        if (inputs.Ai is { Load: > 0 } ai)
+        {
+            aiUtilization = ai.Load / Math.Max(0.01, ai.Capacity);
+            aiServed = aiUtilization <= 1 ? 1 : 1 / aiUtilization;
+            utilization = Math.Max(utilization, aiUtilization);
+        }
         double performance = Performance(utilization);
         double downtime = utilization > 1 ? Math.Min(24, (utilization - 1) * 20) : 0;
         // Matériel : les pannes connues pèsent sur l'attrait comme des bugs
@@ -191,6 +206,11 @@ public static class Market
                 revenue = (decimal)signups * product.Price * (1 - (decimal)(inputs.Sales?.Commission ?? 0));
                 break;
         }
+        if (archetype.Id == "ai" && aiServed < 1)
+        {
+            paying *= aiServed;
+            revenue *= (decimal)aiServed;
+        }
         product.Paying = paying;
 
         var result = new ProductDay
@@ -215,6 +235,8 @@ public static class Market
             Tickets = tickets,
             Sold = sold,
             Lost = lost,
+            AiUtilization = aiUtilization,
+            AiServed = aiServed,
         };
         product.History.Add(result);
         if (product.History.Count > Tuning.Products.HistoryDays)

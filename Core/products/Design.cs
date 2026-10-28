@@ -8,6 +8,9 @@ namespace Core.products;
 /// </summary>
 public static class Design
 {
+    /// <summary>Les composants de contenu et de présentation, que le studio audiovisuel rend meilleurs (Campaign.Lab.cs).</summary>
+    public static readonly HashSet<string> StudioBoosted = ["graphics", "audio", "content", "immersion"];
+
     /// <summary>Couverture de chaque besoin (0 à 1) : chaque composant comble une part de ce qui reste, donc rendement décroissant.</summary>
     public static Dictionary<Need, double> Coverage(Product product, IEnumerable<ProjectComponent> components)
     {
@@ -19,7 +22,9 @@ public static class Design
             // Un composant qui dépend d'un autre absent ne sert à rien (on ne peut d'ailleurs pas l'ajouter sans lui)
             if (def.Requires != null && list.All(c => c.DefId != def.Requires || c.Level == 0))
                 continue;
-            double value = ProductCatalog.LevelValue(component.Level) * Math.Clamp(component.Quality / 0.6, 0.3, 1.5);
+            // Le studio (caméra, fond vert, lumière, micro) améliore le contenu et la présentation, dans les limites du plafond
+            double studio = StudioBoosted.Contains(def.Id) ? product.StudioBonus : 0;
+            double value = ProductCatalog.LevelValue(component.Level) * Math.Clamp(component.Quality / 0.6 * (1 + studio), 0.3, 1.5);
             foreach (var (need, contribution) in def.Needs)
                 missing[need] *= 1 - Math.Min(0.95, contribution * value);
         }

@@ -13,6 +13,18 @@ public record LaunchChallenge(string Kind, string Rule, IReadOnlyList<string> It
 
     public bool Calibration => Kind == "calibrate";
 
+    /// <summary>« signals » : stabiliser des signaux couplés (mise en route quantique).</summary>
+    public bool Signals => Kind == "signals";
+
+    /// <summary>« match » : associer chaque échantillon à son résultat (évaluation d'un modèle d'IA).</summary>
+    public bool Matching => Kind == "match";
+
+    /// <summary>Les résultats possibles d'un échantillon (« match »).</summary>
+    public IReadOnlyList<string> Options { get; init; } = [];
+
+    /// <summary>Valeurs de départ des réglages (« signals »).</summary>
+    public IReadOnlyList<int> Start { get; init; } = [];
+
     /// <summary>
     /// Score d'une réponse. Déploiement : part des étapes à la bonne place. Recette : anomalies trouvées moins fausses alertes,
     /// rapporté au nombre d'anomalies. Toujours entre 0 et 1.
@@ -24,7 +36,12 @@ public record LaunchChallenge(string Kind, string Rule, IReadOnlyList<string> It
             int right = Enumerable.Range(0, Math.Min(answer.Count, Answer.Count)).Count(i => answer[i] == Answer[i]);
             return (double)right / Answer.Count;
         }
-        if (Calibration)
+        if (Matching)
+        {
+            int right = Enumerable.Range(0, Math.Min(answer.Count, Answer.Count)).Count(i => answer[i] == Answer[i]);
+            return (double)right / Answer.Count;
+        }
+        if (Calibration || Signals)
         {
             // Pile sur la cible : plein score ; à un cran : la moitié ; au-delà : rien
             double sum = Enumerable.Range(0, Math.Min(answer.Count, Answer.Count))

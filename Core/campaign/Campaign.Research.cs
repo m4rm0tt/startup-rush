@@ -9,7 +9,11 @@ namespace Core.campaign;
 /// les équipements qu'il faut sur le site des chercheurs (un de chaque groupe), et ce qu'il faut avant.
 /// </summary>
 public record ResearchDef(string Id, string Name, string Field, string Unlocks, double Effort, decimal DailyCost, string[][] Equipment,
-    string? Requires = null, string? Node = null);
+    string? Requires = null, string? Node = null)
+{
+    /// <summary>Recherche de calcul intensif : un site quantique en service la rend 25 % plus rapide (et rien d'autre ne va plus vite).</summary>
+    public bool Quantum { get; init; }
+}
 
 /// <summary>Une recherche en cours : sa progression est gardée, même suspendue.</summary>
 public class ResearchProject
@@ -52,7 +56,21 @@ public partial class Campaign
         new("res_gpu", "Cartes graphiques", "Électronique", "Famille « Cartes graphiques » et recette du sous-ensemble GPU.", 200, 160m,
             [["test_bench_pc"], ["oscilloscope"], ["instrument_rack"]], Requires: "res_smt"),
         new("res_chips", "Microcomposants", "Procédés", "Recette « Processeurs » : 20 puces par plaquette, en salle propre.", 260, 220m,
-            [["microscope"], ["research_station"]], Requires: "res_smt", Node: "cleanroom"),
+            [["microscope"], ["research_station"]], Requires: "res_smt", Node: "cleanroom") { Quantum = true },
+
+        // Lot 6 : IA, XR, quantique
+        new("res_ml", "Apprentissage automatique", "IA", "Modèles d'IA de taille moyenne : plus puissants, plus lents et plus chers à servir.", 120, 120m,
+            [["workstation_gpu"]], Node: "ai_models"),
+        new("res_data", "Qualité des données", "IA", "Jeux de données curés : la meilleure qualité d'entraînement.", 90, 90m,
+            [["research_station"]], Node: "ai_models"),
+        new("res_ml_large", "Grands modèles", "IA", "Modèles d'IA de grande taille : le plafond de qualité le plus haut.", 220, 200m,
+            [["workstation_gpu"], ["compute_cabinet", "module_gpu_4u"]], Requires: "res_ml"),
+        new("res_xr", "Suivi immersif", "XR", "Famille « Kits XR ».", 130, 110m,
+            [["xr_headset_stand"], ["xr_base_station"]], Node: "xr"),
+        new("res_cryo", "Calibration cryogénique", "Quantique", "Installation quantique stabilisée (cryostat fermé) et service de calcul quantique.", 300, 350m,
+            [["quantum_cryostat_open"], ["quantum_control_rack"], ["cryo_support_unit"]], Node: "advanced_lab"),
+        new("res_qsystems", "Systèmes quantiques", "Quantique", "Famille « Systèmes quantiques » : des machines complètes à vendre.", 400, 450m,
+            [["quantum_cryostat_closed"], ["research_station"]], Requires: "res_cryo") { Quantum = true },
     ];
 
     public static ResearchDef ResearchDefOf(string id) => ResearchCatalog.First(r => r.Id == id);
@@ -137,7 +155,8 @@ public partial class Campaign
         }
         var discipline = new[] { Discipline.Code, Discipline.Test, Discipline.Design }.MaxBy(person.Skill);
         double stations = Math.Min(2, site.Items.Count(i => i.DefId == "research_station"));
-        double points = WorkRate(person, discipline) * (1 + 0.1 * stations);
+        double quantum = project.Def.Quantum && QuantumUnitsOnline >= 1 ? 1.25 : 1;
+        double points = WorkRate(person, discipline) * (1 + 0.1 * stations) * quantum;
         project.Progress += points;
         project.Today += points;
         person.PointsThisWeek += points;

@@ -5,7 +5,7 @@ using Core.space;
 namespace Core.campaign;
 
 /// <summary>Ce que l'entreprise a de capacité, tous sites réunis (les transferts entre sites sont agrégés).</summary>
-public record InfraTotals(double Hosting, double Compute, double Gpu, double Storage, decimal MonthlyEnergy);
+public record InfraTotals(double Hosting, double Compute, double Gpu, double Storage, decimal MonthlyEnergy, double Quantum = 0);
 
 /// <summary>
 /// L'infrastructure interne : chaque site fournit des capacités (Core/space/Infrastructure.cs) ; chaque jour, elles sont
@@ -40,7 +40,7 @@ public partial class Campaign
 
     public InfraTotals Infra()
     {
-        double hosting = 0, compute = 0, gpu = 0, storage = 0;
+        double hosting = 0, compute = 0, gpu = 0, storage = 0, quantum = 0;
         decimal energy = 0;
         foreach (var site in Sites)
         {
@@ -50,9 +50,11 @@ public partial class Campaign
             compute += s.Compute * incident;
             gpu += s.Gpu * incident;
             storage += s.Storage * incident;
+            // Seules les installations quantiques déjà mises en route fournissent du calcul
+            quantum += s.Quantum * incident * Math.Min(1.0, QuantumOnline(site) / Math.Max(1.0, s.QuantumUnits));
             energy += (decimal)s.KwhPerDay * 30 * Infrastructure.KwhPrice + s.MonthlyCost;
         }
-        return new InfraTotals(hosting, compute, gpu, storage, Math.Round(energy));
+        return new InfraTotals(hosting, compute, gpu, storage, Math.Round(energy), quantum);
     }
 
     /// <summary>Chaque nuit : incidents du jour (tirés pour chaque site équipé), puis répartition des capacités.</summary>
@@ -99,6 +101,8 @@ public partial class Campaign
             pool -= product.InternalCapacity;
         }
         HostingLeft = Math.Max(0, pool);
+        // Ensuite l'IA (inférence des produits, puis entraînement), et seulement après, ce qui reste se vend
+        AllocateAi(totals);
         AllocateCloud(totals);
     }
 

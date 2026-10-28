@@ -611,6 +611,9 @@ public partial class Campaign
             return;
         double quality = product.Components.Where(c => c.Level > 0).Select(c => c.Quality).DefaultIfEmpty(0.5).Average();
         double defect = Tuning.Hardware.BaseDefects * (1.2 - quality) * (IsUnlocked("res_quality") ? 0.7 : 1);
+        // Kits XR : les tests immersifs de la zone XR retirent une part des défauts de série
+        if (product.ArchetypeId == "xr_kit")
+            defect *= 1 - 0.67 * BestXr().DefectCut;
         int racks = site.Items.Count(i => i.DefId == "stress_test_rack");
         if (StressTested.GetValueOrDefault(site.Id) < racks * IndustryCatalog.StressTestPerDay)
         {

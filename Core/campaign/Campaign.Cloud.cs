@@ -2,7 +2,7 @@ using Core.finance;
 
 namespace Core.campaign;
 
-public enum CloudKind { Hosting, Storage, Compute, Gpu }
+public enum CloudKind { Hosting, Storage, Compute, Gpu, Quantum }
 
 /// <summary>
 /// Une offre de services vendue à d'autres entreprises : un type de capacité, un prix par unité et par mois, et la part de
@@ -47,7 +47,8 @@ public partial class Campaign
         CloudKind.Hosting => ("Hébergement d'applications", "unité", 14m, 1_500, "cloud_offers"),
         CloudKind.Storage => ("Stockage", "To", 9m, 4_000, "cloud_offers"),
         CloudKind.Compute => ("Calcul à la demande", "unité", 9m, 3_000, "compute_offers"),
-        _ => ("Calcul GPU", "unité GPU", 120m, 400, "compute_offers"),
+        CloudKind.Gpu => ("Calcul GPU", "unité GPU", 120m, 400, "compute_offers"),
+        _ => ("Calcul quantique", "unité quantique", 900m, 600, "quantum_offers"),
     };
 
     /// <summary>« 3 unités », « 57 To ».</summary>
@@ -62,8 +63,10 @@ public partial class Campaign
     {
         CloudKind.Hosting => HostingLeft,
         CloudKind.Storage => totals.Storage,
-        CloudKind.Compute => totals.Compute,
-        _ => totals.Gpu,
+        // L'IA passe avant les offres : l'inférence et l'entraînement de la nuit ne se revendent pas
+        CloudKind.Compute => Math.Max(0, totals.Compute - AiComputeUsed),
+        CloudKind.Gpu => Math.Max(0, totals.Gpu - AiGpuUsed),
+        _ => totals.Quantum,
     };
 
     /// <summary>Ce qui peut encore être réservé pour cette offre (sans promettre deux fois la même unité).</summary>

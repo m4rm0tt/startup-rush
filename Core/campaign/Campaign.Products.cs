@@ -71,6 +71,8 @@ public partial class Campaign
         var (ok, reason, level) = Design.CanQueue(product, defId, IsUnlocked);
         if (!ok)
             return CommandResult.Fail(reason);
+        if (defId is "ai_core" or "ai_feature" && !PublishedModels.Any())
+            return CommandResult.Fail("Il faut d'abord un modèle d'IA publié : entraîne-en un depuis le menu IA.");
 
         var def = ProductCatalog.Component(defId);
         var (design, code, test) = Design.Effort(def, level);
@@ -177,6 +179,11 @@ public partial class Campaign
         double tests = items.Where(w => w.Discipline == Discipline.Test).Sum(w => w.Effort);
         double caught = Math.Min(0.85, tests / Math.Max(1, code * 0.35) * 0.7 * quality / 0.6);
         double bugs = code * 0.1 * component.Def.Complexity * (1.2 - quality) * (1 - caught) * Random.Range(0.6, 1.4);
+        // Les tests immersifs de la zone XR font disparaître une part des défauts d'un produit XR
+        if (product.ArchetypeId == "xr_app")
+            bugs *= 1 - BestXr().DefectCut;
+        if (component.DefId is "ai_core" or "ai_feature")
+            AutoLinkAi(product);
         product.Bugs += Math.Round(bugs, 1);
 
         Work.RemoveAll(w => queued.WorkItemIds.Contains(w.Id));

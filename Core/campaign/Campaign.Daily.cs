@@ -11,11 +11,15 @@ namespace Core.campaign;
 /// </summary>
 public partial class Campaign
 {
+    private const decimal AiCatalogPrice = ai.AiCatalog.ExternalInferencePrice;
+
     private void DailyUpdate()
     {
         long yesterday = Day - 1;
         var date = GameTime.ToDate(Minute);
 
+        RunQuantum();
+        RunStudio();
         RunInfrastructure();
         RunSupply();
         PayResearch();
@@ -65,7 +69,11 @@ public partial class Campaign
 
             if (!product.IsHardware)
                 AdjustHosting(product);
-            var inputs = new DayInputs(product.SupportDone, Competitors, optimization, IsUnlocked("loyalty")) { Sales = product.IsHardware ? SalesOf(product) : null };
+            var inputs = new DayInputs(product.SupportDone, Competitors, optimization, IsUnlocked("loyalty"))
+            {
+                Sales = product.IsHardware ? SalesOf(product) : null,
+                Ai = AiInputs(product),
+            };
             var result = Market.Step(product, inputs, day);
             product.SupportDone = 0;
             if (product.IsHardware)
@@ -87,7 +95,7 @@ public partial class Campaign
                 }
             }
 
-            decimal hosting = product.ExternalMonthlyCost / 30;
+            decimal hosting = product.ExternalMonthlyCost / 30 + (decimal)product.InferenceRented * AiCatalogPrice / 30;
             decimal marketing = product.MarketingBudget / 30;
             Ledger.Accrue(Category.Hosting, hosting);
             Ledger.Accrue(Category.Marketing, marketing);
@@ -119,6 +127,8 @@ public partial class Campaign
 
             // Paliers d'utilisateurs : récompensés une fois, et seulement s'ils sont tenus
             AwardUsers(product);
+            if (product.AiModelId != 0 && product.Users >= 100)
+                Award("ai:useful", 2, "Une première IA utile : un de tes modèles sert 100 utilisateurs.");
         }
     }
 
@@ -400,7 +410,7 @@ public partial class Campaign
     public decimal MonthlyFixedCosts =>
         Tuning.Finance.FounderDraw + Tuning.Finance.Utilities + Sites.Sum(s => s.Rent) * 1.04m
         + Staff.Sum(p => p.Salary)
-        + Products.Sum(p => p.ExternalMonthlyCost + p.MarketingBudget) + Infra().MonthlyEnergy
+        + Products.Sum(p => p.ExternalMonthlyCost + p.MarketingBudget + (decimal)p.InferenceRented * AiCatalogPrice) + Infra().MonthlyEnergy
         + Ledger.Loans.Sum(l => Math.Min(l.MonthlyPayment, l.Remaining));
 
     /// <summary>Revenus des projets sur les 30 derniers jours.</summary>

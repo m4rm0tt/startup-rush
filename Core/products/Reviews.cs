@@ -37,13 +37,18 @@ public static class Reviews
             trends.Add(new("support", false, Math.Clamp((1 - support) * 1.5, 0.1, 0.6), "« Personne ne répond à mes questions. »", "upkeep"));
         if (price < 0.7 && product.Model != RevenueModel.Ads)
             trends.Add(new("price", false, Math.Clamp((1 - price) * 0.8, 0.1, 0.6), "« Trop cher pour ce que c'est. »", "price"));
+        // IA : la capacité d'inférence plafonne l'audience servie (délai et coût d'usage)
+        double aiLoad = recent.Average(d => d.AiUtilization);
+        if (product.AiModelId != 0 && aiLoad > 0.95)
+            trends.Add(new("ai_capacity", false, Math.Clamp((aiLoad - 0.9) * 0.8, 0.1, 0.7),
+                "« Les réponses mettent trop de temps, parfois elles échouent. »", "ai"));
         if (product.ArchetypeId == "marketplace" && liquidity < 0.6)
             trends.Add(new("sellers", false, Math.Clamp(1 - liquidity, 0.1, 0.7), "« Pas assez d'offres, je ne trouve rien. »", "component:listings"));
 
         var (need, coverage, fix) = Design.WeakestNeed(product, unlocked);
         if (coverage < 0.35 && product.Archetype.Needs.GetValueOrDefault(need) >= 0.15)
             trends.Add(new($"need:{need}", false, Math.Clamp((0.35 - coverage) * 1.2 + 0.1, 0.1, 0.6),
-                NeedComplaint(need, fix?.Name), fix != null ? $"component:{fix.Id}" : "components"));
+                NeedComplaint(need, fix?.Name), need == Need.Intelligence ? "ai" : fix != null ? $"component:{fix.Id}" : "components"));
 
         // Ce qui plaît
         if (product.LastUpdateAt is long update && now - update < 14L * GameTime.MinutesPerDay)
@@ -70,6 +75,8 @@ public static class Reviews
         Need.Power => "« Pas assez puissant pour le prix. »",
         Need.Durability => "« Je doute que ça tienne longtemps. »",
         Need.Portability => "« Trop lourd, et la batterie ne tient pas. »",
+        Need.Immersion => "« On ne s'y croit pas, et ça donne un peu mal au cœur. »",
+        Need.Intelligence => "« Les réponses sont souvent à côté de la plaque. »",
         _ => "« Pas assez d'offres. »"
     };
 

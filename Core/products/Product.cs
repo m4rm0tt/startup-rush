@@ -71,6 +71,11 @@ public class ProductDay
     public double Sold { get; set; }
 
     public double Lost { get; set; }
+
+    /// <summary>IA : charge d'inférence rapportée à la capacité (1 = pleine), et part des utilisateurs réellement servis.</summary>
+    public double AiUtilization { get; set; }
+
+    public double AiServed { get; set; } = 1;
 }
 
 /// <summary>
@@ -145,6 +150,23 @@ public class Product
     public double FirstSeriesScore { get; set; }
 
     public bool IsHardware => Archetype.Hardware;
+
+    /// <summary>IA : le modèle publié qui propulse ce produit (0 : aucun). Plusieurs produits peuvent partager un modèle.</summary>
+    public int AiModelId { get; set; }
+
+    /// <summary>IA : puissance d'inférence interne attribuée aujourd'hui (répartie chaque nuit sur les GPU des sites).</summary>
+    public double InferenceInternal { get; set; }
+
+    /// <summary>IA : louer de la puissance d'inférence pour ce qui ne tient pas en interne, sous le plafond mensuel.</summary>
+    public bool InferenceExternal { get; set; } = true;
+
+    public decimal InferenceCap { get; set; } = 300m;
+
+    /// <summary>IA : puissance louée aujourd'hui (pour l'affichage et les coûts).</summary>
+    public double InferenceRented { get; set; }
+
+    /// <summary>Studio : bonus de qualité du contenu et de portée du marketing, fixé chaque nuit d'après le meilleur studio.</summary>
+    public double StudioBonus { get; set; }
 
     /// <summary>Hébergé sur tes propres serveurs (Campaign.Infra.cs) ; le débordement va à l'offre externe, sous le plafond.</summary>
     public bool HostingInternal { get; set; }

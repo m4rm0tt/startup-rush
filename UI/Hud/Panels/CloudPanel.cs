@@ -22,7 +22,9 @@ public class CloudPanel : GamePanel
         var totals = Campaign.Infra();
         var wrap = new WrapPanel();
         foreach (var kind in Enum.GetValues<CloudKind>())
-            wrap.Children.Add(OfferCard(kind, totals));
+            // Le quantique n'apparaît qu'avec ses déblocages : l'écran de départ ne montre pas ses jauges
+            if (kind != CloudKind.Quantum || Campaign.IsUnlocked("advanced_lab") || Campaign.CloudOffers.Any(o => o.Kind == kind))
+                wrap.Children.Add(OfferCard(kind, totals));
         column.Children.Add(wrap);
         return column;
     }

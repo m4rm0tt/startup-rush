@@ -600,6 +600,14 @@ public class GameScreen : UserControl, IScreen
                 OpenRoot(new TreePanel());
                 PushPanel(new ResearchPanel());
                 break;
+            case "ai":
+                OpenRoot(new TreePanel());
+                PushPanel(new AiPanel());
+                break;
+            case "lab":
+                OpenRoot(new TreePanel());
+                PushPanel(new LabPanel());
+                break;
             case "tree" or "company":
                 OpenRoot(new TreePanel());
                 break;

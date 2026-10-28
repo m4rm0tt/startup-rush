@@ -95,6 +95,21 @@ public class ProjectPanel(int productId) : GamePanel
         return Ui.Section("Fabrication et ventes", column);
     }
 
+    /// <summary>L'IA d'un produit : le modèle branché, sa qualité vue, et la capacité d'inférence contre la demande.</summary>
+    private Control AiSection(Product product)
+    {
+        var model = Campaign.FindAiModel(product.AiModelId);
+        double load = Campaign.AiLoad(product);
+        double capacity = Campaign.InferenceCapacity(product);
+        var column = Ui.Column(5,
+            Ui.Pair("Modèle", model == null ? "aucun (publie un modèle et branche-le)" : $"{model.Name}, version {model.LiveNumber}", model == null ? Palette.Ember : null),
+            model?.Live != null ? Ui.Pair("Qualité vue par les utilisateurs", $"{Campaign.AiQualityFor(model):P0}") : null,
+            load > 0 ? Ui.Pair("Inférence", $"{capacity:0.#} de puissance pour {load:0.#} demandés", capacity < load ? Palette.Ember : null) : null,
+            load > 0 && product.InferenceRented > 0 ? Ui.Pair("Location", $"{(decimal)product.InferenceRented * Core.ai.AiCatalog.ExternalInferencePrice:N0} CHF par mois") : null);
+        column.Children.Add(Ui.Button("Modèles et capacité", () => Open(new AiPanel()), "gold"));
+        return Ui.Section("Intelligence artificielle", column);
+    }
+
     private Control Overview(Product product)
     {
         var column = Ui.Column(10);
@@ -127,6 +142,18 @@ public class ProjectPanel(int productId) : GamePanel
         // Matériel : stock, coût, défauts, canaux de vente, fabrication
         if (product.IsHardware)
             column.Children.Add(HardwareSection(product));
+
+        // IA : le modèle qui propulse le produit, et ce que l'inférence permet de servir
+        if (product.ArchetypeId == "ai" || product.Level("ai_core") > 0 || product.Level("ai_feature") > 0 || product.AiModelId != 0)
+            column.Children.Add(AiSection(product));
+        if (product.ArchetypeId is "xr_app" or "xr_kit")
+        {
+            var zone = Campaign.BestXr();
+            column.Children.Add(Ui.Section("Zone de test XR", Ui.Muted(zone.Capacity > 0
+                ? $"Capacité {zone.Capacity:P0} : {zone.DefectCut:P0} de défauts en moins à chaque amélioration." + (zone.Missing.Count > 0 ? $" Il manque : {string.Join(", ", zone.Missing)}." : "")
+                : "Sans casque, balises ni tapis, aucun test immersif : les défauts restent.", 13),
+                Ui.Button("Studio, XR et quantique", () => Open(new LabPanel()), "tab")));
+        }
 
         // Automatisation avancée : l'équipe prépare seule les petites mises à jour
         if (product.IsLive && Campaign.IsUnlocked("automation"))
@@ -237,6 +264,8 @@ public class ProjectPanel(int productId) : GamePanel
             Show(Tab.Components, link["component:".Length..]);
         else if (link == "components")
             Show(Tab.Components);
+        else if (link == "ai")
+            Open(new AiPanel());
         else
             Show(Tab.Settings, link);
         Refresh();

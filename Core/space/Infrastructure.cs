@@ -22,10 +22,12 @@ public record InfraSummary(
     bool Supervised,
     decimal MonthlyCost,
     double Factor,
-    IReadOnlyList<string> Issues)
+    IReadOnlyList<string> Issues,
+    int QuantumUnits = 0,
+    double Quantum = 0)
 {
     /// <summary>Le site a-t-il un équipement d'hébergement ou de calcul ?</summary>
-    public bool Any => Hosting + Compute + Gpu + Storage > 0;
+    public bool Any => Hosting + Compute + Gpu + Storage + QuantumUnits > 0;
 
     /// <summary>Part de la consommation couverte par les onduleurs (0 à 1).</summary>
     public double BackupCoverage => PowerDraw <= 0 ? 1 : Math.Min(1, Backup / PowerDraw);
@@ -55,6 +57,9 @@ public static class Infrastructure
     /// <summary>Points de sécurité pour une cage complète.</summary>
     public const double FullSecurity = 8;
 
+    /// <summary>Unités de calcul quantique d'une installation stabilisée (cryostat fermé) en service ⚙️.</summary>
+    public const double QuantumPerUnit = 20;
+
     /// <summary>
     /// Ce que le site fournit sans rien acheter : électricité, froid naturel (fenêtres, ventilation) et accès internet. Un
     /// local de bureau n'est pas fait pour des baies ; la salle serveur et le datacenter, si.
@@ -70,6 +75,7 @@ public static class Infrastructure
         "datacenter" => (40, 0, 2_000),
         "hw_workshop" => (20, 3, 100),
         "factory" => (120, 10, 300),
+        "advanced_lab" => (40, 12, 200),
         _ => (5, 1, 50),
     };
 
@@ -159,7 +165,15 @@ public static class Infrastructure
         if (networkFactor < 1)
             issues.Add($"Débit réseau insuffisant : l'hébergement demande {networkNeeded:0} pour {network:0} (routeur, fibre).");
 
+        // Quantique : chaque cryostat fermé demande sa baie de contrôle et son support cryogénique ; le froid et l'énergie du site comptent
+        int Count(string id) => premises.Items.Count(i => i.DefId == id);
+        int closed = Count("quantum_cryostat_closed"), controls = Count("quantum_control_rack"), cryo = Count("cryo_support_unit");
+        int quantumUnits = Math.Min(closed, Math.Min(controls, cryo));
+        if (closed > quantumUnits)
+            issues.Add($"Cryostat fermé sans {(controls < cryo ? "baie de contrôle micro-ondes" : "support cryogénique")} : {closed - quantumUnits} installation(s) ne peuvent pas démarrer.");
+
         return new InfraSummary(hosting * factor * networkFactor, compute * factor, gpu * factor, storage * factor, network, networkNeeded,
-            power, draw, cooling, heat, backup, orgScore, Math.Min(1, security / FullSecurity), supervised, monthly, factor, issues);
+            power, draw, cooling, heat, backup, orgScore, Math.Min(1, security / FullSecurity), supervised, monthly, factor, issues,
+            quantumUnits, quantumUnits * QuantumPerUnit * factor);
     }
 }

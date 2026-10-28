@@ -55,6 +55,10 @@ public partial class Campaign
             CheckQueue(product);
         foreach (var project in Research.ToList())
             CompleteResearch(project);
+        foreach (var model in AiModels.Where(m => m.Training != null).ToList())
+            FinishTraining(model);
+        foreach (var quantum in QuantumSites.Where(q => q.WarmupLeft > 1))
+            quantum.WarmupLeft = 1;
         foreach (var person in People)
             person.CurrentWorkItemId = null;
         return Cheated("Tout le travail en file est terminé.");

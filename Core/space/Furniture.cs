@@ -64,6 +64,15 @@ public enum FurnitureKind
     /// <summary>Zone et utilités d'usine (salle propre, aspiration, armoire de contrôle, rodage).</summary>
     Facility,
 
+    /// <summary>Studio audiovisuel (caméra, fond vert, éclairage, micro, enceintes) : qualité du contenu et de la présentation.</summary>
+    Studio,
+
+    /// <summary>Zone de test XR (casque, balises, tapis) : tests immersifs simulés.</summary>
+    Xr,
+
+    /// <summary>Installation quantique (cryostat, baie de contrôle, support cryogénique), à la charge du site en froid et en énergie.</summary>
+    Quantum,
+
     /// <summary>Objet du pack sans effet de jeu pour l'instant : il se dessine, rien de plus (voir docs/asset_usage.csv).</summary>
     Decor
 }
@@ -351,6 +360,24 @@ public static class FurnitureCatalog
         new("cleanroom_airlock", "Sas de salle propre", FurnitureKind.Facility, 12_000m, "L'entrée de la salle propre.") { Power = 1, UnlockNode = "cleanroom" },
         new("dust_extraction", "Centrale d'aspiration", FurnitureKind.Facility, 6_000m, "Filtration de l'air de la salle propre.") { Power = 2, UnlockNode = "cleanroom" },
         new("industrial_chiller", "Groupe de refroidissement", FurnitureKind.Utility, 15_000m, "Évacue 30 kW de chaleur ; consomme 6 kW. Demandé par la salle propre.") { Cooling = 30, Power = 6, UnlockNode = "industry" },
+
+        // Lot 6 : studio audiovisuel, zone XR, calcul avancé et quantique
+        new("camera_tripod", "Caméra sur trépied", FurnitureKind.Studio, 900m, "Studio : la capture vidéo (jeux, campagnes, présentation). 0,05 kW.") { Power = 0.05, UnlockNode = "studio" },
+        new("greenscreen_backdrop", "Fond vert sur portique", FurnitureKind.Studio, 700m, "Studio : le fond des vidéos et des trailers.") { UnlockNode = "studio" },
+        new("softbox_light", "Éclairage softbox", FurnitureKind.Studio, 350m, "Studio : la lumière (deux au plus comptent). 0,2 kW.") { Power = 0.2, UnlockNode = "studio" },
+        new("mic_stand", "Pied de micro avec perche", FurnitureKind.Studio, 280m, "Studio : la capture du son (voix, effets).") { UnlockNode = "studio" },
+        new("studio_monitors", "Enceintes de studio (paire)", FurnitureKind.Studio, 650m, "Sur un bureau : le contrôle audio du studio. 0,1 kW.") { Power = 0.1, UnlockNode = "studio" },
+        new("xr_headset_stand", "Casque XR sur support", FurnitureKind.Xr, 1_200m, "Sur un bureau : de quoi tester seul un prototype XR. 0,05 kW.") { Power = 0.05, UnlockNode = "xr" },
+        new("xr_base_station", "Balise de suivi XR sur pied", FurnitureKind.Xr, 450m, "Zone XR : le suivi de la zone (deux au plus comptent). 0,05 kW.") { Power = 0.05, UnlockNode = "xr" },
+        new("xr_play_mat", "Tapis de zone de jeu XR", FurnitureKind.Xr, 600m, "Zone XR : l'emprise de la zone de test, avec le casque et les balises.") { UnlockNode = "xr" },
+        new("compute_cabinet", "Calculateur avancé (armoire)", FurnitureKind.Server, 18_000m, "Calcul : 120 unités, pour l'entraînement des gros modèles et la recherche. 2,5 kW.") { Compute = 120, Power = 2.5, UnlockNode = "advanced_lab" },
+        new("supervision_terminal", "Terminal de supervision (pupitre)", FurnitureKind.Supervision, 1_800m, "Surveille le site : incidents deux fois moins fréquents, organisation +0,5.") { Organization = 0.5, UnlockNode = "server_room" },
+        new("quantum_control_rack", "Baie de contrôle micro-ondes", FurnitureKind.Quantum, 35_000m, "Pilote un cryostat (une par cryostat). 1,5 kW.") { Power = 1.5, UnlockNode = "advanced_lab" },
+        new("cryo_support_unit", "Unité de support cryogénique", FurnitureKind.Quantum, 60_000m, "Refroidit un cryostat (une par cryostat). 5 kW.") { Power = 5, UnlockNode = "advanced_lab" },
+        new("quantum_cryostat_open", "Ordinateur quantique (cryostat ouvert)", FurnitureKind.Quantum, 120_000m,
+            "Installation expérimentale : calibration et recherches quantiques (rendement de recherche). Avec une baie de contrôle et un support cryogénique. 6 kW.") { Power = 6, UnlockNode = "advanced_lab" },
+        new("quantum_cryostat_closed", "Ordinateur quantique (cryostat fermé)", FurnitureKind.Quantum, 380_000m,
+            "Installation stabilisée : 20 unités de calcul quantique à vendre, après 14 jours de mise en route. Avec une baie de contrôle et un support cryogénique. 8 kW.") { Power = 8, UnlockNode = "res_cryo" },
 
         new("workstation_compute", "Poste de calcul avancé", FurnitureKind.Tower, 3_900m, "Production ×1,05 ; apporte 12 unités de calcul au site. 0,4 kW. Demande un écran et un clavier.") { Output = 1.05, Compute = 12, Power = 0.4 },
     ];

@@ -248,6 +248,8 @@ public static class Icons
         ["skull"] = ("icon_error", "#a23a34"), ["star"] = ("icon_star", "#c9922e"), ["suit"] = ("icon_user", "#2b2128"),
         ["tag"] = ("icon_price", "#2b2128"), ["trophy"] = ("icon_trophy", "#c9922e"), ["user"] = ("icon_user", "#2b2128"),
         ["warning"] = ("icon_warning", "#a23a34"), ["wifi"] = ("icon_network", "#2b2128"),
+        ["ai"] = ("icon_ai", "#2b2128"), ["quantum"] = ("icon_quantum", "#2b2128"), ["gpu"] = ("icon_gpu", "#2b2128"),
+        ["server"] = ("icon_server", "#2b2128"), ["teststation"] = ("icon_test_station", "#2b2128"), ["training"] = ("icon_training", "#2b2128"),
     };
 
     public static Avalonia.Media.Imaging.Bitmap Get(string key)

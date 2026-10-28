@@ -94,7 +94,11 @@ public static class Ui
     /// </summary>
     public static Button IconButton(string icon, Action onClick, string tip, string? label = null, bool selected = false, bool enabled = true, string style = "icon")
     {
-        Control content = label == null ? Icon(icon, 24) : Row(6, Icon(icon, 24), Text(label, 15, wrap: false));
+        // Le libellé hérite de la couleur du bouton (texte clair sur un bouton rouge ou doré)
+        var caption = label == null ? null : new TextBlock { Text = label, FontSize = 15 };
+        bool onAccent = style.Contains("red") || style.Contains("gold");
+        var image = Image(Icons.Get(icon, onAccent ? "#fbf5e6" : "#2b2128"), 24, 24);
+        Control content = caption == null ? image : Row(6, image, caption);
         if (content is StackPanel row)
             foreach (var child in row.Children)
                 child.VerticalAlignment = VerticalAlignment.Center;

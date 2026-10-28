@@ -32,10 +32,10 @@ public class GameScreen : UserControl, IScreen
     private readonly Grid _hud = new();
     private readonly LayoutTransformControl _scaler;
     private readonly ContentControl _topBar = new();
-    private readonly PixelPanel _panelFrame = new() { Padding = new Thickness(14, 10) };
+    private readonly PixelPanel _panelFrame = new() { Skin = "pack:hud_window", Padding = new Thickness(12, 4, 12, 14) };
     private readonly ContentControl _panelBody = new();
     private readonly ContentControl _inspector = new() { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom };
-    private readonly StackPanel _toasts = new() { Spacing = 6, Width = 380, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, 60, 10, 0) };
+    private readonly StackPanel _toasts = new() { Spacing = 6, Width = 380, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(10, 0, 0, 84) };
     private readonly Grid _modalLayer = new() { IsVisible = false, Background = new SolidColorBrush(Color.Parse("#962b2128")) };
     private readonly ContentControl _modalHost = new() { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
     private readonly StackPanel _toolbar = new() { Orientation = Orientation.Horizontal, Spacing = 4 };
@@ -198,9 +198,12 @@ public class GameScreen : UserControl, IScreen
         var (runway, assumptions) = c.Runway();
         var state = c.Solvency.State;
 
-        var left = Ui.Row(14,
-            Ui.Column(0, Ui.Text(c.MainCompany.Name, 16, Palette.Snow, bold: true, wrap: false), Ui.Muted(c.Premises.Name, 12)),
-            Ui.Column(0, Ui.Number($"{GameTime.DayName(date.DayOfWeek)} {date:dd.MM.yyyy}", 20), Ui.Number($"{date:HH:mm}", 20, Palette.Lemon)));
+        // Barre du haut du pack (maquette « HUD compact ») : fond marine, groupes, puce de trésorerie, textes clairs
+        var light = Palette.Paper;
+        var left = Ui.Row(0,
+            TopSegment("icon_company", Ui.Column(0, Ui.Text(c.MainCompany.Name, 16, light, bold: true, wrap: false), Ui.Text(c.Premises.Name, 12, TopMuted, wrap: false))),
+            TopDivider(),
+            TopSegment("icon_calendar", Ui.Row(10, Ui.Number($"{GameTime.DayName(date.DayOfWeek)} {date:dd.MM.yyyy}", 20, light), Ui.Number($"{date:HH:mm}", 20, TopAccent))));
 
         var speeds = Ui.Row(4);
         speeds.Children.Add(Ui.IconButton("icon_pause", Session.TogglePause, "Pause (Espace)", selected: Session.PausedByPlayer));
@@ -215,46 +218,76 @@ public class GameScreen : UserControl, IScreen
             ? Ui.Tag($"PAUSE : {Session.AutoPause}", Palette.Lemon)
             : Session.Settings.FastNights && !c.AnyoneInOffice && Session.Running ? Ui.Tag("Nuit accélérée", Palette.Steel, Palette.Snow) : new Control();
 
-        var stateColor = state switch
-        {
-            SolvencyState.Healthy => Palette.Leaf,
-            SolvencyState.Tight => Palette.Lemon,
-            SolvencyState.Overdue => Palette.Ember,
-            _ => Palette.Blood
-        };
         decimal monthly = c.RecurringRevenue30 - c.MonthlyFixedCosts;
-        var cash = Ui.Column(0, Ui.Number(Ui.Chf(c.Ledger.Cash), 22, Ui.Signed(c.Ledger.Cash)), Ui.Text($"{Ui.SignedChf(monthly)} / mois", 12, Ui.Signed(monthly), wrap: false));
+        // Puce de trésorerie du pack (la pièce est dans sa marge gauche), résultat du mois dessous
+        var chip = new PixelPanel
+        {
+            Skin = "pack:hud_money_chip", Padding = new Thickness(24, 2, 10, 5),
+            Child = Ui.Number(Ui.Chf(c.Ledger.Cash), 20, c.Ledger.Cash < 0 ? Palette.Blood : Palette.Ink),
+        };
+        var cash = Ui.Column(2, chip, Ui.Text($"{Ui.SignedChf(monthly)} / mois", 12, monthly < 0 ? TopDanger : TopSuccess, wrap: false));
         ToolTip.SetTip(cash, assumptions);
         Control? solvency = null;
         if (state != SolvencyState.Healthy)
         {
             var warning = Ui.Button(state == SolvencyState.Tight ? $"{runway:0} j d'argent" : Solvency.Name(state), () => OpenRoot(new FinancePanel()), "tab");
-            warning.Foreground = stateColor;
+            warning.Foreground = state == SolvencyState.Tight ? TopAccent : TopDanger;
             solvency = warning;
         }
 
         int problems = c.Notices.Count(n => n.IsProblem && !n.Resolved);
-        var bell = Ui.IconButton("icon_bell", () => OpenRoot(new NoticesPanel()), "Journal (N)", problems > 0 ? $"À traiter ({problems})" : "Journal",
+        var bell = Ui.IconButton("icon_bell", () => OpenRoot(new NoticesPanel()), "Journal (N)", problems > 0 ? "À traiter" : "Journal",
             style: problems > 0 ? "red" : "icon");
+        Control bellWithCount = bell;
+        if (problems > 0)
+        {
+            // Pastille compteur du pack sur le coin de la cloche
+            var count = new PixelPanel
+            {
+                Skin = "pack:hud_badge_count", Padding = new Thickness(6, 3, 6, 5), MinWidth = 24, MinHeight = 24,
+                HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, -8, -8, 0),
+                Child = Ui.Text(problems > 99 ? "99+" : $"{problems}", 12, Palette.Paper, bold: true, wrap: false),
+                IsHitTestVisible = false,
+            };
+            bellWithCount = new Panel { Children = { bell, count } };
+        }
+        var settings = Ui.IconButton("icon_settings", ShowPauseMenu, "Menu et réglages (Échap)");
 
-        var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto,*"), Margin = new Thickness(10, 6) };
+        var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto,*"), Margin = new Thickness(8, 4, 8, 8) };
         grid.Children.Add(left);
         var center = Ui.Row(10, speeds, timeInfo);
         center.HorizontalAlignment = HorizontalAlignment.Center;
         Grid.SetColumn(center, 1);
         grid.Children.Add(center);
-        var right = Ui.Row(10, cash, solvency, bell);
+        var right = Ui.Row(10, cash, solvency, bellWithCount, settings);
         right.HorizontalAlignment = HorizontalAlignment.Right;
+        foreach (var child in right.Children)
+            child.VerticalAlignment = VerticalAlignment.Center;
         Grid.SetColumn(right, 2);
         grid.Children.Add(right);
-        _topBar.Content = new Border
-        {
-            Background = new SolidColorBrush(Color.Parse("#f0fbf5e6")),
-            BorderBrush = Palette.Slate,
-            BorderThickness = new Thickness(0, 0, 0, 2),
-            Child = grid,
-        };
+        _topBar.Content = new PixelPanel { Skin = "pack:hud_topbar_bg", Child = grid };
     }
+
+    // Couleurs lisibles sur le fond marine de la barre du haut (jetons du thème « Papier »)
+    private static readonly IBrush TopMuted = Palette.Brush("#c2ae94");
+    private static readonly IBrush TopAccent = Palette.Brush("#fbd769");
+    private static readonly IBrush TopSuccess = Palette.Brush("#8fc062");
+    private static readonly IBrush TopDanger = Palette.Brush("#e46c5a");
+
+    /// <summary>Un groupe de la barre du haut : icône claire et son contenu, dans le cadre « hud_topbar_segment ».</summary>
+    private static Control TopSegment(string icon, Control content)
+    {
+        var image = Ui.Image(Icons.Get(icon, "#fbf5e6"), 24, 24);
+        image.VerticalAlignment = VerticalAlignment.Center;
+        content.VerticalAlignment = VerticalAlignment.Center;
+        return new PixelPanel { Skin = "pack:hud_topbar_segment", Padding = new Thickness(10, 4, 12, 6), Child = Ui.Row(8, image, content) };
+    }
+
+    /// <summary>Séparateur vertical entre deux groupes de la barre du haut.</summary>
+    private static Control TopDivider() => new PixelPanel
+    {
+        Skin = "pack:hud_topbar_divider", Width = 6, Margin = new Thickness(6, 4), VerticalAlignment = VerticalAlignment.Stretch,
+    };
 
     // ------------------------------------------------------------------ Barre d'outils
 
@@ -416,20 +449,10 @@ public class GameScreen : UserControl, IScreen
             return;
         }
 
-        var header = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"), Margin = new Thickness(0, 0, 0, 8) };
-        if (_stack.Count > 1)
-        {
-            var back = Ui.IconButton("icon_back", PopPanel, "Retour (Échap)", "Retour");
-            back.Margin = new Thickness(0, 0, 10, 0);
-            header.Children.Add(back);
-        }
-        var titles = Ui.Column(0, Ui.Title(panel.Title, 22), Ui.Muted(panel.Context, 13));
-        Grid.SetColumn(titles, 1);
-        header.Children.Add(titles);
-        var close = Ui.IconButton("icon_close", ClosePanels, "Fermer");
-        close.VerticalAlignment = VerticalAlignment.Top;
-        Grid.SetColumn(close, 2);
-        header.Children.Add(close);
+        // Fenêtre du pack : titre dans la bande sarcelle, le contexte juste dessous
+        var header = Ui.Column(4, WindowTitle(panel.Title, ClosePanels, _stack.Count > 1 ? PopPanel : null), Ui.Muted(panel.Context, 13));
+        header.Margin = new Thickness(0, 0, 0, 8);
+        header.Children[1].Margin = new Thickness(4, 0, 0, 0);
 
         // On garde la position de défilement quand le contenu est reconstruit
         double offset = (_panelBody.Content as DockPanel)?.Children.OfType<ScrollViewer>().FirstOrDefault()?.Offset.Y ?? 0;
@@ -498,26 +521,48 @@ public class GameScreen : UserControl, IScreen
     /// <summary>Propositions arrivées pendant la saisie au terminal, montrées à sa fermeture.</summary>
     private readonly List<Notice> _deferred = new();
 
-    public void Toast(string message, bool ok) => AddToast(Ui.Text(message, 15, ok ? Palette.Snow : Palette.Lemon), ok ? null : Palette.Ember, null);
+    /// <summary>Retour d'une action : toast sombre du pack si elle a réussi, notification « attention » sinon.</summary>
+    public void Toast(string message, bool ok)
+    {
+        if (ok)
+            AddToast(Ui.Text(message, 15, Palette.Paper), "pack:hud_toast", new Thickness(12, 6, 12, 10), null);
+        else
+            AddToast(Notification("warning", Ui.Text(message, 15, Palette.Ink)), "pack:hud_notification:warning", new Thickness(18, 8, 12, 12), null);
+    }
 
     private void ToastNotice(Notice notice)
     {
-        var color = notice.Severity switch
+        // Le sens se lit à la bande de couleur ET à l'icône, jamais à la couleur seule
+        string state = notice.Severity switch
         {
-            Severity.Critical => Palette.Blood,
-            Severity.Warning => Palette.Ember,
-            Severity.Good => Palette.Leaf,
-            _ => Palette.Sky
+            Severity.Critical => "danger",
+            Severity.Warning => "warning",
+            Severity.Good => "success",
+            _ => "info"
         };
-        var content = Ui.Column(2, Ui.Text(notice.Title, 15, Palette.Snow, bold: true), string.IsNullOrEmpty(notice.Detail) ? null : Ui.Muted(Shorten(notice.Detail, 140), 13));
-        AddToast(content, color, () => Navigate(notice));
+        var content = Ui.Column(2, Ui.Text(notice.Title, 15, Palette.Ink, bold: true), string.IsNullOrEmpty(notice.Detail) ? null : Ui.Muted(Shorten(notice.Detail, 140), 13));
+        AddToast(Notification(state, content), $"pack:hud_notification:{state}", new Thickness(18, 8, 12, 12), () => Navigate(notice));
+    }
+
+    /// <summary>Icône de sens à gauche du texte d'une notification.</summary>
+    private static Control Notification(string state, Control content)
+    {
+        var icon = Ui.Icon(state switch { "danger" => "icon_error", "warning" => "icon_warning", "success" => "icon_success", _ => "icon_info" }, 24);
+        icon.VerticalAlignment = VerticalAlignment.Top;
+        icon.Margin = new Thickness(0, 0, 10, 0);
+        // Une grille, pas une rangée : le texte garde une largeur finie et revient à la ligne
+        var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*") };
+        grid.Children.Add(icon);
+        Grid.SetColumn(content, 1);
+        grid.Children.Add(content);
+        return grid;
     }
 
     private static string Shorten(string text, int max) => text.Length <= max ? text : text[..max] + "…";
 
-    private void AddToast(Control content, IBrush? border, Action? click)
+    private void AddToast(Control content, string skin, Thickness padding, Action? click)
     {
-        var frame = new PixelPanel { Padding = new Thickness(10, 6, 10, 10), Child = content, BorderBrush = border, BorderThickness = new Thickness(border != null ? 3 : 0) };
+        var frame = new PixelPanel { Skin = skin, Padding = padding, Child = content };
         if (click != null)
         {
             frame.Cursor = new Cursor(StandardCursorType.Hand);
@@ -530,10 +575,11 @@ public class GameScreen : UserControl, IScreen
         }
         else
             frame.PointerPressed += (_, e) => e.Handled = true;
-        _toasts.Children.Insert(0, frame);
+        // En bas à gauche, au-dessus de la barre d'outils (comme la maquette du pack) : la plus récente en bas
+        _toasts.Children.Add(frame);
         _toastAges.Add((frame, 0));
         while (_toasts.Children.Count > 4)
-            _toasts.Children.RemoveAt(_toasts.Children.Count - 1);
+            _toasts.Children.RemoveAt(0);
     }
 
     private void UpdateToasts(double deltaTime)
@@ -621,9 +667,19 @@ public class GameScreen : UserControl, IScreen
 
     // ------------------------------------------------------------------ Fenêtres modales
 
-    public void ShowModal(Control content, Action? onClose = null, double width = 520)
+    /// <summary>
+    /// Fenêtre modale. Avec un titre : cadre « hud_modal » du pack, titre dans la barre sarcelle ; sans titre : simple panneau
+    /// (mini-jeux, menu de pause, qui ont leur propre mise en page).
+    /// </summary>
+    public void ShowModal(Control content, Action? onClose = null, double width = 520, string? title = null)
     {
-        _modalHost.Content = new PixelPanel { Padding = new Thickness(22, 16), Width = width, Child = content };
+        _modalHost.Content = title == null
+            ? new PixelPanel { Padding = new Thickness(22, 16), Width = width, Child = content }
+            : new PixelPanel
+            {
+                Skin = "pack:hud_modal", Padding = new Thickness(12, 4, 12, 18), Width = width,
+                Child = Ui.Column(14, WindowTitle(title, CloseModal), new Border { Padding = new Thickness(8, 0), Child = content }),
+            };
         _modalLayer.IsVisible = true;
         _modalClose = onClose;
         UpdateAutoPause();
@@ -643,14 +699,48 @@ public class GameScreen : UserControl, IScreen
     /// <summary>Demande confirmation avant une action importante (vente, licenciement, déménagement...).</summary>
     public void Confirm(string title, string detail, string action, Action confirmed, bool danger = true)
     {
-        ShowModal(Ui.Column(12,
-            Ui.Title(title),
-            Ui.Text(detail, 16),
-            Ui.Row(Ui.Button(action, () =>
-            {
-                CloseModal();
-                confirmed();
-            }, danger ? "red" : "gold"), Ui.Button("Annuler", CloseModal))));
+        // Composition « hud_confirm_dialog » du pack : icône de gravité, message, puis Annuler et l'action à droite
+        var icon = Ui.Icon(danger ? "icon_warning" : "icon_help", 32);
+        icon.VerticalAlignment = VerticalAlignment.Top;
+        var message = Ui.Text(detail, 16);
+        message.Width = 380;
+        var buttons = Ui.Row(10, Ui.Button("Annuler", CloseModal), Ui.Button(action, () =>
+        {
+            CloseModal();
+            confirmed();
+        }, danger ? "red" : "gold"));
+        buttons.HorizontalAlignment = HorizontalAlignment.Right;
+        ShowModal(Ui.Column(18, Ui.Row(14, icon, message), buttons), null, 500, title);
+    }
+
+    /// <summary>Barre de titre d'une fenêtre du pack : titre clair sur la bande sarcelle, retour et fermeture à ses bouts.</summary>
+    private static Grid WindowTitle(string title, Action close, Action? back = null)
+    {
+        var bar = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"), Height = 32 };
+        if (back != null)
+        {
+            var backButton = SmallIconButton("icon_back", back, "Retour (Échap)");
+            backButton.Margin = new Thickness(0, 0, 8, 0);
+            bar.Children.Add(backButton);
+        }
+        var text = Ui.Text(title, 20, Palette.Paper, bold: true, wrap: false);
+        text.VerticalAlignment = VerticalAlignment.Center;
+        text.TextTrimming = TextTrimming.CharacterEllipsis;
+        Grid.SetColumn(text, 1);
+        bar.Children.Add(text);
+        var closeButton = SmallIconButton("icon_close", close, "Fermer");
+        Grid.SetColumn(closeButton, 2);
+        bar.Children.Add(closeButton);
+        return bar;
+    }
+
+    /// <summary>Petit bouton à icône du pack (hud_button_icon_small), pour les barres de titre.</summary>
+    private static Button SmallIconButton(string icon, Action click, string tip)
+    {
+        var button = Ui.IconButton(icon, click, tip, style: "icon small");
+        button.Content = Ui.Image(Icons.Get(icon, "#fbf5e6"), 16, 16);
+        button.VerticalAlignment = VerticalAlignment.Center;
+        return button;
     }
 
     private void ShowPauseMenu()
@@ -659,7 +749,6 @@ public class GameScreen : UserControl, IScreen
         var c = Session.Campaign;
         string? saveName = null;
         var column = Ui.Column(10,
-            Ui.Title("Pause", 28),
             Ui.Muted($"{c.Name} · {GameTime.Format(c.Minute)}"),
             Ui.Button("Reprendre", CloseModal, "gold"),
             Ui.Section("Sauvegarder",
@@ -674,7 +763,7 @@ public class GameScreen : UserControl, IScreen
             Ui.Button("Réglages", () => ShowModal(SettingsScreen.SettingsForm(Window, ShowPauseSettings, ShowPauseMenu), null, 560)),
             Ui.Button("Menu principal", () => Leave(() => Window.ShowTitle())),
             Ui.Muted("Quitter le menu ou la partie enregistre automatiquement une sauvegarde de sortie. Rien n'est jamais effacé."));
-        ShowModal(column, null, 460);
+        ShowModal(column, null, 460, "Pause");
         _pauseMenu = true;
         UpdateAutoPause();
     }

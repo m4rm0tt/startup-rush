@@ -221,6 +221,13 @@
         <Style Selector="Button.icon:pointerover /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon:hover"/></Style>
         <Style Selector="Button.icon:pressed /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon:pressed"/></Style>
         <Style Selector="Button.icon.selected /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon:toggled"/></Style>
+        <!-- Petits boutons à icône des barres de titre -->
+        <Style Selector="Button.icon.small">
+            <Setter Property="Padding" Value="6,5,6,7"/>
+        </Style>
+        <Style Selector="Button.icon.small /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon_small:normal"/></Style>
+        <Style Selector="Button.icon.small:pointerover /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon_small:hover"/></Style>
+        <Style Selector="Button.icon.small:pressed /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon_small:pressed"/></Style>
         <Style Selector="Button.green">
             <Setter Property="Foreground" Value="{StaticResource OnAccent}"/>
         </Style>

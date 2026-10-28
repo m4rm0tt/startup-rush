@@ -28,9 +28,13 @@ public static class Reviews
         double liquidity = recent.Average(d => d.Liquidity);
         string players = product.ArchetypeId == "game" ? "joueurs" : "utilisateurs";
 
+        // IA : une inférence saturée ralentit aussi le produit ; si les serveurs suivent, c'est vers l'IA qu'il faut renvoyer
+        double aiLoad = recent.Average(d => d.AiUtilization);
+        bool aiShort = product.AiModelId != 0 && aiLoad > 0.95;
+        bool hostingShort = Market.Load(product, unlocked("optimization")) > product.Capacity * 0.85;
         if (perf < 0.97 || downtime > 0)
             trends.Add(new("perf", false, Math.Clamp((1 - perf) * 2 + downtime / 48, 0.1, 0.8),
-                downtime > 0 ? "« Ça ne marche plus du tout par moments. »" : "« C'est lent à charger. »", "hosting"));
+                downtime > 0 ? "« Ça ne marche plus du tout par moments. »" : "« C'est lent à charger. »", aiShort && !hostingShort ? "ai" : "hosting"));
         if (bugs > 0.06)
             trends.Add(new("bugs", false, Math.Clamp(bugs * 1.5, 0.1, 0.7), "« Ça plante trop souvent. »", "upkeep"));
         if (support < 0.85 && product.Archetype.TicketFactor > 0.55)
@@ -38,8 +42,7 @@ public static class Reviews
         if (price < 0.7 && product.Model != RevenueModel.Ads)
             trends.Add(new("price", false, Math.Clamp((1 - price) * 0.8, 0.1, 0.6), "« Trop cher pour ce que c'est. »", "price"));
         // IA : la capacité d'inférence plafonne l'audience servie (délai et coût d'usage)
-        double aiLoad = recent.Average(d => d.AiUtilization);
-        if (product.AiModelId != 0 && aiLoad > 0.95)
+        if (aiShort)
             trends.Add(new("ai_capacity", false, Math.Clamp((aiLoad - 0.9) * 0.8, 0.1, 0.7),
                 "« Les réponses mettent trop de temps, parfois elles échouent. »", "ai"));
         if (product.ArchetypeId == "marketplace" && liquidity < 0.6)

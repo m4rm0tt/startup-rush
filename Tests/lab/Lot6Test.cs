@@ -252,9 +252,12 @@ public class Lot6Test
             Components = [new() { DefId = "ai_core", Level = 1, Quality = 0.8 }, new() { DefId = "ui", Level = 1, Quality = 0.6 }],
         };
         for (int i = 0; i < 7; i++)
-            product.History.Add(new ProductDay { Day = i, Appeal = 0.5, Performance = 1, SupportFactor = 1, PriceFactor = 1, Liquidity = 1, AiUtilization = 1.6, AiServed = 0.6 });
+            // Comme dans Market : une inférence saturée fait aussi chuter la performance
+            product.History.Add(new ProductDay { Day = i, Appeal = 0.5, Performance = 0.6, SupportFactor = 1, PriceFactor = 1, Liquidity = 1, AiUtilization = 1.6, AiServed = 0.6 });
         var trends = Reviews.Trends(product, 10_000, _ => true);
         Assert.That(trends, Has.Some.Matches<ReviewTrend>(t => t.Cause == "ai_capacity" && t.Link == "ai" && !t.Positive));
+        Assert.That(trends.Where(t => !t.Positive).Select(t => t.Link), Has.None.EqualTo("hosting"),
+            "les serveurs suivent : renvoyer vers l'hébergement ne réglerait rien");
     }
 
     [Test]

@@ -203,13 +203,13 @@ public class GameScreen : UserControl, IScreen
             Ui.Column(0, Ui.Number($"{GameTime.DayName(date.DayOfWeek)} {date:dd.MM.yyyy}", 20), Ui.Number($"{date:HH:mm}", 20, Palette.Lemon)));
 
         var speeds = Ui.Row(4);
-        var pause = Ui.Button(Session.PausedByPlayer ? "▶" : "❚❚", Session.TogglePause, Session.PausedByPlayer ? "tab selected" : "tab", tip: "Pause (Espace)");
-        speeds.Children.Add(pause);
+        speeds.Children.Add(Ui.IconButton("icon_pause", Session.TogglePause, "Pause (Espace)", selected: Session.PausedByPlayer));
+        // Trois icônes de vitesse dans le pack pour quatre vitesses : le chiffre lève toute ambiguïté
         for (int i = 1; i < GameSession.Speeds.Length; i++)
         {
             int speed = i;
-            speeds.Children.Add(Ui.Button(new string('›', i), () => Session.SetSpeed(speed),
-                !Session.PausedByPlayer && Session.Speed == i ? "tab selected" : "tab", tip: $"Vitesse {i} ({GameSession.Speeds[i]:0} min de jeu par seconde) — touche {i}"));
+            speeds.Children.Add(Ui.IconButton($"icon_speed_{Math.Min(i, 3)}", () => Session.SetSpeed(speed),
+                $"Vitesse {i} ({GameSession.Speeds[i]:0} min de jeu par seconde) — touche {i}", $"{i}", !Session.PausedByPlayer && Session.Speed == i));
         }
         Control timeInfo = Session.AutoPause != null
             ? Ui.Tag($"PAUSE : {Session.AutoPause}", Palette.Lemon)
@@ -234,7 +234,8 @@ public class GameScreen : UserControl, IScreen
         }
 
         int problems = c.Notices.Count(n => n.IsProblem && !n.Resolved);
-        var bell = Ui.Button(problems > 0 ? $"À traiter ({problems})" : "Journal", () => OpenRoot(new NoticesPanel()), problems > 0 ? "red" : "tab", tip: "Journal (N)");
+        var bell = Ui.IconButton("icon_bell", () => OpenRoot(new NoticesPanel()), "Journal (N)", problems > 0 ? $"À traiter ({problems})" : "Journal",
+            style: problems > 0 ? "red" : "icon");
 
         var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto,*"), Margin = new Thickness(10, 6) };
         grid.Children.Add(left);
@@ -418,14 +419,15 @@ public class GameScreen : UserControl, IScreen
         var header = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"), Margin = new Thickness(0, 0, 0, 8) };
         if (_stack.Count > 1)
         {
-            var back = Ui.Button("‹ Retour", PopPanel, "tab", tip: "Retour (Échap)");
+            var back = Ui.IconButton("icon_back", PopPanel, "Retour (Échap)", "Retour");
             back.Margin = new Thickness(0, 0, 10, 0);
             header.Children.Add(back);
         }
         var titles = Ui.Column(0, Ui.Title(panel.Title, 22), Ui.Muted(panel.Context, 13));
         Grid.SetColumn(titles, 1);
         header.Children.Add(titles);
-        var close = Ui.Button("✕", ClosePanels, "tab", tip: "Fermer");
+        var close = Ui.IconButton("icon_close", ClosePanels, "Fermer");
+        close.VerticalAlignment = VerticalAlignment.Top;
         Grid.SetColumn(close, 2);
         header.Children.Add(close);
 

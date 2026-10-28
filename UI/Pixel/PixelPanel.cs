@@ -18,7 +18,8 @@ public class PixelPanel : Decorator, Avalonia.Rendering.ICustomHitTest
     /// <summary>Tout le cadre capte la souris : un clic sur un menu n'atteint jamais la scène derrière.</summary>
     public bool HitTest(Point point) => Skin != "none" && new Rect(Bounds.Size).Contains(point);
 
-    private const double Unit = 2; // unités d'interface par pixel du composant
+    /// <summary>Unités d'interface par pixel du composant (2 ; 1 pour les petites pièces comme les barres).</summary>
+    public double Scale { get; set; } = 2;
 
     /// <summary>Nom de cadre du jeu → composant du pack et état.</summary>
     private static readonly Dictionary<string, (string Component, string? State)> Skins = new()
@@ -47,14 +48,16 @@ public class PixelPanel : Decorator, Avalonia.Rendering.ICustomHitTest
     {
         if (Cache.TryGetValue(skin, out var frame))
             return frame;
-        // « pack:term_frame » : un composant 9-slice du pack donné directement par son identifiant
-        var (component, state) = skin.StartsWith("pack:") ? (skin[5..], (string?)null) : Skins.TryGetValue(skin, out var s) ? s : Skins["panel"];
+        // « pack:term_frame » ou « pack:hud_tabs:active » : un composant du pack donné par son identifiant (et son état)
+        (string component, string? state) = skin.StartsWith("pack:")
+            ? skin[5..].Split(':') is [var id, var st0] ? (id, st0) : (skin[5..], null)
+            : Skins.TryGetValue(skin, out var s) ? s : Skins["panel"];
         var asset = PackLibrary.Asset(component);
-        string file = state != null && asset.TryGetProperty("states", out var states) && states.TryGetProperty(state, out var st)
-            ? st.GetProperty("file").GetString()!
-            : asset.GetProperty("file").GetString()!;
-        var slice = asset.GetProperty("nine_slice");
-        var margins = new[] { slice[0].GetInt32(), slice[1].GetInt32(), slice[2].GetInt32(), slice[3].GetInt32() };
+        string file = PackLibrary.StateFile(asset, state);
+        // Un sprite sans marges (case, curseur de glissière) s'étire en entier
+        int[] margins = asset.TryGetProperty("nine_slice", out var slice)
+            ? [slice[0].GetInt32(), slice[1].GetInt32(), slice[2].GetInt32(), slice[3].GetInt32()]
+            : [0, 0, 0, 0];
         return Cache[skin] = (PackLibrary.Png(file).ToBitmap(), margins);
     }
 
@@ -108,25 +111,26 @@ public class PixelPanel : Decorator, Avalonia.Rendering.ICustomHitTest
         if (Skin == "none")
             return;
         var (image, slice) = Frame(Skin);
-        if (size.Width < (slice[0] + slice[2]) * Unit || size.Height < (slice[1] + slice[3]) * Unit)
+        double unit = Scale;
+        if (size.Width < (slice[0] + slice[2]) * unit || size.Height < (slice[1] + slice[3]) * unit)
             return;
         using (context.PushRenderOptions(new RenderOptions { BitmapInterpolationMode = BitmapInterpolationMode.None }))
-            DrawNineSlice(context, image, slice, size);
+            DrawNineSlice(context, image, slice, size, unit);
 
         // Le fond, à l'intérieur des bords
         if (Background != null)
-            context.FillRectangle(Background, new Rect(slice[0] * Unit, slice[1] * Unit,
-                size.Width - (slice[0] + slice[2]) * Unit, size.Height - (slice[1] + slice[3]) * Unit));
+            context.FillRectangle(Background, new Rect(slice[0] * unit, slice[1] * unit,
+                size.Width - (slice[0] + slice[2]) * unit, size.Height - (slice[1] + slice[3]) * unit));
 
         double thickness = BorderThickness.Left;
         if (BorderBrush != null && thickness > 0)
         {
-            var outline = new Rect(0, 0, size.Width, size.Height - Unit).Deflate(thickness / 2);
+            var outline = new Rect(0, 0, size.Width, size.Height - unit).Deflate(thickness / 2);
             context.DrawRectangle(new Pen(BorderBrush, thickness), outline);
         }
     }
 
-    private static void DrawNineSlice(DrawingContext context, Bitmap image, int[] slice, Size size)
+    private static void DrawNineSlice(DrawingContext context, Bitmap image, int[] slice, Size size, double unit)
     {
         double w = image.PixelSize.Width;
         double h = image.PixelSize.Height;
@@ -135,8 +139,8 @@ public class PixelPanel : Decorator, Avalonia.Rendering.ICustomHitTest
         // Colonnes et rangées : bord, milieu étiré, bord
         double[] sourceX = [0, l, w - r, w];
         double[] sourceY = [0, t, h - b, h];
-        double[] targetX = [0, l * Unit, size.Width - r * Unit, size.Width];
-        double[] targetY = [0, t * Unit, size.Height - b * Unit, size.Height];
+        double[] targetX = [0, l * unit, size.Width - r * unit, size.Width];
+        double[] targetY = [0, t * unit, size.Height - b * unit, size.Height];
 
         for (int row = 0; row < 3; row++)
             for (int column = 0; column < 3; column++)

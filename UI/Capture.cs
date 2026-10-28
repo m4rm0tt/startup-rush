@@ -30,6 +30,9 @@ public static class Capture
     public static void Run(MainWindow window, string folder)
     {
         Directory.CreateDirectory(folder);
+        // Les avertissements d'Avalonia (mise en page, liaisons) vont dans le dossier des captures
+        System.Diagnostics.Trace.Listeners.Add(new System.Diagnostics.TextWriterTraceListener(Path.Combine(folder, "avalonia_trace.txt")));
+        System.Diagnostics.Trace.AutoFlush = true;
         window.Opened += async (_, _) =>
         {
             var report = new List<string>();

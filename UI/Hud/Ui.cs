@@ -88,6 +88,30 @@ public static class Ui
         return button;
     }
 
+    /// <summary>
+    /// Bouton à icône du pack (hud_button_icon, icône 16 px affichée en 24 comme partout), avec un libellé facultatif ; « selected » le
+    /// montre enfoncé (bascule allumée).
+    /// </summary>
+    public static Button IconButton(string icon, Action onClick, string tip, string? label = null, bool selected = false, bool enabled = true, string style = "icon")
+    {
+        Control content = label == null ? Icon(icon, 24) : Row(6, Icon(icon, 24), Text(label, 15, wrap: false));
+        if (content is StackPanel row)
+            foreach (var child in row.Children)
+                child.VerticalAlignment = VerticalAlignment.Center;
+        var button = new Button { Content = content, IsEnabled = enabled };
+        foreach (var cls in style.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+            button.Classes.Add(cls);
+        if (selected)
+            button.Classes.Add("selected");
+        button.Click += (_, _) =>
+        {
+            Sfx.Play(Sound.Select);
+            onClick();
+        };
+        ToolTip.SetTip(button, tip);
+        return button;
+    }
+
     /// <summary>Bloc encadré (cadre 9-slice en creux).</summary>
     public static PixelPanel Card(Control content, IBrush? border = null) => new()
     {
@@ -98,27 +122,51 @@ public static class Ui
         BorderThickness = new Thickness(border != null ? 2 : 0),
     };
 
+    /// <summary>Section titrée : en-tête du pack (hud_section_header), puis son contenu.</summary>
     public static Control Section(string title, params Control?[] children)
     {
         var column = Column(6, children);
-        column.Children.Insert(0, Text(title.ToUpperInvariant(), 13, Palette.Gold, bold: true));
+        column.Children.Insert(0, new PixelPanel
+        {
+            Skin = "pack:hud_section_header",
+            Padding = new Thickness(14, 3, 8, 7),
+            HorizontalAlignment = HorizontalAlignment.Left,
+            Child = Text(title.ToUpperInvariant(), 13, Palette.Ink, bold: true, wrap: false),
+        });
         column.Margin = new Thickness(0, 6, 0, 2);
         return column;
     }
 
+    /// <summary>
+    /// Sens d'une couleur du thème pour les composants du pack qui ont des variantes (badges, remplissages, notifications) :
+    /// success, warning, danger, info, accent ou neutral.
+    /// </summary>
+    public static string Semantic(IBrush? color) =>
+        color == Palette.Leaf || color == Palette.Forest ? "success"
+        : color == Palette.Gold ? "warning"
+        : color == Palette.Blood || color == Palette.Plum || color == Palette.Wine ? "danger"
+        : color == Palette.Ember || color == Palette.Rust ? "accent"
+        : color == Palette.Sky || color == Palette.Lemon || color == Palette.Ice || color == Palette.Navy ? "info"
+        : "neutral";
+
+    /// <summary>Barre de progression du pack : piste et remplissage de la couleur de sens (sarcelle par défaut).</summary>
     public static Control Bar(double fraction, IBrush? color = null, double height = 8, double width = double.NaN)
     {
-        var track = new Border { Background = Palette.Slate, Height = height, Width = width, MinWidth = 40 };
-        var fill = new Border
+        string fill = Semantic(color ?? Palette.Leaf) switch
         {
-            Background = color ?? Palette.Leaf,
-            HorizontalAlignment = HorizontalAlignment.Left,
+            "success" => "success",
+            "warning" => "warning",
+            "danger" or "accent" => "danger",
+            _ => "default",
         };
-        track.Child = fill;
-        track.SizeChanged += (_, e) => fill.Width = Math.Clamp(fraction, 0, 1) * e.NewSize.Width;
+        var track = new PixelPanel { Skin = "pack:hud_progress_track", Scale = 1, Height = Math.Max(8, height), Width = width, MinWidth = 40, Padding = new Thickness(1) };
+        var bar = new PixelPanel { Skin = $"pack:hud_progress_fill_{fill}", Scale = 1, HorizontalAlignment = HorizontalAlignment.Left };
+        track.Child = bar;
+        track.SizeChanged += (_, e) => bar.Width = Math.Clamp(fraction, 0, 1) * Math.Max(0, e.NewSize.Width - 2);
         return track;
     }
 
+    /// <summary>Une icône : identifiant du pack (« icon_save ») ou nom du jeu (voir Icons).</summary>
     public static Image Icon(string key, double size = 24) => Image(Icons.Get(key), size, size);
 
     public static Image Image(IImage bitmap, double width, double height)
@@ -128,33 +176,61 @@ public static class Ui
         return image;
     }
 
-    public static Border Tag(string text, IBrush background, IBrush? foreground = null) => new()
+    /// <summary>Étiquette d'état : badge du pack de la couleur de sens (neutre sur fond clair).</summary>
+    public static PixelPanel Tag(string text, IBrush background, IBrush? foreground = null)
     {
-        Background = background,
-        Padding = new Thickness(6, 1),
-        Child = Text(text, 13, foreground ?? Palette.Ink, bold: true, wrap: false),
-        VerticalAlignment = VerticalAlignment.Center,
-    };
-
-    public static TextBox Input(string value, Action<string> changed, string? watermark = null, double width = double.NaN)
-    {
-        var box = new TextBox { Text = value, PlaceholderText = watermark, Width = width, MinWidth = 120 };
-        if (!double.IsNaN(width))
-            box.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
-        box.TextChanged += (_, _) => changed(box.Text ?? "");
-        return box;
+        string kind = Semantic(background);
+        bool light = kind is "neutral" or "warning";
+        return new PixelPanel
+        {
+            Skin = $"pack:hud_badge_{kind}",
+            Padding = new Thickness(7, 2, 7, 4),
+            Child = Text(text, 13, foreground ?? (light ? Palette.Ink : Palette.Paper), bold: true, wrap: false),
+            VerticalAlignment = VerticalAlignment.Center,
+        };
     }
 
-    /// <summary>Choix parmi quelques valeurs, affichées comme des boutons (le choisi en doré).</summary>
+    /// <summary>
+    /// Champ de saisie dans un cadre du pack : texte (hud_field_text) ou recherche avec sa loupe (hud_field_search) ; le cadre
+    /// suit le survol et le focus.
+    /// </summary>
+    public static Control Input(string value, Action<string> changed, string? watermark = null, double width = double.NaN, bool search = false)
+    {
+        string component = search ? "hud_field_search" : "hud_field_text";
+        var box = new TextBox
+        {
+            Text = value, PlaceholderText = watermark, MinWidth = 120, Background = Brushes.Transparent, BorderThickness = new Thickness(0),
+            Padding = new Thickness(search ? 28 : 8, 4, 8, 6), VerticalContentAlignment = VerticalAlignment.Center,
+        };
+        var frame = new PixelPanel { Skin = $"pack:{component}:normal", Width = width, Child = box };
+        if (!double.IsNaN(width))
+            frame.HorizontalAlignment = HorizontalAlignment.Left;
+        void State() => frame.Skin = $"pack:{component}:{(box.IsFocused ? "focus" : box.IsPointerOver ? "hover" : "normal")}";
+        box.GotFocus += (_, _) => State();
+        box.LostFocus += (_, _) => State();
+        box.PointerEntered += (_, _) => State();
+        box.PointerExited += (_, _) => State();
+        box.TextChanged += (_, _) => changed(box.Text ?? "");
+        if (!search)
+            return frame;
+        var magnifier = Icon("icon_search", 16);
+        magnifier.HorizontalAlignment = HorizontalAlignment.Left;
+        magnifier.Margin = new Thickness(8, 0, 0, 0);
+        magnifier.IsHitTestVisible = false;
+        return new Panel { Children = { frame, magnifier }, HorizontalAlignment = frame.HorizontalAlignment };
+    }
+
+    /// <summary>Choix exclusif parmi quelques valeurs : contrôle segmenté du pack, le choisi en sarcelle.</summary>
     public static WrapPanel Choice<T>(IEnumerable<(T Value, string Label)> options, T current, Action<T> pick, bool enabled = true)
     {
-        var panel = new WrapPanel { Orientation = Orientation.Horizontal };
-        foreach (var (value, label) in options)
+        var panel = new WrapPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 4) };
+        var list = new List<(T Value, string Label)>(options);
+        for (int i = 0; i < list.Count; i++)
         {
+            var (value, label) = list[i];
             bool selected = EqualityComparer<T>.Default.Equals(value, current);
-            var button = Button(label, () => pick(value), selected ? "tab selected" : "tab", enabled);
-            button.Margin = new Thickness(0, 0, 4, 4);
-            panel.Children.Add(button);
+            string classes = "seg" + (selected ? " selected" : "") + (i == 0 ? " first" : "") + (i == list.Count - 1 ? " last" : "");
+            panel.Children.Add(Button(label, () => pick(value), classes, enabled));
         }
         return panel;
     }
@@ -180,22 +256,20 @@ public static class Ui
     /// Section repliée par défaut : les détails pour qui veut comprendre, jamais nécessaires pour jouer. Son état (ouverte ou
     /// fermée) est retenu : sans cela, le rafraîchissement automatique du menu la refermait aussitôt.
     /// </summary>
-    public static Expander Details(string title, Control content, bool open = false)
+    public static Control Details(string title, Control content, bool open = false)
     {
-        var expander = new Expander
+        bool expanded = open || OpenDetails.Contains(title);
+        var chevron = Icon(expanded ? "icon_chevron_down" : "icon_chevron_right", 16);
+        var header = new Button { Content = Row(6, chevron, Text(title, 14, Palette.Fog, wrap: false)), Padding = new Thickness(4, 3, 10, 5) };
+        header.Classes.Add("plain");
+        var body = new Border { Child = content, IsVisible = expanded, Margin = new Thickness(22, 4, 0, 0) };
+        header.Click += (_, _) =>
         {
-            Header = Text(title, 14, Palette.Fog, wrap: false),
-            Content = content,
-            IsExpanded = open || OpenDetails.Contains(title),
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-            Margin = new Thickness(0, 6, 0, 0),
+            body.IsVisible = !body.IsVisible;
+            chevron.Source = Icons.Get(body.IsVisible ? "icon_chevron_down" : "icon_chevron_right");
+            SetDetailsOpen(title, body.IsVisible);
         };
-        expander.PropertyChanged += (_, e) =>
-        {
-            if (e.Property == Expander.IsExpandedProperty)
-                SetDetailsOpen(title, expander.IsExpanded);
-        };
-        return expander;
+        return new StackPanel { Margin = new Thickness(0, 6, 0, 0), Children = { header, body } };
     }
 
     /// <summary>Un chiffre clé : petite étiquette au-dessus, gros nombre dessous.</summary>

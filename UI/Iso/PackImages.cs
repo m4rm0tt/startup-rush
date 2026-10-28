@@ -333,6 +333,19 @@ public static class PackLibrary
         return (a[0].GetInt32(), a[1].GetInt32());
     }
 
+    /// <summary>Le fichier d'un composant d'interface dans un état (« hover », « on_normal »…), ou son fichier unique.</summary>
+    public static string StateFile(JsonElement asset, string? state)
+    {
+        if (asset.TryGetProperty("states", out var states))
+        {
+            if (state != null && states.TryGetProperty(state, out var st))
+                return st.GetProperty("file").GetString()!;
+            if (!asset.TryGetProperty("file", out _))
+                return states.EnumerateObject().First().Value.GetProperty("file").GetString()!;
+        }
+        return asset.GetProperty("file").GetString()!;
+    }
+
     private static readonly Dictionary<string, Bitmap> Icons = new();
 
     /// <summary>Une icône 16 × 16 du pack (blanche), teintée par multiplication avec une couleur du thème.</summary>

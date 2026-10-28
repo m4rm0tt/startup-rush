@@ -230,7 +230,6 @@ public static class Icons
 
     private static readonly Dictionary<string, WriteableBitmap> Cache = new();
 
-    /// <summary>L'icône demandée, ou une étoile si la clé est inconnue.</summary>
     /// <summary>Les noms d'icônes du jeu → icônes 16 px du pack (HUD « Papier »), teintées à l'encre ; les autres restent dessinées ici.</summary>
     private static readonly Dictionary<string, (string Id, string Tint)> PackIcons = new()
     {
@@ -252,8 +251,11 @@ public static class Icons
         ["server"] = ("icon_server", "#2b2128"), ["teststation"] = ("icon_test_station", "#2b2128"), ["training"] = ("icon_training", "#2b2128"),
     };
 
-    public static Avalonia.Media.Imaging.Bitmap Get(string key)
+    /// <summary>L'icône demandée : un identifiant du pack (« icon_save »), un nom du jeu, ou une étoile si la clé est inconnue.</summary>
+    public static Avalonia.Media.Imaging.Bitmap Get(string key, string tint = "#2b2128")
     {
+        if (key.StartsWith("icon_") && UI.Iso.PackLibrary.Has(key))
+            return UI.Iso.PackLibrary.Icon(key, tint);
         if (PackIcons.TryGetValue(key, out var icon))
             return UI.Iso.PackLibrary.Icon(icon.Id, icon.Tint);
         if (Cache.TryGetValue(key, out var bitmap))

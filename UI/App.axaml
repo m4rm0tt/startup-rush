@@ -164,13 +164,63 @@
             <Setter Property="FontSize" Value="26"/>
             <Setter Property="Padding" Value="24,10,24,14"/>
         </Style>
+        <!-- « tab » : bouton secondaire du jeu (−/+, Voir, Fiche) → bouton texte du pack ; « tab selected » : bascule allumée -->
         <Style Selector="Button.tab">
-            <Setter Property="Foreground" Value="{StaticResource Fog}"/>
+            <Setter Property="Foreground" Value="{StaticResource Lemon}"/>
             <Setter Property="FontSize" Value="17"/>
+        </Style>
+        <Style Selector="Button.tab /template/ px|PixelPanel#PART_Frame">
+            <Setter Property="Skin" Value="pack:hud_button_text:normal"/>
+        </Style>
+        <Style Selector="Button.tab:pointerover /template/ px|PixelPanel#PART_Frame">
+            <Setter Property="Skin" Value="pack:hud_button_text:hover"/>
+        </Style>
+        <Style Selector="Button.tab:pressed /template/ px|PixelPanel#PART_Frame">
+            <Setter Property="Skin" Value="pack:hud_button_text:pressed"/>
         </Style>
         <Style Selector="Button.tab.selected">
             <Setter Property="Foreground" Value="{StaticResource OnAccent}"/>
         </Style>
+
+        <!-- Choix exclusifs (Ui.Choice) : contrôle segmenté du pack, le choisi en sarcelle -->
+        <Style Selector="Button.seg">
+            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+            <Setter Property="FontSize" Value="16"/>
+        </Style>
+        <Style Selector="Button.seg.selected">
+            <Setter Property="Foreground" Value="{StaticResource OnAccent}"/>
+        </Style>
+        <Style Selector="Button.seg /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_segmented_mid:normal"/></Style>
+        <Style Selector="Button.seg:pointerover /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_segmented_mid:hover"/></Style>
+        <Style Selector="Button.seg.selected /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_segmented_mid:selected"/></Style>
+        <Style Selector="Button.seg.first /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_segmented_left:normal"/></Style>
+        <Style Selector="Button.seg.first:pointerover /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_segmented_left:hover"/></Style>
+        <Style Selector="Button.seg.first.selected /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_segmented_left:selected"/></Style>
+        <Style Selector="Button.seg.last /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_segmented_right:normal"/></Style>
+        <Style Selector="Button.seg.last:pointerover /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_segmented_right:hover"/></Style>
+        <Style Selector="Button.seg.last.selected /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_segmented_right:selected"/></Style>
+        <Style Selector="Button.seg:pressed /template/ ContentPresenter#PART_ContentPresenter"><Setter Property="RenderTransform" Value="none"/></Style>
+
+        <!-- Vrais onglets (navigation, onglets d'une fiche) : l'actif déborde sur le panneau -->
+        <Style Selector="Button.tabs">
+            <Setter Property="Foreground" Value="{StaticResource Fog}"/>
+            <Setter Property="FontSize" Value="17"/>
+        </Style>
+        <Style Selector="Button.tabs.selected">
+            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+        </Style>
+        <Style Selector="Button.tabs /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_tabs:inactive"/></Style>
+        <Style Selector="Button.tabs:pointerover /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_tabs:hover"/></Style>
+        <Style Selector="Button.tabs.selected /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_tabs:active"/></Style>
+
+        <!-- Boutons à icône (pause, vitesses, fermer, retour) -->
+        <Style Selector="Button.icon">
+            <Setter Property="Padding" Value="6,4,6,7"/>
+        </Style>
+        <Style Selector="Button.icon /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon:normal"/></Style>
+        <Style Selector="Button.icon:pointerover /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon:hover"/></Style>
+        <Style Selector="Button.icon:pressed /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon:pressed"/></Style>
+        <Style Selector="Button.icon.selected /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon:toggled"/></Style>
         <Style Selector="Button.green">
             <Setter Property="Foreground" Value="{StaticResource OnAccent}"/>
         </Style>
@@ -188,6 +238,11 @@
         <Style Selector="Button:disabled /template/ ContentPresenter#PART_ContentPresenter">
             <Setter Property="Foreground" Value="{StaticResource Fog}"/>
         </Style>
+        <Style Selector="Button.tab:disabled /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_text:disabled"/></Style>
+        <Style Selector="Button.seg:disabled /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_segmented_mid:disabled"/></Style>
+        <Style Selector="Button.seg.first:disabled /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_segmented_left:disabled"/></Style>
+        <Style Selector="Button.seg.last:disabled /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_segmented_right:disabled"/></Style>
+        <Style Selector="Button.icon:disabled /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon:disabled"/></Style>
 
         <!-- Bouton qui n'est qu'une zone cliquable (cartes) -->
         <Style Selector="Button.plain /template/ px|PixelPanel#PART_Frame">
@@ -213,15 +268,117 @@
             <Setter Property="Foreground" Value="{StaticResource Ink}"/>
             <Setter Property="BorderBrush" Value="{StaticResource Steel}"/>
         </Style>
+        <!-- Infobulle : cadre sombre du pack (hud_tooltip), texte clair -->
         <Style Selector="ToolTip">
             <Setter Property="FontFamily" Value="{StaticResource PixelFont}"/>
             <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Background" Value="{StaticResource Paper}"/>
-            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
-            <Setter Property="BorderBrush" Value="{StaticResource Gold}"/>
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="CornerRadius" Value="0"/>
-            <Setter Property="MaxWidth" Value="320"/>
+            <Setter Property="Foreground" Value="{StaticResource Paper}"/>
+            <Setter Property="MaxWidth" Value="340"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <px:PixelPanel Skin="pack:hud_tooltip" Padding="10,6,10,9">
+                        <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                    </px:PixelPanel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ToolTip TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Foreground" Value="{StaticResource Paper}"/>
+        </Style>
+
+        <!-- Barres de défilement du pack : piste, curseur avec sa poignée, flèches -->
+        <Style Selector="ScrollBar">
+            <Setter Property="AllowAutoHide" Value="False"/>
+        </Style>
+        <Style Selector="ScrollBar:vertical">
+            <Setter Property="Width" Value="20"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Grid RowDefinitions="20,*,20">
+                        <RepeatButton Name="PART_LineUpButton" Classes="arrow up" Grid.Row="0"/>
+                        <px:PixelPanel Grid.Row="1" Skin="pack:hud_scroll_track_v"/>
+                        <Track Name="PART_Track" Grid.Row="1" Orientation="Vertical" IsDirectionReversed="True"
+                               Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}"
+                               Value="{TemplateBinding Value, Mode=TwoWay}" ViewportSize="{TemplateBinding ViewportSize}">
+                            <Track.DecreaseButton><RepeatButton Name="PART_PageUpButton" Classes="page"/></Track.DecreaseButton>
+                            <Track.IncreaseButton><RepeatButton Name="PART_PageDownButton" Classes="page"/></Track.IncreaseButton>
+                            <Thumb Classes="v"/>
+                        </Track>
+                        <RepeatButton Name="PART_LineDownButton" Classes="arrow down" Grid.Row="2"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ScrollBar:horizontal">
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Grid ColumnDefinitions="20,*,20">
+                        <RepeatButton Name="PART_LineUpButton" Classes="arrow left" Grid.Column="0"/>
+                        <px:PixelPanel Grid.Column="1" Skin="pack:hud_scroll_track_h"/>
+                        <Track Name="PART_Track" Grid.Column="1" Orientation="Horizontal"
+                               Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}"
+                               Value="{TemplateBinding Value, Mode=TwoWay}" ViewportSize="{TemplateBinding ViewportSize}">
+                            <Track.DecreaseButton><RepeatButton Name="PART_PageUpButton" Classes="page"/></Track.DecreaseButton>
+                            <Track.IncreaseButton><RepeatButton Name="PART_PageDownButton" Classes="page"/></Track.IncreaseButton>
+                            <Thumb Classes="h"/>
+                        </Track>
+                        <RepeatButton Name="PART_LineDownButton" Classes="arrow right" Grid.Column="2"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ScrollBar RepeatButton.page">
+            <Setter Property="Template"><ControlTemplate><Border Background="Transparent"/></ControlTemplate></Setter>
+        </Style>
+        <Style Selector="ScrollBar RepeatButton.arrow">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <ControlTemplate><px:PixelPanel Name="PART_Frame" Skin="{TemplateBinding Tag}"/></ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.up"><Setter Property="Tag" Value="pack:hud_scroll_arrow_up:normal"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.up:pointerover"><Setter Property="Tag" Value="pack:hud_scroll_arrow_up:hover"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.up:pressed"><Setter Property="Tag" Value="pack:hud_scroll_arrow_up:pressed"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.up:disabled"><Setter Property="Tag" Value="pack:hud_scroll_arrow_up:disabled"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.down"><Setter Property="Tag" Value="pack:hud_scroll_arrow_down:normal"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.down:pointerover"><Setter Property="Tag" Value="pack:hud_scroll_arrow_down:hover"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.down:pressed"><Setter Property="Tag" Value="pack:hud_scroll_arrow_down:pressed"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.down:disabled"><Setter Property="Tag" Value="pack:hud_scroll_arrow_down:disabled"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.left"><Setter Property="Tag" Value="pack:hud_scroll_arrow_left:normal"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.left:pointerover"><Setter Property="Tag" Value="pack:hud_scroll_arrow_left:hover"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.left:pressed"><Setter Property="Tag" Value="pack:hud_scroll_arrow_left:pressed"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.left:disabled"><Setter Property="Tag" Value="pack:hud_scroll_arrow_left:disabled"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.right"><Setter Property="Tag" Value="pack:hud_scroll_arrow_right:normal"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.right:pointerover"><Setter Property="Tag" Value="pack:hud_scroll_arrow_right:hover"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.right:pressed"><Setter Property="Tag" Value="pack:hud_scroll_arrow_right:pressed"/></Style>
+        <Style Selector="ScrollBar RepeatButton.arrow.right:disabled"><Setter Property="Tag" Value="pack:hud_scroll_arrow_right:disabled"/></Style>
+        <!-- Curseur : cadre étiré et poignée centrée, jamais étirée -->
+        <Style Selector="ScrollBar Thumb">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel>
+                        <px:PixelPanel Skin="{TemplateBinding Tag}"/>
+                        <Image Name="Grip" Width="12" Height="10" HorizontalAlignment="Center" VerticalAlignment="Center"
+                               RenderOptions.BitmapInterpolationMode="None"/>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ScrollBar Thumb.v"><Setter Property="Tag" Value="pack:hud_scroll_thumb_v:normal"/></Style>
+        <Style Selector="ScrollBar Thumb.v:pointerover"><Setter Property="Tag" Value="pack:hud_scroll_thumb_v:hover"/></Style>
+        <Style Selector="ScrollBar Thumb.v:pressed"><Setter Property="Tag" Value="pack:hud_scroll_thumb_v:pressed"/></Style>
+        <Style Selector="ScrollBar Thumb.h"><Setter Property="Tag" Value="pack:hud_scroll_thumb_h:normal"/></Style>
+        <Style Selector="ScrollBar Thumb.h:pointerover"><Setter Property="Tag" Value="pack:hud_scroll_thumb_h:hover"/></Style>
+        <Style Selector="ScrollBar Thumb.h:pressed"><Setter Property="Tag" Value="pack:hud_scroll_thumb_h:pressed"/></Style>
+        <Style Selector="ScrollBar Thumb.v /template/ Image#Grip">
+            <Setter Property="Source" Value="{x:Static px:PackSkins.GripV}"/>
+        </Style>
+        <Style Selector="ScrollBar Thumb.h /template/ Image#Grip">
+            <Setter Property="Width" Value="10"/>
+            <Setter Property="Height" Value="12"/>
+            <Setter Property="Source" Value="{x:Static px:PackSkins.GripH}"/>
         </Style>
 
     </Application.Styles>

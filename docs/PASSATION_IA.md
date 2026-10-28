@@ -186,3 +186,17 @@ lots de `docs/V1_ETAT.md`, et le §11 ci-dessous pour ce que le lot 6 laisse en 
 - **À faire au lot 7, dans l'ordre** : (1) décider avec l'utilisateur du réglage : `studio_xr` trop faible, quantique jamais atteint
   en 36 mois (voir V1_ETAT « Limites et suite ») ; (2) comprendre pourquoi les anciennes stratégies ont bougé depuis le bilan du
   lot 5 ; (3) la suite du lot 7 (couverture des assets, performance, accessibilité, version de sortie).
+
+## 12. Lot 7 (en cours)
+
+- Plan et état : « Lot 7 » dans `docs/V1_ETAT.md`. Vérifier chaque lot d'interface par `UI.exe --capture` et **regarder les images**.
+- **Habiller un contrôle** : `PixelPanel { Skin = "pack:<id>:<état>" }` (états du manifeste ; `Scale = 1` pour les petites pièces
+  comme les barres) ; dans les styles, `Skin` via une classe (voir `App.axaml` : `tab`, `seg`, `tabs`, `icon`, `icon small`).
+  Un sprite seul : `PackSkins.Sprite(id, état)` ; une pièce annexe : `PackSkins.Extra(id, "popover_arrow_left")`. Une icône du pack :
+  `Ui.Icon("icon_xxx")` ou `Icons.Get("icon_xxx", teinte)`.
+- **Pièges** : un `PixelPanel` plus petit que ses marges 9-slice ne dessine rien (vérifier `MinHeight`). Dans une classe statique,
+  déclarer les caches avant les propriétés initialisées qui s'en servent (plantage au démarrage sinon). Les boutons internes d'un
+  `Slider` ne prennent pas les styles : `Ui.Slider` dessine piste et remplissage en couches sous le contrôle. Un texte dans une
+  rangée horizontale ne revient pas à la ligne : utiliser une grille `Auto,*`. La capture journalise Avalonia dans
+  `avalonia_trace.txt` (créé seulement s'il y a un avertissement).
+- Registre : ajouter les identifiants branchés dans `tools/registry_lot7.py` (« partiel » tant qu'il n'y a pas de test d'interface).

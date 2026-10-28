@@ -58,7 +58,7 @@ Le pack fournit un compositeur C# de référence (`assets/StartupRushOriginalAss
 | 4 | Multisite, réseau, racks, hébergement interne et externe, offres cloud | **fait**, voir « Lot 4 » |
 | 5 | Recherche, prototypage, gamme matérielle, flux d'usine, stocks, approvisionnement, canaux de vente | **fait**, voir « Lot 5 » |
 | 6 | IA simulées, studio, XR, calcul avancé et quantique | **fait**, voir « Lot 6 » (vu en captures, mesuré par bots ; réglage au lot 7) |
-| 7 | Couverture de tous les IDs, équilibrage, performance, accessibilité, migrations, candidat de sortie | à faire |
+| 7 | Couverture de tous les IDs, équilibrage, performance, accessibilité, migrations, candidat de sortie | **en cours**, voir « Lot 7 » |
 
 ## Lot 2 : ce qui a été fait
 
@@ -259,6 +259,32 @@ Limites et suite (à faire au lot 7) :
 - Le fondateur ne prépare toujours pas la recherche au terminal. Pas de transferts de stock entre sites. `moving_box` sans fonction.
 - Le studio ne demande pas d'employé précis (« quelqu'un sur le site » suffit) ; les motifs muraux (`pattern_acoustic`) ne sont pas posables.
 - Les icônes `icon_gpu`, `icon_server`, `icon_training` sont mappées (`Icons.cs`) mais pas encore utilisées.
+
+## Lot 7 : en cours
+
+Plan (dans l'ordre) : (1) interface habillée par le kit HUD du pack ; (2) curseurs et effets de scène ; (3) habillage du terminal ;
+(4) composants de projet (cartes, puis graphe de dépendances avec liens et ports) ; (5) objets du monde restants (ordinateurs,
+sols, murs, modules de pièces, `moving_box`) ; (6) accessibilité, réglages, performance, migrations ; (7) candidat de sortie
+(build Release, archive, changelog, crédits, dossier Steam sans publication) ; (8) réglage de l'équilibrage du lot 6, **en attente
+de la décision de l'utilisateur** (studio/XR trop faible, quantique jamais atteint en 36 mois).
+
+Fait (vu dans les captures du vrai jeu, pas de test automatisé d'interface) :
+- `PixelPanel` accepte n'importe quel composant du pack avec son état (`pack:id:state`) et une échelle par composant (`Scale`).
+- Boutons secondaires `hud_button_text` (classe `tab`), choix exclusifs en contrôle segmenté (classes `seg first/last`), boutons à
+  icône (`Ui.IconButton`), en-têtes de section, barres de progression, badges (`Ui.Tag` → `hud_badge_*` selon `Ui.Semantic`),
+  champs de saisie, infobulles, barres de défilement verticales, sections dépliables avec chevrons.
+- Fenêtres `hud_window` (titre dans la bande sarcelle), modales titrées `hud_modal`, confirmation `hud_confirm_dialog`,
+  notifications `hud_notification` (bande et icône de sens) et `hud_toast`, en bas à gauche.
+- Barre du haut du pack : fond marine, groupes entreprise/date, puce de trésorerie, pastille compteur, bouton réglages.
+- Réglages : glissières (volumes) avec bulle `hud_popover`, boutons radio (taille), interrupteurs (temps), cases (accessibilité).
+- Atelier de composants : cartes `comp_card` à en-tête d'état, aperçus et pictogrammes `comp_*` pour 25 composants (`UI/Hud/ComponentArt.cs`).
+- Registre : `tools/registry_lot7.py` (cumulatif) ; 55 identifiants passés de « non implémenté » à « partiel ».
+
+Reste dans l'étape 1 : onglets `hud_tabs`, listes (`hud_list_row`), menus contextuels (`hud_menu_*`), graphiques (`hud_chart_*`),
+jauge, bandeau, puce sombre, poignée de glisser, cadre de portrait, cases de couleur et de motif, champs numérique et multiligne,
+liste déroulante, flèches de pas, séparateurs, barre de titre, panneau secondaire, environ 100 icônes `icon_*` à brancher là où
+elles ont un sens, champ de recherche (catalogues et portefeuille). `comp_api`, `comp_storage`, `comp_game_menu` n'ont pas
+d'équivalent dans le jeu : il faut trois nouveaux composants (moteur, équilibrage, tests).
 
 ## Couverture du registre
 

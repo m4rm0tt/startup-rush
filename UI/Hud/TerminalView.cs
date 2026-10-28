@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
@@ -26,16 +27,22 @@ public class TerminalView : UserControl
     private static readonly IBrush Ok = Palette.Brush("#7ef08a");
     private static readonly IBrush Error = Palette.Brush("#ff6157");
     private static readonly IBrush Warn = Palette.Brush("#ffbf4a");
-    private static readonly IBrush Surface = Palette.Brush("#162235");
 
     private readonly GameSession _session;
     private readonly Action _close;
     private readonly Action _again;
     private readonly TextBox _input = new();
-    private readonly TextBlock _word = new();
+    private readonly PixelPanel _inputFrame = new() { Skin = "pack:term_input:normal", Width = 380, HorizontalAlignment = HorizontalAlignment.Left };
+    private readonly StackPanel _word = new() { Orientation = Orientation.Horizontal };
+    private readonly TextBlock _done = new(), _rest = new();
+    private readonly Image _cursor = new() { Width = 18, Height = 36, Stretch = Stretch.Fill };
+    private readonly StackPanel _log = new() { Spacing = 2 };
+    private readonly ScrollViewer _logScroll = new() { MaxHeight = 140, HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled };
+    private readonly List<(string Mark, string Text, IBrush Color)> _lines = new();
     private readonly TextBlock _stage = new();
     private readonly TextBlock _stats = new();
     private readonly TextBlock _status = new();
+    private readonly Image _statusMark = new() { Width = 12, Height = 24, Stretch = Stretch.Fill, VerticalAlignment = VerticalAlignment.Top };
     private readonly StackPanel _segments = new() { Orientation = Orientation.Horizontal, Spacing = 0 };
     private readonly StackPanel _actions = new() { Orientation = Orientation.Horizontal, Spacing = 8 };
     private readonly Stopwatch _shown = Stopwatch.StartNew();
@@ -54,14 +61,18 @@ public class TerminalView : UserControl
         _again = again;
         var mono = (FontFamily)Application.Current!.FindResource("TermFont")!;
 
+        // Champ de saisie du pack : chevron d'invite dans sa marge gauche, texte en police mono
         _input.FontFamily = mono;
         _input.FontSize = 24;
-        _input.Background = Palette.Brush("#1f2f47");
+        _input.Background = Brushes.Transparent;
+        _input.BorderThickness = new Thickness(0);
         _input.Foreground = Text;
-        _input.BorderBrush = Dim;
         _input.CaretBrush = Ok;
-        _input.Width = 360;
-        _input.HorizontalAlignment = HorizontalAlignment.Left;
+        _input.Padding = new Thickness(24, 2, 8, 4);
+        _input.Classes.Add("bare");
+        _inputFrame.Child = _input;
+        _input.GotFocus += (_, _) => _inputFrame.Skin = "pack:term_input:focus";
+        _input.LostFocus += (_, _) => _inputFrame.Skin = _input.IsEnabled ? "pack:term_input:normal" : "pack:term_input:disabled";
         _input.AddHandler(KeyDownEvent, OnInputKeyDown, Avalonia.Interactivity.RoutingStrategies.Tunnel);
         _input.KeyUp += (_, e) =>
         {
@@ -71,12 +82,23 @@ public class TerminalView : UserControl
         _input.TextChanged += (_, _) => Paint();
         _input.IsReadOnly = Assisted;
 
-        foreach (var block in new[] { _word, _stage, _stats, _status })
+        foreach (var block in new[] { _done, _rest, _stage, _stats, _status })
         {
             block.FontFamily = mono;
             block.Foreground = Text;
         }
-        _word.FontSize = 36;
+        // Le mot à taper : la partie déjà juste, le curseur du pack à la position atteinte, puis le reste
+        _done.FontSize = 36;
+        _rest.FontSize = 36;
+        _done.Foreground = Ok;
+        RenderOptions.SetBitmapInterpolationMode(_cursor, Avalonia.Media.Imaging.BitmapInterpolationMode.None);
+        _cursor.Source = PackSkins.Sprite(_session.Settings.TerminalCursor switch { "bar" => "term_cursor_bar", "underline" => "term_cursor_underline", _ => "term_cursor_block" });
+        _cursor.VerticalAlignment = VerticalAlignment.Center;
+        _word.Children.Add(_done);
+        _word.Children.Add(_cursor);
+        _word.Children.Add(_rest);
+        _logScroll.Content = _log;
+        _logScroll.Classes.Add("term");
         _stage.FontSize = 18;
         _stage.Foreground = Dim;
         _stats.FontSize = 18;
@@ -84,26 +106,30 @@ public class TerminalView : UserControl
         _status.Foreground = Dim;
         _status.TextWrapping = TextWrapping.Wrap;
 
-        var title = new TextBlock
+        var title = new PixelPanel
         {
-            FontFamily = mono, FontSize = 18, Foreground = Palette.Brush("#fbf5e6"),
-            Text = $"terminal · {Campaign.FindProduct(Campaign.Terminal!.ProductId)?.Name}",
+            Skin = "pack:term_titlebar", Padding = new Thickness(8, 2, 8, 4), HorizontalAlignment = HorizontalAlignment.Left,
+            Child = new TextBlock { FontFamily = mono, FontSize = 18, Foreground = Palette.Brush("#fbf5e6"), Text = $"terminal · {Campaign.FindProduct(Campaign.Terminal!.ProductId)?.Name}" },
         };
+        // La barre de progression sur une bande de sélection, comme la ligne en cours d'un vrai terminal
+        var progress = new PixelPanel { Skin = "pack:term_selection", Padding = new Thickness(4, 2), Child = _segments, HorizontalAlignment = HorizontalAlignment.Left };
         var body = new StackPanel
         {
             Spacing = 8,
             Children =
             {
+                _logScroll,
                 Line("term_mark_prompt", _stage),
                 _word,
-                _input,
-                _segments,
+                _inputFrame,
+                progress,
                 Line("term_mark_info", _stats),
-                _status,
+                new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6, Children = { _statusMark, _status } },
                 _actions,
             },
         };
-        var surface = new Border { Background = Surface, Padding = new Thickness(14, 10), Child = body };
+        _status.MaxWidth = 470;
+        var surface = new PixelPanel { Skin = "pack:term_surface", Padding = new Thickness(14, 10), Child = body };
         Content = new PixelPanel
         {
             Skin = "pack:term_frame",
@@ -117,8 +143,28 @@ public class TerminalView : UserControl
     private static Control Line(string mark, TextBlock text) => new StackPanel
     {
         Orientation = Orientation.Horizontal, Spacing = 6,
-        Children = { new Image { Source = PackLibrary.Thumbnail(mark), Width = 12, Height = 24, Stretch = Stretch.Uniform }, text },
+        Children = { Mark(mark), text },
     };
+
+    private static Image Mark(string mark)
+    {
+        var image = new Image { Source = PackSkins.Sprite(mark), Width = 12, Height = 24, Stretch = Stretch.Fill };
+        RenderOptions.SetBitmapInterpolationMode(image, Avalonia.Media.Imaging.BitmapInterpolationMode.None);
+        return image;
+    }
+
+    /// <summary>Ajoute une ligne au journal du terminal (mots validés, fautes, fin de session) et le fait défiler en bas.</summary>
+    private void Log(string mark, string text, IBrush color)
+    {
+        _lines.Add((mark, text, color));
+        if (_lines.Count > 40)
+            _lines.RemoveAt(0);
+        _log.Children.Clear();
+        var mono = (FontFamily)Application.Current!.FindResource("TermFont")!;
+        foreach (var (m, t, c) in _lines)
+            _log.Children.Add(Line(m, new TextBlock { Text = t, FontFamily = mono, FontSize = 16, Foreground = c }));
+        _logScroll.ScrollToEnd();
+    }
 
     public void FocusInput() => _input.Focus();
 
@@ -134,17 +180,30 @@ public class TerminalView : UserControl
         if (e.Key is not (Key.Enter or Key.Space))
             return;
         e.Handled = true;
-        if (_keyDown || Campaign.Terminal is not { Finished: false } || !_session.Running && _session.AutoPause != "saisie")
+        if (_keyDown)
             return;
         _keyDown = true;
+        Submit();
+    }
+
+    /// <summary>Valide le mot du champ (Espace, Entrée, ou le parcours de captures) : même chemin que la frappe.</summary>
+    public void Submit()
+    {
+        if (Campaign.Terminal is not { Finished: false } || !_session.Running && _session.AutoPause != "saisie")
+            return;
         string typed = _input.Text ?? "";
         if (typed.Trim().Length == 0)
             return;
         // En saisie simplifiée, on valide seulement un mot entièrement écrit
         if (Assisted && typed != Campaign.Terminal.Word)
             return;
+        string expected = Campaign.Terminal.Word;
         var result = Campaign.SubmitWord(typed, _shown.Elapsed.TotalSeconds, Assisted);
         Sfx.Play(result.Correct ? Sound.Click : Sound.Error);
+        if (result.Correct)
+            Log("term_mark_ok", expected, Ok);
+        else
+            Log("term_mark_error", $"{typed.Trim()} ≠ {expected}", Error);
         if (result.Correct)
         {
             _input.Text = "";
@@ -156,6 +215,8 @@ public class TerminalView : UserControl
     /// <summary>À chaque image : la vraie pause du jeu met la saisie en attente, sans rien perdre.</summary>
     public void Tick()
     {
+        // Curseur qui clignote toutes les 0,5 s (fixe si les effets sont réduits)
+        _cursor.Opacity = _session.Settings.ReduceEffects || (int)(_shown.Elapsed.TotalSeconds * 2) % 2 == 0 ? 1 : 0;
         bool running = _session.Running || _session.AutoPause == "saisie";
         if (Assisted && running && Campaign.Terminal is { Finished: false } session)
         {
@@ -184,25 +245,41 @@ public class TerminalView : UserControl
             return;
         string typed = _input.Text ?? "";
         bool matching = session.Word.StartsWith(typed.Trim(), StringComparison.Ordinal);
-        _word.Text = session.Finished ? "—" : session.Word;
-        _word.Foreground = typed.Length == 0 ? Text : matching ? Ok : Error;
+        if (session.Finished)
+        {
+            _done.Text = "";
+            _rest.Text = "—";
+            _cursor.IsVisible = false;
+        }
+        else
+        {
+            // Juste jusqu'ici : en vert ; une faute : tout le mot en rouge, le curseur reste au début
+            int good = matching ? typed.Trim().Length : 0;
+            _done.Text = session.Word[..good];
+            _rest.Text = session.Word[good..];
+            _rest.Foreground = typed.Length == 0 || matching ? Text : Error;
+        }
         _stage.Text = session.Stage;
         _stats.Text = $"{session.WordsTyped}/{session.Length} mots · {session.Points:0.0} pts · rendement {session.LastYield * 100:0} % · fautes {session.Errors}";
 
+        // [####▒---] : bouts, mots faits, mot en cours à moitié, mots restants (cellules mono du pack)
         _segments.Children.Clear();
+        _segments.Children.Add(Mark("term_progress_cap_left"));
         for (int i = 0; i < session.Length; i++)
-            _segments.Children.Add(new Image
-            {
-                Source = PackLibrary.Thumbnail(i < session.WordsTyped ? "term_progress_full" : "term_progress_empty"),
-                Width = 18, Height = 18, Stretch = Stretch.Uniform,
-            });
+            _segments.Children.Add(Mark(i < session.WordsTyped ? "term_progress_full"
+                : i == session.WordsTyped && typed.Trim().Length > 0 && !session.Finished ? "term_progress_half" : "term_progress_empty"));
+        _segments.Children.Add(Mark("term_progress_cap_right"));
 
         _actions.Children.Clear();
         if (session.Finished)
         {
             _input.IsEnabled = false;
+            _inputFrame.Skin = "pack:term_input:disabled";
+            if (_status.Text != session.EndReason)
+                Log("term_mark_warning", session.EndReason, Warn);
             _status.Text = session.EndReason;
             _status.Foreground = Warn;
+            _statusMark.Source = PackSkins.Sprite("term_mark_warning");
             var (ok, reason) = Campaign.CanOpenTerminal(session.ProductId);
             if (ok)
                 _actions.Children.Add(Ui.Button("Continuer (Entrée)", _again, "gold"));
@@ -218,6 +295,7 @@ public class TerminalView : UserControl
                 : Assisted ? "Saisie simplifiée : le mot s'écrit tout seul, Entrée le valide (rendement de la frappe lente). Échap : fermer."
                 : "L'entreprise continue à vitesse normale. Espace ou Entrée : valider. Échap : fermer (le travail validé reste acquis).";
             _status.Foreground = paused ? Warn : Dim;
+            _statusMark.Source = PackSkins.Sprite(paused ? "term_mark_warning" : "term_mark_running");
             _actions.Children.Add(Ui.Button("Fermer", _close));
         }
     }

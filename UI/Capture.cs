@@ -116,8 +116,14 @@ public static class Capture
         game.Session.TogglePause();
         game.OpenTerminal(app!.Id);
         await Wait(0.5);
+        // Frappe par le terminal lui-même (journal des mots, barre de progression), une faute au milieu
         for (int i = 0; i < 9 && campaign.Terminal is { Finished: false } session; i++)
-            campaign.SubmitWord(session.Word, session.Word.Length / 4.0);
+        {
+            game.Terminal?.SetInput(i == 4 ? "zut" : session.Word);
+            game.Terminal?.Submit();
+            if (i == 4)
+                game.Terminal?.SetInput("");
+        }
         game.Terminal?.SetInput(campaign.Terminal!.Word[..3]);
         game.Terminal?.Repaint();
         await Shot(window, folder, "05_terminal", report);

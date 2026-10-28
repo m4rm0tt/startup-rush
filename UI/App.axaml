@@ -285,6 +285,22 @@
             <Setter Property="Foreground" Value="{StaticResource Ink}"/>
             <Setter Property="BorderBrush" Value="{StaticResource Steel}"/>
         </Style>
+        <!-- Champ posé dans un cadre du pack : jamais de fond ni de bordure, même au survol ou au focus -->
+        <Style Selector="TextBox.bare /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <Style Selector="TextBox.bare:pointerover /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="TextBox.bare:focus /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+        <Style Selector="TextBox.bare:disabled /template/ Border#PART_BorderElement">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
         <!-- Infobulle : cadre sombre du pack (hud_tooltip), texte clair -->
         <Style Selector="ToolTip">
             <Setter Property="FontFamily" Value="{StaticResource PixelFont}"/>
@@ -331,6 +347,28 @@
         <Style Selector="Slider Thumb.knob:pointerover"><Setter Property="Tag" Value="pack:hud_slider_knob:hover"/></Style>
         <Style Selector="Slider Thumb.knob:pressed"><Setter Property="Tag" Value="pack:hud_slider_knob:pressed"/></Style>
         <Style Selector="Slider:disabled Thumb.knob"><Setter Property="Tag" Value="pack:hud_slider_knob:disabled"/></Style>
+
+        <!-- Barre de défilement du terminal : fine, sans flèches (term_scroll_track et term_scroll_thumb) -->
+        <Style Selector="ScrollViewer.term ScrollBar:vertical">
+            <Setter Property="Width" Value="12"/>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Grid>
+                        <px:PixelPanel Skin="pack:term_scroll_track"/>
+                        <Track Name="PART_Track" Orientation="Vertical" IsDirectionReversed="True"
+                               Minimum="{TemplateBinding Minimum}" Maximum="{TemplateBinding Maximum}"
+                               Value="{TemplateBinding Value, Mode=TwoWay}" ViewportSize="{TemplateBinding ViewportSize}">
+                            <Track.DecreaseButton><RepeatButton Name="PART_PageUpButton" Classes="page"/></Track.DecreaseButton>
+                            <Track.IncreaseButton><RepeatButton Name="PART_PageDownButton" Classes="page"/></Track.IncreaseButton>
+                            <Thumb Classes="term"/>
+                        </Track>
+                    </Grid>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="ScrollViewer.term Thumb.term">
+            <Setter Property="Template"><ControlTemplate><px:PixelPanel Skin="pack:term_scroll_thumb"/></ControlTemplate></Setter>
+        </Style>
 
         <!-- Barres de défilement du pack : piste, curseur avec sa poignée, flèches -->
         <Style Selector="ScrollBar">

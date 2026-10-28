@@ -360,12 +360,30 @@ public class SettingsScreen : MenuScreen
             Ui.Section("Accessibilité",
                 Ui.CheckBox("L'entreprise attend pendant la saisie au terminal", s.PauseDuringTerminal, v => Change(() => s.PauseDuringTerminal = v)),
                 Ui.Muted("Le rendement d'un mot ne dépend jamais du temps qui passe : ce réglage change seulement ce qui arrive pendant que tu tapes.", 13),
+                Ui.CheckBox("Réduire les effets (curseur fixe, moins d'animations)", s.ReduceEffects, v => Change(() => s.ReduceEffects = v)),
+                Ui.Text("Curseur du terminal", 14, Palette.Fog),
+                CursorChoice(s.TerminalCursor, v => Change(() => s.TerminalCursor = v)),
                 Ui.CheckBox("Saisie simplifiée au terminal", s.SimplifiedTyping, v => Change(() => s.SimplifiedTyping = v)),
                 Ui.Muted("Saisie simplifiée : le mot s'écrit tout seul et Entrée le valide. Chaque mot rapporte comme une frappe lente (×0,85) : " +
                          "moins qu'une frappe rapide, assez pour mener la campagne.", 13)));
         if (back != null)
             column.Children.Add(Ui.Button("Retour", back));
         return column;
+    }
+
+    /// <summary>Forme du curseur du terminal : boutons radio, chacun montré avec son sprite du pack.</summary>
+    private static Control CursorChoice(string current, Action<string> pick)
+    {
+        var row = new WrapPanel();
+        foreach (var (id, label) in new[] { ("block", "Bloc"), ("bar", "Barre"), ("underline", "Souligné") })
+        {
+            var sample = Ui.Image(PackSkins.Sprite($"term_cursor_{id}"), 12, 24);
+            var radio = Ui.Radio(label, current == id, () => pick(id));
+            radio.Margin = new Thickness(0, 0, 4, 4);
+            row.Children.Add(new StackPanel { Orientation = Orientation.Horizontal, Spacing = 2, Margin = new Thickness(0, 0, 12, 0),
+                Children = { radio, new Border { Background = Palette.Brush("#162235"), Padding = new Thickness(4, 2), VerticalAlignment = VerticalAlignment.Center, Child = sample } } });
+        }
+        return row;
     }
 
     public override bool HandleKey(Key key, KeyModifiers modifiers)

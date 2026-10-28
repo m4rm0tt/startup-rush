@@ -259,6 +259,7 @@ public static class Ui
             Text = value, PlaceholderText = watermark, MinWidth = 120, Background = Brushes.Transparent, BorderThickness = new Thickness(0),
             Padding = new Thickness(search ? 28 : 8, 4, 8, 6), VerticalContentAlignment = VerticalAlignment.Center,
         };
+        box.Classes.Add("bare");
         var frame = new PixelPanel { Skin = $"pack:{component}:normal", Width = width, Child = box };
         if (!double.IsNaN(width))
             frame.HorizontalAlignment = HorizontalAlignment.Left;

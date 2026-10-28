@@ -44,7 +44,12 @@ public class Settings
 {
     public double MusicVolume { get; set; } = 0.6;
     public double SoundVolume { get; set; } = 0.8;
+
+    /// <summary>Accessibilité : moins d'effets (pas de clignotement du curseur, effets de scène réduits).</summary>
     public bool ReduceEffects { get; set; }
+
+    /// <summary>Forme du curseur du terminal : « block », « bar » ou « underline » (sprites term_cursor_* du pack).</summary>
+    public string TerminalCursor { get; set; } = "block";
 
     /// <summary>Échelle de l'interface (0 = automatique selon la taille de la fenêtre).</summary>
     public double UiScale { get; set; }

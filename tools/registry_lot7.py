@@ -153,6 +153,28 @@ updates["cursor_text"] = row("Curseur au-dessus des champs de saisie (style glob
 updates["cursor_resize_h"] = row("Curseur de la poignée du panneau latéral", "élargir ou rétrécir le panneau", SCREEN, "curseur système non visible dans les captures")
 updates["hud_drag_handle"] = row("Poignée du panneau latéral : la tirer change sa largeur (retenue dans les réglages)", "largeur du panneau", SCREEN + ";Core/persistence/LegacyProfile.cs", "19")
 
+# Objets informatiques du pack branchés au lot 7 : consommateur réel ET test d'effet → « validé »
+OBJ_TEST = "Tests/space/Lot7ObjectsTest.cs : "
+OBJ_FILES = "Core/space/Furniture.cs;Core/space/Layout.cs;Core/campaign/Campaign.Time.cs"
+for i, (consumer, indicator, test) in {
+    "laptop_gaming": ("Ordinateur d'un poste (portable)", "production ×1,05, qualité +0,03", "PeripheralsHelpTheirOwnPostUpToACapAndTheDockOnlyWithALaptop"),
+    "mini_pc": ("Ordinateur d'un poste, posé sur le bureau", "production ×0,95, très sobre", "AMiniPcOnTheDeskIsThePostComputerAndTheBetterMachinesPayOff"),
+    "workstation_creative": ("Ordinateur d'un poste (tour)", "production ×1,05, qualité +0,05", "AMiniPcOnTheDeskIsThePostComputerAndTheBetterMachinesPayOff (qualité comparée)"),
+    "monitor_ultrawide": ("Écran d'un poste", "production +5 %, plafond des écrans 6 %", "TheUltrawideScreenHelpsWithinTheScreenCap"),
+    "headset_stand": ("Périphérique d'un poste", "production +2 %, plafond 3 % par poste", "PeripheralsHelpTheirOwnPostUpToACapAndTheDockOnlyWithALaptop"),
+    "docking_station": ("Périphérique d'un poste avec portable", "production +2 % seulement avec un portable", "PeripheralsHelpTheirOwnPostUpToACapAndTheDockOnlyWithALaptop"),
+    "graphics_tablet": ("Périphérique d'un poste", "qualité du travail +0,02, plafond 0,03", "PeripheralsHelpTheirOwnPostUpToACapAndTheDockOnlyWithALaptop"),
+    "webcam": ("Réunions à distance (sur un écran)", "coordination +0,25, petits supports plafonnés à 1", "CollaborationEquipmentAddsCoordinationWithinTheCaps"),
+    "speakerphone": ("Réunions (sur une table de réunion)", "coordination +0,25, petits supports plafonnés à 1", "CollaborationEquipmentAddsCoordinationWithinTheCaps"),
+    "printer_mfp": ("Documents et maquettes papier", "coordination +0,25, petits supports plafonnés à 1", "CollaborationEquipmentAddsCoordinationWithinTheCaps"),
+    "videoconf_bar": ("Salle de visio (sur l'écran de présentation)", "coordination +0,5", "CollaborationEquipmentAddsCoordinationWithinTheCaps"),
+    "console_test_kit": ("Banc de test des jeux", "15 % de défauts en moins à chaque amélioration d'un jeu", "TestBenchesRemoveDefectsOfTheirFamilyOnly"),
+    "device_test_rack": ("Banc de test des applications", "15 % de défauts en moins à chaque amélioration d'une application", "TestBenchesRemoveDefectsOfTheirFamilyOnly"),
+    "capture_device": ("Studio : fait office de caméra", "score vidéo du studio", "ACaptureBoxCountsAsTheStudioCamera"),
+}.items():
+    updates[i] = dict(consommateur=consumer, fichier_definition=OBJ_FILES, deblocage="arbre « Studio audiovisuel »" if i == "capture_device" else "toujours",
+                      indicateur_ou_interaction=indicator, etat="validé", scenario_test=OBJ_TEST + test)
+
 # Icônes de l'interface
 for i, where in {"icon_pause": "bouton pause", "icon_speed_1": "vitesse 1", "icon_speed_2": "vitesse 2", "icon_speed_3": "vitesses 3 et 4 (avec le chiffre)",
                  "icon_bell": "journal / « À traiter »", "icon_settings": "menu et réglages", "icon_back": "retour d'un panneau", "icon_close": "fermer",

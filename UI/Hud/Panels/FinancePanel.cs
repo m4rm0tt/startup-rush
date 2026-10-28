@@ -90,6 +90,12 @@ public class FinancePanel : GamePanel
         return items.Count == 0 ? Ui.Muted("Aucun revenu pour l'instant : sors un premier projet.", 13) : Bars(items, Palette.Leaf);
     }
 
+    private static readonly Dictionary<string, string> CostIcons = new()
+    {
+        ["Ta rémunération"] = "icon_user", ["Salaires"] = "icon_salary", ["Loyer et charges"] = "icon_office", ["Serveurs"] = "icon_server",
+        ["Électricité et réseau"] = "icon_energy", ["Marketing"] = "icon_marketing", ["Remboursements"] = "icon_loan",
+    };
+
     private static Control Bars(List<(string Label, decimal Amount)> items, IBrush color)
     {
         decimal max = items.Count == 0 ? 1 : items.Max(i => i.Amount);
@@ -97,7 +103,10 @@ public class FinancePanel : GamePanel
         foreach (var (label, amount) in items)
         {
             var row = new Grid { ColumnDefinitions = new ColumnDefinitions("180,*,110") };
-            row.Children.Add(Ui.Text(label, 14, Palette.Cloud, wrap: false));
+            // Chaque poste de dépense a son pictogramme du pack ; les revenus d'un projet, celui des revenus
+            var caption = Ui.Text(label, 14, Palette.Cloud, wrap: false);
+            caption.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            row.Children.Add(Ui.Row(6, Ui.Icon(CostIcons.GetValueOrDefault(label, color == Palette.Leaf ? "icon_income" : "icon_expense"), 16), caption));
             var bar = Ui.Bar((double)(amount / Math.Max(1, max)), color, 10);
             bar.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
             Grid.SetColumn(bar, 1);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -73,9 +74,52 @@ public static class Ui
         return grid;
     }
 
-    public static Button Button(string label, Action onClick, string style = "", bool enabled = true, string? tip = null)
+    /// <summary>
+    /// Icône du pack selon le libellé d'un bouton (le début du libellé suffit) : chaque action garde le même pictogramme dans
+    /// tout le jeu. Les flèches seules (◀ ▶ ▲) deviennent les chevrons du pack.
+    /// </summary>
+    private static readonly (string Label, string Icon)[] ButtonIcons =
+    [
+        ("Sauvegarder", "icon_save"), ("Charger", "icon_load"), ("Menu principal", "icon_nav_menu"), ("Réglages", "icon_settings"),
+        ("Annuler", "icon_cancel"), ("Refuser", "icon_cancel"), ("Valider", "icon_confirm"), ("Reprendre", "icon_speed_1"),
+        ("Recruter", "icon_recruit"), ("Former", "icon_training"), ("Entraîner", "icon_training"), ("Débloquer", "icon_unlock"),
+        ("Licencier", "icon_delete"), ("Jeter", "icon_delete"), ("Renommer", "icon_edit"), ("Emprunter", "icon_loan"),
+        ("Plan de redressement", "icon_debt"), ("Lancer", "icon_publish"), ("Tourner", "icon_rotate"), ("Déplacer", "icon_move"),
+        ("Ranger", "icon_packaging"), ("Poser", "icon_place"), ("Fiche", "icon_eye"), ("Voir", "icon_eye"), ("Ouvrir la fiche", "icon_eye"),
+        ("Ouvrir le projet", "icon_eye"), ("Production et stocks", "icon_manufacturing"), ("stock cible", "icon_stock"),
+        ("Réserves", "icon_storage"), ("Essayer de récupérer", "icon_refresh"), ("Déléguer", "icon_team"), ("Évaluer", "icon_statistics"),
+        ("Améliorer", "icon_version"), ("Ajouter", "icon_plus"), ("Créer", "icon_plus"), ("Nouvelle partie", "icon_plus"),
+        ("Retour", "icon_back"), ("−", "icon_minus"), ("+", "icon_plus"), ("◀", "icon_chevron_left"), ("▶", "icon_chevron_right"), ("▲", "icon_chevron_up"),
+    ];
+
+    private static string? IconFor(string label)
     {
-        var button = new Button { Content = label, IsEnabled = enabled, FontSize = 15, Padding = new Thickness(12, 4, 12, 8) };
+        foreach (var (start, icon) in ButtonIcons)
+            if (label == start || label.StartsWith(start + " ") || label.StartsWith(start + "(") || start.Length > 2 && label.StartsWith(start))
+                return icon;
+        return null;
+    }
+
+    public static Button Button(string label, Action onClick, string style = "", bool enabled = true, string? tip = null, string? icon = null)
+    {
+        var button = new Button { IsEnabled = enabled, FontSize = 15, Padding = new Thickness(12, 4, 12, 8) };
+        icon ??= IconFor(label);
+        bool arrow = label is "◀" or "▶" or "▲" or "−" or "+";
+        if (icon == null || !UI.Iso.PackLibrary.Has(icon))
+            button.Content = label;
+        else
+        {
+            // Teinte claire sur les boutons colorés, encre ailleurs ; le texte hérite de la couleur du bouton
+            bool onAccent = style.Contains("gold") || style.Contains("red") || style.Contains("green") || style.Contains("selected");
+            var image = Image(Icons.Get(icon, onAccent ? "#fbf5e6" : "#2b2128"), 16, 16);
+            image.VerticalAlignment = VerticalAlignment.Center;
+            button.Content = arrow ? image : Row(6, image, new TextBlock { Text = label, VerticalAlignment = VerticalAlignment.Center });
+            if (arrow)
+            {
+                button.Padding = new Thickness(8, 5, 8, 8);
+                tip ??= label switch { "−" => "Moins", "+" => "Plus", _ => null };
+            }
+        }
         foreach (var cls in style.Split(' ', StringSplitOptions.RemoveEmptyEntries))
             button.Classes.Add(cls);
         button.Click += (_, _) =>
@@ -399,9 +443,21 @@ public static class Ui
     }
 
     /// <summary>Un chiffre clé : petite étiquette au-dessus, gros nombre dessous.</summary>
+    /// <summary>Icône du pack d'un chiffre clé selon son libellé.</summary>
+    private static readonly (string Label, string Icon)[] StatIcons =
+    [
+        ("Argent", "icon_cash"), ("Revenus", "icon_income"), ("Dépenses", "icon_expense"), ("Résultat", "icon_profit"), ("Chaque mois", "icon_profit"),
+        ("Tiens encore", "icon_time"), ("Ventes", "icon_sell"), ("Note", "icon_star"), ("GPU", "icon_gpu"), ("Calcul", "icon_cpu"),
+        ("Pris cette nuit", "icon_load"), ("Utilisateurs", "icon_users"), ("Joueurs", "icon_users"), ("Payants", "icon_subscription"),
+    ];
+
     public static PixelPanel Stat(string label, string value, IBrush? color = null, double width = 150, string? tip = null)
     {
-        var panel = new PixelPanel { Skin = "inset", Padding = new Thickness(10, 6), Margin = new Thickness(0, 0, 6, 6), Width = width, Child = Column(0, Text(label, 12, Palette.Fog, wrap: false), Number(value, 22, color)) };
+        string? icon = StatIcons.FirstOrDefault(s => label.StartsWith(s.Label)).Icon;
+        Control caption = Text(label, 12, Palette.Fog, wrap: false);
+        if (icon != null && UI.Iso.PackLibrary.Has(icon))
+            caption = Row(4, Image(Icons.Get(icon, "#6f5f5d"), 16, 16), caption);
+        var panel = new PixelPanel { Skin = "inset", Padding = new Thickness(10, 6), Margin = new Thickness(0, 0, 6, 6), Width = width, Child = Column(0, caption, Number(value, 22, color)) };
         if (tip != null)
             ToolTip.SetTip(panel, tip);
         return panel;

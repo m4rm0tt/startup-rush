@@ -8,12 +8,18 @@ namespace Tests.balance;
 public class BalanceProbe
 {
     [Test, Explicit]
-    public void Probe([Values("un_projet", "plusieurs_petits", "ambitieux", "jeu_simple", "marketing_excessif", "recrutement_precoce", "trop_de_projets", "exces_puis_correction", "delegation", "hebergement_maison", "materiel")] string name)
+    public void Probe([Values("un_projet", "plusieurs_petits", "ambitieux", "jeu_simple", "marketing_excessif", "recrutement_precoce", "trop_de_projets", "exces_puis_correction", "delegation", "hebergement_maison", "materiel", "ia", "studio_xr", "quantique")] string name) => Run(name, 18);
+
+    /// <summary>Le quantique est une fin de progression : la même sonde sur 36 mois.</summary>
+    [Test, Explicit]
+    public void ProbeLong() => Run("quantique", 36);
+
+    private static void Run(string name, int months)
     {
         var strategy = Strategies.All.First(s => s.Name == name);
         var campaign = Campaign.New("Probe", "Bot", "Bot SA", FounderProfile.Generalist, 11);
         var pilot = new Autopilot(strategy);
-        for (int month = 1; month <= 18 && campaign.Status == CampaignStatus.Running; month++)
+        for (int month = 1; month <= months && campaign.Status == CampaignStatus.Running; month++)
         {
             pilot.Play(campaign, 30);
             string key = GameTime.ToDate(campaign.Minute).AddMonths(-1).ToString("yyyy-MM");
@@ -25,5 +31,8 @@ public class BalanceProbe
             TestContext.Out.WriteLine($"M{month,2} cash {campaign.Ledger.Cash,8:N0} res {result,7:N0} [{costs}] host {campaign.Infra().Hosting:0}/{campaign.HostingLeft:0} cloud {string.Join(",", campaign.CloudOffers.Select(o => $"{o.Kind}:{o.Served:0}/{o.Demand:0}/{o.Reserved:0}@{o.Price}"))} staff {campaign.Staff.Count()} pts {campaign.DevPoints} [{string.Join(",", campaign.Unlocked)}] {campaign.Solvency.State} {projects}");
         }
         TestContext.Out.WriteLine($"{campaign.Status} actions {pilot.Actions} {campaign.Solvency.LiquidationReport}");
+        TestContext.Out.WriteLine($"Jalons : {string.Join(", ", pilot.Milestones.Select(m => $"{m.Key} j{m.Value}"))} ; IA [{string.Join(",", campaign.AiModels.Select(m => $"{m.Name} {m.Stage} v{m.Live?.Number} q{Campaign.AiQualityFor(m):0.00}"))}] studio {campaign.BestStudio().Bonus:P0} xr {campaign.BestXr().DefectCut:P0}");
+        foreach (var site in campaign.Sites.Skip(1))
+            TestContext.Out.WriteLine($"Site {site.ListingId} {site.Width}x{site.Height} : {string.Join(", ", site.Items.Select(i => i.DefId))}");
     }
 }

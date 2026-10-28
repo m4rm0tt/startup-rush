@@ -41,6 +41,27 @@ public record Strategy(string Name, string Description)
     public decimal HardwareAbove { get; init; }
 
     public string HardwareSegment { get; init; } = "makers";
+
+    /// <summary>
+    /// Se lance dans l'IA au-delà de cette trésorerie (0 : jamais) : un petit modèle d'analyse entraîné sur des données publiques,
+    /// évalué, publié, puis un produit d'IA de ce public ; une seconde version sur données achetées dès que l'argent le permet.
+    /// </summary>
+    public decimal AiAbove { get; init; }
+
+    public string AiSegment { get; init; } = "ai_analytics";
+
+    /// <summary>Équipe le siège d'un studio audiovisuel complet au-delà de cette trésorerie (0 : jamais).</summary>
+    public decimal StudioAbove { get; init; }
+
+    /// <summary>Équipe le siège d'une zone de test XR complète au-delà de cette trésorerie (0 : jamais).</summary>
+    public decimal XrAbove { get; init; }
+
+    /// <summary>
+    /// Le quantique au-delà de cette trésorerie (0 : jamais) : un laboratoire avancé, le cryostat ouvert et ses supports, un
+    /// chercheur sur « Calibration cryogénique », puis le cryostat fermé, sa mise en route et le service quantique vendu.
+    /// </summary>
+    public decimal QuantumAbove { get; init; }
+
     public decimal PreLaunchMarketing { get; init; }
     public int MaxStaff { get; init; }
     public decimal HireAbove { get; init; } = 30_000;
@@ -72,6 +93,14 @@ public class Autopilot(Strategy strategy)
     /// <summary>Mots tapés au terminal depuis le début (pour mesurer le travail de saisie demandé).</summary>
     public int Words { get; private set; }
 
+    /// <summary>Jour où chaque étape du lot 6 a été atteinte pour la première fois (IA publiée, studio complet, quantique en service…).</summary>
+    public Dictionary<string, int> Milestones { get; } = new();
+
+    /// <summary>Score joué aux mini-jeux d'évaluation et de mise en route : correct, pas parfait.</summary>
+    public const double MiniGameScore = 0.75;
+
+    private void Mark(Campaign campaign, string milestone) => Milestones.TryAdd(milestone, (int)campaign.Day);
+
     public void Play(Campaign campaign, int days)
     {
         for (int d = 0; d < days && campaign.Status == CampaignStatus.Running; d++)
@@ -97,6 +126,9 @@ public class Autopilot(Strategy strategy)
         Tree(campaign);
         Infrastructure(campaign);
         Hardware(campaign);
+        Ai(campaign);
+        Studio(campaign);
+        Quantum(campaign);
         Hiring(campaign);
         if (Strategy.Recover)
             Recovery(campaign);
@@ -160,8 +192,13 @@ public class Autopilot(Strategy strategy)
         switch (link)
         {
             case "hosting":
-                Act(campaign.SetHosting(product.Id, true, product.HostingCap * 2));
-                return;
+                // Relever le plafond ne sert que s'il reste une offre plus grande au-dessus
+                if (ProductCatalog.Hosting.Any(h => h.MonthlyCost > product.HostingCap && campaign.PlanAvailable(h)))
+                {
+                    Act(campaign.SetHosting(product.Id, true, product.HostingCap * 2));
+                    return;
+                }
+                break;
             case "upkeep":
                 if (product.Upkeep != Upkeep.High)
                 {
@@ -344,6 +381,177 @@ public class Autopilot(Strategy strategy)
             campaign.SupplyOrder(order.Id);
         if (campaign.IsUnlocked("online_shop") && !product.SalesChannels.Contains("shop"))
             Act(campaign.SetChannel(product.Id, "shop", true));
+    }
+
+    private bool CanSpend(Campaign campaign, decimal above) =>
+        above > 0 && campaign.Ledger.Cash >= above && campaign.Solvency.State == SolvencyState.Healthy;
+
+    /// <summary>Pose au sol, là où il y a de la place sur le site affiché ; les objets de bureau vont sur le premier bureau.</summary>
+    private void Equip(Campaign campaign, IEnumerable<string> defs)
+    {
+        foreach (string id in defs)
+        {
+            var def = FurnitureCatalog.Get(id);
+            if (def.Attached)
+            {
+                if (campaign.Premises.Desks.FirstOrDefault() is { } desk)
+                    Act(campaign.BuyAndAttach(id, desk.Id));
+            }
+            else if (campaign.FindSpot(def) is var (x, y, f))
+                Act(campaign.BuyAndPlace(id, x, y, f));
+        }
+    }
+
+    private void Ai(Campaign campaign)
+    {
+        if (Strategy.AiAbove <= 0 || !campaign.IsUnlocked("ai_models"))
+            return;
+        var model = campaign.AiModels.FirstOrDefault();
+        if (model == null)
+        {
+            if (!CanSpend(campaign, Strategy.AiAbove))
+                return;
+            var goal = ai.AiCatalog.Goals.First(g => g.SegmentId == Strategy.AiSegment).Goal;
+            var (result, created) = campaign.CreateAiModel("", goal, "small");
+            Act(result);
+            if (created == null)
+                return;
+            model = created;
+        }
+        var totals = campaign.Infra();
+        bool rent = totals.Gpu + totals.Compute <= 0;
+        if (model.Training == null && model.Candidate == null && model.Live == null)
+            Act(campaign.StartAiTraining(model.Id, "public", rent));
+        if (model.Candidate is { Evaluated: false })
+            Act(campaign.EvaluateAi(model.Id, MiniGameScore));
+        if (model.Candidate is { Evaluated: true })
+        {
+            Act(campaign.PublishAi(model.Id));
+            Mark(campaign, "ia_publiee");
+        }
+        // Une seconde version sur de meilleures données, quand l'argent le permet ; l'ancienne sert pendant ce temps
+        if (model.Live is { DatasetId: "public" } && model.Training == null && model.Candidate == null && CanSpend(campaign, Strategy.AiAbove))
+            Act(campaign.StartAiTraining(model.Id, "bought", rent));
+        if (model.Live == null)
+            return;
+        if (campaign.Products.All(p => p.ArchetypeId != "ai"))
+        {
+            var (result, product) = campaign.CreateProject("", Strategy.AiSegment, RevenueModel.Subscription);
+            Act(result);
+            if (product != null)
+            {
+                Mark(campaign, "produit_ia");
+                while (campaign.Products.OrderBy(p => p.Priority).First().Id != product.Id && campaign.MoveProject(product.Id, -1).Ok)
+                {
+                }
+            }
+        }
+        // L'inférence louée suit la charge, avec de la marge : sinon l'audience servie plafonne
+        foreach (var product in campaign.Products.Where(p => p.AiModelId != 0 && p.IsLive))
+        {
+            decimal need = Math.Ceiling((decimal)(campaign.AiLoad(product) / 0.75 * 1.25) * ai.AiCatalog.ExternalInferencePrice);
+            if (product.InferenceCap < need)
+                Act(campaign.SetInference(product.Id, true, Math.Max(300, need)));
+        }
+    }
+
+    private static readonly string[] StudioSet =
+        ["camera_tripod", "greenscreen_backdrop", "softbox_light", "softbox_light", "mic_stand", "studio_monitors", "partition_acoustic"];
+
+    private static readonly string[] XrSet = ["xr_headset_stand", "xr_base_station", "xr_base_station", "xr_play_mat"];
+
+    /// <summary>Studio et zone XR au siège, là où l'équipe travaille (un studio sans personne sur place ne rend qu'à moitié).</summary>
+    private void Studio(Campaign campaign)
+    {
+        if (campaign.SiteId != campaign.Headquarters.Id)
+            return;
+        var home = campaign.Headquarters;
+        if (Strategy.StudioAbove > 0 && campaign.IsUnlocked("studio") && !Milestones.ContainsKey("studio_pose") && CanSpend(campaign, Strategy.StudioAbove))
+        {
+            Equip(campaign, StudioSet);
+            Mark(campaign, "studio_pose");
+        }
+        if (Strategy.XrAbove > 0 && campaign.IsUnlocked("xr") && !Milestones.ContainsKey("zone_xr_posee") && CanSpend(campaign, Strategy.XrAbove))
+        {
+            Equip(campaign, XrSet);
+            Mark(campaign, "zone_xr_posee");
+        }
+        if (campaign.StudioOf(home).Missing.Count == 0)
+            Mark(campaign, "studio_complet");
+        if (campaign.XrOf(home).Missing.Count == 0)
+            Mark(campaign, "zone_xr_complete");
+    }
+
+    /// <summary>Le labo de calibration : énergie et froid, un établi pour le chercheur, le cryostat ouvert et ses deux supports.</summary>
+    private static readonly string[] LabSet =
+        ["power_distribution_cabinet", "crac_unit", "workbench_electronics", "quantum_control_rack", "cryo_support_unit", "quantum_cryostat_open"];
+
+    /// <summary>Réserve gardée après chaque achat du labo (loyer, salaires).</summary>
+    private const decimal LabMargin = 30_000;
+
+    private void Quantum(Campaign campaign)
+    {
+        if (Strategy.QuantumAbove <= 0 || !campaign.IsUnlocked("advanced_lab") || !campaign.IsUnlocked("multisite"))
+            return;
+        var lab = campaign.Sites.FirstOrDefault(s => s.ListingId == "advanced_lab");
+        var home = campaign.SiteId;
+        if (lab == null)
+        {
+            if (!CanSpend(campaign, Strategy.QuantumAbove))
+                return;
+            Act(campaign.RentSite("advanced_lab"));
+            lab = campaign.Premises;
+            campaign.ViewSite(home);
+            if (lab.ListingId != "advanced_lab")
+                return;
+            Mark(campaign, "labo_avance");
+            Act(campaign.StartResearch("res_cryo"));
+        }
+        // Ce qui manque au labo s'achète dès que l'argent le permet, avec une marge (les gros objets peuvent attendre des mois)
+        foreach (string id in LabSet)
+        {
+            int wanted = LabSet.Count(x => x == id);
+            if (lab.Items.Count(i => i.DefId == id) >= wanted || !CanSpend(campaign, FurnitureCatalog.Get(id).Price + LabMargin))
+                continue;
+            campaign.ViewSite(lab.Id);
+            Equip(campaign, [id]);
+            if (id == "workbench_electronics" && lab.Items.LastOrDefault(i => i.DefId == id) is { } bench)
+                Act(campaign.BuyAndAttach("chair_office", bench.Id));
+            campaign.ViewSite(home);
+        }
+        // Un chercheur assis au labo tant que la calibration n'est pas finie
+        var researcher = campaign.Staff.OrderBy(p => p.Id).FirstOrDefault();
+        var post = lab.Workstations.FirstOrDefault(p => p.Desk.DefId == "workbench_electronics");
+        if (!campaign.ResearchDone.Contains("res_cryo"))
+        {
+            if (researcher != null && post != null && researcher.Assignment.Kind != Core.team.AssignmentKind.Research)
+            {
+                campaign.Seat(researcher, post);
+                Act(campaign.AssignTo(researcher.Id, Core.team.AssignmentKind.Research));
+            }
+            return;
+        }
+        Mark(campaign, "calibration_cryo");
+        // La calibration finie, le chercheur retourne aux projets
+        if (researcher is { Assignment.Kind: Core.team.AssignmentKind.Research })
+            Act(campaign.Assign(researcher.Id, 0));
+        if (lab.Items.All(i => i.DefId != "quantum_cryostat_closed"))
+        {
+            if (!CanSpend(campaign, FurnitureCatalog.Get("quantum_cryostat_closed").Price + LabMargin))
+                return;
+            campaign.ViewSite(lab.Id);
+            Equip(campaign, ["quantum_cryostat_closed"]);
+            campaign.ViewSite(home);
+        }
+        if (campaign.QuantumSites.FirstOrDefault(q => q.SiteId == lab.Id) is { WarmupLeft: > 0, Stabilized: false })
+            Act(campaign.StabilizeQuantum(lab.Id, MiniGameScore));
+        if (campaign.QuantumUnitsOnline == 0)
+            return;
+        Mark(campaign, "quantique_en_service");
+        if (campaign.IsUnlocked("quantum_offers") && campaign.CloudOffers.All(o => o.Kind != CloudKind.Quantum))
+            Act(campaign.OpenCloudOffer(CloudKind.Quantum));
+        foreach (var offer in campaign.CloudOffers.Where(o => o.Kind == CloudKind.Quantum && !o.Paused && campaign.CloudAvailable(o) > o.Reserved + 0.5))
+            Act(campaign.SetCloudOffer(offer.Id, offer.Price, campaign.CloudAvailable(offer)));
     }
 
     private void Hiring(Campaign campaign)

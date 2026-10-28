@@ -12,12 +12,13 @@ namespace Tests.balance;
 public class BalanceReportTest
 {
     public const int Months = 18;
+    public const int LongMonths = 36;
     public static readonly ulong[] Seeds = [11, 23, 37, 41, 59];
 
     public record RunResult(
         string Strategy, ulong Seed, bool Liquidated, int DaysPlayed, decimal FinalCash, decimal MinCash, int MonthsInTrouble,
         decimal Income, int FirstLaunchDay, int FirstRevenueDay, int ProfitableMonthDay, int Staff, double Users, decimal Revenue30,
-        int Points, int Unlocked, int Actions, int Words, string Premises, decimal[] CashByQuarter);
+        int Points, int Unlocked, int Actions, int Words, string Premises, decimal[] CashByQuarter, IReadOnlyDictionary<string, int> Milestones);
 
     public static RunResult Play(Strategy strategy, ulong seed, int months = Months)
     {
@@ -51,7 +52,7 @@ public class BalanceReportTest
         return new RunResult(strategy.Name, seed, campaign.Status == CampaignStatus.Liquidated, (int)campaign.Day,
             Math.Round(campaign.Ledger.Cash), Math.Round(minCash), trouble, Math.Round(income), firstLaunch, firstRevenue, profitable,
             campaign.Staff.Count(), Math.Round(campaign.Products.Sum(p => p.Users)), Math.Round(campaign.RecurringRevenue30),
-            spent + campaign.DevPoints, campaign.Unlocked.Count, pilot.Actions, pilot.Words, campaign.Premises.Name, quarters.ToArray());
+            spent + campaign.DevPoints, campaign.Unlocked.Count, pilot.Actions, pilot.Words, campaign.Premises.Name, quarters.ToArray(), pilot.Milestones);
     }
 
     [Test, Explicit("Long : écrit BALANCE_REPORT.md")]
@@ -91,6 +92,34 @@ public class BalanceReportTest
         md.AppendLine();
         foreach (var s in Strategies.All)
             md.AppendLine($"- **{s.Name}** : {s.Description}");
+        md.AppendLine();
+        // Lot 6 : jusqu'où chaque stratégie va (IA publiée, studio et zone XR complets, quantique en service)
+        md.AppendLine("## Jalons du lot 6");
+        md.AppendLine();
+        md.AppendLine("Jour où l'étape est atteinte pour la première fois (médiane des graines qui l'atteignent). Mini-jeux d'évaluation et de mise en route joués à 75 %.");
+        md.AppendLine();
+        md.AppendLine("| Stratégie | Jalon | Atteint | Jour (méd.) |");
+        md.AppendLine("|---|---|---|---|");
+        void Milestones(IEnumerable<RunResult> runs, string label)
+        {
+            var list = runs.ToList();
+            foreach (string key in list.SelectMany(r => r.Milestones.Keys).Distinct())
+                md.AppendLine($"| {label} | {key} | {list.Count(r => r.Milestones.ContainsKey(key))}/{list.Count} | " +
+                              $"{Med(list.Where(r => r.Milestones.ContainsKey(key)).Select(r => r.Milestones[key]), v => v.ToString())} |");
+        }
+        foreach (var group in results.GroupBy(r => r.Strategy).Where(g => g.Any(r => r.Milestones.Count > 0)))
+            Milestones(group, group.Key);
+        md.AppendLine();
+        // Le quantique est une fin de progression : 18 mois ne suffisent pas, on regarde aussi sur un horizon plus long
+        var quantum = Strategies.All.First(s => s.Name == "quantique");
+        var longRuns = Seeds.Select(seed => Play(quantum, seed, LongMonths)).ToList();
+        md.AppendLine($"### Horizon long : quantique sur {LongMonths} mois");
+        md.AppendLine();
+        md.AppendLine("| Graine | Issue | Argent par trimestre | Nœuds | Jalons |");
+        md.AppendLine("|---|---|---|---|---|");
+        foreach (var r in longRuns)
+            md.AppendLine($"| {r.Seed} | {(r.Liquidated ? "faillite" : "en activité")} | {string.Join(" → ", r.CashByQuarter.Select(c => $"{c:N0}"))} | {r.Unlocked} | " +
+                          $"{(r.Milestones.Count == 0 ? "aucun" : string.Join(", ", r.Milestones.Select(m => $"{m.Key} (j{m.Value})")))} |");
         md.AppendLine();
         md.AppendLine("## Détail");
         md.AppendLine();

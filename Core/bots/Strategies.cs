@@ -40,6 +40,24 @@ public static class Strategies
             HardwareAbove = 35_000, HardwareSegment = "makers",
             TreeOrder = ["advanced", "multisite", "hardware", "online_shop", "cloud_m", "search_ads", "optimization", "hiring", "loyalty"],
         },
+        new("ia", "Comme plusieurs_petits, puis l'IA dès 30 000 CHF : un petit modèle d'analyse (calcul loué), évalué, publié, un produit d'IA pour les analystes, une seconde version sur données achetées.")
+        {
+            Projects = [("freelances", null), ("casual", null), ("smb", null)], ProjectInterval = 75, Marketing = 200, MaxStaff = 1,
+            AiAbove = 30_000,
+            TreeOrder = ["advanced", "quality_lab", "ai_models", "cloud_m", "search_ads", "optimization", "hiring", "loyalty"],
+        },
+        new("studio_xr", "Comme plusieurs_petits, un studio au siège dès 20 000 CHF, puis le matériel et la XR : zone de test au siège et une application XR pour joueurs en quatrième projet.")
+        {
+            Projects = [("freelances", null), ("casual", null), ("smb", null), ("xr_gamers", null)], ProjectInterval = 75, Marketing = 200, MaxStaff = 1,
+            StudioAbove = 20_000, XrAbove = 25_000,
+            TreeOrder = ["advanced", "studio", "hardware", "xr", "cloud_m", "search_ads", "optimization", "hiring", "loyalty"],
+        },
+        new("quantique", "Comme plusieurs_petits, tout l'arbre vers le quantique (matériel, usine, salle propre, laboratoire avancé, offres de calcul), un laboratoire dès 300 000 CHF, équipé au fil de la trésorerie.")
+        {
+            Projects = [("freelances", null), ("casual", null), ("smb", null)], ProjectInterval = 75, Marketing = 200, MaxStaff = 2,
+            QuantumAbove = 300_000,
+            TreeOrder = ["advanced", "multisite", "hardware", "industry", "cleanroom", "advanced_lab", "server_room", "cloud_offers", "compute_offers", "quantum_offers", "hiring"],
+        },
         new("marketing_excessif", "Erreur : 6 000 CHF de marketing par mois dès la sortie d'une petite application.")
         {
             Projects = [("freelances", null)], Marketing = 6_000, MaxStaff = 0, Recover = false, Borrow = false,

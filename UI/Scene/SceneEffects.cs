@@ -135,18 +135,8 @@ public partial class SceneCanvas
 
     // ------------------------------------------------------------------ Curseurs
 
-    private static readonly Dictionary<string, Cursor> Cursors = new();
-
-    /// <summary>Un curseur du pack, dans son export ×2 (même dessin agrandi) avec son point actif.</summary>
-    public static Cursor PackCursor(string id)
-    {
-        if (Cursors.TryGetValue(id, out var cursor))
-            return cursor;
-        var x2 = PackLibrary.Asset(id).GetProperty("technical_exports").GetProperty("x2");
-        var hotspot = x2.GetProperty("hotspot");
-        var bitmap = PackLibrary.Png(x2.GetProperty("file").GetString()!).ToBitmap();
-        return Cursors[id] = new Cursor(bitmap, new PixelPoint(hotspot[0].GetInt32(), hotspot[1].GetInt32()));
-    }
+    /// <summary>Un curseur du pack (cache commun avec le reste de l'interface).</summary>
+    public static Cursor PackCursor(string id) => PackSkins.Cursor(id);
 
     /// <summary>Le curseur selon ce que ferait un clic : poser (ici c'est possible ou non), déplacer, choisir, ou rien.</summary>
     private void UpdateCursor()

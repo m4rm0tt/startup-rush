@@ -48,6 +48,9 @@ public class Settings
     /// <summary>Accessibilité : moins d'effets (pas de clignotement du curseur, effets de scène réduits).</summary>
     public bool ReduceEffects { get; set; }
 
+    /// <summary>Largeur du panneau latéral, réglée en tirant sa poignée (0 : largeur par défaut).</summary>
+    public double PanelWidth { get; set; }
+
     /// <summary>Forme du curseur du terminal : « block », « bar » ou « underline » (sprites term_cursor_* du pack).</summary>
     public string TerminalCursor { get; set; } = "block";
 

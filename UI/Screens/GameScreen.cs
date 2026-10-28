@@ -85,7 +85,7 @@ public class GameScreen : UserControl, IScreen
 
         _inspector.Margin = new Thickness(10, 0, 0, 10);
         _hud.Children.Add(_inspector);
-        _panelFrame.Child = _panelBody;
+        _panelFrame.Child = new Grid { Children = { _panelBody, PanelHandle() } };
         _panelFrame.IsVisible = false;
         _hud.Children.Add(_panelFrame);
         _hud.Children.Add(_toasts);
@@ -472,11 +472,59 @@ public class GameScreen : UserControl, IScreen
 
     private GamePanel? _lastBuilt;
 
+    /// <summary>
+    /// Poignée du pack sur le bord gauche du panneau latéral : on la tire pour l'élargir ou le rétrécir (curseur de
+    /// redimensionnement du pack). La largeur est retenue dans les réglages de la machine.
+    /// </summary>
+    private Control PanelHandle()
+    {
+        var handle = new Image
+        {
+            Source = PackSkins.Sprite("hud_drag_handle"), Width = 16, Height = 28, Stretch = Stretch.Fill,
+            HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center,
+            Margin = new Thickness(-14, 0, 0, 0), Cursor = PackSkins.Cursor("cursor_resize_h"),
+        };
+        RenderOptions.SetBitmapInterpolationMode(handle, Avalonia.Media.Imaging.BitmapInterpolationMode.None);
+        ToolTip.SetTip(handle, "Tirer pour élargir ou rétrécir le panneau");
+        double? from = null, start = 0;
+        handle.PointerPressed += (_, e) =>
+        {
+            from = e.GetPosition(this).X;
+            start = _panelFrame.Bounds.Width;
+            e.Pointer.Capture(handle);
+            e.Handled = true;
+        };
+        handle.PointerMoved += (_, e) =>
+        {
+            if (from is not double x0)
+                return;
+            double width = Math.Clamp(start.Value - (e.GetPosition(this).X - x0), 380, Math.Max(380, Bounds.Width * 0.6));
+            _panelFrame.Width = width;
+            Session.Settings.PanelWidth = Math.Round(width);
+        };
+        handle.PointerReleased += (_, e) =>
+        {
+            if (from == null)
+                return;
+            from = null;
+            e.Pointer.Capture(null);
+            Window.SaveSettings();
+        };
+        // Seulement pour le panneau latéral, pas pour les grands menus pleine largeur
+        handle.IsVisible = false;
+        _panelHandle = handle;
+        return handle;
+    }
+
+    private Image? _panelHandle;
+
     private void LayoutPanelFrame()
     {
         var panel = _stack.LastOrDefault();
         if (panel == null)
             return;
+        if (_panelHandle != null)
+            _panelHandle.IsVisible = !panel.Large;
         if (panel.Large)
         {
             _panelFrame.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -486,7 +534,7 @@ public class GameScreen : UserControl, IScreen
         else
         {
             _panelFrame.HorizontalAlignment = HorizontalAlignment.Right;
-            _panelFrame.Width = 470;
+            _panelFrame.Width = Session.Settings.PanelWidth > 0 ? Session.Settings.PanelWidth : 470;
             _panelFrame.Margin = new Thickness(0, 62, 10, 84);
         }
         _panelFrame.VerticalAlignment = VerticalAlignment.Stretch;

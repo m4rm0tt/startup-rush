@@ -102,7 +102,7 @@
             <Setter Property="Foreground" Value="{StaticResource Snow}"/>
             <Setter Property="Padding" Value="14,6,14,10"/>
             <Setter Property="FontSize" Value="18"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Cursor" Value="{x:Static px:PackSkins.ActionCursor}"/>
             <Setter Property="Focusable" Value="False"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
@@ -278,6 +278,7 @@
 
         <!-- Saisie, infobulles -->
         <Style Selector="TextBox">
+            <Setter Property="Cursor" Value="{x:Static px:PackSkins.TextCursor}"/>
             <Setter Property="CornerRadius" Value="0"/>
             <Setter Property="FontFamily" Value="{StaticResource PixelFont}"/>
             <Setter Property="FontSize" Value="18"/>

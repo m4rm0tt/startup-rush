@@ -115,6 +115,19 @@ for icon, what in {"icon_income": "Revenus ; revenus par projet", "icon_expense"
                    "icon_gpu": "GPU des sites", "icon_sell": "Ventes au total", "icon_salary": "poste Salaires", "icon_server": "poste Serveurs"}.items():
     updates[icon] = row("Chiffres clés et postes de dépense : " + what, "nature du chiffre", "UI/Hud/Ui.cs (StatIcons);UI/Hud/Panels/FinancePanel.cs", "16, 34")
 
+# Terminal du fondateur
+TERM = "UI/Hud/TerminalView.cs;UI/App.axaml"
+for i, what in {"term_surface": "surface de texte", "term_titlebar": "titre (terminal · projet)", "term_input": "champ de saisie avec son chevron (normal, focus, désactivé)",
+                "term_mark_ok": "mot juste dans le journal", "term_mark_error": "faute dans le journal (tapé ≠ attendu)",
+                "term_mark_warning": "fin de session, pause du jeu", "term_mark_running": "tâche en cours (ligne d'état)",
+                "term_progress_cap_left": "bout gauche de la barre de mots", "term_progress_cap_right": "bout droit de la barre de mots",
+                "term_progress_half": "mot en cours de frappe dans la barre", "term_selection": "bande de la ligne de progression",
+                "term_scroll_track": "défilement du journal", "term_scroll_thumb": "défilement du journal"}.items():
+    updates[i] = row("Terminal du fondateur : " + what, "travail tapé, fautes, progression de la session", TERM, "05")
+for i, label in {"term_cursor_block": "bloc (par défaut)", "term_cursor_bar": "barre", "term_cursor_underline": "souligné"}.items():
+    updates[i] = row("Terminal : curseur au point atteint dans le mot, forme " + label + " (réglage Accessibilité, clignote sauf effets réduits)",
+                     "position dans le mot à taper", TERM + ";UI/Screens/MenuScreens.cs;Core/persistence/LegacyProfile.cs", "05 (bloc), 25b (les trois au réglage)")
+
 # Icônes de l'interface
 for i, where in {"icon_pause": "bouton pause", "icon_speed_1": "vitesse 1", "icon_speed_2": "vitesse 2", "icon_speed_3": "vitesses 3 et 4 (avec le chiffre)",
                  "icon_bell": "journal / « À traiter »", "icon_settings": "menu et réglages", "icon_back": "retour d'un panneau", "icon_close": "fermer",

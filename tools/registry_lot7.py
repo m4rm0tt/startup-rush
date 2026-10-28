@@ -183,6 +183,24 @@ for i, where in {"icon_pause": "bouton pause", "icon_speed_1": "vitesse 1", "ico
                  "icon_help": "confirmation sans danger"}.items():
     updates[i] = row("Interface : " + where, "icône d'un contrôle ou d'un état", "UI/Pixel/Icons.cs;" + SCREEN, "12, 18c, 19, 22c")
 
+# Finitions du local : chaque sol et chaque habillage se refait (payant, sauvegardé) ; deux ont un effet plafonné
+FINISH_FILES = "Core/space/Finishes.cs;Core/campaign/Campaign.Finishes.cs;UI/Iso/RoomRenderer.cs"
+FINISH_TEST = "Tests/space/FinishesTest.cs : EveryFinishOfTheCatalogCanBeAppliedAndIsPaid"
+EFFECTS = {
+    "floor_raised": ("froid du site +5 % (sans en créer), à proportion de la surface", "ARaisedFloorSpreadsTheExistingColdWithoutCreatingAny", "arbre « Salle serveur »"),
+    "floor_raised_vent": ("froid du site +10 % avec dalles perforées (sans en créer)", "ARaisedFloorSpreadsTheExistingColdWithoutCreatingAny", "arbre « Salle serveur »"),
+    "pattern_wood_panels": ("ambiance +0,5 par mur, dans le plafond de 6", "WoodPanelsAddAmbianceWithinTheCommonCap", "toujours"),
+}
+for i in ["floor_concrete", "floor_vinyl", "floor_carpet", "floor_carpet_tiles", "floor_tile_ceramic", "floor_wood_planks", "floor_parquet",
+          "floor_raised", "floor_raised_vent", "pattern_paint", "pattern_wallpaper", "pattern_two_tone", "pattern_stripes", "pattern_concrete",
+          "pattern_brick", "pattern_acoustic", "pattern_wood_panels"]:
+    indicator, test, unlock = EFFECTS.get(i, ("identité du local (sol ou murs refaits, prix par case ou par segment), sans autre effet", None, "toujours"))
+    updates[i] = dict(consommateur="Aménagement › Finitions (Campaign.SetFinish), rendu du local", fichier_definition=FINISH_FILES, deblocage=unlock,
+                      indicateur_ou_interaction=indicator, etat="validé",
+                      scenario_test=FINISH_TEST + (f" ; {test}" if test else "") + " ; sauvegarde : FinishesAreSavedAndAFormat6SaveStillLoads")
+updates["hud_pattern_cell"] = row("Aménagement › Finitions : une pastille par sol et par habillage (vignette du pack)", "finition en place sélectionnée ; survol ; clic → confirmation des travaux",
+                                  "UI/Hud/Panels/BuildPanel.cs;UI/Iso/PackImages.cs", "18d, 18e")
+
 with open(REGISTRY, encoding="utf-8", newline="") as f:
     reader = csv.DictReader(f)
     columns = reader.fieldnames

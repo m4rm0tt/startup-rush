@@ -206,6 +206,17 @@ public static class Capture
         await Wait(1);
         later.Session.TogglePause();
         await Shot(window, folder, "12_campagne_avancee", report);
+        // Sélection d'une personne (anneau du pack) et case survolée
+        if (advanced.Staff.FirstOrDefault() is { } chosen)
+        {
+            later.Session.Select(SelectionKind.Person, chosen.Id);
+            later.Scene.SetHover(new Cell(advanced.Premises.Entrance.X, Math.Max(0, advanced.Premises.Entrance.Y - 2)));
+            later.Scene.ZoomBy(2);
+            await Shot(window, folder, "12b_selection", report);
+            later.Scene.ResetCamera();
+            later.Session.ClearSelection();
+            later.Scene.SetHover(null);
+        }
         foreach (var (name, open) in new (string, Func<Hud.GamePanel>)[]
                  {
                      ("13_portefeuille", () => new ProjectsPanel()), ("14_equipe", () => new TeamPanel()), ("15_arbre", () => new TreePanel()),

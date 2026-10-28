@@ -23,7 +23,7 @@ namespace UI.Scene;
 /// personnes assises changent ; à chaque image, on la dessine au zoom entier puis on ajoute les bulles, la sélection,
 /// le survol et, en aménagement, le fantôme de l'objet à poser. Caméra sans rotation ; les objets tournent (touche R).
 /// </summary>
-public class SceneCanvas : Control
+public partial class SceneCanvas : Control
 {
     private readonly GameSession _session;
     private double _camX, _camY;
@@ -48,7 +48,7 @@ public class SceneCanvas : Control
         _session = session;
         ClipToBounds = true;
         Focusable = true;
-        Cursor = new Cursor(StandardCursorType.Arrow);
+        Cursor = PackCursor("cursor_normal");
     }
 
     private Campaign Campaign => _session.Campaign;
@@ -217,7 +217,6 @@ public class SceneCanvas : Control
     private static readonly IBrush InvalidFill = new SolidColorBrush(Color.Parse("#80c8453d"));
     private static readonly IBrush EntranceFill = new SolidColorBrush(Color.Parse("#50357c82"));
     private static readonly IPen GridPen = new Pen(new SolidColorBrush(Color.Parse("#40fbf5e6")), 1);
-    private static readonly IPen HoverPen = new Pen(new SolidColorBrush(Color.Parse("#a0fbf5e6")), 1);
 
     public override void Render(DrawingContext context)
     {
@@ -237,7 +236,9 @@ public class SceneCanvas : Control
             DrawBuildOverlay(context);
         DrawSelection(context);
         DrawBubbles(context);
+        DrawParticles(context);
         DrawNight(context);
+        UpdateCursor();
     }
 
     /// <summary>
@@ -259,6 +260,7 @@ public class SceneCanvas : Control
                 context.DrawImage(mark, new Rect(0, 0, 16, 16), new Rect(at.X, at.Y, 16 * Scale, 16 * Scale));
             }
         int operatorIndex = 0;
+        var heads = new List<(double X, double Y)>();
         foreach (var person in Campaign.People)
         {
             // Chaque site montre les siens : les autres travaillent ailleurs, la simulation ne dépend pas de la vue
@@ -298,7 +300,16 @@ public class SceneCanvas : Control
             };
             if (icon == null)
                 continue;
-            string tint = icon == "icon_warning" ? "#c8453d" : icon == "icon_terminal" ? "#357c82" : "#2b2128";
+            Watch(person, x, y);
+            if (person.Activity == Activity.Working)
+                heads.Add((x, y));
+            if (person.Activity == Activity.Idle)
+            {
+                // Personne sans poste : l'alerte du pack pulse (1 ↔ 0,6 toutes les 0,8 s) au-dessus de sa tête
+                DrawEffect(context, "vfx_alert", x, y - 8, Effects && (int)(_clock / 0.4) % 2 == 1 ? 0.6 : 1, 2);
+                continue;
+            }
+            string tint = icon == "icon_terminal" ? "#357c82" : "#2b2128";
             var bitmap = PackLibrary.Icon(icon, tint);
             var top = ToScreen(x - 9, y - 22);
             var rect = new Rect(top.X, top.Y, 18 * Scale, 18 * Scale);
@@ -313,6 +324,7 @@ public class SceneCanvas : Control
                 context.FillRectangle(Palette.Brush("#ecb841"), new Rect(track.X, track.Y, track.Width * item.Fraction, track.Height));
             }
         }
+        WatchDay(heads);
     }
 
     private Discipline? CurrentDiscipline(Person person) =>
@@ -349,13 +361,17 @@ public class SceneCanvas : Control
         }
 
         if (_session.Tool is not { } tool || _hover is not { } cell)
+        {
+            _placementOk = false;
             return;
+        }
         var def = FurnitureCatalog.Get(tool.DefId);
         if (def.Attached)
         {
             // Objet à accrocher : on survole le meuble qui le recevra
             var host = HostAt(cell);
             bool ok = host != null && Layout.FreeSocket(Premises, def, host, tool.MovingItemId) != null;
+            _placementOk = ok;
             if (host != null && _room!.Hits.FirstOrDefault(h => !h.Person && h.Id == host.Id) is { } hit)
                 context.DrawGeometry(ok ? ValidFill : InvalidFill, null, Polygon(hit.Polygon));
             else
@@ -368,10 +384,12 @@ public class SceneCanvas : Control
         if (def.OnWall && Layout.WallAt(cell.X, cell.Y, facing) is { } wall)
             facing = Layout.WallFacing(wall);
         var cells = Premises.Cells(def, cell.X, cell.Y, facing).ToList();
+        _placementOk = check.Ok;
+        // Cases du pack : emprise (valide ou non) et cases d'accès à laisser libres
         foreach (var c in cells.Count > 0 ? cells : [cell])
-            context.DrawGeometry(check.Ok ? ValidFill : InvalidFill, null, Diamond(c));
+            DrawTile(context, c, check.Ok ? "vfx_tile_valid" : "vfx_tile_invalid", Pulse);
         foreach (var c in Premises.AccessCells(def, cell.X, cell.Y, facing))
-            context.DrawGeometry(null, new Pen(Palette.Brush("#ecb841"), 1, DashStyle.Dash), Diamond(c));
+            DrawTile(context, c, "vfx_tile_footprint");
         var (image, ax2, ay2) = Ghost(def.Id, facing);
         var (tx, ty) = def.Pack.Centered ? Tile(cell.X + 0.5, cell.Y + 0.5) : Tile(cell.X, cell.Y);
         var pos = ToScreen(Math.Round(tx) - ax2, Math.Round(ty) - ay2);
@@ -391,14 +409,25 @@ public class SceneCanvas : Control
         if (_session.SelectionKind == SelectionKind.Item && Premises.Find(_session.SelectionId) is { } item)
         {
             var root = Premises.Root(item);
+            foreach (var c in Premises.Cells(root))
+                DrawTile(context, c, "vfx_tile_selected");
             if (_room!.Hits.FirstOrDefault(h => !h.Person && h.Id == root.Id) is { } hit)
                 context.DrawGeometry(null, pen, Polygon(hit.Polygon));
         }
         else if (_session.SelectionKind == SelectionKind.Person && _room!.Hits.FirstOrDefault(h => h.Person && h.Id == _session.SelectionId) is { } person)
-            context.DrawGeometry(null, pen, Polygon(person.Polygon));
+        {
+            var (fx, fy) = Feet(person);
+            DrawEffect(context, "vfx_select_ring", fx, fy);
+        }
+        // Personne survolée : anneau du pack qui alterne deux tailles
+        if (_hoverHit is { Person: true } hovered && !(_session.SelectionKind == SelectionKind.Person && _session.SelectionId == hovered.Id))
+        {
+            var (hx, hy) = Feet(hovered);
+            DrawEffect(context, "vfx_hover_ring", hx, hy, 1, Effects && (int)(_clock * 2) % 2 == 1 ? 1.1 : 1);
+        }
 
         if (!_session.BuildMode && _hover is { } hover && Premises.InBounds(hover))
-            context.DrawGeometry(null, HoverPen, Diamond(hover));
+            DrawTile(context, hover, "vfx_tile_hover", Pulse);
     }
 
     private void DrawNight(DrawingContext context)
@@ -435,6 +464,8 @@ public class SceneCanvas : Control
         var cell = CellAt(point);
         _hoverPinned = false;
         _hover = Premises.InBounds(cell) ? cell : null;
+        var world = ToWorld(point);
+        _hoverHit = _room.Hits.OrderByDescending(h => h.Order).FirstOrDefault(h => Inside(h.Polygon, world));
     }
 
     protected override void OnPointerExited(PointerEventArgs e)
@@ -442,6 +473,7 @@ public class SceneCanvas : Control
         base.OnPointerExited(e);
         if (!_hoverPinned)
             _hover = null;
+        _hoverHit = null;
     }
 
     protected override void OnPointerWheelChanged(PointerWheelEventArgs e)
@@ -521,6 +553,7 @@ public class SceneCanvas : Control
             return;
         }
         // Après un déplacement ou un objet des cartons, l'outil se range ; un achat peut se répéter
+        Sparkle(cell);
         if (tool.MovingItemId != null || tool.StoredId != null)
             _session.SetTool(null);
         Feedback?.Invoke(result.Message, true);

@@ -89,6 +89,16 @@ for icon in ["icon_comp_admin", "icon_comp_auth", "icon_comp_automation", "icon_
              "icon_comp_processing", "icon_comp_profile", "icon_comp_progression", "icon_comp_reviews"]:
     updates[icon] = row("Atelier de composants : pictogramme d'état de la carte du composant correspondant", "état du composant", "UI/Hud/ComponentArt.cs", "09")
 
+# Listes, portraits, couleurs
+updates["hud_list_row"] = row("Rangées de liste : journal (cliquables, ouvrent la cause) et sauvegardes à charger", "survol ; un clic ouvre l'élément",
+                              UI_KIT + ";UI/Hud/Panels/NoticesPanel.cs;UI/Screens/MenuScreens.cs", "17b, 25")
+updates["hud_portrait_frame"] = row("Portraits encadrés : équipe, candidats, fiche, inspecteur, nouvelle partie", "visage de la personne", UI_KIT + ";UI/Hud/Panels/TeamPanel.cs", "14, 24")
+updates["hud_swatch_cell"] = row("Nouvelle partie : couleur des cheveux et de la peau (nuance de la rampe de la palette)", "apparence choisie (sans effet sur le jeu)",
+                                 UI_KIT + ";UI/Screens/MenuScreens.cs", "24")
+for icon in ["icon_success", "icon_warning", "icon_error"]:
+    updates[icon] = row("Journal et notifications : sens d'un événement (succès, attention, problème)", "gravité lisible sans la couleur",
+                        "UI/Hud/Panels/NoticesPanel.cs;" + SCREEN, "17b, 30")
+
 # Icônes de l'interface
 for i, where in {"icon_pause": "bouton pause", "icon_speed_1": "vitesse 1", "icon_speed_2": "vitesse 2", "icon_speed_3": "vitesses 3 et 4 (avec le chiffre)",
                  "icon_bell": "journal / « À traiter »", "icon_settings": "menu et réglages", "icon_back": "retour d'un panneau", "icon_close": "fermer",

@@ -147,6 +147,12 @@ for i, what in {"cursor_normal": "souris sur la scène", "cursor_select": "au-de
                 "cursor_move": "déplacement d'un objet"}.items():
     updates[i] = row("Curseur (export ×2 du pack) : " + what, "ce que ferait un clic", SCENE, "curseur système non visible dans les captures")
 
+# Curseurs de l'interface et poignée du panneau
+updates["cursor_action"] = row("Curseur au-dessus de tous les boutons (style global)", "ce qui se clique", "UI/App.axaml;UI/Pixel/PackSkins.cs", "curseur système non visible dans les captures")
+updates["cursor_text"] = row("Curseur au-dessus des champs de saisie (style global)", "où l'on peut écrire", "UI/App.axaml;UI/Pixel/PackSkins.cs", "curseur système non visible dans les captures")
+updates["cursor_resize_h"] = row("Curseur de la poignée du panneau latéral", "élargir ou rétrécir le panneau", SCREEN, "curseur système non visible dans les captures")
+updates["hud_drag_handle"] = row("Poignée du panneau latéral : la tirer change sa largeur (retenue dans les réglages)", "largeur du panneau", SCREEN + ";Core/persistence/LegacyProfile.cs", "19")
+
 # Icônes de l'interface
 for i, where in {"icon_pause": "bouton pause", "icon_speed_1": "vitesse 1", "icon_speed_2": "vitesse 2", "icon_speed_3": "vitesses 3 et 4 (avec le chiffre)",
                  "icon_bell": "journal / « À traiter »", "icon_settings": "menu et réglages", "icon_back": "retour d'un panneau", "icon_close": "fermer",

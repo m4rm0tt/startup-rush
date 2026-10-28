@@ -19,7 +19,7 @@ Protocole : 14 façons de jouer × 5 graines (11, 23, 37, 41, 59), 18 mois de je
 | quantique | 0/5 | 73 103 | 12 420 | 22 | 120 (5/5) | 32 058 | 1 691 | 16 | 76 | 11 530 |
 | marketing_excessif | 4/5 | -251 | -1 997 | 22 | 180 (5/5) | 5 833 | 734 | 6 | 28 | 4 417 |
 | exces_puis_correction | 0/5 | 33 640 | 41 | 22 | 150 (5/5) | 12 879 | 1 690 | 10 | 38 | 10 412 |
-| recrutement_precoce | 5/5 | 320 | -1 997 | 10 | 90 (5/5) | 6 984 | 1 070 | 8 | 36 | 2 839 |
+| recrutement_precoce | 5/5 | 320 | -1 978 | 10 | 90 (5/5) | 6 984 | 1 070 | 8 | 36 | 2 839 |
 | trop_de_projets | 5/5 | -286 | -1 984 | 26 | 120 (5/5) | 1 154 | 576 | 6 | 25 | 3 150 |
 
 ## Façons de jouer
@@ -56,11 +56,11 @@ Jour où l'étape est atteinte pour la première fois (médiane des graines qui 
 
 | Graine | Issue | Argent par trimestre | Nœuds | Jalons |
 |---|---|---|---|---|
-| 11 | en activité | 12 837 → 14 525 → 21 842 → 35 887 → 59 991 → 113 230 → 213 390 → 45 214 → 91 065 → 145 632 → 198 582 → 250 864 | 9 | labo_avance (j718), calibration_cryo (j764) |
-| 23 | en activité | 12 985 → 15 537 → 27 829 → 46 833 → 90 930 → 149 525 → 235 840 → 64 713 → 95 967 → 140 754 → 190 035 → 240 365 | 9 | labo_avance (j707), calibration_cryo (j758) |
-| 37 | en activité | 13 099 → 15 866 → 26 577 → 28 056 → 17 951 → 25 918 → 62 026 → 89 958 → 138 929 → 200 927 → 270 661 → 48 270 | 9 | labo_avance (j1024), calibration_cryo (j1071) |
+| 11 | en activité | 12 837 → 14 525 → 21 842 → 35 887 → 59 991 → 113 230 → 213 390 → 45 214 → 91 072 → 145 648 → 198 607 → 250 898 | 9 | labo_avance (j718), calibration_cryo (j764) |
+| 23 | en activité | 12 985 → 15 537 → 27 829 → 46 833 → 90 930 → 149 525 → 235 840 → 64 713 → 95 975 → 140 771 → 190 061 → 240 400 | 9 | labo_avance (j707), calibration_cryo (j758) |
+| 37 | en activité | 13 099 → 15 866 → 26 577 → 28 056 → 17 951 → 25 918 → 62 026 → 89 958 → 138 929 → 200 927 → 270 661 → 48 274 | 9 | labo_avance (j1024), calibration_cryo (j1071) |
 | 41 | en activité | 12 869 → 14 168 → 20 276 → 34 235 → 21 488 → 16 133 → 38 356 → 50 989 → 78 495 → 121 764 → 176 634 → 238 047 | 8 | aucun |
-| 59 | en activité | 12 999 → 15 380 → 24 764 → 32 857 → 42 738 → 73 103 → 149 098 → 229 514 → 61 939 → 93 038 → 140 116 → 191 479 | 9 | labo_avance (j798), calibration_cryo (j890) |
+| 59 | en activité | 12 999 → 15 380 → 24 764 → 32 857 → 42 738 → 73 103 → 149 098 → 229 514 → 61 939 → 93 046 → 140 133 → 191 505 | 9 | labo_avance (j798), calibration_cryo (j890) |
 
 ## Détail
 
@@ -127,10 +127,10 @@ Jour où l'étape est atteinte pour la première fois (médiane des graines qui 
 | exces_puis_correction | 41 | en activité | 540 | 6 674 → 3 563 → 10 381 → 19 110 → 28 813 → 33 640 | 1 | Ta chambre, Prilly | 8 |
 | exces_puis_correction | 59 | en activité | 540 | 6 875 → 4 807 → 12 177 → 21 027 → 31 511 → 32 792 | 1 | Ta chambre, Prilly | 8 |
 | recrutement_precoce | 11 | faillite | 162 | 1 033 → 320 | 0 | Ta chambre, Prilly | 7 |
-| recrutement_precoce | 23 | faillite | 72 | -577 | 0 | Petit bureau, Flon | 6 |
-| recrutement_precoce | 37 | faillite | 284 | 172 → 560 → -437 | 0 | Petit bureau, Flon | 8 |
-| recrutement_precoce | 41 | faillite | 284 | 4 648 → -1 707 → 5 086 | 0 | Petit bureau, Flon | 8 |
-| recrutement_precoce | 59 | faillite | 72 | -1 437 | 0 | Petit bureau, Flon | 6 |
+| recrutement_precoce | 23 | faillite | 72 | -594 | 0 | Petit bureau, Flon | 6 |
+| recrutement_precoce | 37 | faillite | 284 | 172 → 560 → -440 | 0 | Petit bureau, Flon | 8 |
+| recrutement_precoce | 41 | faillite | 284 | 4 648 → -1 707 → 5 083 | 0 | Petit bureau, Flon | 8 |
+| recrutement_precoce | 59 | faillite | 72 | -1 454 | 0 | Petit bureau, Flon | 6 |
 | trop_de_projets | 11 | faillite | 146 | -1 355 | 0 | Ta chambre, Prilly | 5 |
 | trop_de_projets | 23 | faillite | 146 | -1 348 | 0 | Ta chambre, Prilly | 5 |
 | trop_de_projets | 37 | faillite | 146 | -1 386 | 0 | Ta chambre, Prilly | 5 |

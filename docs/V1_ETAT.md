@@ -280,11 +280,34 @@ Fait (vu dans les captures du vrai jeu, pas de test automatisé d'interface) :
 - Atelier de composants : cartes `comp_card` à en-tête d'état, aperçus et pictogrammes `comp_*` pour 25 composants (`UI/Hud/ComponentArt.cs`).
 - Registre : `tools/registry_lot7.py` (cumulatif) ; 55 identifiants passés de « non implémenté » à « partiel ».
 
-Reste dans l'étape 1 : onglets `hud_tabs`, listes (`hud_list_row`), menus contextuels (`hud_menu_*`), graphiques (`hud_chart_*`),
-jauge, bandeau, puce sombre, poignée de glisser, cadre de portrait, cases de couleur et de motif, champs numérique et multiligne,
-liste déroulante, flèches de pas, séparateurs, barre de titre, panneau secondaire, environ 100 icônes `icon_*` à brancher là où
-elles ont un sens, champ de recherche (catalogues et portefeuille). `comp_api`, `comp_storage`, `comp_game_menu` n'ont pas
-d'équivalent dans le jeu : il faut trois nouveaux composants (moteur, équilibrage, tests).
+Fait ensuite (même lot) :
+- Portraits encadrés (`hud_portrait_frame`), cases de couleur cheveux/peau (`hud_swatch_cell`), rangées de liste (journal,
+  sauvegardes), onglets de la fiche projet, courbes dans le cadre de graphique du pack.
+- Icônes du pack sur tous les boutons (`Ui.Button` : le libellé donne l'icône, table `ButtonIcons`), les chiffres clés (`Ui.Stat`)
+  et les postes de dépense.
+- Terminal entièrement habillé (surface, titre, champ, journal des mots ✔/×, curseur du pack au point atteint, barre [####▒--]) ;
+  réglages « forme du curseur » et « réduire les effets ».
+- Scène : cases isométriques du pack (placement, accès, sélection, survol), anneaux, particules nées d'événements réels, alerte
+  qui pulse ; curseurs du pack (scène, boutons, champs) ; poignée de redimensionnement du panneau latéral (largeur retenue).
+- **14 objets informatiques validés** (consommateur et test d'effet, `Tests/space/Lot7ObjectsTest.cs`) : portable de jeu, mini-PC,
+  station créative, écran ultralarge, casque, station d'accueil, tablette graphique, webcam, pieuvre, imprimante, barre de visio,
+  kit console et banc mobile (−15 % de défauts), boîtier de capture (caméra du studio). Nouveau type `FurnitureKind.Peripheral`.
+  Le plan du petit bureau fournit une imprimante qui consomme désormais (test des sites mis à jour). 167 tests.
+- Registre : non implémentés 301 → 103 ; validés 110 → 124.
+
+Reste (dans l'ordre conseillé) :
+1. **Finitions du local** (conçu, pas commencé) : `RoomPlan` lit sols et motifs ; `Premises.FloorMaterial` / `WallPattern` ;
+   `Campaign.SetFinish` (payant, sauvegardé, format 7) ; effets plafonnés : lambris +1 d'ambiance, faux plancher : froid
+   existant mieux distribué (+5 %, +10 % avec dalles perforées ; multiplier `cooling` dans `Infrastructure.Of`, ligne ~150) ;
+   section Aménagement avec `hud_pattern_cell` ; rendu (`RoomRenderer.Structure`). Couvre `floor_vinyl`, `floor_raised(_vent)`,
+   `pattern_*` restants.
+2. Modules de pièce (6), `moving_box` (cartons du déménagement), `wall_corner_outer`, `wall_opening`, `floor_marking`, `floor_threshold`.
+3. Graphe de dépendances des composants (`link_*`, `port_*`) ; `comp_api`, `comp_storage`, `comp_game_menu` (trois nouveaux
+   composants à équilibrer et tester).
+4. HUD restants : liste déroulante, champ numérique et flèches, multiligne, recherche (catalogues), menu contextuel, jauge,
+   bandeau, puce sombre, séparateurs, barre de titre, panneau secondaire, carte, barres de graphique, défilement horizontal,
+   rayures ; icônes restantes ; `cursor_busy`, `cursor_resize_v/d1/d2` sans usage trouvé pour l'instant.
+5. Accessibilité, performance, migrations, build Release et dossier de sortie ; équilibrage du lot 6 (décision de l'utilisateur).
 
 ## Couverture du registre
 

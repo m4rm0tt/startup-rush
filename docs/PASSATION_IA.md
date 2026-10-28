@@ -200,3 +200,7 @@ lots de `docs/V1_ETAT.md`, et le §11 ci-dessous pour ce que le lot 6 laisse en 
   rangée horizontale ne revient pas à la ligne : utiliser une grille `Auto,*`. La capture journalise Avalonia dans
   `avalonia_trace.txt` (créé seulement s'il y a un avertissement).
 - Registre : ajouter les identifiants branchés dans `tools/registry_lot7.py` (« partiel » tant qu'il n'y a pas de test d'interface).
+- Suite et ordre conseillé : « Reste » de la section Lot 7 de `docs/V1_ETAT.md` (prochaine étape : finitions du local).
+- Autres pièges vus : un bureau n'a que deux emplacements d'objets ; un portable exige de retirer écran et clavier ; le fondateur
+  commence sur une tour. Les objets d'un plan du pack entrent dans le jeu dès qu'ils sont au catalogue (coûts d'énergie, effets).
+  Heredoc bash avec apostrophes : écrire le script Python avec l'outil d'écriture de fichiers.

@@ -57,7 +57,7 @@ Le pack fournit un compositeur C# de référence (`assets/StartupRushOriginalAss
 | 3 | Employés automatiques, délégation, mini-jeux sans spam, arbre et confort utiles | **fait**, voir « Lot 3 » (mini-jeux matériel, IA et quantique avec les lots 5 et 6) |
 | 4 | Multisite, réseau, racks, hébergement interne et externe, offres cloud | **fait**, voir « Lot 4 » |
 | 5 | Recherche, prototypage, gamme matérielle, flux d'usine, stocks, approvisionnement, canaux de vente | **fait**, voir « Lot 5 » |
-| 6 | IA simulées, studio, XR, calcul avancé et quantique | **fait**, voir « Lot 6 » (captures du vrai jeu et bot d'équilibrage restent à faire) |
+| 6 | IA simulées, studio, XR, calcul avancé et quantique | **fait**, voir « Lot 6 » (vu en captures, mesuré par bots ; réglage au lot 7) |
 | 7 | Couverture de tous les IDs, équilibrage, performance, accessibilité, migrations, candidat de sortie | à faire |
 
 ## Lot 2 : ce qui a été fait
@@ -206,8 +206,14 @@ Limites et suite :
 
 ## Lot 6 : ce qui a été fait, ce qui reste
 
-Testé par `Tests/lab/Lot6Test.cs` (33 tests). **Pas encore vu dans le vrai jeu** : le parcours `--capture` n'a pas été étendu aux
-nouveaux écrans (panneau IA, panneau Studio/XR/quantique, deux mini-jeux), et l'interface n'a été que compilée.
+Testé par `Tests/lab/Lot6Test.cs` (34 tests). Vu dans le vrai jeu : le parcours `--capture` entraîne, évalue et publie un modèle, loue
+un laboratoire avancé et y pose studio, zone XR et installation quantique (captures 34 à 40 dans `docs/captures/`, relues : panneaux
+IA et Studio/XR/quantique, mini-jeux d'évaluation et de signaux, scène du labo). Mesuré par trois bots (`ia`, `studio_xr`, `quantique`).
+
+Revue du code du lot 6 (session suivante) : deux défauts corrigés et testés. (1) Créer un produit d'IA sans modèle publié faisait
+disparaître en silence son composant `ai_core` : le projet est maintenant refusé avec sa raison. (2) Une inférence saturée fait
+chuter la performance dans `Market` ; l'avis « C'est lent à charger » renvoyait alors à l'hébergement, qui n'y pouvait rien : il
+renvoie au menu IA quand les serveurs suivent.
 
 - **IA** (`Core/ai/AiCatalog.cs`, `Core/campaign/Campaign.Ai.cs`) : un modèle = objectif (assistant, génération, analyse, API) + taille
   (petit, moyen, grand ; les deux derniers demandent les recherches « Apprentissage automatique » et « Grands modèles »). On
@@ -240,10 +246,16 @@ nouveaux écrans (panneau IA, panneau Studio/XR/quantique, deux mini-jeux), et l
   `res_cryo`, `res_qsystems`.
 
 Limites et suite (à faire au lot 7) :
-- **Équilibrage non mesuré** : aucun bot ne joue encore l'IA, le studio, la XR ou le quantique ; `BALANCE_REPORT.md` date du lot 5. Les
-  prix (cryostat 380 000 CHF, offre quantique 900 CHF l'unité, location d'inférence 60 CHF) sont des premiers réglages sans mesure.
-- **Pas de captures** : étendre `UI/Capture.cs` (IA entraînée et publiée, évaluation, panneau Studio/XR/quantique, mise en route
-  quantique) puis relire les images ; vérifier la mise en page des deux panneaux et des deux mini-jeux.
+- **Équilibrage mesuré, pas encore réglé** (`BALANCE_REPORT.md`, 18 mois, 5 graines ; référence `plusieurs_petits` : 198 000 CHF) :
+  - `ia` : 160 000 CHF, IA publiée vers le jour 277, le produit d'IA rapporte ~6 000 CHF/mois en fin de partie. Viable, pas dominant.
+  - `studio_xr` : 38 000 CHF. Studio complet (jour 233) et zone XR complète (jour 287) dans 5 parties sur 5, mais le chemin coûte
+    7 points d'arbre pris à la croissance, et l'application XR plafonne vers 300 utilisateurs et ~2 000 CHF/mois. **Trop faible.**
+  - `quantique` : jamais en service, même sur 36 mois (tableau « Horizon long ») : labo loué vers le jour 700, calibration finie
+    vers le jour 760, puis le cryostat fermé (380 000 CHF) reste hors de portée. Voulu « fin de progression », mais à décider :
+    l'atteindre suppose ~600 000 CHF d'équipement plus 9 500 CHF/mois de loyer.
+  - Les stratégies plus anciennes ont bougé depuis le bilan du lot 5 (ex. `marketing_excessif` : 4 faillites sur 5 au lieu de 2) ;
+    vérifié que la correction du bot de cette session n'y est pour rien sur 18 mois. Cause non isolée (code du lot 6 ou autres
+    changements depuis le bilan précédent).
 - Le fondateur ne prépare toujours pas la recherche au terminal. Pas de transferts de stock entre sites. `moving_box` sans fonction.
 - Le studio ne demande pas d'employé précis (« quelqu'un sur le site » suffit) ; les motifs muraux (`pattern_acoustic`) ne sont pas posables.
 - Les icônes `icon_gpu`, `icon_server`, `icon_training` sont mappées (`Icons.cs`) mais pas encore utilisées.

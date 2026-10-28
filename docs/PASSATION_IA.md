@@ -41,9 +41,10 @@
 
 ```
 dotnet build StartupRush.sln
-dotnet test Tests/Tests.csproj                                   # 160 tests à la fin du lot 6
-dotnet test Tests/Tests.csproj --filter Name=WriteBalanceReport  # réécrit BALANCE_REPORT.md (bots, ~1 min)
-UI.exe --capture <dossier>                                       # parcours scripté dans le vrai jeu, 37 captures + rapport
+dotnet test Tests/Tests.csproj                                   # 161 tests (lot 6 revu)
+dotnet test Tests/Tests.csproj --filter Name=WriteBalanceReport  # réécrit BALANCE_REPORT.md (bots, ~2 min)
+dotnet test Tests/Tests.csproj --filter Name=ProbeLong           # sonde quantique sur 36 mois (Probe : 18 mois, une stratégie)
+UI.exe --capture <dossier>                                       # parcours scripté dans le vrai jeu, 46 captures + rapport
 ```
 
 Menu de test en jeu : **F12** (argent, points, tout débloquer, finir le travail en file, embaucher, énergie, stock,
@@ -176,8 +177,12 @@ lots de `docs/V1_ETAT.md`, et le §11 ci-dessous pour ce que le lot 6 laisse en 
 - **Pièges** : un nœud d'arbre OU une recherche peut débloquer un objet (`UnlockNode = "res_cryo"`) : ne jamais appeler `DevTree.Node(...)`
   sur ce champ, passer par `Campaign.UnlockName(id)`. `short` est un mot réservé C# (nom de variable de test). Le champ
   `ResearchDef.Quantum` est une propriété `init`, pas un paramètre positionnel.
-- **À faire en premier au prochain lot** (rien de ceci n'a été fait) :
-  1. étendre `UI/Capture.cs` aux écrans du lot 6 et **regarder les images** : l'interface du lot 6 n'a été que compilée ;
-  2. ajouter des bots (stratégies « ia », « studio_xr », « quantique ») à `Core/bots/` et régénérer `BALANCE_REPORT.md` : prix et
-     rentabilité du lot 6 ne sont pas mesurés ;
-  3. (README, DESIGN_SIMULATION §4 quinquies et SAVES sont déjà à jour pour le lot 6.)
+- **Fait ensuite (revue du lot 6)** : captures 34 à 40 relues ; deux défauts corrigés (produit d'IA sans modèle, avis de lenteur mal
+  orienté, voir V1_ETAT) ; bots `ia`, `studio_xr`, `quantique` dans `Core/bots/` et `BALANCE_REPORT.md` régénéré, avec une table
+  des jalons du lot 6 (`Autopilot.Milestones`) et un horizon de 36 mois pour le quantique.
+- **Bots du lot 6** : ils jouent les mini-jeux à 75 % (`Autopilot.MiniGameScore`). Le bot quantique équipe le labo objet par objet,
+  dès qu'il a le prix plus 30 000 CHF de marge (`LabMargin`) ; un objet de bureau (`FurnitureDef.Attached`) se pose sur un bureau
+  avec `BuyAndAttach`, pas au sol. Piège : un objet trop cher acheté d'un bloc échoue sans réessai, d'où l'achat au fil de l'eau.
+- **À faire au lot 7, dans l'ordre** : (1) décider avec l'utilisateur du réglage : `studio_xr` trop faible, quantique jamais atteint
+  en 36 mois (voir V1_ETAT « Limites et suite ») ; (2) comprendre pourquoi les anciennes stratégies ont bougé depuis le bilan du
+  lot 5 ; (3) la suite du lot 7 (couverture des assets, performance, accessibilité, version de sortie).

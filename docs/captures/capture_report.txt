@@ -11,14 +11,14 @@ Premier projet prêt en 4 jours et 445 mots au terminal (fondateur seul, sans em
 07_pret_a_sortir.png : 1600×900
 07b_lancement.png : 1600×900
 Mini-jeu de lancement : « Remets les étapes du déploiement dans l'ordre. » (5 éléments), joué parfaitement.
-50 jours après la sortie : 93 utilisateurs, 43 payants, revenus 30 j 384 CHF, argent 18 000 → 14 280.
+50 jours après la sortie : 82 utilisateurs, 38 payants, revenus 30 j 342 CHF, argent 18 000 → 14 236.
 Avis principal : « Rien ne me donne envie de revenir. » → component:messaging
 08_avis.png : 1600×900
 09_atelier_composants.png : 1600×900
 10_reglages_projet.png : 1600×900
 11_apercu_projet.png : 1600×900
 Rechargement identique : True
-Campagne avancée : 28.04.2028, 5 personnes, Bureau d'équipe, Malley, argent 17 600, 3 projets en ligne, 8 nœuds, 84 décisions en 16 mois.
+Campagne avancée : 28.04.2028, 5 personnes, Bureau d'équipe, Malley, argent 16 022, 3 projets en ligne, 8 nœuds, 83 décisions en 16 mois.
 12_campagne_avancee.png : 1600×900
 13_portefeuille.png : 1600×900
 14_equipe.png : 1600×900
@@ -26,14 +26,37 @@ Campagne avancée : 28.04.2028, 5 personnes, Bureau d'équipe, Malley, argent 17
 16_finances.png : 1600×900
 17_journal.png : 1600×900
 18_amenagement.png : 1600×900
+18c_section_ouverte.png : 1600×900
 18b_amenagement_pose.png : 1600×900
 19_fiche_personne.png : 1600×900
 20_petite_fenetre.png : 960×540
-21_1080p.png : 1920×1080
+21_1080p.png : 1920×1061
 22_pause.png : 1600×900
+22b_menu_test.png : 1600×900
+Salle serveur : True ; hébergement 88, calcul 40, GPU 10, stockage 144 To, 5.5/42 kW, chaleur 4.3/24 kW, problèmes : 0. Planio en interne : True (10.7 unités). Stockage vendu : 633 CHF sur 30 j.
+26_salle_serveur.png : 1600×900
+26b_infrastructure.png : 1600×900
+27_sites.png : 1600×900
+28_cloud.png : 1600×900
+29_calibration.png : 1600×900
+Atelier : True, ligne : Ligne d'assemblage installée (9 200 CHF). ; Volute : 30 fabriquées, stock 21, 7 vendues et 0 perdues en 7 j, pannes 2.8%, recherche « Validation de PC » /.
+30_atelier.png : 1600×900
+31_production.png : 1600×900
+32_recherche.png : 1600×900
+33_materiel.png : 1600×900
+34_ia_nouveau_modele.png : 1600×900
+35_ia_entrainement.png : 1600×900
+36_ia_evaluation.png : 1600×900
+37_ia_publiee.png : 1600×900
+IA : entraînement True, évaluation True, publication True, version en service 1, qualité 0.30.
+Laboratoire avancé loué : True 
+Studio : score 0.50, bonus 15%, manque  ; XR : capacité 0.5, défauts retirés 30%, manque quelqu'un sur place ; unités quantiques prises en charge 1.
+38_scene_studio_xr.png : 1600×900
+39_laboratoire.png : 1600×900
+40_quantique_signaux.png : 1600×900
 23_faillite.png : 1600×900
 Faillite : Liquidated le 17.03.2027, sauvegardes conservées : 1
 24_nouvelle_partie.png : 1600×900
 25_charger.png : 1600×900
-Sons déclenchés : PauseIn, Notify, PauseOut, Milestone
-Sauvegardes de capture : dossier temporaire (StartupRushCapture), supprimable
+Sons déclenchés : PauseIn, Notify, PauseOut, Milestone, Event
+Sauvegardes de capture : C:\Users\pb86ydy\AppData\Local\Temp\StartupRushCapture\63e0b0316bfa4519a8992a6f5d151bdd

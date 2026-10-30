@@ -143,7 +143,12 @@ public class PersonPanel(int personId) : GamePanel
                 TeamPanel.AssignmentChoice(Campaign, person, id => Run(TeamPanel.ApplyAssignment(Campaign, person, id)))),
             Ui.Section("Compétences", skills),
             Ui.Section("Horaire", Ui.Choice([(WorkSchedule.Normal, "9 h – 17 h"), (WorkSchedule.Extended, "9 h – 20 h")], person.Schedule, s => Run(Campaign.SetSchedule(person.Id, s))),
-                Ui.Muted("Les soirées produisent un peu plus mais fatiguent et pèsent sur le moral.", 12)));
+                Ui.Muted("Les soirées produisent un peu plus mais fatiguent et pèsent sur le moral.", 12)),
+            Ui.Section("Tenue", Ui.Row(12, Ui.Portrait(UI.Iso.Portraits.Of(person.Appearance)), Ui.Column(4,
+                OutfitSwatches(Appearance.Outfits, person.Appearance.Outfit, r => Run(Campaign.SetOutfit(person.Id, r, person.Appearance.OutfitTrim)), "Tenue"),
+                OutfitSwatches(Appearance.Trims, person.Appearance.OutfitTrim, r => Run(Campaign.SetOutfit(person.Id, person.Appearance.Outfit, r)), "Détails"),
+                Ui.Button("Tenue d'origine", () => Run(Campaign.SetOutfit(person.Id, null, null)), "tab", person.Appearance.Outfit != null || person.Appearance.OutfitTrim != null))),
+                Ui.Muted("Sans effet sur le travail : seulement l'allure dans le local et sur les portraits.", 12)));
 
         if (!person.IsFounder)
         {
@@ -164,5 +169,13 @@ public class PersonPanel(int personId) : GamePanel
                 }), "red")));
         }
         return column;
+    }
+
+    private static Control OutfitSwatches(string[] ramps, string? current, System.Action<string> pick, string label)
+    {
+        var row = new StackPanel { Orientation = Avalonia.Layout.Orientation.Horizontal };
+        foreach (string ramp in ramps)
+            row.Children.Add(Ui.Swatch(UI.Iso.PackLibrary.RampColor(ramp), ramp == current, () => pick(ramp), $"{label} : {UI.Screens.NewCampaignScreen.OutfitName(ramp)}"));
+        return row;
     }
 }

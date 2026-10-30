@@ -36,13 +36,26 @@ public sealed class RoomRenderer
         public Dictionary<string, string> Swatches = new();
         public List<Node> Before = new(), After = new(), Chairs = new();
         public Seated? Character;
+
+        /// <summary>Chaise d'opérateur posée seule devant une station (dessinée comme une chaise, avec son personnage).</summary>
+        public bool Seat;
+
+        /// <summary>Objet haut estompé au-dessus de cette hauteur (px sous l'ancre), 0 : dessiné plein.</summary>
+        public int Fade;
     }
+
+    /// <summary>Opacité de la partie estompée d'un objet haut (guide d'intégration : « occlusion », fade_above_px).</summary>
+    public const float FadedOpacity = 0.35f;
+
+    /// <summary>Chaise des opérateurs : la chaise empilable du pack, posée sur la case de travail d'une station.</summary>
+    public const string OperatorChair = "chair_budget";
 
     private readonly List<(Img img, int x, int y)> _floor = new(), _edges = new(), _walls = new(), _wallItems = new(), _ceiling = new();
     private readonly List<((double u0, double u1, double v0, double v1) fp, Node node)> _groups = new();
     private readonly int _ox, _oy, _w, _h;
     private readonly List<HitRegion> _hits = new();
     private readonly Dictionary<int, (int, int)> _heads = new();
+    private int _fadeItem;
 
     private RoomRenderer(int width, int depth)
     {
@@ -63,9 +76,14 @@ public sealed class RoomRenderer
         return d;
     }
 
-    /// <summary>Compose le local : « seated » donne, pour chaque chaise occupée en ce moment, qui y est assis.</summary>
-    public static RoomImage Render(Premises premises, IReadOnlyDictionary<int, Seated> seated)
+    /// <summary>
+    /// Compose le local : « seated » donne, pour chaque chaise occupée en ce moment, qui y est assis ; « operators », pour
+    /// chaque station tenue en ce moment, l'opérateur assis à sa case de travail (accès « work » ou « operate » du pack).
+    /// </summary>
+    public static RoomImage Render(Premises premises, IReadOnlyDictionary<int, Seated> seated, IReadOnlyDictionary<int, Seated>? operators = null,
+        int fadeItem = 0)
     {
+        operators ??= new Dictionary<int, Seated>();
         var r = new RoomRenderer(premises.Width, premises.Height);
         var plan = PackLibrary.Room(premises.PlanId);
         r.Structure(plan, premises);
@@ -77,10 +95,15 @@ public sealed class RoomRenderer
             else if (item.Def.Pack.Ceiling)
                 r.Hanging(item, r._ceiling, true);
             else
+            {
                 r.Place(premises, item, seated);
+                if (operators.TryGetValue(item.Id, out var who))
+                    r.OperatorSeat(item, who);
+            }
         }
         foreach (var item in premises.WallItems)
             r.Hanging(item, r._wallItems, false);
+        r._fadeItem = fadeItem;
         return new RoomImage(r.Compose(), r._ox, r._oy, r._hits, r._heads);
     }
 
@@ -247,6 +270,32 @@ public sealed class RoomRenderer
         AddHit(false, item.Id, o, x, y, _groups.Count);
     }
 
+    /// <summary>
+    /// Un opérateur assis devant sa station : une chaise sur la première case de travail du pack, tournée comme l'utilisateur
+    /// (« user_facing »), triée avec les objets comme un objet d'une case. Pas de sprite debout ni de pose déformée.
+    /// </summary>
+    private void OperatorSeat(PlacedItem item, Seated who)
+    {
+        var o = PackLibrary.Orient(PackLibrary.Asset(item.DefId), item.Facing);
+        if (!o.TryGetProperty("access", out var access))
+            return;
+        var spot = access.EnumerateArray().FirstOrDefault(a => a.GetProperty("kind").GetString() is "work" or "operate");
+        if (spot.ValueKind != JsonValueKind.Object)
+            return;
+        int u = item.X + spot.GetProperty("tile")[0].GetInt32(), v = item.Y + spot.GetProperty("tile")[1].GetInt32();
+        string facing = spot.GetProperty("user_facing").GetString()!;
+        var chair = PackLibrary.Asset(OperatorChair).GetProperty("orientations");
+        if (!chair.TryGetProperty(facing, out _))
+            facing = chair.EnumerateObject().First().Name;
+        var t = Tile(u + 0.5, v + 0.5);
+        var node = new Node
+        {
+            Aid = OperatorChair, Facing = facing, Sx = (int)Math.Round(t.X, MidpointRounding.ToEven), Sy = (int)Math.Round(t.Y, MidpointRounding.ToEven),
+            ItemId = -item.Id, Character = who, Seat = true,
+        };
+        _groups.Add(((u, u + 1, v, v + 1), node));
+    }
+
     private void Attach(Premises premises, Node node, JsonElement o, PlacedItem child, IReadOnlyDictionary<int, Seated> seated)
     {
         // Module de baie : ancre à la position de son premier emplacement, même orientation que la baie, du bas vers le haut
@@ -305,7 +354,7 @@ public sealed class RoomRenderer
     {
         var be = PackLibrary.Asset(who.Look.Base);
         var bo = be.GetProperty("orientations").GetProperty(orient);
-        var sw = new Dictionary<string, string> { ["skin"] = who.Look.Skin, ["hair"] = who.Look.HairRamp };
+        var sw = who.Look.Swatches();
         var hairSw = new Dictionary<string, string> { ["hair"] = who.Look.HairRamp };
         var layers = new Dictionary<string, Img>();
         if (PackLibrary.Has(who.Look.Hair))
@@ -325,12 +374,61 @@ public sealed class RoomRenderer
     {
         if (shadow != null && layers.TryGetProperty("shadow", out var sh))
             Blend.StampMax(shadow, bw, bh, PackLibrary.Png(sh.GetProperty("file").GetString()!), node.Sx - anchor.X, node.Sy - anchor.Y);
-        Blend.Over(img, PackLibrary.Layer(layers.GetProperty("base"), node.Swatches), node.Sx - anchor.X, node.Sy - anchor.Y);
+        Blend.Over(img, Faded(PackLibrary.Layer(layers.GetProperty("base"), node.Swatches), node, anchor), node.Sx - anchor.X, node.Sy - anchor.Y);
         if (layers.TryGetProperty("glass", out var gl))
-            Blend.Over(img, PackLibrary.Layer(gl, node.Swatches), node.Sx - anchor.X, node.Sy - anchor.Y);
+            Blend.Over(img, Faded(PackLibrary.Layer(gl, node.Swatches), node, anchor), node.Sx - anchor.X, node.Sy - anchor.Y);
         if (front && layers.TryGetProperty("front", out var fr))
-            Blend.Over(img, PackLibrary.Layer(fr, node.Swatches), node.Sx - anchor.X, node.Sy - anchor.Y);
+            Blend.Over(img, Faded(PackLibrary.Layer(fr, node.Swatches), node, anchor), node.Sx - anchor.X, node.Sy - anchor.Y);
     }
+
+    /// <summary>Un calque d'objet haut estompé : les lignes au-dessus de « fade_above_px » sous l'ancre gardent 35 % de leur opacité.</summary>
+    private static Img Faded(Img layer, Node node, (int X, int Y) anchor)
+    {
+        if (node.Fade <= 0)
+            return layer;
+        var copy = layer.Clone();
+        int limit = Math.Min(copy.H, anchor.Y - node.Fade);
+        for (int y = 0; y < limit; y++)
+            for (int x = 0; x < copy.W; x++)
+            {
+                int i = (y * copy.W + x) * 4 + 3;
+                copy.P[i] = (byte)(copy.P[i] * FadedOpacity);
+            }
+        return copy;
+    }
+
+    /// <summary>Un objet haut que le guide permet d'estomper (« occlusion » avec fade_above_px).</summary>
+    public static bool Occludes(PlacedItem item) =>
+        PackLibrary.Has(item.DefId) && PackLibrary.Orient(PackLibrary.Asset(item.DefId), item.Facing).TryGetProperty("occlusion", out var occ)
+        && occ.TryGetProperty("fade_above_px", out _);
+
+    /// <summary>La zone d'un personnage assis sur une chaise (tête comprise), pour savoir quels objets hauts le cachent.</summary>
+    private static (int X, int Y, int W, int H)? CharacterRect(Node chair)
+    {
+        if (chair.Character == null)
+            return null;
+        var o = PackLibrary.Orient(PackLibrary.Asset(chair.Aid), chair.Facing);
+        if (!o.TryGetProperty("occupant", out var occ))
+            return null;
+        var so = occ.GetProperty("seat_offset_px");
+        int cx = chair.Sx + so[0].GetInt32(), cy = chair.Sy + so[1].GetInt32();
+        return (cx - 16, cy - 56, 32, 62);
+    }
+
+    /// <summary>La partie estompable d'un objet haut (au-dessus de fade_above_px), ou null s'il n'occulte rien.</summary>
+    private static (int Fade, (int X, int Y, int W, int H) Rect)? Occluder(Node node)
+    {
+        var o = PackLibrary.Orient(PackLibrary.Asset(node.Aid), node.Facing);
+        if (!o.TryGetProperty("occlusion", out var occ) || !occ.TryGetProperty("fade_above_px", out var fa))
+            return null;
+        var anchor = PackLibrary.Anchor(o);
+        var size = o.GetProperty("size");
+        int fade = fa.GetInt32();
+        return (fade, (node.Sx - anchor.X, node.Sy - anchor.Y, size[0].GetInt32(), Math.Max(0, anchor.Y - fade)));
+    }
+
+    private static bool Overlap((int X, int Y, int W, int H) a, (int X, int Y, int W, int H) b) =>
+        a.X < b.X + b.W && b.X < a.X + a.W && a.Y < b.Y + b.H && b.Y < a.Y + a.H;
 
     private void DrawNode(Img img, byte[]? shadow, int bw, int bh, Node node)
     {
@@ -424,12 +522,34 @@ public sealed class RoomRenderer
         var shadow = new byte[_w * _h];
         var objects = new Img(_w, _h);
         var sorted = TopoSort(_groups.Select(g => g.fp).ToList());
+
+        // Estompage : un objet haut dessiné devant un personnage qu'il recouvre, ou survolé, s'efface au-dessus de sa hauteur utile
+        var people = new List<(int Order, (int X, int Y, int W, int H) Rect)>();
+        for (int i = 0; i < sorted.Count; i++)
+        {
+            var node = _groups[sorted[i]].node;
+            foreach (var chair in node.Seat ? [node] : node.Chairs)
+                if (CharacterRect(chair) is { } rect)
+                    people.Add((i, rect));
+        }
+        for (int i = 0; i < sorted.Count; i++)
+        {
+            var node = _groups[sorted[i]].node;
+            if (node.Seat || Occluder(node) is not { } occluder)
+                continue;
+            if (node.ItemId == _fadeItem || people.Any(p => p.Order < i && Overlap(p.Rect, occluder.Rect)))
+                node.Fade = occluder.Fade;
+        }
+
         var rank = new Dictionary<int, int>();
         for (int i = 0; i < sorted.Count; i++)
         {
             var node = _groups[sorted[i]].node;
             rank[node.ItemId] = i;
-            DrawWorkstation(objects, shadow, _w, _h, node);
+            if (node.Seat)
+                DrawChair(objects, shadow, _w, _h, node);
+            else
+                DrawWorkstation(objects, shadow, _w, _h, node);
         }
         // Les zones cliquables suivent l'ordre de dessin : la plus proche gagne
         for (int i = 0; i < _hits.Count; i++)
@@ -461,7 +581,7 @@ public sealed class RoomRenderer
         var be = PackLibrary.Asset(look.Base);
         var bo = be.GetProperty("orientations").GetProperty("se");
         var canvas = new Img(40, 72);
-        var sw = new Dictionary<string, string> { ["skin"] = look.Skin, ["hair"] = look.HairRamp };
+        var sw = look.Swatches();
         var hairSw = new Dictionary<string, string> { ["hair"] = look.HairRamp };
         var hair = PackLibrary.Has(look.Hair) ? PackLibrary.Asset(look.Hair).GetProperty("orientations").GetProperty("se").GetProperty("layers") : default;
         if (hair.ValueKind == JsonValueKind.Object && hair.TryGetProperty("hair_back", out var back))

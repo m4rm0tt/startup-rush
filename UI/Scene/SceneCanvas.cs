@@ -81,25 +81,45 @@ public partial class SceneCanvas : Control
         return seated;
     }
 
-    private string Signature(Dictionary<int, Seated> seated)
+    /// <summary>
+    /// Les opérateurs présents de ce site, chacun assis à une station (les postes manuels d'abord, puis la supervision des
+    /// automates), dans l'ordre : ce que la simulation compte (Campaign.OperatorsPresent) est ce que la scène montre.
+    /// </summary>
+    private Dictionary<int, Seated> OperatorSeats()
+    {
+        var seats = new Dictionary<int, Seated>();
+        var stations = Premises.Floor.Where(i => Core.industry.IndustryCatalog.Station(i.DefId) != null)
+            .OrderBy(i => Core.industry.IndustryCatalog.Station(i.DefId)!.Manual ? 0 : 1).ThenBy(i => i.Id).ToList();
+        var crew = Campaign.People.Where(p => p.Assignment.Is(AssignmentKind.Production, Premises.Id) && p.Activity == Activity.Working).OrderBy(p => p.Id);
+        foreach (var (person, station) in crew.Zip(stations))
+            seats[station.Id] = new Seated(person.Id, person.Appearance);
+        return seats;
+    }
+
+    private string Signature(Dictionary<int, Seated> seated, Dictionary<int, Seated> operators)
     {
         var sb = new StringBuilder(Premises.PlanId).Append('|').Append(Premises.FloorMaterial).Append('|').Append(Premises.WallPattern);
         foreach (var i in Premises.Items)
             sb.Append('|').Append(i.Id).Append(i.DefId).Append(i.X).Append(',').Append(i.Y).Append(i.Facing).Append(i.HostId).Append(i.Socket)
                 .Append(string.Join(",", i.Swatches.Select(kv => kv.Key + kv.Value)));
+        foreach (var (station, who) in operators.OrderBy(k => k.Key))
+            sb.Append('@').Append(station).Append(':').Append(who.PersonId).Append(who.Look.Outfit).Append(who.Look.OutfitTrim);
         foreach (var (chair, who) in seated.OrderBy(k => k.Key))
-            sb.Append('#').Append(chair).Append(':').Append(who.PersonId).Append(who.Look.Base).Append(who.Look.Hair).Append(who.Look.HairRamp).Append(who.Look.Skin);
+            sb.Append('#').Append(chair).Append(':').Append(who.PersonId).Append(who.Look.Base).Append(who.Look.Hair).Append(who.Look.HairRamp).Append(who.Look.Skin).Append(who.Look.Outfit).Append(who.Look.OutfitTrim);
         return sb.ToString();
     }
 
     private void Refresh()
     {
         var seated = SeatedPeople();
-        string signature = Signature(seated);
+        var operators = OperatorSeats();
+        // Un objet haut survolé s'estompe pour laisser voir derrière lui
+        int fade = _hoverHit is { Person: false } hit && Premises.Find(hit.Id) is { } hovered && RoomRenderer.Occludes(hovered) ? hit.Id : 0;
+        string signature = Signature(seated, operators) + "~" + fade;
         if (signature == _signature && _bitmap != null)
             return;
         _signature = signature;
-        _room = RoomRenderer.Render(Premises, seated);
+        _room = RoomRenderer.Render(Premises, seated, operators, fade);
         _bitmap = _room.Image.ToBitmap();
     }
 

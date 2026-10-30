@@ -171,7 +171,10 @@ public class NewCampaignScreen : MenuScreen
                 Ui.Choice(Core.team.Appearance.Hairs.Select(h => (h, HairName(h))), _look.Hair, h => { _look.Hair = h; Build(); }),
                 // Couleurs des cheveux et de la peau : cases de couleur du pack, nommées en infobulle
                 Swatches(Core.team.Appearance.HairRamps, _look.HairRamp, RampName, r => { _look.HairRamp = r; Build(); }),
-                Swatches(Core.team.Appearance.Skins, _look.Skin, k => $"Peau {Array.IndexOf(Core.team.Appearance.Skins, k) + 1}", k => { _look.Skin = k; Build(); }))),
+                Swatches(Core.team.Appearance.Skins, _look.Skin, k => $"Peau {Array.IndexOf(Core.team.Appearance.Skins, k) + 1}", k => { _look.Skin = k; Build(); }),
+                // Tenue : teintes du pack pour les canaux de la tenue (recoloration par masque, sans nouvelle image)
+                Swatches(Core.team.Appearance.Outfits, _look.Outfit ?? "", r => $"Tenue : {OutfitName(r)}", r => { _look.Outfit = r; Build(); }),
+                Swatches(Core.team.Appearance.Trims, _look.OutfitTrim ?? "", r => $"Détails : {OutfitName(r)}", r => { _look.OutfitTrim = r; Build(); }))),
             Ui.Text("Nom de la campagne (facultatif)", 14, Palette.Fog),
             Ui.Input(_campaign, v => { _campaign = v; _touched = true; }),
             Ui.Text("Graine (facultatif, pour rejouer exactement la même partie)", 14, Palette.Fog),
@@ -192,6 +195,12 @@ public class NewCampaignScreen : MenuScreen
     {
         "hair_short_crop" => "Court", "hair_side_part" => "Raie", "hair_curly_top" => "Bouclé", "hair_long_straight" => "Long",
         "hair_bun" => "Chignon", _ => "Carré"
+    };
+
+    public static string OutfitName(string id) => id switch
+    {
+        "teal" => "sarcelle", "coral" => "corail", "sun" => "soleil", "sky" => "ciel", "sage" => "sauge", "navy" => "marine",
+        "rose" => "rose", "graphite" => "graphite", "plastic" => "blanc cassé", "steel" => "acier", _ => id
     };
 
     private static string RampName(string id) => id switch

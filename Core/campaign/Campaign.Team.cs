@@ -97,6 +97,19 @@ public partial class Campaign
 
     public decimal TrainingPrice => IsUnlocked("academy") ? TrainingCost / 2 : TrainingCost;
 
+    /// <summary>Change la tenue d'une personne (teintes du pack ; null : la tenue d'origine). Sans effet sur la simulation.</summary>
+    public CommandResult SetOutfit(int personId, string? outfit, string? trim)
+    {
+        var person = FindPerson(personId);
+        if (person == null)
+            return CommandResult.Fail("Personne inconnue.");
+        if (outfit != null && !Appearance.Outfits.Contains(outfit) || trim != null && !Appearance.Trims.Contains(trim))
+            return CommandResult.Fail("Teinte inconnue.");
+        person.Appearance.Outfit = outfit;
+        person.Appearance.OutfitTrim = trim;
+        return CommandResult.Success();
+    }
+
     public CommandResult Train(int personId, Discipline discipline)
     {
         var person = FindPerson(personId);

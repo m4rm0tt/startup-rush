@@ -47,6 +47,27 @@ public class Appearance
     public string HairRamp { get; set; } = "hair_brown";
     public string Skin { get; set; } = "skin_light";
 
+    /// <summary>Teintes de la tenue choisies (canaux « primary » et « secondary » du pack) ; null : celles de la base.</summary>
+    public string? Outfit { get; set; }
+
+    public string? OutfitTrim { get; set; }
+
+    /// <summary>Teintes proposées pour la tenue : les nuanciers du pack pour ces canaux (manifest, channels.swatches).</summary>
+    public static readonly string[] Outfits = ["teal", "coral", "sun", "sky", "sage", "navy", "rose", "graphite", "plastic", "steel"];
+
+    public static readonly string[] Trims = ["graphite", "steel", "plastic", "navy", "teal", "coral"];
+
+    /// <summary>Les couleurs du masque d'un personnage : peau, cheveux et, s'ils sont choisis, ceux de la tenue.</summary>
+    public Dictionary<string, string> Swatches()
+    {
+        var sw = new Dictionary<string, string> { ["skin"] = Skin, ["hair"] = HairRamp };
+        if (Outfit != null)
+            sw["primary"] = Outfit;
+        if (OutfitTrim != null)
+            sw["secondary"] = OutfitTrim;
+        return sw;
+    }
+
     /// <summary>Une apparence au hasard pour une recrue (cheveux gris rares).</summary>
     public static Appearance Random(campaign.SimRandom random) => new()
     {

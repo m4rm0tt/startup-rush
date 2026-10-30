@@ -11,7 +11,7 @@ public static class Portraits
 
     public static Bitmap Of(Appearance look)
     {
-        string key = $"{look.Base}|{look.Hair}|{look.HairRamp}|{look.Skin}";
+        string key = $"{look.Base}|{look.Hair}|{look.HairRamp}|{look.Skin}|{look.Outfit}|{look.OutfitTrim}";
         if (!Cache.TryGetValue(key, out var bitmap))
             Cache[key] = bitmap = RoomRenderer.Portrait(look).ToBitmap();
         return bitmap;

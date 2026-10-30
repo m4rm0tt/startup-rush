@@ -143,8 +143,15 @@ public class SaveStore
         }
         var campaign = campaignNode.Deserialize<Campaign>(Options) ?? throw new InvalidDataException("Campagne illisible.");
         if (format < 8)
+        {
             foreach (var person in campaign.People.Concat(campaign.Candidates.Select(c => c.Person)))
                 Core.team.Person.FillSecondary(person.Skills);
+            // Le détail par site n'existait pas : ce qui est déjà compté (mois passés, début du mois en cours) va à la ligne commune,
+            // pour que la somme des sites reste le total du mois ; la suite du mois s'ajoute site par site
+            foreach (var (month, totals) in campaign.Ledger.Months)
+                if (!campaign.Ledger.SiteMonths.ContainsKey(month))
+                    campaign.Ledger.SiteMonths[month] = new() { [Core.finance.Ledger.Common] = new(totals) };
+        }
         if (campaign.People.Count == 0 || campaign.Companies.Count == 0)
             throw new InvalidDataException("Campagne incomplète.");
         if (format == 1)

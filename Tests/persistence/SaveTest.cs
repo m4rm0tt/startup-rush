@@ -146,6 +146,51 @@ public class SaveTest
         Assert.That(SaveStore.Deserialize(SaveStore.Serialize(campaign)).Products.Single().Components.Count, Is.EqualTo(product.Components.Count));
     }
 
+    /// <summary>
+    /// Une vraie sauvegarde de chaque format intermédiaire (4 : sites et cloud ; 5 : matériel et stocks ; 6 : studio, XR et IA ;
+    /// 7 : finitions), écrite par le jeu du dernier commit de ce format (partie jouée par un bot, graine 37) : elle se charge
+    /// sans rien perdre, se relit à l'identique au format actuel, et la partie continue.
+    /// </summary>
+    [Test]
+    public void ASaveFromEachEarlierFormatLoadsWithoutLosingAnything([Values(4, 5, 6, 7)] int format)
+    {
+        string path = Path.Combine(_root, $"v{format}", "auto-1.json");
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+        File.Copy(Path.Combine(balance.BalanceReportTest.RootFolder(), "Tests", "fixtures", $"campaign_v{format}.json"), path);
+        var file = System.Text.Json.Nodes.JsonNode.Parse(File.ReadAllText(path))!;
+        Assert.That(file["Format"]!.GetValue<int>(), Is.EqualTo(format));
+        var old = file["Campaign"]!;
+        decimal cash = old["Ledger"]!["Cash"]!.GetValue<decimal>();
+        var people = old["People"]!.AsArray().Select(p => p!["Name"]!.GetValue<string>()).ToList();
+        var products = old["Products"]!.AsArray().Select(p => (p!["Id"]!.GetValue<int>(), p["Users"]!.GetValue<double>())).ToList();
+        int sites = old["Sites"]!.AsArray().Count;
+        int stock = old["Stock"]?.AsObject().Sum(site => site.Value!.AsObject().Sum(item => item.Value!.GetValue<int>())) ?? 0;
+        int research = old["ResearchDone"]?.AsArray().Count ?? 0;
+
+        var campaign = new SaveStore(_root).Load(path);
+
+        Assert.That(campaign.Ledger.Cash, Is.EqualTo(cash), "aucune somme ajoutée ou retirée");
+        Assert.That(campaign.People.Select(p => p.Name), Is.EqualTo(people));
+        Assert.That(campaign.Products.Select(p => (p.Id, p.Users)), Is.EqualTo(products));
+        Assert.That(campaign.Sites, Has.Count.EqualTo(sites));
+        Assert.That(campaign.Stock.Values.Sum(s => s.Values.Sum()), Is.EqualTo(stock), "aucun stock perdu ni dupliqué");
+        Assert.That(campaign.ResearchDone, Has.Count.EqualTo(research));
+        Assert.That(campaign.People.All(p => p.Skills.ContainsKey(Discipline.Operations) && p.Skills.ContainsKey(Discipline.Research)), Is.True,
+            "les métiers d'opérateur et de chercheur (format 8) ont une compétence pour chacun");
+        Assert.That(File.Exists(Path.ChangeExtension(path, $".v{format}.json")), Is.True, "l'original est gardé");
+
+        string saved = SaveStore.Serialize(campaign);
+        Assert.That(System.Text.Json.Nodes.JsonNode.Parse(saved)!["Format"]!.GetValue<int>(), Is.EqualTo(SaveStore.CurrentFormat));
+        Assert.That(SaveStore.SerializeState(SaveStore.Deserialize(saved)), Is.EqualTo(SaveStore.SerializeState(campaign)));
+
+        campaign.AdvanceDays(30);
+        Assert.That(campaign.Status, Is.EqualTo(CampaignStatus.Running));
+        Assert.That(campaign.Stock.Values.SelectMany(s => s.Values).All(q => q >= 0), Is.True);
+        string month = GameTime.ToDate(campaign.Minute).AddMonths(-1).ToString("yyyy-MM");
+        Assert.That(campaign.SiteResults(month).Sum(r => r.Result), Is.EqualTo(Campaign.OperatingResult(campaign.Ledger.Months[month])),
+            "le résultat par site se réconcilie avec le total du mois");
+    }
+
     [Test]
     public void ATycoonSaveMovesToThePackPremisesWithoutLosingAnything()
     {

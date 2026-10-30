@@ -163,7 +163,7 @@ for m in DEF.finditer(furniture):
     measured = {k for k in effects if k in MEASURED
                 or (k == "Morale" and kind in ("Plant", "Ambiance", "Lounge", "Desk", "Personal"))
                 or (k == "Focus" and kind != "Peripheral")
-                or (k == "Covers" and ("BreakRecovery" in effects or kind in ("Storage", "Partition")))}
+                or (k == "Covers" and ("BreakRecovery" in effects or kind in ("Storage", "Partition", "Sanitary")))}
     if effects and effects == measured:
         updates[i] = dict(consommateur=f"Aménagement : objet « {kind} » posé dans un local", fichier_definition="Core/space/Furniture.cs;Core/space/Layout.cs;Core/space/Infrastructure.cs;UI/Iso/RoomRenderer.cs",
                           deblocage="voir le catalogue", indicateur_ou_interaction=", ".join(sorted(effects)), etat="validé",

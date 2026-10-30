@@ -76,13 +76,13 @@ public sealed class RoomRenderer
         return d;
     }
 
+    /// <summary>Zone cliquable des cartons de déménagement dessinés à l'entrée (objets à déballer).</summary>
+    public const int CartonsId = -9000;
+
     /// <summary>
     /// Compose le local : « seated » donne, pour chaque chaise occupée en ce moment, qui y est assis ; « operators », pour
     /// chaque station tenue en ce moment, l'opérateur assis à sa case de travail (accès « work » ou « operate » du pack).
     /// </summary>
-    /// <summary>Zone cliquable des cartons de déménagement dessinés à l'entrée (objets à déballer).</summary>
-    public const int CartonsId = -9000;
-
     /// <param name="cartons">Objets dans les cartons : quelques cartons du pack (moving_box) les représentent à l'entrée.</param>
     public static RoomImage Render(Premises premises, IReadOnlyDictionary<int, Seated> seated, IReadOnlyDictionary<int, Seated>? operators = null,
         int fadeItem = 0, int cartons = 0)

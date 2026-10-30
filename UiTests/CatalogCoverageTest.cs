@@ -58,6 +58,8 @@ public class CatalogCoverageTest
     {
         if (def.Id == "kitchen_sink")
             Place(campaign, FurnitureCatalog.Get("fridge"));
+        if (def.Id == "washbasin")
+            Place(campaign, FurnitureCatalog.Get("toilet"));
         if (def.Id == "table_coffee")
             Place(campaign, FurnitureCatalog.Get("sofa"));
         // Des chaises à chaque place d'une table de réunion
@@ -127,6 +129,8 @@ public class CatalogCoverageTest
             Assert.That(postMorale1, Is.GreaterThan(postMorale0), $"{name} : moral de la personne du poste");
         if (def.Kind == FurnitureKind.Storage && def.Covers > 0)
             Assert.That(comfort1.StorageCoverage, Is.GreaterThan(comfort0.StorageCoverage), $"{name} : rangement");
+        if (def.Kind == FurnitureKind.Sanitary)
+            Assert.That(comfort1.HygieneCoverage, Is.GreaterThan(comfort0.HygieneCoverage), $"{name} : sanitaires");
         if (def.Kind == FurnitureKind.Partition && def.Covers > 0)
             Assert.That(comfort1.Focus, Is.GreaterThan(comfort0.Focus), $"{name} : concentration des personnes couvertes");
         // Services du site : même nom dans la définition de l'objet et dans le bilan d'infrastructure

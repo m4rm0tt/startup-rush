@@ -61,7 +61,7 @@ public static class RealEstate
             "Un plateau ouvert avec cafétéria, cloisons et grande salle de réunion. Jusqu'à 30 postes.",
             "room_open_space", 0, 12_500m, 3, 3_500m, ["Renens", "Nyon"]),
         new("server_room", "Salle serveur",
-            "Une petite salle technique : plancher technique, climatisation et armoire électrique livrées. Place pour quatre baies.",
+            "Une petite salle technique : plancher technique, climatisation et armoire électrique livrées. Place pour une dizaine de baies ; la climatisation livrée en refroidit environ quatre bien remplies.",
             "room_server_compact", -1, 1_800m, 3, 1_200m, ["Crissier", "Bussigny"], "server_room"),
         new("datacenter", "Datacenter",
             "Une salle d'hébergement à grande échelle : deux climatiseurs, deux armoires électriques, cage de sécurité livrés.",

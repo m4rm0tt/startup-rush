@@ -265,7 +265,7 @@ public static class FurnitureCatalog
         new("cable_organizer", "Range-câbles", FurnitureKind.Storage, 15m, "Sur un bureau : un poste en ordre, pour 1 personne (confort de base).") { Covers = 1 },
         new("kitchen_wall_cabinet", "Placard haut", FurnitureKind.Storage, 220m, "Au mur : du rangement pour 2 personnes (confort de base).") { Covers = 2 },
         new("toilet", "WC", FurnitureKind.Sanitary, 900m, "Les sanitaires de 10 personnes (confort de base).") { Covers = 10 },
-        new("toilet_stall", "Cabine sanitaire", FurnitureKind.Sanitary, 700m, "Avec un WC : plus d'intimité (confort de base).") { Covers = 10 },
+        new("toilet_stall", "Cabine sanitaire", FurnitureKind.Sanitary, 700m, "Un WC fermé : les sanitaires de 10 personnes, avec plus d'intimité (confort de base).") { Covers = 10 },
         new("washbasin", "Lavabo", FurnitureKind.Sanitary, 450m, "Avec un WC : de quoi se laver les mains (confort de base).") { Covers = 10 },
 
         // Concentration : cloisons (plafonnée)

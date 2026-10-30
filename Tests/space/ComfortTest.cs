@@ -113,7 +113,12 @@ public class ComfortTest
         Assert.That(Layout.Comfort(room, 4).HygieneCoverage, Is.EqualTo(0.9).Within(1e-9));
         Put(room, "toilet_stall");
         Assert.That(Layout.Comfort(room, 4).Basics, Is.EqualTo(Layout.MaxBasics).Within(1e-9));
-        Assert.That(Layout.Comfort(room, 20).HygieneCoverage, Is.EqualTo(0.5).Within(1e-9), "un WC pour 10 personnes");
+        Assert.That(Layout.Comfort(room, 40).HygieneCoverage, Is.EqualTo(0.5).Within(1e-9), "un WC (ou une cabine, WC fermé) pour 10 personnes");
+
+        // Une cabine seule est un WC fermé, comme au siège et dans le module « sanitaires » du pack
+        var stalls = EmptyRoom();
+        Put(stalls, "toilet_stall");
+        Assert.That(Layout.Comfort(stalls, 10).HygieneCoverage, Is.EqualTo(0.8).Within(1e-9), "WC et intimité, sans lavabo");
 
         // Ta chambre : la salle de bains de l'appartement compte
         Assert.That(NewCampaign().SiteComfort().HygieneCoverage, Is.EqualTo(1));

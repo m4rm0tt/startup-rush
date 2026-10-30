@@ -152,6 +152,13 @@ public static class Pack
             if (o.TryGetProperty("children", out var ch) && ch.ValueKind == JsonValueKind.Object)
                 foreach (var c in ch.EnumerateObject())
                 {
+                    // Les modules d'une baie : « slots » = [{ index, asset }], accrochés comme en jeu (« slot:<index> »)
+                    if (c.Name == "slots" && c.Value.ValueKind == JsonValueKind.Array)
+                    {
+                        foreach (var slot in c.Value.EnumerateArray())
+                            children.Add(new PlanChild($"slot:{slot.GetProperty("index").GetInt32()}", slot.GetProperty("asset").GetString()!, false));
+                        continue;
+                    }
                     if (c.Value.ValueKind == JsonValueKind.String)
                         children.Add(new PlanChild(c.Name, c.Value.GetString()!, false));
                     else if (c.Value.ValueKind == JsonValueKind.Object && c.Value.TryGetProperty("asset", out var ca))

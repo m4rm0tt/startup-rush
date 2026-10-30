@@ -57,12 +57,12 @@ conservé dans `docs/equilibrage/reference_avant.md`.
 
 ## 5. Défauts et finitions
 
-| Point | État constaté | Attendu |
-|---|---|---|
+| Point | État constaté | Attendu | Résultat |
+|---|---|---|---|
 | Police pixel floue | **fait** (`f5c1283`) : échelle continue en cause ; grille 12 px, Alias, échelle entière | tailles natives (multiples) et rendu net |
 | Moins de personnages assis que de postes (campagne avancée) | **expliqué, non reproduit** : sonde déterministe (graine 37) : 4 bureaux, 4 postes complets, 4 personnes assises ; une personne de dos face au bureau compact donnait l'illusion d'un poste vide | — |
-| Datacenter et siège sans test | constaté | tests dédiés |
-| Compositeur de référence du pack | jamais lu ni exécuté | lu, comparé, utilisé si pertinent |
+| Datacenter et siège sans test | constaté | tests dédiés | **fait** : `Tests/space/DatacenterAndHqTest.cs` (4 tests : déblocage, livraisons, 30 baies contre 10, froid et courant suffisants ; espaces partagés du siège, 66 postes contre 40). **Défauts corrigés** : (1) la règle d'hygiène ne comptait que `toilet`, or le siège et le module « sanitaires » n'ont que des cabines (`toilet_stall`) : leurs sanitaires livrés étaient sans effet ; une cabine compte maintenant comme un WC fermé ; (2) la salle serveur se disait « pour quatre baies » alors qu'une dizaine y tiennent : la limite réelle est le froid livré (≈ 4 baies pleines), la description le dit |
+| Compositeur de référence du pack | jamais lu ni exécuté | lu, comparé, utilisé si pertinent | **fait** : `tools/csharp/StartupRushReference/Program.cs` lu (il compose un plan : sols, recouvrements, bords de dalle, murs et motifs, objets muraux, objets et enfants, personnages, ombres ; il compare au rendu Python au pixel près). Ses sorties (`previews/rooms/*.png`, 10/10 identiques selon `QA_REPORT.md`) servent d'oracle, sans exécuter de code du pack : `UiTests/ReferenceCompositorTest.cs` (98 % des pixels identiques sans personnages, 90 % avec ; écarts restants : personnages du plan, marquage et seuils ajoutés par le jeu, vérifiés sur images de différence). **Défaut corrigé** : les modules des baies d'un plan (`"slots": [...]`) étaient ignorés par le lecteur de plans (`Pack.ReadObjects`) |
 | Retour au sol d'origine du plan | **fait** (`a0f655f`) | commande « revenir au plan » |
 | Panneaux acoustiques (motif mural) | **fait** (`a0f655f`) : spec « contribution plafonnée à la concentration/qualité du studio » | effet vérifié dans la spec et implémenté si confirmé |
 | Vignettes du carrelage et du faux plancher | **fait** (`a0f655f`) : les dalles 2 × 2 montraient une croix au centre de la pastille | retrouver sur les captures et corriger |

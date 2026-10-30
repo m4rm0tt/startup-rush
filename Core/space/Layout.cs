@@ -308,7 +308,9 @@ public static class Layout
         // Confort de base : moitié rangement, moitié sanitaires (ceux de ton appartement quand tu es dans ta chambre)
         double storage = Covered(items.Where(i => i.Def.Kind == FurnitureKind.Storage));
         var sanitary = items.Where(i => i.Def.Kind == FurnitureKind.Sanitary).ToList();
-        var toilets = sanitary.Where(i => i.Def.Id == "toilet").ToList();
+        // Une cabine sanitaire est un WC fermé (le pack la pose seule, porte close : siège, module « sanitaires ») ;
+        // elle compte comme un WC et ajoute l'intimité
+        var toilets = sanitary.Where(i => i.Def.Id is "toilet" or "toilet_stall").ToList();
         double hygiene = premises.ListingId == RealEstate.Apartment ? 1
             : toilets.Count == 0 ? 0
             : Covered(toilets) * (0.7 + (sanitary.Any(i => i.Def.Id == "washbasin") ? 0.2 : 0) + (sanitary.Any(i => i.Def.Id == "toilet_stall") ? 0.1 : 0));

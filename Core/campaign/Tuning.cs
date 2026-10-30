@@ -121,6 +121,12 @@ public static class Tuning
         public const double OrganicAwarenessPerDay = 25;
 
         public const double WordOfMouth = 0.012;
+
+        /// <summary>Taille de public qui reçoit exactement les curieux de base (voir Market.SegmentBreadth).</summary>
+        public const double ReferenceSegmentSize = 100_000;
+
+        public const double MinBreadth = 0.35;
+        public const double MaxBreadth = 2.0;
         public const int MaxModulesPerPageBeforeClutter = 5;
 
         /// <summary>Frais de paiement prélevés sur les encaissements par carte.</summary>

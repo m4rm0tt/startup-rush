@@ -196,7 +196,7 @@ salle propre incomplète, électricité ou froid insuffisants.
 
 | Recette | Étapes | Matières → produit |
 |---|---|---|
-| Produit fini | assemblage → logiciel → emballage | nomenclature + 1 emballage → 1 unité |
+| Produit fini | assemblage → logiciel → emballage | nomenclature + 1 emballage → 1 unité (⚙️ une carte se monte en panneau de 2 : deux nomenclatures → 2 unités par passage) |
 | Cartes électroniques | placement → refusion → inspection | 1 circuit + 2 composants → 1 carte |
 | Cartes graphiques | assemblage → inspection | 1 puce + 2 mémoires + 1 carte → 1 GPU |
 | Processeurs | traitement (salle propre, outil chargé à la main) | 1 plaquette → 20 puces (10 sans station de précision) |
@@ -217,7 +217,37 @@ Détail et limites : `docs/V1_ETAT.md`, « Lot 6 ». En bref :
   plafonnée par la capacité (interne d'abord, puis location sous plafond). Ordre de la nuit : hébergement, inférence, entraînement, offres cloud.
 - **Studio** : +30 % de qualité du contenu et +15 % de portée marketing au plus ; **zone XR** : jusqu'à −60 % de défauts d'un produit XR.
 - **Quantique** : un cryostat fermé avec sa baie de contrôle et son support cryogénique, 14 jours de mise en route si le froid et l'énergie
-  suivent, 20 unités vendables ; +25 % seulement sur les recherches de calcul intensif.
+  suivent, 30 unités vendables ; +25 % seulement sur les recherches de calcul intensif. Prix ⚙️ (finition) : cryostat fermé
+  150 000 CHF, ouvert 80 000, baie de contrôle 25 000, support cryogénique 40 000 ; laboratoire avancé 7 000 CHF/mois. Mesuré : en
+  service entre les mois 36 et 55 dans les 5 graines du bilan (stratégie `quantique`, 60 mois), jamais avant le mois 30.
+
+## 4 sexies. Fonctions de la finition (après le lot 7)
+
+- **Résultat par site** (Finances) : chaque mouvement porte son site (loyer, salaires de ceux qui y travaillent, énergie,
+  matières, ventes expédiées, cloud au prorata de la capacité) ; le reste va à une ligne « commun à l'entreprise » (logiciels,
+  marketing, hébergement externe, intérêts). La somme des lignes est le résultat du mois au centime (testé, y compris après la
+  migration d'une ancienne sauvegarde, dont la partie déjà comptée va à la ligne commune).
+- **Transferts de stock** (Production) ⚙️ : 60 CHF + 1 par matière ou 4 par produit fini, payés par le site d'arrivée, livrés le
+  lendemain ; la place est réservée à l'arrivée. Une réserve automatique n'achète que pour son site et une ligne ne prend que le
+  stock de son site : plus aucun prélèvement involontaire ailleurs. Fermer ou quitter un site déplace son stock, sans perte ni doublon.
+- **Métiers** : opérateur (Opérations : le rythme d'une ligne va de ×0,85 à ×1,4 selon le niveau ; salaire d'ouvrier qualifié) et
+  chercheur (Recherche : la compétence qui fait avancer une recherche). Ils sont proposés au recrutement dès que l'entreprise en a
+  l'usage (une station ou l'industrialisation ; une recherche en cours ou faite) ; chacun a les deux compétences (format 8).
+- **Studio et zone XR par compétence** : le studio rend tout son effet avec un·e designer (Design 45+) affecté·e au site, la zone XR
+  avec un·e testeur·se (Tests 45+), sinon la moitié. Une formation (900 CHF, deux jours) suffit souvent au fondateur polyvalent.
+- **Préparation de recherche au terminal** : quand une recherche équipée tourne sur son site, le fondateur peut y taper ; chaque mot
+  juste vaut une minute de chercheur (paillasses et quantique comptent), dans sa meilleure compétence (Recherche d'abord), borné à ce
+  qu'il reste ; le budget du jour est dû dès qu'elle avance.
+- **Composants** : `API publique`, `Stockage de fichiers`, `Menus et options` (jeux) ; l'atelier montre le **graphe de dépendances**
+  (liens et ports du pack, orienté de gauche à droite). Les composants de jeu de la spécification (§6.2 : moteur, menu, progression,
+  sauvegarde, inventaire, classement, multijoueur simulé) sont couverts sans doublon : moteur = Gameplay, progression = Contenu.
+- **Rendu** : opérateurs assis aux chaises de leurs stations quand ils y travaillent ; tenues recolorables (deux canaux du pack) ;
+  objets hauts estompés au-dessus de leur hauteur utile quand ils cachent une personne ou le survol.
+
+**Simplifications assumées** : le câblage et la sécurité sont des **scores par site** (points des objets, plafonds et effets sur la
+capacité ou la demande cloud), sans tracé fil à fil ni zones dans les pièces : la spécification ne demande pas de tels outils, et
+le joueur décide des objets à poser, pas de leur câblage. De même, les commandes de matériel en attente ne sont pas simulées : une
+rupture est une vente perdue.
 
 ## 5. Automatismes
 
@@ -227,7 +257,7 @@ Détail et limites : `docs/V1_ETAT.md`, « Lot 6 ». En bref :
 | Enchaînement des tâches | Design, puis développement, puis tests, par composant, dans l'ordre de la file, de préférence dans la spécialité de chacun. Tout le monde peut tout faire (plus lentement hors de sa spécialité) : un projet n'est jamais bloqué faute d'une compétence. | Rien. |
 | Support et maintenance | Sur un projet en ligne, une part fixe du temps de son équipe y va : ⚙️ Peu 10 %, Normal 25 %, Prioritaire 45 %. Moitié support, moitié corrections quand les deux sont nécessaires. Quand il n'y a rien à développer, tout le temps y passe. | Le niveau d'entretien. |
 | Serveurs | Par défaut, la plus petite offre débloquée qui tient la charge (75 % au plus), **sans dépasser un plafond mensuel visible** (⚙️ 400 CHF par défaut). Une alerte prévient si le plafond empêche de suivre. | Le plafond, ou le mode manuel. |
-| Paiements, salaires, formalités | Payés automatiquement à l'échéance (salaires d'abord) s'il y a l'argent. Salaires de référence ⚙️ ≈ 3 800 + 70 × niveau CHF. | Rien. |
+| Paiements, salaires, formalités | Payés automatiquement à l'échéance (salaires d'abord) s'il y a l'argent. Salaires de référence ⚙️ ≈ 3 800 + 70 × niveau CHF ; un opérateur de ligne (métier Opérations) ≈ 2 900 + 40 × niveau, comme un ouvrier qualifié. | Rien. |
 
 L'automatisation **ne recrute pas, ne loue pas, n'emprunte pas et n'augmente aucun budget** : ces décisions restent au joueur.
 
@@ -243,7 +273,11 @@ Les avis viennent des **facteurs réels de la simulation**, calculés sur la der
 | « Trop cher » | Prix nettement au-dessus de l'habitude du public | Réglages → Prix |
 | « Il manque… » | Le besoin le plus mal couvert (en dessous de 35 %) parmi ceux qui comptent | Le composant qui y répond le mieux (« Demandé dans les avis ») |
 | « Pas assez d'offres » | Place de marché sans assez de vendeurs | Annonces |
-| Positifs | Mise à jour récente, meilleur composant | — |
+| « Toujours en rupture » | Matériel : ventes perdues faute de stock ou de canal (le « délai » de la spécification : il n'y a pas de commandes en attente simulées) | Production |
+| « Tombé en panne » | Matériel : taux de pannes au-dessus de 8 % | Production (contrôle, rodage, calibration) |
+| « Réponses fausses » | IA : qualité du modèle en service trop basse pour le public | IA (meilleures données, plus grand modèle) |
+| « Réponses lentes » | IA : inférence au-delà de la capacité (interne ou louée) | IA (inférence) |
+| Positifs | Mise à jour récente, meilleur composant, matériel fiable, IA juste et rapide | — |
 
 Au plus 3 tendances négatives et 2 positives, avec la part des avis concernés. Quelques avis datés s'ajoutent chaque semaine (24 gardés au plus). Ce ne sont pas des commandes : on ne doit rien à personne. La note sur 5 vient de la satisfaction de la dernière semaine.
 
@@ -307,6 +341,15 @@ Chaque nœud a un effet réel, testé ou visible dans la simulation. Aucune bran
 Le marché suit un modèle en un pas par jour :
 - l'attrait (couverture des besoins × bugs × performances) détermine la part face aux concurrents ;
 - les nouveaux curieux viennent de la présence naturelle, du marketing (rendement décroissant) et du bouche-à-oreille ;
+  ⚙️ (finition) la présence et le marketing sont multipliés par la **largeur du public**, √(taille / 100 000) entre 0,35 et 2 :
+  30 000 PME → 0,55, 80 000 indépendants → 0,89, 400 000 joueurs → 2 (un marché étroit se remplit moins vite) ; un curieux qui
+  n'essaie pas est perdu pour ce projet, sauf ceux que chaque mise à jour fait revenir ;
+- ⚙️ chaque public a une **vitesse de décision** : PME 0,7 (elles comparent et font valider), makers 1,3 (achat sur un coup de
+  cœur), 1 ailleurs ;
+- une application XR vendue à l'unité se lance comme un jeu (liste de souhaits, pic de sortie, retour des joueurs aux mises à jour) ;
+- ⚙️ le **matériel se renouvelle** : chaque jour, possesseurs × satisfaction / durée de renouvellement rachètent (cartes 120 jours,
+  GPU et kits XR 900, PC, portables et imprimantes 1 100, serveurs et réseau 1 400). Ces ventes sont payées mais ne créent pas
+  d'utilisateurs ; un public étroit (industrie, 25 000) ne s'épuise donc plus une fois informé ;
 - les inscriptions dépendent de l'attrait, de la concurrence et du prix ;
 - le support absorbe les questions ;
 - les départs dépendent de la satisfaction ;

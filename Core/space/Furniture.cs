@@ -378,12 +378,12 @@ public static class FurnitureCatalog
         new("xr_play_mat", "Tapis de zone de jeu XR", FurnitureKind.Xr, 600m, "Zone XR : l'emprise de la zone de test, avec le casque et les balises.") { UnlockNode = "xr" },
         new("compute_cabinet", "Calculateur avancé (armoire)", FurnitureKind.Server, 18_000m, "Calcul : 120 unités, pour l'entraînement des gros modèles et la recherche. 2,5 kW.") { Compute = 120, Power = 2.5, UnlockNode = "advanced_lab" },
         new("supervision_terminal", "Terminal de supervision (pupitre)", FurnitureKind.Supervision, 1_800m, "Surveille le site : incidents deux fois moins fréquents, organisation +0,5.") { Organization = 0.5, UnlockNode = "server_room" },
-        new("quantum_control_rack", "Baie de contrôle micro-ondes", FurnitureKind.Quantum, 35_000m, "Pilote un cryostat (une par cryostat). 1,5 kW.") { Power = 1.5, UnlockNode = "advanced_lab" },
-        new("cryo_support_unit", "Unité de support cryogénique", FurnitureKind.Quantum, 60_000m, "Refroidit un cryostat (une par cryostat). 5 kW.") { Power = 5, UnlockNode = "advanced_lab" },
-        new("quantum_cryostat_open", "Ordinateur quantique (cryostat ouvert)", FurnitureKind.Quantum, 120_000m,
+        new("quantum_control_rack", "Baie de contrôle micro-ondes", FurnitureKind.Quantum, 25_000m, "Pilote un cryostat (une par cryostat). 1,5 kW.") { Power = 1.5, UnlockNode = "advanced_lab" },
+        new("cryo_support_unit", "Unité de support cryogénique", FurnitureKind.Quantum, 40_000m, "Refroidit un cryostat (une par cryostat). 5 kW.") { Power = 5, UnlockNode = "advanced_lab" },
+        new("quantum_cryostat_open", "Ordinateur quantique (cryostat ouvert)", FurnitureKind.Quantum, 80_000m,
             "Installation expérimentale : calibration et recherches quantiques (rendement de recherche). Avec une baie de contrôle et un support cryogénique. 6 kW.") { Power = 6, UnlockNode = "advanced_lab" },
-        new("quantum_cryostat_closed", "Ordinateur quantique (cryostat fermé)", FurnitureKind.Quantum, 380_000m,
-            "Installation stabilisée : 20 unités de calcul quantique à vendre, après 14 jours de mise en route. Avec une baie de contrôle et un support cryogénique. 8 kW.") { Power = 8, UnlockNode = "res_cryo" },
+        new("quantum_cryostat_closed", "Ordinateur quantique (cryostat fermé)", FurnitureKind.Quantum, 150_000m,
+            "Installation stabilisée : 30 unités de calcul quantique à vendre, après 14 jours de mise en route. Avec une baie de contrôle et un support cryogénique. 8 kW.") { Power = 8, UnlockNode = "res_cryo" },
 
         // Lot 7 : l'informatique du pack qui n'avait pas encore d'usage
         new("laptop_gaming", "Portable de jeu", FurnitureKind.Laptop, 2_400m, "Production ×1,05 et qualité +0,03. 0,15 kW.") { Output = 1.05, Quality = 0.03, Power = 0.15 },

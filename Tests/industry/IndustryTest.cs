@@ -56,18 +56,62 @@ public class IndustryTest
         Assert.That(campaign.LineFor(campaign.Premises, route).Ok, Is.True, campaign.LineFor(campaign.Premises, route).Why);
         Operator(campaign);
         var bom = IndustryCatalog.Bom(board);
-        Fill(campaign, bom, 8);
+        // Une carte se monte en panneau : un passage sur la ligne en livre plusieurs, avec leurs matières
+        int per = route.OutputQty;
+        Assert.That(per, Is.EqualTo(board.Archetype.PerCycle));
+        Fill(campaign, bom, 8 * per);
         int site = campaign.Premises.Id;
 
         Assert.That(campaign.CreateOrder(site, $"product:{board.Id}", OrderMode.Quantity, 5).Ok, Is.True);
-        Until(campaign, () => campaign.StockAt(site, $"p:{board.Id}") == 5);
+        Until(campaign, () => campaign.StockAt(site, $"p:{board.Id}") == 5 * per);
 
-        Assert.That(campaign.StockAt(site, $"p:{board.Id}"), Is.EqualTo(5));
+        Assert.That(campaign.StockAt(site, $"p:{board.Id}"), Is.EqualTo(5 * per));
         foreach (var (item, qty) in bom)
-            Assert.That(campaign.StockAt(site, item), Is.EqualTo(qty * 3), $"{item} : exactement 5 nomenclatures consommées");
+            Assert.That(campaign.StockAt(site, item), Is.EqualTo(qty * 3 * per), $"{item} : exactement 5 passages de nomenclatures consommés");
         Assert.That(campaign.FlowUnits, Is.Empty);
-        Assert.That(campaign.Orders.Single().Finished, Is.EqualTo(5));
-        Assert.That(board.Produced, Is.EqualTo(5));
+        Assert.That(campaign.Orders.Single().Finished, Is.EqualTo(5 * per));
+        Assert.That(board.Produced, Is.EqualTo(5 * per));
+    }
+
+    [Test]
+    public void HardwareOwnersComeBackToBuyWithoutCountingAsNewUsers()
+    {
+        var (campaign, board) = Workshop();
+        FinishQueue(campaign, board);
+        board.Users = 1_200;
+        board.Aware = board.Segment.Size;  // tout le public est déjà informé : plus aucun nouveau venu
+        var sales = new HardwareSales(Stock: 1_000, Visibility: 1, PerDay: 1_000, Commission: 0);
+        double sold = 0, users = board.Users;
+        for (int day = 0; day < 30; day++)
+            sold += Market.Step(board, new DayInputs(500, campaign.Competitors) { Sales = sales }, day).Sold;
+
+        // Des makers satisfaits rachètent une carte tous les quatre mois environ : une trentaine de ventes sur 30 jours
+        Assert.That(board.Archetype.RenewalDays, Is.EqualTo(120));
+        Assert.That(sold, Is.GreaterThan(30 * 1_200 * 0.2 / board.Archetype.RenewalDays), "les possesseurs rachètent");
+        Assert.That(board.Users, Is.LessThanOrEqualTo(users), "un rachat n'est pas un nouvel utilisateur");
+        Assert.That(board.History.TakeLast(30).Sum(d => (double)d.Revenue), Is.EqualTo(sold * (double)board.Price).Within(1), "chaque unité vendue est payée");
+
+        // Un logiciel n'a pas de rachat
+        Assert.That(ProductCatalog.Type("saas").RenewalDays, Is.EqualTo(0));
+    }
+
+    [Test]
+    public void ALineOperatorIsPaidLikeASkilledWorkerNotLikeADeveloper()
+    {
+        var random = new SimRandom(5);
+        var operators = new List<decimal>();
+        var developers = new List<decimal>();
+        for (int i = 0; i < 400; i++)
+        {
+            var candidate = Recruitment.Generate(random, 0, i, 20, [Discipline.Code, Discipline.Operations]);
+            double level = candidate.Person.Skill(candidate.Person.BestDiscipline);
+            (candidate.Person.BestDiscipline == Discipline.Operations ? operators : developers).Add(candidate.Person.Salary - (decimal)level * 40);
+        }
+        Assert.That(operators, Is.Not.Empty);
+        Assert.That(developers, Is.Not.Empty);
+        // À niveau égal, un opérateur coûte environ 900 CHF de base de moins, et 30 CHF de moins par point de compétence
+        Assert.That(operators.Average(), Is.LessThan(developers.Average() - 900));
+        Assert.That(operators.Max(), Is.LessThanOrEqualTo(2_900 + 300 + 50), "base et écart du tirage, à l'arrondi de 50 CHF près");
     }
 
     [Test]
@@ -114,21 +158,23 @@ public class IndustryTest
         (int X, int Y, string F) spot = (end.X, end.Y, end.Facing);
         Assert.That(campaign.Store(end.Id).Ok, Is.True, "sans fin de ligne, la sortie est bloquée");
         var bom = IndustryCatalog.Bom(board);
-        Fill(campaign, bom, 20);
-        campaign.CreateOrder(site, $"product:{board.Id}", OrderMode.Quantity, 20);
+        // Dix passages (vingt cartes en panneaux de deux) : la même quantité de matières qu'avant dans le stock de l'atelier
+        int per = IndustryCatalog.ProductRoute(board).OutputQty;
+        Fill(campaign, bom, 10 * per);
+        campaign.CreateOrder(site, $"product:{board.Id}", OrderMode.Quantity, 10);
         campaign.AdvanceDays(4);
 
         int inFlow = campaign.FlowUnits.Count;
         Assert.That(campaign.StockAt(site, $"p:{board.Id}"), Is.EqualTo(0));
         Assert.That(inFlow, Is.LessThanOrEqualTo(3 + 3 * IndustryCatalog.ConveyorCapacity), "trois stations, trois convoyeurs : pas plus");
         Assert.That(campaign.Orders.Single().Started, Is.EqualTo(inFlow), "rien ne se perd ni ne se crée");
-        Assert.That(campaign.StockAt(site, "carton"), Is.EqualTo(20 - inFlow));
+        Assert.That(campaign.StockAt(site, "carton"), Is.EqualTo((10 - inFlow) * per));
         Assert.That(campaign.Flow.Values.Any(f => f.Text.StartsWith("Sortie")), Is.True);
 
         var stored = campaign.Storage.Single(s => s.DefId == "conveyor_end");
         Assert.That(campaign.PlaceFromStorage(stored.Id, spot.X, spot.Y, spot.F).Ok, Is.True);
-        Until(campaign, () => campaign.StockAt(site, $"p:{board.Id}") == 20, 30);
-        Assert.That(campaign.StockAt(site, $"p:{board.Id}"), Is.EqualTo(20), "la ligne repart et termine tout");
+        Until(campaign, () => campaign.StockAt(site, $"p:{board.Id}") == 10 * per, 30);
+        Assert.That(campaign.StockAt(site, $"p:{board.Id}"), Is.EqualTo(10 * per), "la ligne repart et termine tout");
         Assert.That(campaign.FlowUnits, Is.Empty);
     }
 

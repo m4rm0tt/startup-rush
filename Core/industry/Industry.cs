@@ -33,12 +33,12 @@ public static class IndustryCatalog
     [
         new("kit", "Composants (lot)", "tote_bin", 3m, 2),
         new("pcb", "Circuit imprimé nu", "product_pcb", 4m, 3),
-        new("carte", "Carte électronique", "product_pcb", 28m, 4),
+        new("carte", "Carte électronique", "product_pcb", 20m, 4),
         new("wafer", "Plaquette de silicium", "product_wafer", 1_100m, 10),
-        new("puce", "Processeur", "product_cpu", 90m, 6),
-        new("memoire", "Module mémoire", "product_ram", 25m, 4),
-        new("gpu", "Carte graphique (sous-ensemble)", "product_gpu", 220m, 6),
-        new("boitier", "Boîtier", "product_case", 30m, 3),
+        new("puce", "Processeur", "product_cpu", 160m, 6),
+        new("memoire", "Module mémoire", "product_ram", 45m, 4),
+        new("gpu", "Carte graphique (sous-ensemble)", "product_gpu", 300m, 6),
+        new("boitier", "Boîtier", "product_case", 50m, 3),
         new("carton", "Emballage", "product_box", 3m, 1),
     ];
 
@@ -154,7 +154,12 @@ public static class IndustryCatalog
     public static decimal UnitCost(Product product) => Bom(product).Sum(kv => Material(kv.Key).Price * kv.Value);
 
     /// <summary>La recette du produit fini : ses matières, assemblées, chargées en logiciel, emballées.</summary>
-    public static Route ProductRoute(Product product) => new($"product:{product.Id}", product.Name, ProductSteps, Bom(product), $"p:{product.Id}", 1, null);
+    /// <summary>La route d'un produit : un passage monte <see cref="ProjectType.PerCycle"/> unités, avec leurs matières.</summary>
+    public static Route ProductRoute(Product product)
+    {
+        int perCycle = Math.Max(1, product.Archetype.PerCycle);
+        return new($"product:{product.Id}", product.Name, ProductSteps, Bom(product).ToDictionary(kv => kv.Key, kv => kv.Value * perCycle), $"p:{product.Id}", perCycle, null);
+    }
 }
 
 /// <summary>Un nœud du flux : une station, un convoyeur ou une fin de ligne, avec ses voisins reliés port à port.</summary>

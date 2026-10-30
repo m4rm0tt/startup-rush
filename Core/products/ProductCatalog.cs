@@ -29,10 +29,28 @@ public record ProjectType(
 
     /// <summary>Nomenclature de base d'une unité (matières du stock), avant ce qu'ajoutent les composants.</summary>
     public Dictionary<string, int> Bom { get; init; } = new();
+
+    /// <summary>
+    /// Unités montées par passage sur la ligne : une petite carte se monte en panneau de plusieurs, un PC un par un.
+    /// </summary>
+    public int PerCycle { get; init; } = 1;
+
+    /// <summary>
+    /// Matériel : durée moyenne (jours) avant qu'un possesseur rachète (renouvellement, unité de plus) ; 0 : jamais.
+    /// Un public étroit ne s'épuise donc pas une fois informé : les clients satisfaits reviennent.
+    /// </summary>
+    public double RenewalDays { get; init; }
 }
 
 /// <summary>Un public visé : taille, prix de référence, sensibilité au prix.</summary>
-public record Segment(string Id, string Name, string TypeId, int Size, decimal ReferencePrice, double PriceSensitivity, string Pitch);
+public record Segment(string Id, string Name, string TypeId, int Size, decimal ReferencePrice, double PriceSensitivity, string Pitch)
+{
+    /// <summary>
+    /// Vitesse de décision : part des curieux qui essaient (1 = public qui essaie sur un coup de tête ; une PME compare, demande
+    /// une démonstration, fait valider : elle essaie moins souvent, mais paie plus et reste).
+    /// </summary>
+    public double Adoption { get; init; } = 1;
+}
 
 /// <summary>
 /// Un composant de projet (comptes, recherche, gameplay...) : son rôle, ce qu'il apporte par niveau,
@@ -110,7 +128,7 @@ public static class ProductCatalog
         new("xr_app", "Application XR", "screen", "Une expérience immersive : se teste avec un casque, des balises et un tapis.",
             [RevenueModel.Purchase, RevenueModel.Subscription],
             new() { [Need.Immersion] = 0.4, [Need.Fun] = 0.2, [Need.Trust] = 0.2, [Need.Engagement] = 0.2 },
-            TrialRate: 0.05, ChurnFactor: 1.1, WordOfMouthFactor: 1.8, TicketFactor: 0.8,
+            TrialRate: 0.07, ChurnFactor: 1.1, WordOfMouthFactor: 2.2, TicketFactor: 0.8,
             ["immersion", "graphics"], UnlockNode: "xr"),
 
         // Matériel (lot 5) : conçu par l'équipe comme un logiciel, puis fabriqué, stocké et vendu à l'unité
@@ -118,42 +136,42 @@ public static class ProductCatalog
             [RevenueModel.Purchase],
             new() { [Need.Productivity] = 0.35, [Need.Durability] = 0.25, [Need.Trust] = 0.2, [Need.Power] = 0.2 },
             TrialRate: 0.06, ChurnFactor: 0.6, WordOfMouthFactor: 1.4, TicketFactor: 0.7, ["firmware", "sensors"], UnlockNode: "res_boards")
-        { Hardware = true, Bom = new() { ["carte"] = 1, ["kit"] = 2 } },
+        { Hardware = true, Bom = new() { ["carte"] = 1, ["kit"] = 2 }, PerCycle = 2, RenewalDays = 120 },
         new("pc", "PC assemblés", "computer", "Des ordinateurs montés, configurés et testés chez toi.",
             [RevenueModel.Purchase],
             new() { [Need.Power] = 0.4, [Need.Durability] = 0.25, [Need.Trust] = 0.2, [Need.Fun] = 0.15 },
             TrialRate: 0.025, ChurnFactor: 0.5, WordOfMouthFactor: 1.2, TicketFactor: 0.8, ["cpu_tier", "cooling"], UnlockNode: "res_pc")
-        { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["puce"] = 1, ["memoire"] = 2 } },
+        { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["puce"] = 1, ["memoire"] = 2 }, RenewalDays = 1_100 },
         new("laptop", "Ordinateurs portables", "computer", "Des portables : autonomie, finesse et puissance à arbitrer.",
             [RevenueModel.Purchase],
             new() { [Need.Portability] = 0.4, [Need.Power] = 0.25, [Need.Durability] = 0.2, [Need.Trust] = 0.15 },
             TrialRate: 0.02, ChurnFactor: 0.5, WordOfMouthFactor: 1.2, TicketFactor: 0.9, ["battery", "cpu_tier"], UnlockNode: "res_laptop")
-        { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["puce"] = 1, ["memoire"] = 1, ["kit"] = 4 } },
+        { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["puce"] = 1, ["memoire"] = 1, ["kit"] = 4 }, RenewalDays = 1_100 },
         new("server_hw", "Serveurs et NAS", "computer", "Des serveurs et stockages pour les entreprises.",
             [RevenueModel.Purchase],
             new() { [Need.Durability] = 0.4, [Need.Power] = 0.3, [Need.Productivity] = 0.3 },
             TrialRate: 0.02, ChurnFactor: 0.4, WordOfMouthFactor: 0.8, TicketFactor: 1.0, ["redundancy", "cpu_tier"], UnlockNode: "res_server")
-        { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["puce"] = 2, ["memoire"] = 4 } },
+        { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["puce"] = 2, ["memoire"] = 4 }, RenewalDays = 1_400 },
         new("gpu_card", "Cartes graphiques", "bolt", "Des GPU : puce, mémoire et carte, assemblés et testés.",
             [RevenueModel.Purchase],
             new() { [Need.Power] = 0.5, [Need.Durability] = 0.25, [Need.Trust] = 0.25 },
             TrialRate: 0.025, ChurnFactor: 0.6, WordOfMouthFactor: 1.5, TicketFactor: 0.7, ["cpu_tier", "cooling"], UnlockNode: "res_gpu")
-        { Hardware = true, Bom = new() { ["gpu"] = 1 } },
+        { Hardware = true, Bom = new() { ["gpu"] = 1 }, RenewalDays = 900 },
         new("printer3d", "Imprimantes 3D", "gem", "Des imprimantes 3D pour les makers et les écoles.",
             [RevenueModel.Purchase],
             new() { [Need.Productivity] = 0.4, [Need.Durability] = 0.3, [Need.Trust] = 0.3 },
             TrialRate: 0.03, ChurnFactor: 0.5, WordOfMouthFactor: 1.6, TicketFactor: 1.0, ["print_head", "enclosure"], UnlockNode: "res_printer")
-        { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["kit"] = 6 } },
+        { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["kit"] = 6 }, RenewalDays = 1_100 },
         new("network", "Équipements réseau", "wifi", "Routeurs et switches pour les petites entreprises.",
             [RevenueModel.Purchase],
             new() { [Need.Durability] = 0.35, [Need.Productivity] = 0.35, [Need.Power] = 0.3 },
             TrialRate: 0.04, ChurnFactor: 0.4, WordOfMouthFactor: 1.0, TicketFactor: 0.9, ["connectivity", "firmware"], UnlockNode: "res_network")
-        { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["kit"] = 2 } },
+        { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["kit"] = 2 }, RenewalDays = 1_400 },
         new("xr_kit", "Kits XR", "computer", "Casques et balises de suivi vendus en kit.",
             [RevenueModel.Purchase],
             new() { [Need.Immersion] = 0.35, [Need.Trust] = 0.25, [Need.Power] = 0.2, [Need.Portability] = 0.2 },
             TrialRate: 0.025, ChurnFactor: 0.6, WordOfMouthFactor: 1.4, TicketFactor: 0.9, ["tracking", "firmware"], UnlockNode: "res_xr")
-        { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["puce"] = 1, ["kit"] = 3 } },
+        { Hardware = true, Bom = new() { ["boitier"] = 1, ["carte"] = 1, ["puce"] = 1, ["kit"] = 3 }, RenewalDays = 900 },
         new("quantum", "Systèmes quantiques", "quantum", "Des machines de calcul quantique pour laboratoires et grands comptes, en fin de progression.",
             [RevenueModel.Purchase],
             new() { [Need.Power] = 0.4, [Need.Durability] = 0.3, [Need.Trust] = 0.3 },
@@ -164,7 +182,7 @@ public static class ProductCatalog
     public static readonly IReadOnlyList<Segment> Segments =
     [
         new("freelances", "Indépendants", "saas", 80_000, 12m, 1.3, "Petit prix, besoin de gagner du temps."),
-        new("smb", "PME", "saas", 30_000, 39m, 0.8, "Paient plus, veulent du solide."),
+        new("smb", "PME", "saas", 30_000, 39m, 0.8, "Paient plus, veulent du solide, mais décident lentement.") { Adoption = 0.7 },
         new("consumers", "Grand public", "saas", 300_000, 4m, 1.8, "Nombreux, mais paient peu."),
         new("casual", "Joueurs occasionnels", "game", 400_000, 6m, 1.6, "Beaucoup de monde, petits prix."),
         new("core", "Passionnés", "game", 150_000, 20m, 1.0, "Exigeants, prêts à payer un bon jeu."),
@@ -172,14 +190,14 @@ public static class ProductCatalog
         new("creators", "Créateurs", "social", 200_000, 6m, 1.3, "Veulent de l'audience."),
         new("crafts", "Artisans locaux", "marketplace", 150_000, 8m, 1.0, "Peu de vendeurs au début."),
         new("secondhand", "Occasion", "marketplace", 300_000, 5m, 1.4, "Beaucoup de demande, faibles marges."),
-        new("makers", "Makers", "board", 120_000, 65m, 1.3, "Bricoleurs et écoles : petits prix, gros volumes."),
+        new("makers", "Makers", "board", 120_000, 65m, 1.3, "Bricoleurs et écoles : petits prix, gros volumes, achats sur un coup de cœur.") { Adoption = 1.3 },
         new("iot_industry", "Industrie", "board", 25_000, 220m, 0.7, "Veulent du robuste, paient plus."),
         new("gamers_pc", "Joueurs PC", "pc", 60_000, 1_100m, 1.0, "Veulent de la puissance et du silence."),
         new("office_pc", "Bureaux", "pc", 40_000, 750m, 0.8, "Des machines fiables, sans surprise."),
         new("students_laptop", "Étudiants", "laptop", 90_000, 900m, 1.4, "Légers, endurants, pas trop chers."),
         new("pros_laptop", "Professionnels", "laptop", 50_000, 1_700m, 0.7, "Paient pour la qualité."),
         new("it_smb", "Informatique de PME", "server_hw", 12_000, 2_800m, 0.7, "Ne veulent jamais de panne."),
-        new("homelab", "Auto-hébergement", "server_hw", 20_000, 900m, 1.2, "Des passionnés qui hébergent chez eux."),
+        new("homelab", "Auto-hébergement", "server_hw", 20_000, 1_300m, 1.2, "Des passionnés qui hébergent chez eux."),
         new("gpu_gamers", "Joueurs", "gpu_card", 80_000, 650m, 1.1, "Chaque image par seconde compte."),
         new("gpu_compute", "Calcul et IA", "gpu_card", 15_000, 1_800m, 0.6, "Achètent par lots, veulent de la puissance."),
         new("printer_makers", "Makers", "printer3d", 50_000, 600m, 1.2, "Bricolent, comparent, partagent."),
@@ -189,7 +207,7 @@ public static class ProductCatalog
         new("ai_creative", "Créatifs", "ai", 120_000, 20m, 1.0, "Veulent des textes et des images de qualité."),
         new("ai_analytics", "Analystes en PME", "ai", 25_000, 90m, 0.7, "Un domaine étroit, une réponse juste."),
         new("ai_api", "Développeurs (API)", "ai", 30_000, 49m, 0.9, "Intègrent ton modèle à leurs produits."),
-        new("xr_gamers", "Joueurs XR", "xr_app", 60_000, 25m, 1.3, "Équipés d'un casque, avides de nouveautés."),
+        new("xr_gamers", "Joueurs XR", "xr_app", 60_000, 35m, 1.3, "Équipés d'un casque, avides de nouveautés."),
         new("xr_pros", "Formation et industrie", "xr_app", 12_000, 180m, 0.7, "Simulations de formation, très exigeantes."),
         new("xr_consumers", "Grand public", "xr_kit", 40_000, 450m, 1.2, "Un casque abordable et fiable."),
         new("xr_training", "Entreprises", "xr_kit", 8_000, 1_400m, 0.7, "Des kits de formation par lots."),

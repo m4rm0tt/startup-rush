@@ -59,6 +59,13 @@ public static class Market
         return Math.Clamp(Math.Pow((double)segment.ReferencePrice / Math.Max(1, (double)product.Price), segment.PriceSensitivity), 0.1, 1.8);
     }
 
+    /// <summary>
+    /// Largeur d'un public : part des curieux organiques et publicitaires qu'il fournit, selon sa taille (racine de la taille
+    /// rapportée à 100 000 personnes, entre 0,35 et 2) : 30 000 PME → 0,55 ; 80 000 indépendants → 0,89 ; 400 000 joueurs → 2.
+    /// </summary>
+    public static double SegmentBreadth(Segment segment) =>
+        Math.Clamp(Math.Sqrt(segment.Size / Tuning.Products.ReferenceSegmentSize), Tuning.Products.MinBreadth, Tuning.Products.MaxBreadth);
+
     /// <summary>Marketing : visiteurs par jour, avec un rendement décroissant (chaque franc rapporte moins que le précédent).</summary>
     public static double Reach(Product product)
     {
@@ -68,10 +75,17 @@ public static class Market
                * (1 + 0.5 * product.StudioBonus);
     }
 
+    /// <summary>
+    /// Ce qui se vend une fois avec une sortie attendue : un jeu, ou une application XR vendue à l'unité (une expérience
+    /// immersive se lance comme un jeu : liste de souhaits, pic de sortie, retour des joueurs à chaque mise à jour).
+    /// </summary>
+    public static bool HasLaunchHype(Product product) =>
+        product.ArchetypeId == "game" || product.ArchetypeId == "xr_app" && product.Model == RevenueModel.Purchase;
+
     /// <summary>Avant la sortie d'un jeu : le marketing et un peu de bouche-à-oreille remplissent la liste de souhaits.</summary>
     public static void PreLaunch(Product product, bool launches)
     {
-        if (product.ArchetypeId != "game")
+        if (!HasLaunchHype(product))
             return;
         double interest = (15 + Reach(product)) * (launches ? 1.5 : 1);
         product.Wishlist = Math.Min(product.Segment.Size * 0.2, product.Wishlist + interest);
@@ -80,7 +94,7 @@ public static class Market
     /// <summary>Le jour du lancement : un jeu convertit sa liste de souhaits selon son attrait.</summary>
     public static double Launch(Product product)
     {
-        if (product.ArchetypeId != "game")
+        if (!HasLaunchHype(product))
             return 0;
         double appeal = Design.Appeal(product);
         double buyers = product.Wishlist * Math.Clamp(0.15 + appeal * 0.6, 0.1, 0.6) * Math.Sqrt(PriceFactor(product));
@@ -94,7 +108,7 @@ public static class Market
     /// <summary>Une mise à jour fait revenir des joueurs et reparler du projet : une partie du public déjà informé redevient curieuse.</summary>
     public static void UpdateBoost(Product product)
     {
-        product.Aware = Math.Max(0, product.Aware - (product.ArchetypeId == "game" ? 150 + product.TotalBuyers * 0.05 : 50));
+        product.Aware = Math.Max(0, product.Aware - (HasLaunchHype(product) ? 150 + product.TotalBuyers * 0.05 : 50));
     }
 
     /// <summary>Avance le projet d'un jour. Ne touche qu'au projet : l'argent est comptabilisé par la campagne.</summary>
@@ -133,23 +147,31 @@ public static class Market
         double wordOfMouth = product.Users * Tuning.Products.WordOfMouth * archetype.WordOfMouthFactor * lastSatisfaction;
         double unaware = Math.Max(0, segment.Size - product.Aware);
         double organic = Tuning.Products.OrganicAwarenessPerDay * (0.4 + 2 * appeal);
-        double newAware = Math.Min(unaware, (organic + reach * (1 - sellerShare) + wordOfMouth) * unaware / segment.Size);
+        // Un marché étroit (PME, analystes) attire moins de curieux par jour qu'un grand public : le référencement et la publicité
+        // y touchent moins de monde ; le bouche-à-oreille, lui, part des utilisateurs déjà là
+        double breadth = SegmentBreadth(segment);
+        double newAware = Math.Min(unaware, ((organic + reach * (1 - sellerShare)) * breadth + wordOfMouth) * unaware / segment.Size);
         product.Aware += newAware;
 
         bool paysUpfront = product.Model is RevenueModel.Subscription or RevenueModel.Purchase;
-        double trial = archetype.TrialRate * (0.4 + 2 * appeal) * (0.5 + share) * (paysUpfront ? Math.Sqrt(priceFactor) : 1);
+        double trial = archetype.TrialRate * segment.Adoption * (0.4 + 2 * appeal) * (0.5 + share) * (paysUpfront ? Math.Sqrt(priceFactor) : 1);
         double signups = newAware * Math.Min(0.9, trial);
 
         // Matériel : on ne vend que des unités entières, en stock, par des canaux qui ont de la capacité
-        double sold = 0, lost = 0;
+        // Les possesseurs rachètent aussi (renouvellement, unité de plus) : ces ventes ne font pas de nouveaux utilisateurs
+        double sold = 0, lost = 0, unitsSold = signups;
         if (inputs.Sales is { } channels)
         {
-            double desired = signups * channels.Visibility + product.PendingDemand;
+            double fresh = signups * channels.Visibility;
+            double renewals = archetype.RenewalDays > 0 ? product.Users * lastSatisfaction / archetype.RenewalDays : 0;
+            double desired = fresh + renewals + product.PendingDemand;
             double whole = Math.Floor(desired);
             sold = Math.Min(whole, Math.Min(channels.Stock, Math.Floor(channels.PerDay)));
             lost = whole - sold;
             product.PendingDemand = desired - whole;
-            signups = sold;
+            unitsSold = sold;
+            // Les ventes servent les nouveaux venus et les rachats au prorata de leur demande
+            signups = fresh + renewals > 0 ? sold * fresh / (fresh + renewals) : 0;
         }
 
         // Support : tickets du jour contre le temps que l'équipe y consacre
@@ -200,10 +222,10 @@ public static class Market
                 revenue = (decimal)paying * MarketplaceBasket * product.Price / 100;
                 break;
             case RevenueModel.Purchase:
-                // Chaque nouveau joueur achète le jeu une fois ; les joueurs actifs ne paient plus
-                paying = signups;
+                // Chaque nouveau joueur achète le jeu une fois ; les joueurs actifs ne paient plus (le matériel : aussi les rachats)
+                paying = unitsSold;
                 product.TotalBuyers += signups;
-                revenue = (decimal)signups * product.Price * (1 - (decimal)(inputs.Sales?.Commission ?? 0));
+                revenue = (decimal)unitsSold * product.Price * (1 - (decimal)(inputs.Sales?.Commission ?? 0));
                 break;
         }
         if (archetype.Id == "ai" && aiServed < 1)

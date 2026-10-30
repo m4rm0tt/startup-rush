@@ -677,8 +677,10 @@ public partial class Campaign
         AddStock(site.Id, route.Output, qty);
         order.Finished += qty;
         FlowUnits.Remove(unit);
+        // Un passage peut livrer plusieurs unités (cartes en panneau) : chacune compte, avec son risque de panne et son rodage
         if (route.Output.StartsWith("p:"))
-            FinishProductUnit(site, route);
+            for (int i = 0; i < qty; i++)
+                FinishProductUnit(site, route);
         return true;
     }
 

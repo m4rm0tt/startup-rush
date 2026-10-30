@@ -53,7 +53,12 @@ public static class Recruitment
         skills[specialty] = Math.Round(main);
         Person.FillSecondary(skills);
 
-        decimal salary = Math.Round((decimal)(3_800 + main * 70 + random.Range(-300, 300)) / 50m) * 50m;
+        // Un opérateur de ligne est payé comme un ouvrier qualifié, pas comme un développeur (environ 4 900 CHF au niveau 50 contre
+        // 7 300) ; mêmes tirages du hasard dans les deux cas
+        double jitter = random.Range(-300, 300);
+        decimal salary = specialty == Discipline.Operations
+            ? Math.Round((decimal)(2_900 + main * 40 + jitter) / 50m) * 50m
+            : Math.Round((decimal)(3_800 + main * 70 + jitter) / 50m) * 50m;
         return new Candidate
         {
             Person = new Person

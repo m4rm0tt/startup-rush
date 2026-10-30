@@ -42,6 +42,9 @@ public record Strategy(string Name, string Description)
 
     public string HardwareSegment { get; init; } = "makers";
 
+    /// <summary>Modules ajoutés à la première baie de la salle serveur (par exemple un serveur GPU pour l'IA).</summary>
+    public string[] ExtraRackModules { get; init; } = [];
+
     /// <summary>
     /// Se lance dans l'IA au-delà de cette trésorerie (0 : jamais) : un petit modèle d'analyse entraîné sur des données publiques,
     /// évalué, publié, puis un produit d'IA de ce public ; une seconde version sur données achetées dès que l'argent le permet.
@@ -71,6 +74,12 @@ public record Strategy(string Name, string Description)
 
     /// <summary>Lit les avis et améliore ce qu'ils signalent.</summary>
     public bool ListenToReviews { get; init; } = true;
+
+    /// <summary>
+    /// Au-delà de ce nombre de bugs, plus de nouvelle fonction : la file reste vide et le temps libre va à la maintenance
+    /// (ce que fait un joueur qui lit les avis « plein de bugs »). 0 : ajoute sans jamais s'arrêter.
+    /// </summary>
+    public double BugCeiling { get; init; } = 12;
 
     public bool Recover { get; init; } = true;
     public bool Borrow { get; init; } = true;
@@ -185,6 +194,8 @@ public class Autopilot(Strategy strategy)
         if (Strategy.Delegate && campaign.IsUnlocked("automation") && campaign.Staff.Any())
             return;
 
+        if (Strategy.BugCeiling > 0 && product.Bugs >= Strategy.BugCeiling)
+            return;
         // Une amélioration à la fois : d'après les avis, sinon ce qui manque le plus
         string? link = null;
         if (Strategy.ListenToReviews)
@@ -209,7 +220,7 @@ public class Autopilot(Strategy strategy)
             case "price":
                 Act(campaign.SetPrice(product.Id, Math.Max(1, Math.Round(product.Price * 0.85m))));
                 return;
-            case { } component when component.StartsWith("component:"):
+            case { } component when component.StartsWith("component:") && !TooCostly(product, component["component:".Length..]):
                 var result = campaign.QueueComponent(product.Id, component["component:".Length..]);
                 if (result.Ok)
                 {
@@ -219,6 +230,8 @@ public class Autopilot(Strategy strategy)
                 break;
         }
         var (_, _, fix) = Design.WeakestNeed(product, campaign.IsUnlocked);
+        if (fix != null && TooCostly(product, fix.Id))
+            fix = null;
         if (fix != null)
             Act(campaign.QueueComponent(product.Id, fix.Id));
         else
@@ -271,7 +284,7 @@ public class Autopilot(Strategy strategy)
             if (room.ListingId == "server_room" && campaign.FindSpot(FurnitureCatalog.Get("rack_standard")) is var (x, y, f) && campaign.BuyAndPlace("rack_standard", x, y, f).Ok)
             {
                 var rack = room.Items.Last();
-                foreach (string module in RackModules)
+                foreach (string module in RackModules.Concat(Strategy.ExtraRackModules))
                     Act(campaign.BuyAndAttach(module, rack.Id));
             }
             campaign.ViewSite(home);
@@ -283,15 +296,37 @@ public class Autopilot(Strategy strategy)
             Act(campaign.SetCloudOffer(offer.Id, offer.Price, campaign.CloudAvailable(offer)));
         // Une offre saturée : un module de plus, s'il reste de la place dans la baie et de l'argent
         var full = campaign.CloudOffers.FirstOrDefault(o => o.Demand > o.Served * 1.1 && o.Kind is CloudKind.Storage or CloudKind.Hosting);
-        if (full != null && campaign.Ledger.Cash > Strategy.SelfHostAbove * 0.75m && campaign.Solvency.State == SolvencyState.Healthy
-            && room.Items.FirstOrDefault(i => i.DefId == "rack_standard") is { } rackHost)
+        if (full != null && campaign.Ledger.Cash > Strategy.SelfHostAbove * 0.75m && campaign.Solvency.State == SolvencyState.Healthy)
         {
             var home = campaign.SiteId;
             campaign.ViewSite(room.Id);
-            if (campaign.BuyAndAttach(full.Kind == CloudKind.Storage ? "module_storage_jbod_4u" : "module_server_1u", rackHost.Id).Ok)
+            string module = full.Kind == CloudKind.Storage ? "module_storage_jbod_4u" : "module_server_1u";
+            // Une baie qui a encore la place, sinon une baie de plus (avec son réseau) tant que la salle et le froid le permettent
+            var rackHost = room.Items.FirstOrDefault(i => i.DefId == "rack_standard" && Layout.FreeSocket(room, FurnitureCatalog.Get(module), i) != null);
+            var infra = campaign.SiteInfra(room);
+            if (rackHost == null && room.Items.Count(i => i.DefId == "rack_standard") < 4 && infra.Heat + 6 <= infra.Cooling
+                && campaign.FindSpot(FurnitureCatalog.Get("rack_standard")) is var (rx, ry, rf) && campaign.BuyAndPlace("rack_standard", rx, ry, rf).Ok)
+            {
+                rackHost = room.Items.Last();
+                foreach (string network in new[] { "module_network_switch_1u", "module_patch_panel_1u" })
+                    Act(campaign.BuyAndAttach(network, rackHost.Id));
+                if (module == "module_storage_jbod_4u")
+                    Act(campaign.BuyAndAttach("module_storage_2u", rackHost.Id));
+            }
+            if (rackHost != null && campaign.BuyAndAttach(module, rackHost.Id).Ok)
                 Actions++;
             campaign.ViewSite(home);
             Act(campaign.SetCloudOffer(full.Id, full.Price, double.MaxValue));
+        }
+        // Les modules en plus de la stratégie (serveur GPU pour l'IA) : posés dès qu'ils sont débloqués et payables
+        foreach (string extra in Strategy.ExtraRackModules)
+        {
+            var def = FurnitureCatalog.Get(extra);
+            if (room.Items.Any(i => i.DefId == extra) || def.UnlockNode is { } node && !campaign.IsUnlocked(node) || campaign.Ledger.Cash < def.Price + 15_000)
+                continue;
+            var host = room.Items.FirstOrDefault(i => i.DefId == "rack_standard" && Layout.FreeSocket(room, def, i) != null);
+            if (host != null)
+                Act(campaign.BuyAndAttach(extra, host.Id));
         }
         foreach (var kind in new[] { CloudKind.Storage, CloudKind.Hosting })
             if (campaign.CloudOffers.All(o => o.Kind != kind) && campaign.IsUnlocked("cloud_offers"))
@@ -305,6 +340,10 @@ public class Autopilot(Strategy strategy)
         var shop = campaign.Sites.FirstOrDefault(s => s.ListingId == "hw_workshop");
         var type = ProductCatalog.Type(ProductCatalog.Segment(Strategy.HardwareSegment).TypeId);
         string research = type.UnlockNode!;
+        // La chaîne de recherches de la famille (cartes → PC → serveurs, cartes → assemblage en série → GPU), dans l'ordre
+        var chain = new List<ResearchDef>();
+        for (var def = Campaign.ResearchDefOf(research); def != null; def = def.Requires == null ? null : Campaign.ResearchDefOf(def.Requires))
+            chain.Insert(0, def);
         if (shop == null)
         {
             if (campaign.Ledger.Cash < Strategy.HardwareAbove || campaign.Solvency.State != SolvencyState.Healthy)
@@ -325,7 +364,25 @@ public class Autopilot(Strategy strategy)
                     Act(campaign.BuyAndPlace("storage_rack_industrial", rx, ry, rf));
             }
             campaign.ViewSite(home);
-            Act(campaign.StartResearch(research));
+        }
+        // L'équipement de la prochaine recherche de la chaîne (le premier objet de chaque groupe qui manque), puis la recherche
+        // (réessayé chaque jour tant qu'il manque quelque chose : l'argent ou la place ont pu manquer la veille)
+        var next = chain.FirstOrDefault(d => !campaign.IsUnlocked(d.Id));
+        if (next != null)
+        {
+            if (next.Node != null && !campaign.IsUnlocked(next.Node))
+                return;
+            if (Campaign.MissingEquipment(shop, next).Count > 0)
+            {
+                var home = campaign.SiteId;
+                campaign.ViewSite(shop.Id);
+                foreach (var group in next.Equipment)
+                    if (!group.Any(id => shop.Items.Any(i => i.DefId == id)))
+                        Equip(campaign, [group[0]]);
+                campaign.ViewSite(home);
+            }
+            if (campaign.Research.All(r => r.DefId != next.Id))
+                Act(campaign.StartResearch(next.Id));
         }
         // Une personne à la recherche (assise à l'établi), puis comme opérateur une fois la famille débloquée
         var bench0 = shop.Workstations.FirstOrDefault(p => p.Desk.DefId == "workbench_electronics");
@@ -334,6 +391,7 @@ public class Autopilot(Strategy strategy)
             return;
         if (!campaign.IsUnlocked(research))
         {
+            // Pendant la chaîne, le prix de l'équipement peut manquer : la personne attend à la recherche en cours
             if (worker.Assignment.Kind != Core.team.AssignmentKind.Research)
             {
                 campaign.Seat(worker, bench0);
@@ -364,24 +422,94 @@ public class Autopilot(Strategy strategy)
             }
             return;
         }
+        // La ligne a son opérateur (métier « Opérations »), embauché pour elle dès qu'un candidat se présente : la personne de la
+        // recherche retourne alors aux projets (un développeur payé comme tel ne rentabilise pas une ligne de cartes)
+        var line = campaign.Staff.FirstOrDefault(p => p.BestDiscipline == Core.team.Discipline.Operations);
+        if (line == null && campaign.Solvency.State == SolvencyState.Healthy
+            && campaign.Candidates.Where(c => c.Person.BestDiscipline == Core.team.Discipline.Operations).OrderBy(c => c.Person.Salary).FirstOrDefault() is { } hire
+            && campaign.Hire(hire.Person.Id).Ok)
+        {
+            Actions++;
+            line = hire.Person;
+        }
+        if (line != null && line != worker)
+        {
+            if (worker.Assignment.Kind == Core.team.AssignmentKind.Production)
+                Act(campaign.Assign(worker.Id, 0));
+            worker = line;
+        }
         if (worker.Assignment.Kind != Core.team.AssignmentKind.Production)
         {
             Act(campaign.AssignTo(worker.Id, Core.team.AssignmentKind.Production, shop.Id));
-            foreach (var (item, qty) in Core.industry.IndustryCatalog.Bom(product))
-                Act(campaign.SetReserve(shop.Id, item, qty * 25));
-            Act(campaign.SetProcurementCap(4_000));
-            Act(campaign.CreateOrder(shop.Id, $"product:{product.Id}", OrderMode.TargetStock, 30));
+            if (campaign.Orders.All(o => o.RouteId != $"product:{product.Id}"))
+            {
+                foreach (var (item, qty) in Core.industry.IndustryCatalog.Bom(product))
+                    Act(campaign.SetReserve(shop.Id, item, qty * 25));
+                _reservedFor = 25;
+                Act(campaign.CreateOrder(shop.Id, $"product:{product.Id}", OrderMode.TargetStock, 30));
+            }
         }
-        // Une marge d'au moins 30 % : le prix suit le coût des matières, qui monte avec les composants
+        // Le prix du public, ou plus si les matières l'exigent (marge d'au moins 40 %)
         decimal cost = Core.industry.IndustryCatalog.UnitCost(product);
-        if (product.Price < cost * 1.45m)
-            Act(campaign.SetPrice(product.Id, Math.Ceiling(cost * 1.5m)));
+        // En rupture (plus d'un quart des ventes perdues), un joueur monte son prix par paliers de 5 % (jusqu'à +40 %) ; sans
+        // vente perdue, il redescend vers le prix du public. Un palier tous les 15 jours au plus, le temps de voir l'effet.
+        if (campaign.Day - _priceDay >= 15)
+        {
+            var last30 = product.History.TakeLast(30).ToList();
+            double sold30 = last30.Sum(d => d.Sold), lost30 = last30.Sum(d => d.Lost);
+            if (lost30 > sold30 * 0.25 && _premium < 1.4m)
+                (_premium, _priceDay) = (_premium + 0.05m, campaign.Day);
+            else if (lost30 == 0 && _premium > 1)
+                (_premium, _priceDay) = (_premium - 0.05m, campaign.Day);
+        }
+        decimal price = Math.Max(Math.Ceiling(product.Segment.ReferencePrice * _premium), Math.Ceiling(cost * 1.4m));
+        if (product.Price != price)
+            Act(campaign.SetPrice(product.Id, price));
+        // Assez d'achats pour environ 150 unités par mois (un plafond fixe affamait la ligne dès que l'unité coûte cher)
+        decimal cap = Math.Max(4_000, Math.Ceiling(cost * 150 / 1_000) * 1_000);
+        if (campaign.ProcurementCap != cap)
+            Act(campaign.SetProcurementCap(cap));
+        // Les réserves suivent la demande : environ deux semaines de ventes (ventes et ventes perdues des 30 derniers jours)
+        int demand = (int)Math.Ceiling(product.History.TakeLast(30).Sum(d => d.Sold + d.Lost) / 2);
+        int perUnit = Math.Max(1, Core.industry.IndustryCatalog.Bom(product).Values.Sum());
+        // Le rangement de l'atelier limite les réserves : une étagère industrielle de plus si la place et l'argent le permettent
+        if (demand * perUnit * 2 > campaign.StorageCapacity(shop) && campaign.Ledger.Cash > 10_000 && campaign.Solvency.State == SolvencyState.Healthy)
+        {
+            var home = campaign.SiteId;
+            campaign.ViewSite(shop.Id);
+            if (campaign.FindSpot(FurnitureCatalog.Get("storage_rack_industrial")) is var (sx, sy, sf))
+                Act(campaign.BuyAndPlace("storage_rack_industrial", sx, sy, sf));
+            campaign.ViewSite(home);
+        }
+        int units = Math.Clamp(demand, 25, Math.Max(25, campaign.StorageCapacity(shop) / perUnit / 2));
+        if (units != _reservedFor)
+        {
+            _reservedFor = units;
+            foreach (var (item, qty) in Core.industry.IndustryCatalog.Bom(product))
+                Act(campaign.SetReserve(shop.Id, item, qty * units));
+        }
         // La nomenclature change avec les améliorations : les réserves suivent
         foreach (var order in campaign.Orders.Where(o => o.SiteId == shop.Id))
             campaign.SupplyOrder(order.Id);
         if (campaign.IsUnlocked("online_shop") && !product.SalesChannels.Contains("shop"))
             Act(campaign.SetChannel(product.Id, "shop", true));
     }
+
+    /// <summary>
+    /// Matériel : un composant nouveau qui ferait passer les matières au-delà de 60 % du prix du public (il faudrait vendre plus
+    /// cher que ce que ce public paie). Le niveau d'un composant présent n'ajoute pas de matières.
+    /// </summary>
+    private static bool TooCostly(Product product, string componentId) =>
+        product.IsHardware && product.Level(componentId) == 0
+        && Core.industry.IndustryCatalog.UnitCost(product) + ProductCatalog.Component(componentId).Bom.Sum(kv => Core.industry.IndustryCatalog.Material(kv.Key).Price * kv.Value)
+        > product.Segment.ReferencePrice * 0.6m;
+
+    /// <summary>Unités de matières gardées en réserve à l'atelier (suivi pour ne changer les réserves que si besoin).</summary>
+    private int _reservedFor;
+
+    /// <summary>Majoration du prix du matériel en rupture, et jour du dernier palier.</summary>
+    private decimal _premium = 1;
+    private long _priceDay = -100;
 
     private bool CanSpend(Campaign campaign, decimal above) =>
         above > 0 && campaign.Ledger.Cash >= above && campaign.Solvency.State == SolvencyState.Healthy;
@@ -394,8 +522,13 @@ public class Autopilot(Strategy strategy)
             var def = FurnitureCatalog.Get(id);
             if (def.Attached)
             {
-                if (campaign.Premises.Desks.FirstOrDefault() is { } desk)
-                    Act(campaign.BuyAndAttach(id, desk.Id));
+                // Le premier bureau ou établi qui a une place libre ; sinon, dans un atelier, un établi de plus
+                var host = campaign.Premises.Desks.FirstOrDefault(d => Layout.FreeSocket(campaign.Premises, def, d) != null);
+                if (host == null && campaign.Premises.ListingId == "hw_workshop" && campaign.FindSpot(FurnitureCatalog.Get("workbench_electronics")) is var (bx, by, bf)
+                    && campaign.BuyAndPlace("workbench_electronics", bx, by, bf).Ok)
+                    host = campaign.Premises.Items.Last();
+                if (host != null)
+                    Act(campaign.BuyAndAttach(id, host.Id));
             }
             else if (campaign.FindSpot(def) is var (x, y, f))
                 Act(campaign.BuyAndPlace(id, x, y, f));
@@ -476,6 +609,21 @@ public class Autopilot(Strategy strategy)
             Equip(campaign, XrSet);
             Mark(campaign, "zone_xr_posee");
         }
+        // Une installation posée à qui manque sa compétence sur place (Design 45 pour le studio, Tests 45 pour la zone XR) : la
+        // personne du site la plus proche du seuil part en formation (900 CHF, deux jours), plutôt qu'une embauche de plus
+        foreach (var (posed, staffed, discipline) in new[]
+                 {
+                     (Milestones.ContainsKey("studio_pose"), campaign.StudioOf(home).Staffed, Core.team.Discipline.Design),
+                     (Milestones.ContainsKey("zone_xr_posee"), campaign.XrOf(home).Staffed, Core.team.Discipline.Test),
+                 })
+        {
+            if (!posed || staffed || campaign.People.Any(p => p.TrainingDiscipline != null) || !CanSpend(campaign, campaign.TrainingPrice + 5_000))
+                continue;
+            var learner = campaign.People.Where(p => campaign.SiteOf(p) == home && !p.LeavesAt.HasValue && p.Skill(discipline) >= Campaign.StudioSkill - 15)
+                .OrderByDescending(p => p.Skill(discipline)).FirstOrDefault();
+            if (learner != null)
+                Act(campaign.Train(learner.Id, discipline));
+        }
         if (campaign.StudioOf(home).Missing.Count == 0)
             Mark(campaign, "studio_complet");
         if (campaign.XrOf(home).Missing.Count == 0)
@@ -537,7 +685,12 @@ public class Autopilot(Strategy strategy)
             Act(campaign.Assign(researcher.Id, 0));
         if (lab.Items.All(i => i.DefId != "quantum_cryostat_closed"))
         {
-            if (!CanSpend(campaign, FurnitureCatalog.Get("quantum_cryostat_closed").Price + LabMargin))
+            // Un investissement qui rapporte vite une fois en service : financé par un prêt bancaire s'il comble l'écart
+            decimal price = FurnitureCatalog.Get("quantum_cryostat_closed").Price;
+            decimal gap = price + 15_000 - campaign.Ledger.Cash;
+            if (gap > 0 && campaign.Solvency.State == SolvencyState.Healthy && campaign.LoanTerms().Max >= gap)
+                Act(campaign.TakeLoan(Math.Ceiling(gap / 500) * 500));
+            if (!CanSpend(campaign, price + 15_000))
                 return;
             campaign.ViewSite(lab.Id);
             Equip(campaign, ["quantum_cryostat_closed"]);

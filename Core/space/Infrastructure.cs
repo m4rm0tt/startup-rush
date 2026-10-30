@@ -58,7 +58,7 @@ public static class Infrastructure
     public const double FullSecurity = 8;
 
     /// <summary>Unités de calcul quantique d'une installation stabilisée (cryostat fermé) en service.</summary>
-    public const double QuantumPerUnit = 20;
+    public const double QuantumPerUnit = 30;
 
     /// <summary>
     /// Ce que le site fournit sans rien acheter : électricité, froid naturel (fenêtres, ventilation) et accès internet. Un

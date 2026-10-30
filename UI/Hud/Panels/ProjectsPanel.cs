@@ -84,7 +84,7 @@ public class ProjectsPanel : GamePanel
                 Ui.Column(0, Ui.Muted(product.ArchetypeId == "game" ? "Joueurs" : "Utilisateurs", 11), Ui.Number($"{product.Users:N0}", 20)),
                 Ui.Column(0, Ui.Muted("Résultat 30 j", 11), Ui.Number(Ui.SignedChf(result), 20, Ui.Signed(result))),
                 Ui.Column(0, Ui.Muted("Note", 11), Ui.Number($"{Reviews.Rating(product):0.0}★", 20, Palette.Lemon)))
-            : Ui.Muted(product.ArchetypeId == "game" && product.Wishlist > 1 ? $"{product.Wishlist:N0} intéressés avant la sortie" : $"{product.Components.Count(c => c.Level > 0)} composant(s) prêt(s)", 13);
+            : Ui.Muted(Core.products.Market.HasLaunchHype(product) && product.Wishlist > 1 ? $"{product.Wishlist:N0} intéressés avant la sortie" : $"{product.Components.Count(c => c.Level > 0)} composant(s) prêt(s)", 13);
 
         int index = Campaign.Products.OrderBy(p => p.Priority).ToList().IndexOf(product);
         var header = Ui.Row(10, Ui.IconTile(type.Icon, Palette.At(product.Color)),

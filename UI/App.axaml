@@ -16,7 +16,7 @@
         <SolidColorBrush x:Key="Night" Color="#efe4cc"/>
         <SolidColorBrush x:Key="Slate" Color="#dccdb1"/>
         <SolidColorBrush x:Key="Steel" Color="#c2ae94"/>
-        <SolidColorBrush x:Key="Fog" Color="#6f5f5d"/>
+        <SolidColorBrush x:Key="Fog" Color="#615351"/>
         <SolidColorBrush x:Key="Cloud" Color="#4a3a42"/>
         <SolidColorBrush x:Key="Snow" Color="#2b2128"/>
         <SolidColorBrush x:Key="Gold" Color="#c9922e"/>
@@ -31,6 +31,9 @@
         <SolidColorBrush x:Key="Ember" Color="#c05843"/>
         <SolidColorBrush x:Key="Paper" Color="#fbf5e6"/>
         <SolidColorBrush x:Key="OnAccent" Color="#fbf5e6"/>
+        <!-- Texte des boutons : encre sur l'orange et le vert du pack, blanc sur le rouge (contraste WCAG AA) -->
+        <SolidColorBrush x:Key="OnPrimary" Color="#2b2128"/>
+        <SolidColorBrush x:Key="OnDanger" Color="#ffffff"/>
     </Application.Resources>
 
     <Application.Styles>
@@ -130,7 +133,7 @@
         </Style>
 
         <Style Selector="Button.gold">
-            <Setter Property="Foreground" Value="{StaticResource OnAccent}"/>
+            <Setter Property="Foreground" Value="{StaticResource OnPrimary}"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
         <Style Selector="Button.gold /template/ px|PixelPanel#PART_Frame">
@@ -179,7 +182,7 @@
             <Setter Property="Skin" Value="pack:hud_button_text:pressed"/>
         </Style>
         <Style Selector="Button.tab.selected">
-            <Setter Property="Foreground" Value="{StaticResource OnAccent}"/>
+            <Setter Property="Foreground" Value="{StaticResource OnPrimary}"/>
         </Style>
 
         <!-- Choix exclusifs (Ui.Choice) : contrôle segmenté du pack, le choisi en sarcelle -->
@@ -188,7 +191,7 @@
             <Setter Property="FontSize" Value="16"/>
         </Style>
         <Style Selector="Button.seg.selected">
-            <Setter Property="Foreground" Value="{StaticResource OnAccent}"/>
+            <Setter Property="Foreground" Value="{StaticResource OnDanger}"/>
         </Style>
         <Style Selector="Button.seg /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_segmented_mid:normal"/></Style>
         <Style Selector="Button.seg:pointerover /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_segmented_mid:hover"/></Style>
@@ -231,6 +234,8 @@
         <Style Selector="Button.icon:pointerover /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon:hover"/></Style>
         <Style Selector="Button.icon:pressed /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon:pressed"/></Style>
         <Style Selector="Button.icon.selected /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon:toggled"/></Style>
+        <!-- Bouton d'icône enfoncé (sarcelle) : chiffre en blanc, 4,8:1 -->
+        <Style Selector="Button.icon.selected"><Setter Property="Foreground" Value="{StaticResource OnDanger}"/></Style>
         <!-- Petits boutons à icône des barres de titre -->
         <Style Selector="Button.icon.small">
             <Setter Property="Padding" Value="6,5,6,7"/>
@@ -239,10 +244,10 @@
         <Style Selector="Button.icon.small:pointerover /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon_small:hover"/></Style>
         <Style Selector="Button.icon.small:pressed /template/ px|PixelPanel#PART_Frame"><Setter Property="Skin" Value="pack:hud_button_icon_small:pressed"/></Style>
         <Style Selector="Button.green">
-            <Setter Property="Foreground" Value="{StaticResource OnAccent}"/>
+            <Setter Property="Foreground" Value="{StaticResource OnPrimary}"/>
         </Style>
         <Style Selector="Button.red">
-            <Setter Property="Foreground" Value="{StaticResource OnAccent}"/>
+            <Setter Property="Foreground" Value="{StaticResource OnDanger}"/>
         </Style>
         <Style Selector="Button.tab.selected /template/ px|PixelPanel#PART_Frame">
             <Setter Property="Skin" Value="gold"/>

@@ -23,7 +23,7 @@ public static class Ui
     {
         Text = text,
         FontSize = size,
-        Foreground = color ?? Palette.Cloud,
+        Foreground = Palette.ForText(color ?? Palette.Cloud),
         FontWeight = bold ? FontWeight.Bold : FontWeight.Normal,
         TextWrapping = wrap ? TextWrapping.Wrap : TextWrapping.NoWrap,
     };
@@ -110,8 +110,9 @@ public static class Ui
         else
         {
             // Teinte claire sur les boutons colorés, encre ailleurs ; le texte hérite de la couleur du bouton
-            bool onAccent = style.Contains("gold") || style.Contains("red") || style.Contains("green") || style.Contains("selected");
-            var image = Image(Icons.Get(icon, onAccent ? "#fbf5e6" : "#2b2128"), 16, 16);
+            // Teinte claire sur le rouge et la sélection, encre sur l'orange et le vert (contraste) et ailleurs
+            bool onAccent = style.Contains("red") || style.Contains("selected");
+            var image = Image(Icons.Get(icon, onAccent ? "#ffffff" : "#2b2128"), 16, 16);
             image.VerticalAlignment = VerticalAlignment.Center;
             button.Content = arrow ? image : Row(6, image, new TextBlock { Text = label, VerticalAlignment = VerticalAlignment.Center });
             if (arrow)
@@ -140,8 +141,8 @@ public static class Ui
     {
         // Le libellé hérite de la couleur du bouton (texte clair sur un bouton rouge ou doré)
         var caption = label == null ? null : new TextBlock { Text = label, FontSize = 15 };
-        bool onAccent = style.Contains("red") || style.Contains("gold");
-        var image = Image(Icons.Get(icon, onAccent ? "#fbf5e6" : "#2b2128"), 24, 24);
+        bool onAccent = style.Contains("red");
+        var image = Image(Icons.Get(icon, onAccent ? "#ffffff" : "#2b2128"), 24, 24);
         Control content = caption == null ? image : Row(6, image, caption);
         if (content is StackPanel row)
             foreach (var child in row.Children)
@@ -256,12 +257,14 @@ public static class Ui
     public static PixelPanel Tag(string text, IBrush background, IBrush? foreground = null)
     {
         string kind = Semantic(background);
-        bool light = kind is "neutral" or "warning";
+        string skin = $"pack:hud_badge_{kind}";
+        // L'encre ou le blanc selon la couleur réelle du badge (contraste WCAG AA)
+        var readable = PixelPanel.CenterColor(skin) is { } fill ? Palette.ReadableOn(fill) : Palette.Ink;
         return new PixelPanel
         {
-            Skin = $"pack:hud_badge_{kind}",
+            Skin = skin,
             Padding = new Thickness(7, 2, 7, 4),
-            Child = Text(text, 13, foreground ?? (light ? Palette.Ink : Palette.Paper), bold: true, wrap: false),
+            Child = Text(text, 13, foreground ?? readable, bold: true, wrap: false),
             VerticalAlignment = VerticalAlignment.Center,
         };
     }

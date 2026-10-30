@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Avalonia.Media;
 
 namespace UI.Pixel;
@@ -43,6 +44,45 @@ public static class Palette
     public static readonly IBrush Sand = Brush("#ead4aa");
     public static readonly IBrush Rust = Brush("#be4a2f");
     public static readonly IBrush Brown = Brush("#733e39");
+
+    /// <summary>
+    /// Les accents servent aussi aux barres, aux jauges et aux fonds ; en texte, ils doivent rester lisibles sur tous les papiers
+    /// (contraste WCAG AA d'au moins 4,5:1 sur le plus foncé, Slate). Même teinte, plus sombre : l'or passait à 2,2:1 sur le
+    /// papier, l'alerte à 3,5:1, le vert, le bleu et la sarcelle à environ 4:1.
+    /// </summary>
+    private static readonly Dictionary<IBrush, IBrush> TextTones = new(ReferenceEqualityComparer.Instance)
+    {
+        [Gold] = Brush("#72531a"),
+        [Ember] = Brush("#904030"),
+        [Leaf] = Brush("#356232"),
+        [Forest] = Brush("#356232"),
+        [Sky] = Brush("#385a86"),
+        [Ice] = Brush("#296065"),
+        [Fog] = Brush("#615351"),
+        [Blood] = Brush("#9a3732"),
+    };
+
+    /// <summary>La couleur à donner à un texte écrit dans cette couleur (son ton lisible pour un accent, sinon elle-même).</summary>
+    public static IBrush ForText(IBrush brush) => TextTones.TryGetValue(brush, out var tone) ? tone : brush;
+
+    public static readonly IBrush White = Brush("#ffffff");
+
+    private static double Luminance(Color c)
+    {
+        static double Channel(byte v) => v / 255.0 is var x && x <= 0.03928 ? x / 12.92 : Math.Pow((x + 0.055) / 1.055, 2.4);
+        return 0.2126 * Channel(c.R) + 0.7152 * Channel(c.G) + 0.0722 * Channel(c.B);
+    }
+
+    /// <summary>Rapport de contraste WCAG entre deux couleurs (1 à 21).</summary>
+    public static double Contrast(Color a, Color b)
+    {
+        double la = Luminance(a), lb = Luminance(b);
+        return (Math.Max(la, lb) + 0.05) / (Math.Min(la, lb) + 0.05);
+    }
+
+    /// <summary>L'encre ou le blanc, celui qui se lit le mieux sur ce fond (bouton, badge, puce du pack).</summary>
+    public static IBrush ReadableOn(Color background) =>
+        Contrast(((ISolidColorBrush)Ink).Color, background) >= Contrast(Avalonia.Media.Colors.White, background) ? Ink : White;
 
     /// <summary>Une couleur de la palette par son indice (0 à 31).</summary>
     public static Color At(int index)

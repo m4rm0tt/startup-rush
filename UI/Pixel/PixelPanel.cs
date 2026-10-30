@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using Avalonia;
@@ -59,6 +60,44 @@ public class PixelPanel : Decorator, Avalonia.Rendering.ICustomHitTest
             ? [slice[0].GetInt32(), slice[1].GetInt32(), slice[2].GetInt32(), slice[3].GetInt32()]
             : [0, 0, 0, 0];
         return Cache[skin] = (PackLibrary.Png(file).ToBitmap(), margins);
+    }
+
+    /// <summary>
+    /// La couleur de l'image d'un habillage au point (x, y) d'un panneau de cette taille (même découpe 9-slice que le dessin),
+    /// ou null si ce pixel n'est pas opaque. Sert à choisir un texte lisible et aux tests de contraste.
+    /// </summary>
+    public static Color? ColorAt(string skin, Size size, Point point, double unit = 2)
+    {
+        var (image, slice) = Frame(skin);
+        double w = image.PixelSize.Width, h = image.PixelSize.Height;
+        static double Map(double p, double length, double start, double end, double pixels, double unit) =>
+            p < start * unit ? p / unit
+            : p > length - end * unit ? pixels - (length - p) / unit
+            : start + (p - start * unit) / Math.Max(1, length - (start + end) * unit) * (pixels - start - end);
+        int x = (int)Math.Clamp(Map(point.X, size.Width, slice[0], slice[2], w, unit), 0, w - 1);
+        int y = (int)Math.Clamp(Map(point.Y, size.Height, slice[1], slice[3], h, unit), 0, h - 1);
+        var pixel = new byte[4];
+        var handle = System.Runtime.InteropServices.GCHandle.Alloc(pixel, System.Runtime.InteropServices.GCHandleType.Pinned);
+        try
+        {
+            image.CopyPixels(new PixelRect(x, y, 1, 1), handle.AddrOfPinnedObject(), 4, 4);
+        }
+        finally
+        {
+            handle.Free();
+        }
+        if (pixel[3] != 255)
+            return null;
+        bool bgra = image.Format is not { } format || format == Avalonia.Platform.PixelFormat.Bgra8888;
+        return bgra ? Color.FromRgb(pixel[2], pixel[1], pixel[0]) : Color.FromRgb(pixel[0], pixel[1], pixel[2]);
+    }
+
+    /// <summary>La couleur du centre d'un habillage (le fond d'un badge ou d'une puce).</summary>
+    public static Color? CenterColor(string skin)
+    {
+        var (image, _) = Frame(skin);
+        var size = new Size(image.PixelSize.Width, image.PixelSize.Height);
+        return ColorAt(skin, size, new Point(size.Width / 2, size.Height / 2), 1);
     }
 
     public static readonly StyledProperty<string> SkinProperty =

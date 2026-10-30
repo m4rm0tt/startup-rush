@@ -48,6 +48,15 @@ public class GameScreen : UserControl, IScreen
     private TerminalView? _terminal;
     private (int Speed, bool Paused) _beforeTerminal;
     private bool _pauseMenu;
+
+    /// <summary>Le panneau ouvert au-dessus des autres (null : aucun) ; lu par les tests d'interface.</summary>
+    public GamePanel? TopPanel => _stack.LastOrDefault();
+
+    /// <summary>Le menu de pause est ouvert.</summary>
+    public bool PauseMenuOpen => _pauseMenu;
+
+    /// <summary>Le terminal du fondateur, s'il est ouvert.</summary>
+    public TerminalView? OpenTerminalView => _terminal;
     private double _refreshTimer;
     private double _hudTimer;
     private int _lastPremises;
@@ -246,7 +255,7 @@ public class GameScreen : UserControl, IScreen
             {
                 Skin = "pack:hud_badge_count", Padding = new Thickness(6, 3, 6, 5), MinWidth = 24, MinHeight = 24,
                 HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, -8, -8, 0),
-                Child = Ui.Text(problems > 99 ? "99+" : $"{problems}", 12, Palette.Paper, bold: true, wrap: false),
+                Child = Ui.Text(problems > 99 ? "99+" : $"{problems}", 12, PixelPanel.CenterColor("pack:hud_badge_count") is { } fill ? Palette.ReadableOn(fill) : Palette.Paper, bold: true, wrap: false),
                 IsHitTestVisible = false,
             };
             bellWithCount = new Panel { Children = { bell, count } };
@@ -269,10 +278,11 @@ public class GameScreen : UserControl, IScreen
     }
 
     // Couleurs lisibles sur le fond marine de la barre du haut (jetons du thème « Papier »)
-    private static readonly IBrush TopMuted = Palette.Brush("#c2ae94");
+    // Sur la barre sombre : sable et rouge éclaircis pour dépasser 4,5:1
+    private static readonly IBrush TopMuted = Palette.Brush("#d6c6aa");
     private static readonly IBrush TopAccent = Palette.Brush("#fbd769");
     private static readonly IBrush TopSuccess = Palette.Brush("#8fc062");
-    private static readonly IBrush TopDanger = Palette.Brush("#e46c5a");
+    private static readonly IBrush TopDanger = Palette.Brush("#f29483");
 
     /// <summary>Un groupe de la barre du haut : icône claire et son contenu, dans le cadre « hud_topbar_segment ».</summary>
     private static Control TopSegment(string icon, Control content)
@@ -357,8 +367,9 @@ public class GameScreen : UserControl, IScreen
         var target = TerminalTarget();
         var work = new Button
         {
-            Content = Ui.Row(6, Ui.Image(UI.Iso.PackLibrary.Icon("icon_terminal", target != null ? "#fbf5e6" : "#9c8878"), 24, 24),
-                Ui.Column(0, Ui.Text("Travailler", 15, null, wrap: false), Ui.Muted("Entrée", 11))),
+            // Encre sur l'orange du bouton principal (5,3:1 ; le clair n'y faisait que 2,7:1)
+            Content = Ui.Row(6, Ui.Image(UI.Iso.PackLibrary.Icon("icon_terminal", target != null ? "#2b2128" : "#9c8878"), 24, 24),
+                Ui.Column(0, Ui.Text("Travailler", 15, Palette.Ink, wrap: false), Ui.Text("Entrée", 11, Palette.Ink, wrap: false))),
             Padding = new Thickness(10, 4, 12, 8),
             IsEnabled = target != null && _terminal == null,
         };
@@ -373,9 +384,11 @@ public class GameScreen : UserControl, IScreen
         foreach (var (label, icon, key, create) in Tools)
         {
             string badge = label == "Développement" && Session.Campaign.DevPoints > 0 ? $" ({Session.Campaign.DevPoints})" : "";
-            var content = Ui.Row(6, Ui.Icon(icon, 24), Ui.Column(0, Ui.Text(label + badge, 15, badge != "" ? Palette.Lemon : Palette.Snow, wrap: false), Ui.Muted(key.ToString(), 11)));
-            var button = new Button { Content = content, Padding = new Thickness(10, 4, 12, 8) };
             bool active = _stack.Count > 0 && _stack[0].GetType() == create().GetType();
+            // Le menu ouvert a le fond orange du pack : tout son texte passe à l'encre (le sarcelle et le gris n'y font que 2,5:1)
+            var content = Ui.Row(6, Ui.Icon(icon, 24), Ui.Column(0, Ui.Text(label + badge, 15, active ? Palette.Ink : badge != "" ? Palette.Lemon : Palette.Snow, wrap: false),
+                Ui.Text(key.ToString(), 11, active ? Palette.Ink : Palette.Fog, wrap: false)));
+            var button = new Button { Content = content, Padding = new Thickness(10, 4, 12, 8) };
             if (active)
                 button.Classes.Add("selected");
             button.Classes.Add("tab");
@@ -906,7 +919,8 @@ public class GameScreen : UserControl, IScreen
             case Key.Left or Key.A:
                 Scene.Pan(-40, 0);
                 return true;
-            case Key.Right or Key.D:
+            // D ouvre le menu Développement (barre d'outils) : la vue va à droite avec la flèche seulement
+            case Key.Right:
                 Scene.Pan(40, 0);
                 return true;
             case Key.Up or Key.W:

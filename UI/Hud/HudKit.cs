@@ -198,14 +198,14 @@ public static class HudKit
     {
         var left = Ui.Image(PackSkins.Extra("hud_banner", "banner_end_left"), 12, 40);
         var right = Ui.Image(PackSkins.Extra("hud_banner", "banner_end_right"), 12, 40);
-        var body = new PixelPanel { Skin = "pack:hud_banner", Height = 40, Padding = new Thickness(10, 6, 10, 10), Child = Ui.Text(text, 12, Palette.Paper, bold: true, wrap: false) };
+        var body = new PixelPanel { Skin = "pack:hud_banner", Height = 40, Padding = new Thickness(10, 6, 10, 10), Child = Ui.Text(text, 12, PixelPanel.CenterColor("pack:hud_banner") is { } c ? Palette.ReadableOn(c) : Palette.Paper, bold: true, wrap: false) };
         return new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Left, Children = { left, body, right }, Tag = "banner" };
     }
 
     /// <summary>Une puce sombre (type, site, métier, version) au texte clair.</summary>
     public static Control Chip(string text) =>
         new PixelPanel { Skin = "pack:hud_chip_dark", Padding = new Thickness(8, 2, 8, 4), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center,
-            Child = Ui.Text(text, 12, Palette.Paper, wrap: false), Tag = "chip" };
+            Child = Ui.Text(text, 12, PixelPanel.CenterColor("pack:hud_chip_dark") is { } c ? Palette.ReadableOn(c) : Palette.Paper, wrap: false), Tag = "chip" };
 
     public static Control SeparatorH() => new PixelPanel { Skin = "pack:hud_separator_h", Height = 6, Margin = new Thickness(0, 4), Tag = "separator_h" };
 

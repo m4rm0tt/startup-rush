@@ -17,7 +17,7 @@ namespace UiTests;
 /// </summary>
 public class PanelsTest
 {
-    private static (MainWindow Window, UI.Screens.GameScreen Game, Campaign Campaign) Advanced()
+    internal static (MainWindow Window, UI.Screens.GameScreen Game, Campaign Campaign) Advanced()
     {
         string root = Path.Combine(Path.GetTempPath(), "startuprush_uitests", Guid.NewGuid().ToString("N"));
         var window = new MainWindow(new SaveStore(root), new Settings(), Path.Combine(root, "settings.json"));

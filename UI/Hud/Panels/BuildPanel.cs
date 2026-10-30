@@ -275,8 +275,9 @@ public class BuildPanel : GamePanel
             string? locked = Campaign.ModuleLock(module);
             var kinds = module.Objects.Select(o => FurnitureCatalog.Get(o.Asset)).GroupBy(d => d.Name).Select(g => g.Count() > 1 ? $"{g.Count()} × {g.Key}" : g.Key);
             string content = string.Join(", ", kinds);
+            // Le titre est sur la bande sarcelle de la carte du pack : en blanc (4,8:1), l'encre n'y faisait que 3,2:1
             var card = HudKit.Card(Ui.Column(4,
-                Ui.Text(module.Name, 14, Palette.Snow, bold: true),
+                Ui.Text(module.Name, 14, locked == null ? Palette.White : Palette.Snow, bold: true),
                 Ui.Muted($"{module.Width} × {module.Depth} cases · {cost:N0} CHF", 12),
                 Ui.Muted(content, 12),
                 Ui.Button("Installer", () => Screen.Confirm($"Installer : {module.Name} ?",

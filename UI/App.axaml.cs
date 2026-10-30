@@ -8,6 +8,9 @@ namespace UI;
 
 public partial class App : Application
 {
+    // Police pixel nette : tailles sur la grille de 12 px, avant la création du premier contrôle
+    static App() => UI.Pixel.PixelText.Install();
+
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);

@@ -61,7 +61,7 @@ public abstract class MenuScreen : UserControl, IScreen
     private double MenuScale()
     {
         double h = Window.Bounds.Height > 0 ? Window.Bounds.Height : Window.Height;
-        return Window.Settings.UiScale > 0 ? Window.Settings.UiScale : Math.Clamp(h / 900, 0.7, 1.4);
+        return Window.Settings.UiScale > 0 ? Window.Settings.UiScale : UI.Pixel.PixelText.CrispScale(Math.Clamp(h / 900, 0.7, 1.4), Window.RenderScaling);
     }
 
     public virtual void Tick(double deltaTime)
@@ -332,7 +332,8 @@ public class SettingsScreen : MenuScreen
     public static Control SettingsForm(MainWindow window, Action rebuild, Action? back)
     {
         var s = window.Settings;
-        (double, string)[] scales = [(0, "Auto"), (0.8, "80 %"), (1, "100 %"), (1.2, "120 %"), (1.4, "140 %")];
+        // Auto et les tailles entières gardent la police et les sprites nets ; 150 % est proposé pour les grands écrans (moins net)
+        (double, string)[] scales = [(0, "Auto (net)"), (1, "100 %"), (1.5, "150 %"), (2, "200 %")];
         void Change(Action apply)
         {
             apply();

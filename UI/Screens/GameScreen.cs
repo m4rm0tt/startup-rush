@@ -115,7 +115,7 @@ public class GameScreen : UserControl, IScreen
                 return Window.Settings.UiScale;
             double w = Bounds.Width > 0 ? Bounds.Width : Window.Width;
             double h = Bounds.Height > 0 ? Bounds.Height : Window.Height;
-            return Math.Clamp(Math.Min(w / 1500, h / 860), 0.72, 1.5);
+            return UI.Pixel.PixelText.CrispScale(Math.Clamp(Math.Min(w / 1500, h / 860), 0.72, 1.5), Window.RenderScaling);
         }
     }
 

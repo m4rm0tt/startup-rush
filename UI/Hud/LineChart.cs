@@ -42,8 +42,7 @@ public class LineChart : Control
         var legend = PackLibrary.Icon("hud_chart_legend", Hex);
         context.DrawImage(legend, new Rect(0, 0, legend.PixelSize.Width, legend.PixelSize.Height), new Rect(10, 8, 12, 12));
         double max = _values.Count == 0 ? 0 : _values.Max();
-        var text = new FormattedText($"{_label} (max {max:N0})", System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight,
-            new Typeface((FontFamily)Application.Current!.FindResource("PixelFont")!), 12, Palette.Fog);
+        var text = UI.Pixel.PixelText.Format($"{_label} (max {max:N0})", new Typeface((FontFamily)Application.Current!.FindResource("PixelFont")!), 12, Palette.Fog);
         context.DrawText(text, new Point(28, 6));
 
         double left = 10, right = size.Width - 10, top = 26, bottom = size.Height - 12;

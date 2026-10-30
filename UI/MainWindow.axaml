@@ -8,7 +8,8 @@
         Width="1440" Height="810" MinWidth="960" MinHeight="540"
         WindowStartupLocation="CenterScreen"
         Background="#181425"
-        FontFamily="{StaticResource PixelFont}">
+        FontFamily="{StaticResource PixelFont}"
+        RenderOptions.TextRenderingMode="Alias">
     <!-- La scène occupe toute la fenêtre à sa taille réelle ; seuls les menus sont mis à l'échelle (réglage « Taille de l'interface ») -->
     <Grid x:Name="Root" ClipToBounds="True">
         <ContentControl x:Name="ScreenHost" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>

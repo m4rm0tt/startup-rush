@@ -87,6 +87,9 @@ public class Product
     public int Id { get; set; }
     public int CompanyId { get; set; }
     public string Name { get; set; } = "";
+
+    /// <summary>Notes libres du joueur sur ce projet (idées, choix à faire), sans effet sur la simulation.</summary>
+    public string Notes { get; set; } = "";
     public string ArchetypeId { get; set; } = "";
     public string SegmentId { get; set; } = "";
     public RevenueModel Model { get; set; }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
@@ -36,7 +37,9 @@ public class ProjectsPanel : GamePanel
         wrap.Children.Add(NewCard());
         column.Children.Add(wrap);
         if (Campaign.Products.Count > 1)
-            column.Children.Add(Ui.Muted("Les personnes en automatique travaillent sur le premier projet qui a du travail en file. Change l'ordre avec ◀ ▶.", 13));
+            column.Children.Add(Ui.Row(6, Ui.Image(Icons.Get("icon_sort", "#6f5f5d"), 16, 16),
+                Ui.Muted("Ordre de priorité, de gauche à droite : les personnes en automatique travaillent sur le premier projet qui a du travail en file. " +
+                         "Change l'ordre avec ◀ ▶ ou le menu « … » (clic droit sur une carte).", 13)));
         // Les activités du lot 6 apparaissent avec leur déblocage
         if (Campaign.IsUnlocked("ai_models"))
             column.Children.Add(Ui.Section("Intelligence artificielle", Ui.Row(10,
@@ -86,8 +89,8 @@ public class ProjectsPanel : GamePanel
         int index = Campaign.Products.OrderBy(p => p.Priority).ToList().IndexOf(product);
         var header = Ui.Row(10, Ui.IconTile(type.Icon, Palette.At(product.Color)),
             Ui.Column(1, Ui.Text(product.Name, 18, Palette.Snow, bold: true, wrap: false),
-                Ui.Row(4, Ui.Tag(type.Name, Palette.Sky), Ui.Tag(product.Segment.Name, Palette.Steel, Palette.Snow))),
-            problem ? Ui.Icon("warning", 22) : null);
+                Ui.Row(4, HudKit.Chip(type.Name), Ui.Tag(product.Segment.Name, Palette.Steel, Palette.Snow))),
+            problem ? Ui.Icon("warning", 22) : null, HudKit.MoreButton(() => Actions(product, index)));
         var body = Ui.Column(8, header,
             Ui.Text(Stage(Campaign, product), 14, product.IsLive ? Palette.Leaf : Palette.Lemon),
             numbers, progress,
@@ -95,7 +98,21 @@ public class ProjectsPanel : GamePanel
                 Ui.Button("Ouvrir", () => Open(new ProjectPanel(product.Id)), "gold"),
                 Campaign.Products.Count > 1 ? Ui.Button("◀", () => Run(Campaign.MoveProject(product.Id, -1)), "tab", index > 0, "Plus prioritaire") : null,
                 Campaign.Products.Count > 1 ? Ui.Button("▶", () => Run(Campaign.MoveProject(product.Id, 1)), "tab", index < Campaign.Products.Count - 1, "Moins prioritaire") : null));
-        return new PixelPanel { Skin = "inset", Padding = new Thickness(12, 10), Margin = new Thickness(0, 0, 10, 10), Width = 300, Child = body, BorderBrush = problem ? Palette.Ember : null, BorderThickness = new Thickness(problem ? 2 : 0) };
+        var card = new PixelPanel { Skin = "inset", Padding = new Thickness(12, 10), Margin = new Thickness(0, 0, 10, 10), Width = 300, Child = body, BorderBrush = problem ? Palette.Ember : null, BorderThickness = new Thickness(problem ? 2 : 0) };
+        return HudKit.WithContextMenu(card, () => Actions(product, index));
+    }
+
+    /// <summary>Le menu d'un projet (clic droit sur sa carte, ou « … ») : les mêmes commandes que ses boutons et sa fiche.</summary>
+    private IEnumerable<HudKit.MenuEntry?> Actions(Product product, int index)
+    {
+        var (canWork, _) = Campaign.CanOpenTerminal(product.Id);
+        yield return new("Ouvrir le projet", () => Open(new ProjectPanel(product.Id)), Icon: "icon_eye");
+        yield return new("Travailler au terminal", () => Screen.OpenTerminal(product.Id), canWork, "icon_terminal");
+        yield return new("Composants", () => Open(new ProjectPanel(product.Id).Show(ProjectPanel.Tab.Components)), Icon: "icon_components");
+        yield return new("Avis", () => Open(new ProjectPanel(product.Id).Show(ProjectPanel.Tab.Reviews)), product.IsLive, "icon_star");
+        yield return null;
+        yield return new("Plus prioritaire", () => Run(Campaign.MoveProject(product.Id, -1)), index > 0, "icon_chevron_left");
+        yield return new("Moins prioritaire", () => Run(Campaign.MoveProject(product.Id, 1)), index < Campaign.Products.Count - 1, "icon_chevron_right");
     }
 
     private Control NewCard()

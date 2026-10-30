@@ -347,6 +347,16 @@ public partial class Campaign
         return CommandResult.Success();
     }
 
+    /// <summary>Notes libres d'un projet (1 000 caractères au plus).</summary>
+    public CommandResult SetNotes(int productId, string notes)
+    {
+        var product = FindProduct(productId);
+        if (product == null)
+            return CommandResult.Fail("Projet inconnu.");
+        product.Notes = notes.Length > 1_000 ? notes[..1_000] : notes;
+        return CommandResult.Success();
+    }
+
     public CommandResult Rename(int productId, string name)
     {
         var product = FindProduct(productId);

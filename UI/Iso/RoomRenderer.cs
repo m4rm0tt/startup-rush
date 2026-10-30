@@ -430,7 +430,16 @@ public sealed class RoomRenderer
     private void AddHit(bool person, int id, JsonElement o, int x, int y, int order)
     {
         if (!o.TryGetProperty("selection_poly", out var poly) || poly.ValueKind != JsonValueKind.Array)
+        {
+            // Les objets centrés du pack (lampadaire, fontaine, trépied…) n'ont pas de polygone : leur image sert de zone de clic,
+            // sinon on ne pourrait ni les déplacer ni les ranger
+            if (!o.TryGetProperty("size", out var size))
+                return;
+            var (ax, ay) = PackLibrary.Anchor(o);
+            double left = x - ax, top = y - ay, right = left + size[0].GetInt32(), bottom = top + size[1].GetInt32();
+            _hits.Add(new HitRegion(person, id, [(left, top), (right, top), (right, bottom), (left, bottom)], order));
             return;
+        }
         _hits.Add(new HitRegion(person, id, poly.EnumerateArray().Select(p => ((double)x + p[0].GetInt32(), (double)y + p[1].GetInt32())).ToArray(), order));
     }
 

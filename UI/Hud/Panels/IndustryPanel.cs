@@ -115,11 +115,11 @@ public class IndustryPanel : GamePanel
                 target.Margin = new Avalonia.Thickness(0, 0, 10, 6);
                 row.Children.Add(target);
             }
-            column.Children.Add(Ui.Row(8, Ui.Muted("Quantité :", 13), Ui.Choice([(5, "5"), (20, "20"), (50, "50"), (200, "200")], _quantity, q =>
+            column.Children.Add(Ui.Row(8, Ui.Muted("Quantité :", 13), HudKit.Numeric(_quantity, 1, 500, 5, q =>
             {
                 _quantity = q;
                 Refresh();
-            })));
+            }, " u.")));
             column.Children.Add(row);
         }
         return Ui.Section("Ordres de fabrication", column);
@@ -180,7 +180,8 @@ public class IndustryPanel : GamePanel
         }
         int used = Campaign.StockUsed(site.Id), capacity = Campaign.StorageCapacity(site);
         Control? transfers = destination == null ? null : Ui.Row(8, Ui.Muted("Transférer vers :", 13),
-            Ui.Choice(others.Select(s => (s.Id, s.Name)), destination.Id, id => { _transferTo = id; Refresh(); }),
+            HudKit.Dropdown(others.Select(s => (s.Id, s.Name)), destination.Id, id => { _transferTo = id; Refresh(); }, width: 240),
+            HudKit.SeparatorV(),
             Ui.Muted($"forfait {Campaign.TransferBase:N0} CHF + {Campaign.TransferPerMaterial:N0} CHF par matière, {Campaign.TransferPerProduct:N0} CHF par produit ; la place d'arrivée est réservée à l'envoi.", 12));
         var column = Ui.Column(6,
             Ui.Row(8, Ui.Text($"Stock du site : {used}/{capacity} unités", 14, used >= capacity ? Palette.Ember : Palette.Cloud), Ui.Bar(used / (double)System.Math.Max(1, capacity), Palette.Gold, 8, 160)),

@@ -37,7 +37,12 @@ public class FinancePanel : GamePanel
         var column = Ui.Column(10, stats);
         var situation = Situation();
         if (situation != null)
+        {
+            // Une procédure en cours (impayés, mise en demeure) s'annonce en bandeau du pack
+            if (Campaign.Ledger.Overdue(Campaign.Minute).Any())
+                column.Children.Add(HudKit.Banner("Des factures sont en retard : regarde la situation ci-dessous."));
             column.Children.Add(situation);
+        }
 
         column.Children.Add(Ui.Section("Où va l'argent chaque mois", Costs()));
         column.Children.Add(Ui.Section("D'où il vient", Incomes()));
@@ -136,7 +141,8 @@ public class FinancePanel : GamePanel
 
     private Control MonthTable()
     {
-        var months = Campaign.Ledger.Months.Keys.OrderByDescending(k => k).Take(4).ToList();
+        // Tous les mois joués : le tableau défile à l'horizontale quand il dépasse (barre du pack hud_scroll_*_h)
+        var months = Campaign.Ledger.Months.Keys.OrderByDescending(k => k).Take(24).ToList();
         if (months.Count == 0)
             return Ui.Muted("Aucun mois terminé.", 13);
         var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*" + string.Concat(Enumerable.Repeat(",110", months.Count))) };
@@ -162,7 +168,8 @@ public class FinancePanel : GamePanel
         foreach (var category in Enum.GetValues<Category>().Where(c => months.Any(m => Campaign.Ledger.Months[m].GetValueOrDefault(c) != 0)))
             AddRow(CategoryName(category), m => Campaign.Ledger.Months[m].GetValueOrDefault(category));
         AddRow("Résultat", m => Campaign.OperatingResult(Campaign.Ledger.Months[m]), true);
-        return Ui.Section("Mois par mois", grid);
+        grid.ColumnDefinitions[0].Width = new GridLength(220);
+        return Ui.Section("Mois par mois", HudKit.Horizontal(grid));
     }
 
     /// <summary>Le mois en cours et le précédent, découpés par site ; la dernière ligne est le résultat du mois (même total).</summary>
@@ -172,6 +179,8 @@ public class FinancePanel : GamePanel
         if (months.Count == 0)
             return Ui.Muted("Aucun mouvement pour l'instant.", 13);
         var column = Ui.Column(8);
+        // Le mois en cours en barres (hud_chart_bar) : hauteur = résultat réel de chaque site
+        column.Children.Add(HudKit.Bars(Campaign.SiteResults(months[0]).Select(r => (r.SiteId == Core.finance.Ledger.Common ? "Commun" : r.Name.Split(',')[0], r.Result)).ToList()));
         foreach (string month in months)
         {
             var results = Campaign.SiteResults(month);
@@ -202,6 +211,7 @@ public class FinancePanel : GamePanel
                 Add(r.Name, r.Income, r.Expenses, r.Result);
             Add("Total du mois", results.Sum(r => r.Income), results.Sum(r => r.Expenses), results.Sum(r => r.Result), true);
             column.Children.Add(grid);
+            column.Children.Add(HudKit.SeparatorH());
         }
         column.Children.Add(Ui.Muted("Chaque site porte son loyer, ses charges, les salaires de ceux qui y travaillent, son électricité, ses achats, " +
                                      "ses travaux, le matériel qu'il expédie et le cloud à proportion de sa capacité. Les logiciels, le marketing, " +

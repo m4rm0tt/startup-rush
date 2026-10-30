@@ -33,7 +33,7 @@ public class ResearchPanel : GamePanel
             running.Children.Add(Ui.Card(Ui.Column(4,
                 Ui.Row(Ui.Text(def.Name, 16, Palette.Snow, bold: true), Ui.Tag(def.Field, Palette.Sky), project.Paused ? Ui.Tag("SUSPENDUE", Palette.Lemon) : null),
                 Ui.Muted(def.Unlocks, 13),
-                Ui.Bar(project.Progress / def.Effort, Palette.Gold, 8),
+                project.Today > 0 ? HudKit.Striped(project.Progress / def.Effort) : Ui.Bar(project.Progress / def.Effort, Palette.Gold, 8),
                 Ui.Muted($"{project.Progress:0}/{def.Effort:0} points · {eta} · {def.DailyCost:N0} CHF par jour de travail", 13),
                 Ui.Muted(sites.Count > 0 ? $"Équipé : {string.Join(", ", sites)}" : $"Il manque : {string.Join(", ", Campaign.MissingEquipment(Campaign.Premises, def))}", 13),
                 Ui.Button(project.Paused ? "Reprendre" : "Suspendre", () => Run(Campaign.PauseResearch(def.Id, !project.Paused))))));

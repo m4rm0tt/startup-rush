@@ -807,8 +807,11 @@ public class GameScreen : UserControl, IScreen
                 Ui.Button("Sauvegarder", () =>
                 {
                     string name = string.IsNullOrWhiteSpace(saveName) ? GameTime.FormatDate(c.Minute) : saveName!;
-                    bool ok = Session.Save(SaveKind.Manual, name);
-                    Toast(Session.LastSaveMessage + (ok ? $" : « {name} »" : ""), ok);
+                    Window.Busy(() =>
+                    {
+                        bool ok = Session.Save(SaveKind.Manual, name);
+                        Toast(Session.LastSaveMessage + (ok ? $" : « {name} »" : ""), ok);
+                    });
                 })),
             Ui.Button("Charger une autre partie", () => Leave(() => Window.ShowLoad())),
             Ui.Button("Réglages", () => ShowModal(SettingsScreen.SettingsForm(Window, ShowPauseSettings, ShowPauseMenu), null, 560)),

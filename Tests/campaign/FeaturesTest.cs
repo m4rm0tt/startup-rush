@@ -9,6 +9,38 @@ namespace Tests.campaign;
 /// <summary>Fonctions de la spécification ajoutées pour la version complète (terminal de recherche, avis, composants...).</summary>
 public class FeaturesTest
 {
+    [Test]
+    public void TheApiStorageAndGameMenuComponentsWaitForTheirDependencyAndCoverTheirNeeds()
+    {
+        var campaign = NewCampaign();
+        var app = NewProject(campaign, "freelances", starters: []);
+        var game = NewProject(campaign, "casual", starters: []);
+        Assert.That(Design.ForType(app.ArchetypeId).Select(d => d.Id), Does.Contain("api").And.Contain("storage"));
+        Assert.That(Design.ForType(game.ArchetypeId).Select(d => d.Id), Does.Contain("game_menu").And.Not.Contain("api"));
+
+        // Chacun demande son composant de base (graphe de dépendances) : refusé avant, accepté après
+        Assert.That(campaign.QueueComponent(app.Id, "api").Ok, Is.False, "l'API demande les comptes");
+        Assert.That(campaign.QueueComponent(app.Id, "storage").Ok, Is.False, "le stockage demande les comptes");
+        Assert.That(campaign.QueueComponent(game.Id, "game_menu").Ok, Is.False, "les menus demandent le gameplay");
+        app.Components.Add(new ProjectComponent { DefId = "login", Level = 1 });
+        game.Components.Add(new ProjectComponent { DefId = "gameplay", Level = 1 });
+        Assert.That(campaign.QueueComponent(app.Id, "api").Ok, Is.True);
+        Assert.That(campaign.QueueComponent(app.Id, "storage").Ok, Is.True);
+        Assert.That(campaign.QueueComponent(game.Id, "game_menu").Ok, Is.True);
+
+        // Une fois faits, ils couvrent les besoins annoncés ; le stockage charge les serveurs
+        var appBefore = Design.Coverage(app);
+        double loadBefore = Design.LoadPerThousand(app, false);
+        var gameBefore = Design.Coverage(game);
+        app.Components.Add(new ProjectComponent { DefId = "api", Level = 1 });
+        app.Components.Add(new ProjectComponent { DefId = "storage", Level = 1 });
+        game.Components.Add(new ProjectComponent { DefId = "game_menu", Level = 1 });
+        Assert.That(Design.Coverage(app)[Need.Productivity], Is.GreaterThan(appBefore[Need.Productivity]));
+        Assert.That(Design.Coverage(app)[Need.Conversion], Is.GreaterThan(appBefore[Need.Conversion]), "l'API aide la conversion");
+        Assert.That(Design.LoadPerThousand(app, false), Is.GreaterThan(loadBefore), "le stockage pèse sur les serveurs");
+        Assert.That(Design.Coverage(game)[Need.Trust], Is.GreaterThan(gameBefore[Need.Trust]), "un jeu avec menus fait sérieux");
+    }
+
     private static void WorkHours(Campaign campaign)
     {
         while (!GameTime.IsWorkday(campaign.Minute) || GameTime.Hour(campaign.Minute) < 10)

@@ -179,16 +179,35 @@ public static class Ui
         BorderThickness = new Thickness(border != null ? 2 : 0),
     };
 
-    /// <summary>Section titrée : en-tête du pack (hud_section_header), puis son contenu.</summary>
+    /// <summary>
+    /// Icône du pack d'un titre de section (le début du titre suffit) : chaque rubrique garde le même pictogramme partout,
+    /// comme les boutons (ButtonIcons) et les chiffres clés (StatIcons).
+    /// </summary>
+    public static readonly (string Title, string Icon)[] SectionIcons =
+    [
+        ("Lignes du site", "icon_assembly"), ("Ordres de fabrication", "icon_conveyor"), ("Stock et achats", "icon_rack"),
+        ("Financement", "icon_budget"), ("D'où il vient", "icon_client"), ("À payer et à recevoir", "icon_receivable"),
+        ("Résultat par site", "icon_occupancy"), ("Services cloud", "icon_cloud"), ("Serveurs", "icon_external"),
+        ("Locaux à louer", "icon_contract"), ("Tes sites", "icon_access"), ("Modules prêts à poser", "icon_components"),
+        ("Catalogue", "icon_filter"), ("Capacités de l'entreprise", "icon_memory"), ("Tendances", "icon_competition"),
+        ("Fabrication et ventes", "icon_product"), ("Recrutement", "icon_recruit"), ("Compétences", "icon_training"),
+    ];
+
+    /// <summary>Section titrée : en-tête du pack (hud_section_header) avec son icône, puis son contenu.</summary>
     public static Control Section(string title, params Control?[] children)
     {
         var column = Column(6, children);
+        string? icon = SectionIcons.FirstOrDefault(s => title.StartsWith(s.Title)).Icon;
+        Control label = Text(title.ToUpperInvariant(), 13, Palette.Ink, bold: true, wrap: false);
+        if (icon != null && UI.Iso.PackLibrary.Has(icon))
+            label = Row(4, Image(Icons.Get(icon, "#2b2128"), 16, 16), label);
         column.Children.Insert(0, new PixelPanel
         {
             Skin = "pack:hud_section_header",
             Padding = new Thickness(14, 3, 8, 7),
             HorizontalAlignment = HorizontalAlignment.Left,
-            Child = Text(title.ToUpperInvariant(), 13, Palette.Ink, bold: true, wrap: false),
+            Child = label,
+            Tag = icon,
         });
         column.Margin = new Thickness(0, 6, 0, 2);
         return column;
@@ -433,7 +452,8 @@ public static class Ui
         var chevron = Icon(expanded ? "icon_chevron_down" : "icon_chevron_right", 16);
         var header = new Button { Content = Row(6, chevron, Text(title, 14, Palette.Fog, wrap: false)), Padding = new Thickness(4, 3, 10, 5) };
         header.Classes.Add("plain");
-        var body = new Border { Child = content, IsVisible = expanded, Margin = new Thickness(22, 4, 0, 0) };
+        // Contenu de second niveau : dans le panneau secondaire du pack (hud_panel_secondary)
+        var body = new Border { Child = HudKit.Secondary(content), IsVisible = expanded, Margin = new Thickness(22, 4, 0, 0) };
         header.Click += (_, _) =>
         {
             body.IsVisible = !body.IsVisible;

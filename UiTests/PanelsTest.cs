@@ -95,4 +95,79 @@ public class PanelsTest
         Assert.That(Texts(window), Has.Some.Contains("Tenue"));
         window.Close();
     }
+
+    private static IEnumerable<UI.Pixel.PixelPanel> Frames(Window window) => window.GetVisualDescendants().OfType<UI.Pixel.PixelPanel>();
+
+    [AvaloniaTest]
+    public void TheHudKitIsWiredIntoTheRealPanels()
+    {
+        var (window, game, campaign) = Advanced();
+
+        // Aménagement : la rubrique en liste déroulante ; la recherche filtre tout le catalogue sans reconstruire le panneau
+        game.OpenRoot(new BuildPanel());
+        Dispatcher.UIThread.RunJobs();
+        Assert.That(Frames(window).Select(p => p.Skin), Has.Some.StartsWith("pack:hud_dropdown"));
+        var search = window.GetVisualDescendants().OfType<TextBox>().First(t => t.PlaceholderText == "Chercher un objet");
+        search.Text = "plante";
+        Dispatcher.UIThread.RunJobs();
+        Assert.That(Texts(window), Has.Some.Contains("Plante").IgnoreCase, "un objet du catalogue trouvé par son nom");
+        Assert.That(Texts(window), Has.None.EqualTo("Bureau compact"), "les objets qui ne correspondent pas disparaissent");
+        search.Text = "zzzz";
+        Dispatcher.UIThread.RunJobs();
+        Assert.That(Texts(window), Does.Contain("Aucun objet ne correspond."));
+        search.Text = "";
+
+        // Finances : barres du résultat par site, mois par mois qui défile à l'horizontale
+        game.OpenRoot(new FinancePanel());
+        Dispatcher.UIThread.RunJobs();
+        Assert.That(window.GetVisualDescendants().OfType<Image>().Count(i => (i.Tag as string)?.StartsWith("bar:") == true), Is.EqualTo(campaign.SiteResults(campaign.Ledger.Months.Keys.Max()!).Count));
+        Assert.That(window.GetVisualDescendants().OfType<ScrollViewer>().Any(s => (string?)s.Tag == "horizontal"), Is.True);
+
+        // Sites : deux jauges (électricité, froid) pour un site qui a une infrastructure
+        Assert.That(campaign.RentSite("server_room").Ok, Is.True);
+        var (rx, ry, rf) = campaign.FindSpot(Core.space.FurnitureCatalog.Get("rack_standard"))!.Value;
+        Assert.That(campaign.BuyAndPlace("rack_standard", rx, ry, rf).Ok, Is.True);
+        int rack = campaign.Premises.Items.Last().Id;
+        foreach (string module in new[] { "module_patch_panel_1u", "module_network_switch_1u", "module_server_1u" })
+            Assert.That(campaign.BuyAndAttach(module, rack).Ok, Is.True, module);
+        campaign.AdvanceDays(1);
+        Assert.That(campaign.SiteInfra(campaign.Premises).Any, Is.True);
+        game.OpenRoot(new SitesPanel());
+        Dispatcher.UIThread.RunJobs();
+        Assert.That(window.GetVisualDescendants().OfType<Image>().Count(i => (i.Tag as string)?.StartsWith("gauge:") == true), Is.GreaterThanOrEqualTo(2));
+
+        // Portefeuille : la puce sombre du type, le bouton « … » de chaque carte
+        game.OpenRoot(new ProjectsPanel());
+        Dispatcher.UIThread.RunJobs();
+        Assert.That(Frames(window).Count(p => p.Skin == "pack:hud_chip_dark"), Is.EqualTo(campaign.Products.Count));
+
+        // Fiche projet : les notes passent par la commande et restent après une sauvegarde
+        var product = campaign.Products[0];
+        Ui.SetDetailsOpen("Nom, notes, couleur, fermeture", true);
+        game.OpenRoot(new ProjectPanel(product.Id).Show(ProjectPanel.Tab.Settings));
+        Dispatcher.UIThread.RunJobs();
+        var notes = window.GetVisualDescendants().OfType<TextBox>().First(t => t.AcceptsReturn);
+        notes.Text = "Prix à revoir\nAjouter l'export";
+        Dispatcher.UIThread.RunJobs();
+        Assert.That(product.Notes, Is.EqualTo("Prix à revoir\nAjouter l'export"));
+        Ui.SetDetailsOpen("Nom, notes, couleur, fermeture", false);
+        window.Close();
+    }
+
+    [AvaloniaTest]
+    public void ASlowOperationShowsTheBusyCursorThenRestoresIt()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "startuprush_uitests", Guid.NewGuid().ToString("N"));
+        var window = new MainWindow(new SaveStore(root), new Settings(), Path.Combine(root, "settings.json"));
+        window.Show();
+        bool ranWhileBusy = false;
+        window.Busy(() => ranWhileBusy = window.IsBusy && window.Cursor != null);
+        Assert.That(window.IsBusy, Is.True, "le curseur d'attente s'affiche avant le travail");
+        Assert.That(window.Cursor, Is.Not.Null);
+        Dispatcher.UIThread.RunJobs();
+        Assert.That(ranWhileBusy, Is.True);
+        Assert.That(window.IsBusy, Is.False);
+        Assert.That(window.Cursor, Is.Null, "le curseur revient après le travail");
+        window.Close();
+    }
 }

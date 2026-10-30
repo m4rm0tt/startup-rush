@@ -102,6 +102,21 @@ public class SaveTest
     }
 
     [Test]
+    public void ProjectNotesAreBoundedAndSurviveAReload()
+    {
+        var campaign = BusyCampaign();
+        var app = campaign.Products[0];
+        Assert.That(campaign.SetNotes(app.Id, "Prix à revoir\nExport en mai").Ok, Is.True);
+        Assert.That(campaign.SetNotes(999, "x").Ok, Is.False);
+
+        var copy = SaveStore.Deserialize(SaveStore.Serialize(campaign));
+        Assert.That(copy.Products[0].Notes, Is.EqualTo("Prix à revoir\nExport en mai"));
+
+        campaign.SetNotes(app.Id, new string('a', 5_000));
+        Assert.That(app.Notes, Has.Length.EqualTo(1_000), "les notes sont bornées");
+    }
+
+    [Test]
     public void AnOldSaveWithContractsIsMigratedWithoutLosingMoney()
     {
         string path = Path.Combine(_root, "old", "manual-Partie.json");

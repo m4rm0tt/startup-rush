@@ -58,6 +58,17 @@ public class LineChart : Control
                 context.DrawImage(grid, new Rect(0, 0, w / 2, grid.PixelSize.Height), new Rect(x, y, w, 2));
             }
         }
+        var gridV = PackSkins.Sprite("hud_chart_grid_v");
+        double stepV = gridV.PixelSize.Height * 2;
+        for (int k = 1; k <= 3; k++)
+        {
+            double x = Math.Round(left + (right - left) * k / 4);
+            for (double y = top; y < bottom; y += stepV)
+            {
+                double h = Math.Min(stepV, bottom - y);
+                context.DrawImage(gridV, new Rect(0, 0, gridV.PixelSize.Width, h / 2), new Rect(x, y, 2, h));
+            }
+        }
         var axis = PackSkins.Sprite("hud_chart_axis_h");
         context.DrawImage(axis, new Rect(0, 0, axis.PixelSize.Width, axis.PixelSize.Height), new Rect(left, bottom, right - left, 4));
 

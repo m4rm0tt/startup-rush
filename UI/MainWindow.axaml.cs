@@ -53,6 +53,31 @@ public partial class MainWindow : Window
 
     public IScreen? Current => ScreenHost.Content as IScreen;
 
+    /// <summary>
+    /// Une opération qui fait attendre (chargement, sauvegarde) : le curseur d'attente du pack s'affiche d'abord, le travail
+    /// suit au prochain passage du fil d'interface, puis le curseur revient.
+    /// </summary>
+    public void Busy(Action work)
+    {
+        Cursor = UI.Pixel.PackSkins.Cursor("cursor_busy");
+        IsBusy = true;
+        Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+        {
+            try
+            {
+                work();
+            }
+            finally
+            {
+                Cursor = null;
+                IsBusy = false;
+            }
+        }, Avalonia.Threading.DispatcherPriority.Background);
+    }
+
+    /// <summary>Une opération longue est en cours (curseur d'attente affiché).</summary>
+    public bool IsBusy { get; private set; }
+
     public void SaveSettings()
     {
         Settings.Save(SettingsPath);

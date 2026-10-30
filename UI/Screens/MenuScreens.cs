@@ -106,7 +106,7 @@ public class TitleScreen : MenuScreen
         Content = Frame(buttons, 520);
     }
 
-    private void Continue(SaveEntry entry)
+    private void Continue(SaveEntry entry) => Window.Busy(() =>
     {
         var (campaign, message) = Window.Store.LoadWithRecovery(entry.Path);
         if (campaign == null)
@@ -115,7 +115,7 @@ public class TitleScreen : MenuScreen
             return;
         }
         Window.StartGame(campaign, entry.Path, message);
-    }
+    });
 
     public override bool HandleKey(Key key, KeyModifiers modifiers)
     {

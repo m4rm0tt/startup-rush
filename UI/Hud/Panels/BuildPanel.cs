@@ -17,6 +17,9 @@ public class BuildPanel : GamePanel
     /// <summary>Rubrique du catalogue ouverte (gardée le temps de la session).</summary>
     private static string _group = "Bureaux et chaises";
 
+    /// <summary>Recherche dans le catalogue (2 lettres au moins), retenue tant que le jeu est ouvert.</summary>
+    private static string _search = "";
+
     private static string GroupOf(FurnitureDef def) => def.Kind switch
     {
         FurnitureKind.Desk or FurnitureKind.Chair => "Bureaux et chaises",
@@ -92,14 +95,33 @@ public class BuildPanel : GamePanel
         // Catalogue, une rubrique à la fois
         var groups = FurnitureCatalog.Buyable.GroupBy(GroupOf).ToList();
         var wrap = new WrapPanel();
-        foreach (var def in groups.First(g => g.Key == _group))
-            wrap.Children.Add(CatalogButton(def));
+        // Une recherche cherche dans tout le catalogue (sans reconstruire le panneau : la saisie garde le focus) ; sinon une rubrique
+        void Fill()
+        {
+            wrap.Children.Clear();
+            string query = _search.Trim();
+            var shown = query.Length >= 2
+                ? FurnitureCatalog.Buyable.Where(d => d.Name.Contains(query, System.StringComparison.CurrentCultureIgnoreCase)).ToList()
+                : groups.First(g => g.Key == _group).ToList();
+            foreach (var def in shown)
+                wrap.Children.Add(CatalogButton(def));
+            if (shown.Count == 0)
+                wrap.Children.Add(Ui.Muted("Aucun objet ne correspond.", 13));
+        }
+        Fill();
         column.Children.Add(Ui.Section("Catalogue",
-            Ui.Choice(groups.Select(g => (g.Key, g.Key)), _group, g =>
-            {
-                _group = g;
-                Refresh();
-            }),
+            Ui.Row(8,
+                HudKit.Dropdown(groups.Select(g => (g.Key, g.Key)), _group, g =>
+                {
+                    _group = g;
+                    _search = "";
+                    Refresh();
+                }),
+                Ui.Input(_search, v =>
+                {
+                    _search = v;
+                    Fill();
+                }, "Chercher un objet", 220, search: true)),
             wrap));
 
         // Cartons
@@ -253,7 +275,7 @@ public class BuildPanel : GamePanel
             string? locked = Campaign.ModuleLock(module);
             var kinds = module.Objects.Select(o => FurnitureCatalog.Get(o.Asset)).GroupBy(d => d.Name).Select(g => g.Count() > 1 ? $"{g.Count()} × {g.Key}" : g.Key);
             string content = string.Join(", ", kinds);
-            var card = Ui.Card(Ui.Column(4,
+            var card = HudKit.Card(Ui.Column(4,
                 Ui.Text(module.Name, 14, Palette.Snow, bold: true),
                 Ui.Muted($"{module.Width} × {module.Depth} cases · {cost:N0} CHF", 12),
                 Ui.Muted(content, 12),
@@ -261,7 +283,7 @@ public class BuildPanel : GamePanel
                         $"{content}. {(module.Floors.Count > 0 ? "Avec son sol. " : "")}Coût : {cost:N0} CHF. Il se pose à la première place libre du site affiché" +
                         $"{(module.AgainstWall != null ? $", contre le mur {(module.AgainstWall == "left" ? "gauche" : "droit")} si possible" : "")}.",
                         "Installer", () => Run(Campaign.InstallModule(module.Id)), danger: false),
-                    locked == null && Campaign.Ledger.CanSpend(cost) ? "gold" : "", locked == null, locked)));
+                    locked == null && Campaign.Ledger.CanSpend(cost) ? "gold" : "", locked == null, locked)), locked == null);
             card.Width = 250;
             card.Margin = new Thickness(0, 0, 8, 8);
             wrap.Children.Add(card);
@@ -318,6 +340,8 @@ public class BuildPanel : GamePanel
             child.HorizontalAlignment = HorizontalAlignment.Center;
         bool selected = Session.Tool is { MovingItemId: null, StoredId: null } t && t.DefId == def.Id;
         bool locked = def.UnlockNode is { } node && !Campaign.IsUnlocked(node);
+        if (locked)
+            content.Children.Insert(0, Ui.Image(Icons.Get("icon_unavailable", "#9c8878"), 16, 16));
         var button = new Button { Content = content, Margin = new Thickness(0, 0, 4, 4), Padding = new Thickness(4, 4, 4, 8), IsEnabled = !locked };
         if (locked)
             content.Opacity = 0.5;

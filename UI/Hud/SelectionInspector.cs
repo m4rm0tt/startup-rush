@@ -43,8 +43,9 @@ public static class SelectionInspector
     {
         var def = item.Def;
         var thumb = PackLibrary.Thumbnail(def.Id);
-        var column = Ui.Column(6, Ui.Row(Ui.Image(thumb, thumb.PixelSize.Width, thumb.PixelSize.Height),
-            Ui.Column(2, Ui.Title(def.Name, 18), Ui.Muted(def.Effect, 13))));
+        var column = Ui.Column(6, new PixelPanel { Skin = "pack:hud_titlebar", Padding = new Avalonia.Thickness(8, 3, 8, 5), Tag = "titlebar",
+                Child = Ui.Text(def.Name, 12, Palette.Ink, bold: true, wrap: false) },
+            Ui.Row(Ui.Image(thumb, thumb.PixelSize.Width, thumb.PixelSize.Height), Ui.Muted(def.Effect, 13)));
         // Les cartons du plan (chambre de départ) : ceux du déménagement, avec leur contenu réel
         if (def.Id == "moving_box")
             column.Children.Add(Cartons(screen, campaign));

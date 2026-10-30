@@ -284,7 +284,8 @@ public class ProjectPanel(int productId) : GamePanel
         foreach (var def in Design.ForType(product.ArchetypeId))
             wrap.Children.Add(ComponentCard(product, def, speed, requested.Contains(def.Id) || _highlight == def.Id));
         var graph = new DependencyGraph(product);
-        Control? dependencies = graph.Children.Count == 0 ? null : Ui.Details("Dépendances entre composants", Ui.Column(6, graph,
+        Control? dependencies = graph.Children.Count == 0 ? null : Ui.Details("Dépendances entre composants", Ui.Column(6,
+            Ui.Row(6, Ui.Image(Icons.Get("icon_dependency", "#2b2128"), 16, 16), Ui.Muted("Ce que chaque composant demande avant d'exister.", 12)), graph,
             Ui.Muted("Un composant relié à droite demande celui de gauche. Vert : acquis · sarcelle : en file · pointillés : possible plus tard · rouge : il manque ce qu'il demande.", 12)));
         return Ui.Column(8,
             Hint("components", "Chaque composant répond à un besoin. Ajouter ou améliorer met le travail en file : l'équipe s'en charge."),
@@ -301,10 +302,29 @@ public class ProjectPanel(int productId) : GamePanel
             row.Children.Add(new Border
             {
                 Margin = new Thickness(0, 0, 14, 4),
-                Child = Ui.Column(2, Ui.Text(ProductCatalog.NeedName(need), 12, Palette.Fog, wrap: false), Ui.Bar(coverage[need], coverage[need] < 0.35 ? Palette.Ember : Palette.Sky, 8, 130)),
+                Child = Ui.Column(2, Ui.Row(4, NeedIcon(need) is { } icon ? Ui.Image(Icons.Get(icon, "#6f5f5d"), 16, 16) : null, Ui.Text(ProductCatalog.NeedName(need), 12, Palette.Fog, wrap: false)),
+                    Ui.Bar(coverage[need], coverage[need] < 0.35 ? Palette.Ember : Palette.Sky, 8, 130)),
             });
         return Ui.Card(Ui.Column(4, Ui.Text("Ce que le public attend", 13, Palette.Gold, bold: true), row));
     }
+
+    /// <summary>Pictogramme d'un besoin du public (ceux qui ont un équivalent dans le pack).</summary>
+    private static string? NeedIcon(Need need) => need switch
+    {
+        Need.Conversion => "icon_conversion",
+        Need.Trust => "icon_security",
+        Need.Engagement => "icon_users",
+        Need.Power => "icon_cpu",
+        Need.Intelligence => "icon_ai",
+        _ => null,
+    };
+
+    /// <summary>Pictogramme d'une cause d'avis : la panne et le bug ont le leur, les autres le signe d'alerte.</summary>
+    private static string TrendIcon(ReviewTrend trend) => trend.Positive ? "heart"
+        : trend.Cause is "bugs" or "defects" ? "icon_bug"
+        : trend.Cause == "stockout" ? "icon_stock"
+        : trend.Cause == "price" ? "icon_sell"
+        : "warning";
 
     private Control ComponentCard(Product product, ComponentDef def, double speed, bool requested)
     {
@@ -373,7 +393,7 @@ public class ProjectPanel(int productId) : GamePanel
         foreach (var trend in trends)
         {
             var row = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto") };
-            row.Children.Add(Ui.Icon(trend.Positive ? "heart" : "warning", 22));
+            row.Children.Add(Ui.Icon(TrendIcon(trend), 22));
             var text = Ui.Column(0, Ui.Text(trend.Text, 15, trend.Positive ? Palette.Leaf : Palette.Snow),
                 Ui.Muted(trend.Positive ? "Ce qui plaît" : $"Environ {trend.Share:P0} des avis en parlent", 12));
             text.Margin = new Thickness(8, 0);
@@ -464,8 +484,10 @@ public class ProjectPanel(int productId) : GamePanel
         }
         string name = product.Name;
         var rename = Ui.Input(product.Name, v => name = v, width: 240);
-        column.Children.Add(Ui.Details("Nom, couleur, fermeture", Ui.Column(8,
+        column.Children.Add(Ui.Details("Nom, notes, couleur, fermeture", Ui.Column(8,
             Ui.Row(rename, Ui.Button("Renommer", () => Run(Campaign.Rename(product.Id, name)))),
+            Ui.Text("Notes", 12, Palette.Fog),
+            HudKit.Multiline(product.Notes, v => Campaign.SetNotes(product.Id, v), "Idées, choix à faire, rappels…"),
             swatches,
             Ui.Button("Fermer ce projet", () => Screen.Confirm($"Fermer {product.Name} ?", "Plus de revenus ni de coûts. Ses composants et ses utilisateurs disparaissent.", "Fermer",
                 () =>

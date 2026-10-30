@@ -44,6 +44,10 @@ public class SitesPanel : GamePanel
         {
             card.Children.Add(Ui.Pair("Capacités", Capacities(infra.Hosting, infra.Compute, infra.Gpu, infra.Storage)));
             card.Children.Add(Ui.Pair("Électricité", $"{infra.PowerDraw:0.#} / {infra.PowerSupply:0.#} kW · froid {infra.Heat:0.#} / {infra.Cooling:0.#} kW"));
+            // Jauges à segments : part de l'alimentation et du froid déjà prise (au-delà de 100 %, le site ralentit)
+            card.Children.Add(Ui.Row(10,
+                Ui.Image(Icons.Get("icon_energy", "#2b2128"), 16, 16), HudKit.Gauge(infra.PowerSupply <= 0 ? 0 : infra.PowerDraw / infra.PowerSupply, $"Électricité : {infra.PowerDraw:0.#} / {infra.PowerSupply:0.#} kW"),
+                Ui.Image(Icons.Get("icon_cooling", "#2b2128"), 16, 16), HudKit.Gauge(infra.Cooling <= 0 ? (infra.Heat > 0 ? 1 : 0) : infra.Heat / infra.Cooling, $"Froid : {infra.Heat:0.#} / {infra.Cooling:0.#} kW de chaleur")));
         }
         if (Campaign.IncidentsToday.Contains(site.Id))
             card.Children.Add(Ui.Text("Incident aujourd'hui : moitié de la capacité.", 13, Palette.Ember));

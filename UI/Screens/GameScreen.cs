@@ -459,6 +459,8 @@ public class GameScreen : UserControl, IScreen
         bool samePanel = ReferenceEquals(_lastBuilt, panel);
         _lastBuilt = panel;
         var body = panel.Build();
+        // La barre de défilement (20 px) se pose par-dessus le contenu : on lui laisse sa place pour ne rien couper à droite
+        body.Margin = new Thickness(body.Margin.Left, body.Margin.Top, body.Margin.Right + 24, body.Margin.Bottom);
         var dock = new DockPanel();
         DockPanel.SetDock(header, Dock.Top);
         dock.Children.Add(header);

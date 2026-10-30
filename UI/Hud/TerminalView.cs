@@ -109,7 +109,7 @@ public class TerminalView : UserControl
         var title = new PixelPanel
         {
             Skin = "pack:term_titlebar", Padding = new Thickness(8, 2, 8, 4), HorizontalAlignment = HorizontalAlignment.Left,
-            Child = new TextBlock { FontFamily = mono, FontSize = 18, Foreground = Palette.Brush("#fbf5e6"), Text = $"terminal · {Campaign.FindProduct(Campaign.Terminal!.ProductId)?.Name}" },
+            Child = new TextBlock { FontFamily = mono, FontSize = 18, Foreground = Palette.Brush("#fbf5e6"), Text = $"terminal · {Campaign.TerminalTitle(Campaign.Terminal!.ProductId)}" },
         };
         // La barre de progression sur une bande de sélection, comme la ligne en cours d'un vrai terminal
         var progress = new PixelPanel { Skin = "pack:term_selection", Padding = new Thickness(4, 2), Child = _segments, HorizontalAlignment = HorizontalAlignment.Left };

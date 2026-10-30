@@ -40,6 +40,11 @@ public class ResearchPanel : GamePanel
         }
         if (Campaign.Research.Count == 0)
             running.Children.Add(Ui.Muted("Aucune recherche en cours."));
+        // Le fondateur peut préparer la recherche de son site au terminal (même budget du jour, mêmes équipements)
+        var (canPrepare, prepareWhy) = Campaign.CanOpenTerminal(Campaign.ResearchTerminal);
+        running.Children.Add(Ui.Row(8,
+            Ui.Button("Préparer au terminal", () => Screen.OpenTerminal(Campaign.ResearchTerminal), canPrepare ? "gold" : "", enabled: canPrepare, icon: "icon_terminal"),
+            Ui.Muted(canPrepare ? $"Chaque mot juste fait avancer « {Campaign.ResearchFor(Campaign.SiteOf(Campaign.Founder))!.Def.Name} » ({Campaign.SiteOf(Campaign.Founder).Name})." : prepareWhy, 13)));
         column.Children.Add(Ui.Section("En cours", running));
 
         var catalog = new WrapPanel();

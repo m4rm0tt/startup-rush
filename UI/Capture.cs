@@ -165,6 +165,12 @@ public static class Capture
         game.PushPanel(new ProjectPanel(app.Id).Show(ProjectPanel.Tab.Components, trend?.Link.StartsWith("component:") == true ? trend.Link["component:".Length..] : null));
         await Shot(window, folder, "09_atelier_composants", report);
         game.ClosePanels();
+        Hud.Ui.SetDetailsOpen("Dépendances entre composants", true);
+        game.OpenRoot(new ProjectsPanel());
+        game.PushPanel(new ProjectPanel(app.Id).Show(ProjectPanel.Tab.Components));
+        await Shot(window, folder, "09b_dependances", report);
+        Hud.Ui.SetDetailsOpen("Dépendances entre composants", false);
+        game.ClosePanels();
         game.OpenRoot(new ProjectsPanel());
         game.PushPanel(new ProjectPanel(app.Id).Show(ProjectPanel.Tab.Settings));
         await Shot(window, folder, "10_reglages_projet", report);
@@ -391,6 +397,12 @@ public static class Capture
         later.OpenRoot(new ProjectsPanel());
         later.PushPanel(new ProjectPanel(board.Id));
         await Shot(window, folder, "33_materiel", report);
+        later.ClosePanels();
+        later.OpenRoot(new FinancePanel());
+        await Shot(window, folder, "33b_resultat_par_site", report);
+        var month = advanced.SiteResults(advanced.Month);
+        report.Add($"Résultat par site ({advanced.Month}) : {string.Join(" · ", month.Select(r => $"{r.Name} {r.Result:N0}"))} ; total {month.Sum(r => r.Result):N0} = " +
+                   $"{Core.campaign.Campaign.OperatingResult(advanced.Ledger.Months[advanced.Month]):N0}.");
         later.ClosePanels();
 
         // Lot 6 : une IA entraînée puis publiée, un studio, une zone XR et une installation quantique

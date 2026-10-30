@@ -154,9 +154,7 @@ public partial class Campaign
             return;
         }
         var discipline = new[] { Discipline.Research, Discipline.Code, Discipline.Test, Discipline.Design }.MaxBy(person.Skill);
-        double stations = Math.Min(2, site.Items.Count(i => i.DefId == "research_station"));
-        double quantum = project.Def.Quantum && QuantumUnitsOnline >= 1 ? 1.25 : 1;
-        double points = WorkRate(person, discipline) * (1 + 0.1 * stations) * quantum;
+        double points = WorkRate(person, discipline) * ResearchBoost(site, project);
         project.Progress += points;
         project.Today += points;
         person.PointsThisWeek += points;
@@ -164,6 +162,10 @@ public partial class Campaign
         if (project.Progress >= project.Def.Effort)
             CompleteResearch(project);
     }
+
+    /// <summary>+10 % par paillasse du site (2 au plus), +25 % pour une recherche de calcul intensif avec du quantique en service.</summary>
+    private double ResearchBoost(Premises site, ResearchProject project) =>
+        (1 + 0.1 * Math.Min(2, site.Items.Count(i => i.DefId == "research_station"))) * (project.Def.Quantum && QuantumUnitsOnline >= 1 ? 1.25 : 1);
 
     private void CompleteResearch(ResearchProject project)
     {

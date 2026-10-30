@@ -213,6 +213,10 @@ public static class ProductCatalog
             N((Need.Engagement, 0.2)), 8, 0.1, 0.2, 0.4, 0.1, 0.3, 0.7),
         new("cloudsave", "Sauvegarde en ligne", "shield", "Rien ne se perd.", ["saas", "game"],
             N((Need.Trust, 0.2), (Need.Engagement, 0.1)), 10, 0.1, 0.25, 0.3, 0.2, 0.3, 0.9),
+        new("api", "API publique", "bolt", "D'autres logiciels se branchent au tien : intégrations et usage à la demande.", ["saas", "marketplace", "ai"],
+            N((Need.Productivity, 0.25), (Need.Conversion, 0.15)), 14, 0.05, 0.3, 0.6, 0.3, 0.5, 1.2, Requires: "login"),
+        new("storage", "Stockage de fichiers", "briefcase", "Chacun garde ses documents et ses médias en ligne (charge des serveurs).", ["saas", "social", "ai"],
+            N((Need.Productivity, 0.2), (Need.Trust, 0.15)), 12, 0.1, 0.25, 1.0, 0.2, 0.4, 0.9, Requires: "login"),
         // Applications
         new("dashboard", "Tableau de bord", "chart", "L'écran de travail principal.", ["saas"],
             N((Need.Productivity, 0.45), (Need.Engagement, 0.1)), 18, 0.3, 0.2, 0.8, 0.5, 0.7, 1.3, Requires: "login"),
@@ -241,6 +245,10 @@ public static class ProductCatalog
             N((Need.Engagement, 0.2), (Need.Fun, 0.05)), 8, 0.4, 0.15, 0.1, 0, 0.2, 0.5),
         new("multiplayer", "Multijoueur", "people", "Jouer ensemble, en ligne.", ["game"],
             N((Need.Engagement, 0.45), (Need.Fun, 0.2)), 30, 0.1, 0.25, 2, 0.5, 1, 1.8, UnlockNode: "multiplayer"),
+        new("game_menu", "Menus et options", "gem", "Écran titre, réglages, sauvegardes à choisir : un jeu qui fait sérieux.", ["game"],
+            N((Need.Trust, 0.15), (Need.Engagement, 0.05)), 6, 0.6, 0.15, 0, 0.1, 0.1, 0.3, Requires: "gameplay"),
+        new("inventory", "Inventaire", "briefcase", "Objets à collecter, équiper et échanger.", ["game"],
+            N((Need.Fun, 0.15), (Need.Discovery, 0.15)), 12, 0.3, 0.2, 0.2, 0.2, 0.3, 0.8, Requires: "gameplay"),
         // Communauté et place de marché
         new("feed", "Fil de contenu", "screen", "Ce que publient les membres.", ["social"],
             N((Need.Engagement, 0.4), (Need.Discovery, 0.15)), 16, 0.2, 0.2, 1.4, 0.3, 0.6, 1.2),

@@ -18,7 +18,8 @@ public static class ComponentArt
         ["gameplay"] = "comp_engine", ["content"] = "comp_progression", ["leaderboard"] = "comp_leaderboard", ["multiplayer"] = "comp_netplay",
         ["feed"] = "comp_feed", ["profile"] = "comp_profile", ["moderation"] = "comp_security", ["listings"] = "comp_inventory",
         ["catalog"] = "comp_catalog", ["checkout"] = "comp_payment", ["reviews"] = "comp_reviews", ["ai_core"] = "comp_processing",
-        ["ai_feature"] = "comp_automation",
+        ["ai_feature"] = "comp_automation", ["api"] = "comp_api", ["storage"] = "comp_storage", ["game_menu"] = "comp_game_menu",
+        ["inventory"] = "comp_inventory",
     };
 
     private static readonly Dictionary<string, Bitmap> Previews = new();

@@ -40,7 +40,29 @@ public static class Reviews
         if (support < 0.85 && product.Archetype.TicketFactor > 0.55)
             trends.Add(new("support", false, Math.Clamp((1 - support) * 1.5, 0.1, 0.6), "« Personne ne répond à mes questions. »", "upkeep"));
         if (price < 0.7 && product.Model != RevenueModel.Ads)
-            trends.Add(new("price", false, Math.Clamp((1 - price) * 0.8, 0.1, 0.6), "« Trop cher pour ce que c'est. »", "price"));
+            trends.Add(new("price", false, Math.Clamp((1 - price) * 0.8, 0.1, 0.6),
+                product.ArchetypeId == "ai" ? "« Trop cher à l'usage pour ce que ça répond. »" : "« Trop cher pour ce que c'est. »", "price"));
+
+        // IA : la qualité des réponses est celle du modèle branché (ses composants d'IA la portent, Campaign.Ai.cs)
+        var aiParts = product.Components.Where(c => c.DefId is "ai_core" or "ai_feature" && c.Level > 0).ToList();
+        double aiQuality = aiParts.Count == 0 ? 0 : aiParts.Average(c => c.Quality);
+        if (aiParts.Count > 0 && aiQuality < 0.45)
+            trends.Add(new("ai_quality", false, Math.Clamp((0.45 - aiQuality) * 1.5 + 0.1, 0.1, 0.7),
+                "« Les réponses sont souvent fausses ou à côté de la question. »", "ai"));
+
+        // Matériel : ruptures (clients repartis sans rien) et pannes (taux de défauts de la série)
+        if (product.IsHardware)
+        {
+            double lost = recent.Sum(d => d.Lost), sold = recent.Sum(d => d.Sold);
+            if (lost >= 1)
+                trends.Add(new("stockout", false, Math.Clamp(lost / (lost + sold) * 0.9, 0.1, 0.7),
+                    "« Toujours en rupture : des semaines d'attente, j'ai fini par acheter ailleurs. »", "industry"));
+            if (product.DefectRate > 0.04)
+                trends.Add(new("defects", false, Math.Clamp(product.DefectRate * 4, 0.1, 0.7),
+                    "« Le mien est tombé en panne au bout d'un mois. »", "industry"));
+            else if (sold >= 1 && product.DefectRate < 0.02)
+                trends.Add(new("reliable", true, 0.3, "« Solide : rien à redire après des semaines d'usage. »", "industry"));
+        }
         // IA : la capacité d'inférence plafonne l'audience servie (délai et coût d'usage)
         if (aiShort)
             trends.Add(new("ai_capacity", false, Math.Clamp((aiLoad - 0.9) * 0.8, 0.1, 0.7),
@@ -48,8 +70,9 @@ public static class Reviews
         if (product.ArchetypeId == "marketplace" && liquidity < 0.6)
             trends.Add(new("sellers", false, Math.Clamp(1 - liquidity, 0.1, 0.7), "« Pas assez d'offres, je ne trouve rien. »", "component:listings"));
 
+        // Un besoin mal couvert (l'intelligence d'un produit d'IA est déjà dite par la qualité des réponses)
         var (need, coverage, fix) = Design.WeakestNeed(product, unlocked);
-        if (coverage < 0.35 && product.Archetype.Needs.GetValueOrDefault(need) >= 0.15)
+        if (coverage < 0.35 && product.Archetype.Needs.GetValueOrDefault(need) >= 0.15 && !(need == Need.Intelligence && aiParts.Count > 0))
             trends.Add(new($"need:{need}", false, Math.Clamp((0.35 - coverage) * 1.2 + 0.1, 0.1, 0.6),
                 NeedComplaint(need, fix?.Name), need == Need.Intelligence ? "ai" : fix != null ? $"component:{fix.Id}" : "components"));
 
@@ -59,6 +82,8 @@ public static class Reviews
         var best = product.Components.Where(c => c.Level > 0 && c.Def.Needs.Count > 0)
             .OrderByDescending(c => ProductCatalog.LevelValue(c.Level) * c.Quality * c.Def.Needs.Sum(n => product.Archetype.Needs.GetValueOrDefault(n.Key) * n.Value))
             .FirstOrDefault();
+        if (aiParts.Count > 0 && aiQuality >= 0.7 && !aiShort)
+            trends.Add(new("ai_good", true, Math.Clamp(aiQuality - 0.3, 0.1, 0.6), "« Des réponses justes, et vite. »", "ai"));
         if (best != null && best.Quality >= 0.55)
             trends.Add(new("praise", true, Math.Clamp(Design.Appeal(product), 0.1, 0.8), $"« J'adore : {best.Def.Name.ToLowerInvariant()}. »", $"component:{best.DefId}"));
 

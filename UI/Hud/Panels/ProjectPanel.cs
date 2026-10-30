@@ -266,6 +266,8 @@ public class ProjectPanel(int productId) : GamePanel
             Show(Tab.Components);
         else if (link == "ai")
             Open(new AiPanel());
+        else if (link == "industry")
+            Open(new IndustryPanel());
         else
             Show(Tab.Settings, link);
         Refresh();
@@ -281,9 +283,13 @@ public class ProjectPanel(int productId) : GamePanel
         var wrap = new WrapPanel();
         foreach (var def in Design.ForType(product.ArchetypeId))
             wrap.Children.Add(ComponentCard(product, def, speed, requested.Contains(def.Id) || _highlight == def.Id));
+        var graph = new DependencyGraph(product);
+        Control? dependencies = graph.Children.Count == 0 ? null : Ui.Details("Dépendances entre composants", Ui.Column(6, graph,
+            Ui.Muted("Un composant relié à droite demande celui de gauche. Vert : acquis · sarcelle : en file · pointillés : possible plus tard · rouge : il manque ce qu'il demande.", 12)));
         return Ui.Column(8,
             Hint("components", "Chaque composant répond à un besoin. Ajouter ou améliorer met le travail en file : l'équipe s'en charge."),
             NeedsBar(product),
+            dependencies,
             wrap);
     }
 

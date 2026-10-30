@@ -51,6 +51,14 @@ public partial class Campaign
     /// <summary>Nombre de sessions ouvertes depuis le début : sert à tirer les mots sans toucher au hasard de la simulation.</summary>
     public int TerminalSessions { get; set; }
 
+    /// <summary>« Projet » d'une session de préparation de recherche : le fondateur fait avancer la recherche de son site.</summary>
+    public const int ResearchTerminal = -1;
+
+    /// <summary>Ce sur quoi porte la session ouverte (nom du projet, ou de la recherche).</summary>
+    public string TerminalTitle(int productId) => productId == ResearchTerminal
+        ? $"recherche · {ResearchFor(SiteOf(Founder))?.Def.Name ?? "aucune"}"
+        : FindProduct(productId)?.Name ?? "";
+
     /// <summary>Le fondateur peut-il travailler au terminal sur ce projet maintenant ? Sinon, pourquoi.</summary>
     public (bool Ok, string Reason) CanOpenTerminal(int productId)
     {
@@ -70,6 +78,11 @@ public partial class Campaign
         var (site, post) = PostOf(founder);
         if (!remote && (post == null || space.Layout.Check(site, post) != space.WorkstationIssue.None))
             return (false, "Il te faut un poste complet (bureau, chaise, ordinateur).");
+        if (productId == ResearchTerminal)
+            return ResearchFor(SiteOf(founder)) != null ? (true, "")
+                : (false, Research.Any(r => !r.Paused && !ResearchDone.Contains(r.DefId))
+                    ? "Il manque un équipement de la recherche sur ton site : le terminal prépare la recherche là où tu es."
+                    : "Aucune recherche en cours : choisis-en une dans Recherche.");
         var product = FindProduct(productId);
         if (product == null)
             return (false, "Projet inconnu.");
@@ -136,6 +149,8 @@ public partial class Campaign
         }
 
         var founder = Founder;
+        if (session.ProductId == ResearchTerminal)
+            return SubmitResearchWord(session, founder, seconds, assisted);
         var product = FindProduct(session.ProductId);
         var item = product == null ? null : PickWork(founder, product);
         if (product == null || item == null && MaintenanceLeft(product) <= 0)
@@ -144,17 +159,7 @@ public partial class Campaign
             return new WordResult(true, 0, session.Stage);
         }
         var discipline = item?.Discipline ?? Discipline.Code;
-
-        double chars = session.Word.Length / Math.Max(0.2, seconds);
-        double speed = assisted || chars <= Tuning.Terminal.SlowCharsPerSecond ? Tuning.Terminal.SlowFactor
-            : chars >= Tuning.Terminal.FastCharsPerSecond ? Tuning.Terminal.FastFactor
-            : Tuning.Terminal.SlowFactor + (Tuning.Terminal.FastFactor - Tuning.Terminal.SlowFactor)
-              * (chars - Tuning.Terminal.SlowCharsPerSecond) / (Tuning.Terminal.FastCharsPerSecond - Tuning.Terminal.SlowCharsPerSecond);
-        double skill = 0.4 + founder.Skill(discipline) * 0.012;
-        double energy = founder.Energy >= 40 ? 1 : 0.6 + founder.Energy / 100;
-        double tools = (IsUnlocked("ai_tools") ? 1.1 : 1) * (IsUnlocked("boss_speed") ? 1.15 : 1)
-                       * (discipline == Discipline.Test && IsUnlocked("boss_tests") ? 1.3 : 1);
-        double points = Tuning.Terminal.PointsPerWord * skill * TerminalOutput(founder) * speed * energy * tools;
+        var (points, speed, energy) = WordPoints(session, founder, discipline, seconds, assisted);
 
         if (item != null)
         {
@@ -192,6 +197,58 @@ public partial class Campaign
         return new WordResult(true, points, session.Stage);
     }
 
+    /// <summary>Le travail d'un mot juste : vitesse de frappe (bornée), compétence, poste, énergie et outils débloqués.</summary>
+    private (double Points, double Speed, double Energy) WordPoints(TerminalSession session, Person founder, Discipline discipline, double seconds, bool assisted)
+    {
+        double chars = session.Word.Length / Math.Max(0.2, seconds);
+        double speed = assisted || chars <= Tuning.Terminal.SlowCharsPerSecond ? Tuning.Terminal.SlowFactor
+            : chars >= Tuning.Terminal.FastCharsPerSecond ? Tuning.Terminal.FastFactor
+            : Tuning.Terminal.SlowFactor + (Tuning.Terminal.FastFactor - Tuning.Terminal.SlowFactor)
+              * (chars - Tuning.Terminal.SlowCharsPerSecond) / (Tuning.Terminal.FastCharsPerSecond - Tuning.Terminal.SlowCharsPerSecond);
+        double skill = 0.4 + founder.Skill(discipline) * 0.012;
+        double energy = founder.Energy >= 40 ? 1 : 0.6 + founder.Energy / 100;
+        double tools = (IsUnlocked("ai_tools") ? 1.1 : 1) * (IsUnlocked("boss_speed") ? 1.15 : 1)
+                       * (discipline == Discipline.Test && IsUnlocked("boss_tests") ? 1.3 : 1);
+        return (Tuning.Terminal.PointsPerWord * skill * TerminalOutput(founder) * speed * energy * tools, speed, energy);
+    }
+
+    /// <summary>
+    /// Préparation de recherche : un mot juste fait avancer la recherche équipée du site du fondateur, comme une minute de
+    /// chercheur (paillasses et quantique comptent), bornée à ce qu'il reste. Le budget du jour est dû dès qu'elle avance.
+    /// </summary>
+    private WordResult SubmitResearchWord(TerminalSession session, Person founder, double seconds, bool assisted)
+    {
+        var site = SiteOf(founder);
+        var project = ResearchFor(site);
+        if (project == null)
+        {
+            Finish(session, "Plus de recherche prête sur ton site.");
+            return new WordResult(true, 0, session.Stage);
+        }
+        var discipline = new[] { Discipline.Research, Discipline.Code, Discipline.Test, Discipline.Design }.MaxBy(founder.Skill);
+        var (points, speed, energy) = WordPoints(session, founder, discipline, seconds, assisted);
+        points *= ResearchBoost(site, project);
+        points = Math.Min(project.Def.Effort - project.Progress, points);
+        project.Progress += points;
+        project.Today += points;
+        session.Stage = $"Recherche · {project.Def.Name}";
+        if (project.Progress >= project.Def.Effort)
+            CompleteResearch(project);
+        founder.PointsThisWeek += points;
+        founder.Energy = Math.Max(0, founder.Energy - Tuning.Terminal.EnergyPerWord * (IsUnlocked("boss_comfort") ? 0.6 : 1));
+        founder.Status = $"Au terminal : {session.Stage}";
+        session.Points += points;
+        session.WordsTyped++;
+        session.LastYield = speed * energy;
+        if (session.WordsLeft == 0)
+            Finish(session, "Session complète.");
+        else if (ResearchFor(site) == null)
+            Finish(session, "Recherche terminée : plus rien de prêt sur ton site.");
+        else
+            NextWord(founder);
+        return new WordResult(true, points, session.Stage);
+    }
+
     private static string StageName(work.WorkItem item) => $"{item.Title} · {Person.DisciplineName(item.Discipline).ToLowerInvariant()}";
 
     private static void Finish(TerminalSession session, string reason)
@@ -204,10 +261,19 @@ public partial class Campaign
     private void NextWord(Person founder)
     {
         var session = Terminal!;
-        var product = FindProduct(session.ProductId);
-        var item = product == null ? null : PickWork(founder, product);
-        session.Stage = item != null ? StageName(item) : "Maintenance · corrections";
-        var words = TerminalWords.For(item?.Discipline ?? Discipline.Test);
+        IReadOnlyList<string> words;
+        if (session.ProductId == ResearchTerminal)
+        {
+            session.Stage = ResearchFor(SiteOf(founder)) is { } project ? $"Recherche · {project.Def.Name}" : "Recherche";
+            words = TerminalWords.Research;
+        }
+        else
+        {
+            var product = FindProduct(session.ProductId);
+            var item = product == null ? null : PickWork(founder, product);
+            session.Stage = item != null ? StageName(item) : "Maintenance · corrections";
+            words = TerminalWords.For(item?.Discipline ?? Discipline.Test);
+        }
         string next;
         do
             next = session.Words.Pick(words);
@@ -242,11 +308,18 @@ public static class TerminalWords
         "reponse", "merci", "question", "aide", "bonjour", "guide", "astuce", "lien", "compte", "suivi",
     ];
 
+    public static readonly IReadOnlyList<string> Research =
+    [
+        "hypothese", "mesure", "prototype", "protocole", "echantillon", "calcul", "modele", "analyse", "banc", "courbe",
+        "donnee", "essai", "carnet", "schema", "formule", "capteur", "signal", "spectre", "etalon", "releve",
+    ];
+
     public static IReadOnlyList<string> For(Discipline discipline) => discipline switch
     {
         Discipline.Design => Design,
         Discipline.Test => Test,
         Discipline.Support => Support,
+        Discipline.Research => Research,
         _ => Code
     };
 }

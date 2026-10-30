@@ -219,6 +219,14 @@ public class BuildPanel : GamePanel
             var wrap = new WrapPanel();
             foreach (var finish in Finishes.Catalog.Where(f => f.Kind == kind))
                 wrap.Children.Add(FinishCell(finish, wall));
+            // Revenir à ce que prévoit le plan (zones de service, motifs d'origine), sans frais
+            bool redone = kind == FinishKind.Floor ? premises.FloorMaterial != null : premises.WallPattern != null;
+            var back = Ui.Button(kind == FinishKind.Floor ? "Sols du plan" : "Murs du plan", () => Screen.Confirm(
+                kind == FinishKind.Floor ? "Remettre les sols du plan ?" : "Remettre les murs du plan ?",
+                "Le local retrouve ce que prévoit son plan. Les travaux déjà payés ne sont pas remboursés.", "Remettre",
+                () => Run(Campaign.ResetFinish(kind)), danger: false), "tab", redone);
+            back.VerticalAlignment = VerticalAlignment.Center;
+            wrap.Children.Add(back);
             return wrap;
         }
         string Name(string? id) => id != null && Finishes.Has(id) ? Finishes.Get(id).Name : "celui du plan";
@@ -227,7 +235,8 @@ public class BuildPanel : GamePanel
         return Ui.Section("Finitions",
             Ui.Text($"Sol : {floor}", 14, Palette.Cloud), Cells(FinishKind.Floor),
             Ui.Text(left == right ? $"Murs : {left}" : $"Murs : {left} à gauche, {right} à droite", 14, Palette.Cloud), Cells(FinishKind.Wall),
-            Ui.Muted("Le faux plancher distribue mieux le froid existant ; le lambris ajoute de l'ambiance. Le reste fait l'identité du local.", 12));
+            Ui.Muted("Le faux plancher distribue mieux le froid existant ; le lambris ajoute de l'ambiance ; la moquette et les panneaux acoustiques " +
+                     "aident la concentration (plafond commun avec les cloisons). Le reste fait l'identité du local.", 12));
     }
 
     private Control FinishCell(FinishDef finish, Dictionary<string, string> wall)

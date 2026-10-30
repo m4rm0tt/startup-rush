@@ -387,8 +387,20 @@ public static class PackLibrary
         int cx, cy;
         if (asset.TryGetProperty("variants", out var variants))
         {
-            source = Layer(variants.EnumerateObject().First().Value.GetProperty("layers").GetProperty("base"), new Dictionary<string, string>());
-            (cx, cy) = (source.W / 2, source.H / 2);
+            // Un petit pavage (variantes selon U et V) recadré au centre d'un quart de dalle : les joints des dalles en 2 × 2
+            // (carrelage, faux plancher) dessinent un losange, pas une croix au milieu de la vignette
+            var period = asset.TryGetProperty("period_tiles", out var pt) ? (U: pt[0].GetInt32(), V: pt[1].GetInt32()) : (U: 1, V: 1);
+            source = new Img(192, 96);
+            var none = new Dictionary<string, string>();
+            for (int u = -1; u <= 2; u++)
+                for (int v = -1; v <= 2; v++)
+                {
+                    string name = $"u{(u % period.U + period.U) % period.U}v{(v % period.V + period.V) % period.V}";
+                    var variant = variants.TryGetProperty(name, out var found) ? found : variants.EnumerateObject().First().Value;
+                    var (ax, ay) = Anchor(variant);
+                    Blend.Over(source, Layer(variant.GetProperty("layers").GetProperty("base"), none), 96 + (u - v) * 32 - ax, 32 + (u + v) * 16 - ay);
+                }
+            (cx, cy) = (96, 40);
         }
         else
         {

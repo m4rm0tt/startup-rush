@@ -338,7 +338,8 @@ public static class Layout
         double pause = Math.Min(MaxBreak, BaseBreak + refresh + rest);
 
         var partitions = items.Where(i => i.Def.Kind == FurnitureKind.Partition).ToList();
-        double focus = Math.Min(MaxFocus, partitions.Sum(i => i.Def.Focus)) * Covered(partitions);
+        // Cloisons (pour les personnes qu'elles couvrent) et traitement acoustique des finitions, dans le même plafond
+        double focus = Math.Min(MaxFocus, Math.Min(MaxFocus, partitions.Sum(i => i.Def.Focus)) * Covered(partitions) + Finishes.AcousticFocus(premises));
 
         // Coordination : une table de réunion compte avec ses chaises ; les petits supports pour un quart chacun
         double big = 0, small = 0, training = 0;

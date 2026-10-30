@@ -72,7 +72,8 @@ public partial class Campaign
         bool camera = Count(site, "camera_tripod") + Count(site, "capture_device") > 0, green = Count(site, "greenscreen_backdrop") > 0;
         int lights = Math.Min(2, Count(site, "softbox_light"));
         bool mic = Count(site, "mic_stand") > 0, monitors = Count(site, "studio_monitors") > 0;
-        bool acoustic = Count(site, "partition_acoustic") > 0;
+        // Une séparation acoustique, ou des panneaux acoustiques aux murs (finitions)
+        bool acoustic = Count(site, "partition_acoustic") > 0 || Finishes.AcousticWalls(site) > 0;
         double video = (camera ? 0.35 : 0) + (green ? 0.25 : 0) + 0.2 * lights;
         double audio = (mic ? 0.5 : 0) + (monitors ? 0.3 : 0) + (acoustic ? 0.2 : 0);
         bool staffed = Staffed(site, Discipline.Design);

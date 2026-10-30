@@ -28,4 +28,17 @@ public partial class Campaign
         InvalidateLayout();
         return CommandResult.Success(finish.Kind == FinishKind.Floor ? $"Nouveau sol : {finish.Name}." : $"Nouveaux murs : {finish.Name}.");
     }
+
+    /// <summary>Remise des sols ou des murs du site affiché tels que le plan les prévoit (sans frais, sans remboursement des travaux).</summary>
+    public CommandResult ResetFinish(FinishKind kind)
+    {
+        if (kind == FinishKind.Floor ? Premises.FloorMaterial == null : Premises.WallPattern == null)
+            return CommandResult.Fail(kind == FinishKind.Floor ? "Les sols sont déjà ceux du plan." : "Les murs sont déjà ceux du plan.");
+        if (kind == FinishKind.Floor)
+            Premises.FloorMaterial = null;
+        else
+            Premises.WallPattern = null;
+        InvalidateLayout();
+        return CommandResult.Success(kind == FinishKind.Floor ? "Sols remis comme sur le plan." : "Murs remis comme sur le plan.");
+    }
 }

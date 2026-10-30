@@ -23,14 +23,20 @@ public static class Finishes
     /// <summary>Ambiance apportée par un mur en lambris ⚙️ (deux murs : 1), comptée dans le plafond d'ambiance.</summary>
     public const double PanelAmbiance = 0.5;
 
+    /// <summary>Concentration apportée par chaque mur en panneaux acoustiques ⚙️, dans le plafond commun de concentration.</summary>
+    public const double AcousticWallFocus = 0.005;
+
+    /// <summary>Concentration apportée par un sol textile (moquette) sur toute la surface ⚙️, à proportion de la surface.</summary>
+    public const double TextileFloorFocus = 0.01;
+
     private const string Decorative = "Décoratif : l'identité du local, sans autre effet.";
 
     public static readonly IReadOnlyList<FinishDef> Catalog =
     [
         new("floor_concrete", FinishKind.Floor, "Béton ciré", 20m, Decorative),
         new("floor_vinyl", FinishKind.Floor, "Vinyle moucheté", 25m, Decorative),
-        new("floor_carpet", FinishKind.Floor, "Moquette", 30m, Decorative),
-        new("floor_carpet_tiles", FinishKind.Floor, "Dalles de moquette", 35m, Decorative),
+        new("floor_carpet", FinishKind.Floor, "Moquette", 30m, "Étouffe le bruit : concentration +1 % (plafond commun de 4 %)."),
+        new("floor_carpet_tiles", FinishKind.Floor, "Dalles de moquette", 35m, "Étouffe le bruit : concentration +1 % (plafond commun de 4 %)."),
         new("floor_tile_ceramic", FinishKind.Floor, "Carrelage", 45m, Decorative),
         new("floor_wood_planks", FinishKind.Floor, "Plancher en lames", 50m, Decorative),
         new("floor_parquet", FinishKind.Floor, "Parquet à bâtons", 60m, Decorative),
@@ -45,7 +51,8 @@ public static class Finishes
         new("pattern_stripes", FinishKind.Wall, "Bandes verticales", 70m, Decorative),
         new("pattern_concrete", FinishKind.Wall, "Béton banché", 80m, Decorative),
         new("pattern_brick", FinishKind.Wall, "Brique", 110m, Decorative),
-        new("pattern_acoustic", FinishKind.Wall, "Panneaux acoustiques", 160m, Decorative),
+        new("pattern_acoustic", FinishKind.Wall, "Panneaux acoustiques", 160m,
+            "Concentration +1 % (plafond commun de 4 %) ; tient lieu de séparation acoustique pour le studio."),
         new("pattern_wood_panels", FinishKind.Wall, "Lambris", 140m, "Un lieu chaleureux : +1 d'ambiance (dans le plafond de 6)."),
     ];
 
@@ -102,6 +109,20 @@ public static class Finishes
         double raised = cells.Count(m => m is "floor_raised" or "floor_raised_vent") / (double)cells.Count;
         return raised * (cells.Contains("floor_raised_vent") ? VentCooling : RaisedCooling);
     }
+
+    /// <summary>
+    /// Traitement acoustique des finitions : panneaux acoustiques aux murs du fond et sol textile, à proportion de la surface.
+    /// Compté avec les cloisons dans le même plafond de concentration (Layout.MaxFocus).
+    /// </summary>
+    public static double AcousticFocus(Premises premises)
+    {
+        var cells = FloorGrid(premises).Cast<string?>().ToList();
+        double textile = cells.Count == 0 ? 0 : cells.Count(m => m is "floor_carpet" or "floor_carpet_tiles") / (double)cells.Count;
+        return AcousticWalls(premises) * AcousticWallFocus + textile * TextileFloorFocus;
+    }
+
+    /// <summary>Murs du fond habillés de panneaux acoustiques (0 à 2).</summary>
+    public static int AcousticWalls(Premises premises) => new[] { "left", "right" }.Count(w => Pattern(premises, w) == "pattern_acoustic");
 
     /// <summary>Ambiance apportée par les murs (lambris), avant le plafond commun d'ambiance.</summary>
     public static double Ambiance(Premises premises) =>

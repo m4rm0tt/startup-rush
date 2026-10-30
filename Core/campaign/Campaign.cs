@@ -178,24 +178,32 @@ public partial class Campaign
             HiredAt = campaign.Minute,
             Morale = 75,
         };
+        Person.FillSecondary(founder.Skills);
         if (campaign.Premises.Workstations.FirstOrDefault() is { } post && campaign.Premises.ChairOf(post) is { } chair)
             chair.AssignedPersonId = founder.Id;
         campaign.People.Add(founder);
 
         campaign.SeedCompetitors();
         for (int i = 0; i < 3; i++)
-            campaign.Candidates.Add(Recruitment.Generate(campaign.Random, campaign.Minute, campaign.NewId(), 0));
+            campaign.Candidates.Add(Recruitment.Generate(campaign.Random, campaign.Minute, campaign.NewId(), 0, campaign.OpenJobs()));
 
         campaign.Notify(Severity.Info, "entreprise", $"Bienvenue chez {companyName}",
             "Crée ton premier projet, puis ouvre le terminal pour y travailler.", "projects");
         return campaign;
     }
 
+    /// <summary>Les types de projet dont les concurrents existent dès le début ; les autres arrivent avec le premier projet.</summary>
+    public static readonly IReadOnlySet<string> FoundingTypes = new HashSet<string> { "saas", "game", "social", "marketplace" };
+
+    /// <summary>
+    /// Les concurrents des publics des quatre types de départ. Ceux des types ajoutés ensuite (IA, XR, matériel) sont tirés
+    /// au premier projet de ce public (EnsureCompetitors) : ajouter un public au catalogue ne décale plus le hasard des parties.
+    /// </summary>
     private void SeedCompetitors()
     {
         string[] names = ["Flowly", "Tasko", "Brikk", "Nuvola", "Kanto", "Lumio", "Vendo", "Marketto", "Swapz", "Trova", "Zelia", "Orbit"];
         int n = 0;
-        foreach (var segment in ProductCatalog.Segments.Where(s => !ProductCatalog.Type(s.TypeId).Hardware))
+        foreach (var segment in ProductCatalog.Segments.Where(s => FoundingTypes.Contains(s.TypeId)))
         {
             int count = segment.TypeId == "social" ? 2 : Random.Next(1, 3);
             for (int i = 0; i < count; i++)
@@ -211,6 +219,20 @@ public partial class Campaign
     }
 
     public int NewId() => NextId++;
+
+    /// <summary>
+    /// Les métiers ouverts au recrutement : ceux des projets, plus opérateur·rice dès qu'une ligne de production existe (ou
+    /// que l'industrialisation est acquise) et chercheur·se dès que la recherche a un poste ou une file.
+    /// </summary>
+    public IReadOnlyList<Discipline> OpenJobs()
+    {
+        var jobs = new List<Discipline>(Recruitment.ProjectJobs);
+        if (IsUnlocked("industry") || Sites.Any(s => s.Items.Any(i => i.Def.Kind == FurnitureKind.Station)))
+            jobs.Add(Discipline.Operations);
+        if (Research.Count > 0 || ResearchDone.Count > 0 || Sites.Any(s => s.Items.Any(i => i.DefId == "research_station")))
+            jobs.Add(Discipline.Research);
+        return jobs;
+    }
 
     public Person Founder => People.First(p => p.IsFounder);
     public Company MainCompany => Companies[0];
@@ -279,11 +301,13 @@ public partial class Campaign
     }
 
     /// <summary>Enregistre un mouvement de trésorerie à la date du jour.</summary>
-    public void Post(decimal amount, Category category, string label, int? companyId = null) =>
-        Ledger.Post(Minute, Month, amount, category, label, companyId ?? MainCompany.Id);
+    public void Post(decimal amount, Category category, string label, int? companyId = null, int? siteId = null,
+        IReadOnlyDictionary<int, decimal>? split = null) =>
+        Ledger.Post(Minute, Month, amount, category, label, companyId ?? MainCompany.Id, siteId, split);
 
     /// <summary>Crée une dette à payer (le paiement se fait automatiquement à l'échéance si l'argent est là).</summary>
-    public Bill AddBill(string label, Category category, decimal amount, long dueAt, int? personId = null)
+    public Bill AddBill(string label, Category category, decimal amount, long dueAt, int? personId = null, int? siteId = null,
+        Dictionary<int, decimal>? split = null)
     {
         var bill = new Bill
         {
@@ -295,6 +319,8 @@ public partial class Campaign
             DueAt = dueAt,
             PersonId = personId,
             CompanyId = MainCompany.Id,
+            SiteId = siteId,
+            SiteSplit = split,
         };
         Ledger.Bills.Add(bill);
         return bill;
@@ -325,11 +351,11 @@ public partial class Campaign
     }
 
     /// <summary>Paie tout de suite (achat par carte). Refusé si le découvert autorisé serait dépassé.</summary>
-    public CommandResult Spend(decimal amount, Category category, string label)
+    public CommandResult Spend(decimal amount, Category category, string label, int? siteId = null)
     {
         if (!Ledger.CanSpend(amount))
             return CommandResult.Fail($"Trésorerie insuffisante : il faudrait {amount:N0} CHF (découvert compris).");
-        Post(-amount, category, label);
+        Post(-amount, category, label, siteId: siteId);
         return CommandResult.Success();
     }
 }

@@ -1,4 +1,5 @@
 using Core.space;
+using Core.team;
 
 namespace Core.campaign;
 
@@ -11,7 +12,7 @@ public record StudioSummary(double Video, double Audio, double Score, bool Staff
     public double Bonus => MaxBonus * Score;
 }
 
-/// <summary>La zone de test XR d'un site : un casque seul sert au prototype ; avec balises, tapis et quelqu'un sur place, la zone est complète.</summary>
+/// <summary>La zone de test XR d'un site : un casque seul sert au prototype ; avec balises, tapis et un·e testeur·se sur place, la zone est complète.</summary>
 public record XrSummary(bool Headset, int Stations, bool Mat, bool Staffed, double Capacity, IReadOnlyList<string> Missing)
 {
     /// <summary>Part des défauts d'un produit XR que la zone complète fait disparaître à chaque amélioration ⚙️.</summary>
@@ -52,7 +53,18 @@ public partial class Campaign
 
     private static int Count(Premises site, string defId) => site.Items.Count(i => i.DefId == defId);
 
-    private bool Staffed(Premises site) => People.Any(p => SiteOf(p) == site);
+    /// <summary>Niveau qu'il faut dans le métier pour tenir le studio (design) ou la zone XR (tests) ⚙️.</summary>
+    public const double StudioSkill = 45;
+
+    /// <summary>
+    /// Le studio et la zone XR se tiennent par compétence : il faut, sur le site, quelqu'un qui travaille dans le métier au
+    /// niveau voulu (design pour le studio, tests pour la XR). Sans cette personne, l'installation ne donne que la moitié.
+    /// </summary>
+    public Person? StaffFor(Premises site, Discipline discipline) =>
+        People.Where(p => SiteOf(p) == site && !p.LeavesAt.HasValue && p.Skill(discipline) >= StudioSkill)
+            .OrderByDescending(p => p.Skill(discipline)).FirstOrDefault();
+
+    private bool Staffed(Premises site, Discipline discipline) => StaffFor(site, discipline) != null;
 
     public StudioSummary StudioOf(Premises site)
     {
@@ -63,7 +75,7 @@ public partial class Campaign
         bool acoustic = Count(site, "partition_acoustic") > 0;
         double video = (camera ? 0.35 : 0) + (green ? 0.25 : 0) + 0.2 * lights;
         double audio = (mic ? 0.5 : 0) + (monitors ? 0.3 : 0) + (acoustic ? 0.2 : 0);
-        bool staffed = Staffed(site);
+        bool staffed = Staffed(site, Discipline.Design);
         var missing = new List<string>();
         if (!camera) missing.Add("caméra");
         if (!green) missing.Add("fond vert");
@@ -71,6 +83,7 @@ public partial class Campaign
         if (!mic) missing.Add("micro");
         if (!monitors) missing.Add("enceintes");
         if (!acoustic) missing.Add("séparation acoustique");
+        if (!staffed) missing.Add($"un·e designer sur le site (Design {StudioSkill:0}+)");
         double score = (0.6 * video + 0.4 * audio) * (staffed ? 1 : 0.5);
         return new StudioSummary(video, audio, score, staffed, missing);
     }
@@ -82,12 +95,12 @@ public partial class Campaign
     {
         bool headset = Count(site, "xr_headset_stand") > 0, mat = Count(site, "xr_play_mat") > 0;
         int stations = Math.Min(2, Count(site, "xr_base_station"));
-        bool staffed = Staffed(site);
+        bool staffed = Staffed(site, Discipline.Test);
         var missing = new List<string>();
         if (!headset) missing.Add("casque XR");
         if (stations < 2) missing.Add(stations == 0 ? "balises de suivi" : "une seconde balise");
         if (!mat) missing.Add("tapis de zone");
-        if (!staffed) missing.Add("quelqu'un sur place");
+        if (!staffed) missing.Add($"un·e testeur·se sur le site (Tests {StudioSkill:0}+)");
         double capacity = ((headset ? 0.4 : 0) + 0.15 * stations + (mat ? 0.3 : 0)) * (staffed ? 1 : 0.5);
         return new XrSummary(headset, stations, mat, staffed, capacity, missing);
     }

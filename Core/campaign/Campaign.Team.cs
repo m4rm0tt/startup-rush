@@ -39,13 +39,13 @@ public partial class Campaign
         if (person == null || person.IsFounder)
             return CommandResult.Fail("Impossible.");
         decimal severance = person.Salary * Tuning.Finance.SeverancePayMonths;
-        AddBill($"Indemnité de départ de {person.Name}", Category.Severance, severance, Minute + 5L * GameTime.MinutesPerDay, person.Id);
+        AddBill($"Indemnité de départ de {person.Name}", Category.Severance, severance, Minute + 5L * GameTime.MinutesPerDay, person.Id, SiteOf(person).Id);
         // Les jours travaillés depuis la dernière paie restent dus
         var date = GameTime.ToDate(Minute);
         var lastPayday = date.Day >= 25 ? new DateTime(date.Year, date.Month, 25) : new DateTime(date.Year, date.Month, 1).AddMonths(-1).AddDays(24);
         double share = Math.Clamp((Minute - Math.Max(GameTime.ToMinute(lastPayday), person.StartsAt)) / (30.0 * GameTime.MinutesPerDay), 0, 1);
         if (share > 0.02)
-            AddBill($"Dernier salaire de {person.Name}", Category.Salaries, person.Salary * (decimal)share, Minute + 5L * GameTime.MinutesPerDay, person.Id);
+            AddBill($"Dernier salaire de {person.Name}", Category.Salaries, person.Salary * (decimal)share, Minute + 5L * GameTime.MinutesPerDay, person.Id, SiteOf(person).Id);
         RemovePerson(person, $"{person.Name} a été licencié·e (indemnité {severance:N0} CHF).");
         foreach (var other in Staff)
             other.Morale = Math.Max(0, other.Morale - 6);

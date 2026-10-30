@@ -22,7 +22,7 @@ public partial class Campaign
         var check = Layout.CanPlace(Premises, def, x, y, f);
         if (!check.Ok)
             return CommandResult.Fail(check.Reason);
-        var paid = Spend(def.Price, Category.Equipment, $"Achat : {def.Name}");
+        var paid = Spend(def.Price, Category.Equipment, $"Achat : {def.Name}", Premises.Id);
         if (!paid.Ok)
             return paid;
         Premises.Items.Add(Placed(NewId(), def, x, y, f, def.Price));
@@ -53,7 +53,7 @@ public partial class Campaign
         var (check, host, s) = AttachCheck(def, hostId, socket, null);
         if (!check.Ok)
             return CommandResult.Fail(check.Reason);
-        var paid = Spend(def.Price, Category.Equipment, $"Achat : {def.Name}");
+        var paid = Spend(def.Price, Category.Equipment, $"Achat : {def.Name}", Premises.Id);
         if (!paid.Ok)
             return paid;
         Premises.Items.Add(new PlacedItem { Id = NewId(), DefId = def.Id, HostId = host!.Id, Socket = s, Facing = host.Facing, PaidPrice = def.Price });
@@ -181,7 +181,7 @@ public partial class Campaign
         Storage.Remove(stored);
         decimal value = ResaleValue(item.PaidPrice);
         if (value > 0)
-            Post(value, Category.Resale, $"Revente : {item.Def.Name}");
+            Post(value, Category.Resale, $"Revente : {item.Def.Name}", siteId: Premises.Id);
         return CommandResult.Success(value > 0 ? $"{item.Def.Name} revendu·e {value:N0} CHF." : $"{item.Def.Name} retiré·e (sans valeur de revente).");
     }
 

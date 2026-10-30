@@ -41,6 +41,8 @@ public class FinancePanel : GamePanel
 
         column.Children.Add(Ui.Section("Où va l'argent chaque mois", Costs()));
         column.Children.Add(Ui.Section("D'où il vient", Incomes()));
+        if (Campaign.Sites.Count > 1 || Campaign.Ledger.SiteMonths.Values.Any(m => m.Keys.Any(k => k != Core.finance.Ledger.Common)))
+            column.Children.Add(Ui.Section("Résultat par site", BySite()));
         column.Children.Add(Ui.Details("Détails : factures, mois par mois, financement", Ui.Column(10, Bills(), MonthTable(), Funding())));
         return column;
     }
@@ -163,6 +165,50 @@ public class FinancePanel : GamePanel
         return Ui.Section("Mois par mois", grid);
     }
 
+    /// <summary>Le mois en cours et le précédent, découpés par site ; la dernière ligne est le résultat du mois (même total).</summary>
+    private Control BySite()
+    {
+        var months = Campaign.Ledger.SiteMonths.Keys.OrderByDescending(k => k).Take(2).ToList();
+        if (months.Count == 0)
+            return Ui.Muted("Aucun mouvement pour l'instant.", 13);
+        var column = Ui.Column(8);
+        foreach (string month in months)
+        {
+            var results = Campaign.SiteResults(month);
+            var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*,110,110,110"), RowSpacing = 3 };
+            int row = 0;
+            void Add(string name, decimal? income, decimal? expenses, decimal? result, bool bold = false)
+            {
+                grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+                var cells = new Control[]
+                {
+                    Ui.Text(name, 13, bold ? Palette.Snow : Palette.Cloud, bold),
+                    Ui.Text(income is { } i ? $"{i:N0}" : "Recettes", 13, income is null ? Palette.Fog : Palette.Leaf, bold, wrap: false),
+                    Ui.Text(expenses is { } e ? $"{e:N0}" : "Charges", 13, expenses is null ? Palette.Fog : Palette.Ember, bold, wrap: false),
+                    Ui.Text(result is { } r ? $"{r:N0}" : "Résultat", 13, result is { } v ? Ui.Signed(v) : Palette.Fog, bold, wrap: false),
+                };
+                for (int c = 0; c < cells.Length; c++)
+                {
+                    if (c > 0)
+                        cells[c].HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right;
+                    Grid.SetRow(cells[c], row);
+                    Grid.SetColumn(cells[c], c);
+                    grid.Children.Add(cells[c]);
+                }
+                row++;
+            }
+            Add(month, null, null, null, true);
+            foreach (var r in results)
+                Add(r.Name, r.Income, r.Expenses, r.Result);
+            Add("Total du mois", results.Sum(r => r.Income), results.Sum(r => r.Expenses), results.Sum(r => r.Result), true);
+            column.Children.Add(grid);
+        }
+        column.Children.Add(Ui.Muted("Chaque site porte son loyer, ses charges, les salaires de ceux qui y travaillent, son électricité, ses achats, " +
+                                     "ses travaux, le matériel qu'il expédie et le cloud à proportion de sa capacité. Les logiciels, le marketing, " +
+                                     "l'hébergement externe, ta rémunération et les intérêts sont communs. La somme des lignes est le résultat du mois.", 12));
+        return column;
+    }
+
     public static string CategoryName(Category category) => category switch
     {
         Category.Contracts => "Prestations (ancienne version)",
@@ -191,7 +237,13 @@ public class FinancePanel : GamePanel
         Category.Refund => "Remboursements clients",
         Category.Cloud => "Services cloud",
         Category.Energy => "Électricité et réseau",
-        _ => "Registre du commerce"
+        Category.Materials => "Matières",
+        Category.Warranty => "Garanties et retours",
+        Category.Research => "Recherche",
+        Category.ChannelFees => "Canaux de vente",
+        Category.Logistics => "Transport entre sites",
+        Category.Registration => "Registre du commerce",
+        _ => category.ToString()
     };
 
     private Control Funding()

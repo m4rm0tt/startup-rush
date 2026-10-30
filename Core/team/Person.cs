@@ -2,7 +2,11 @@ using Core.space;
 
 namespace Core.team;
 
-public enum Discipline { Design, Code, Test, Support }
+/// <summary>
+/// Les métiers. Les quatre premiers font avancer les projets ; Production (opérateur·rice) fait tourner les lignes de l'atelier
+/// et de l'usine, Recherche (chercheur·se) fait avancer la file de recherche.
+/// </summary>
+public enum Discipline { Design, Code, Test, Support, Operations, Research }
 
 /// <summary>
 /// Ce sur quoi une personne travaille : un projet précis, ou « automatique » (le projet prioritaire du portefeuille).
@@ -134,6 +138,8 @@ public class Person
         Discipline.Design => "designer",
         Discipline.Code => "développeur·se",
         Discipline.Test => "testeur·se",
+        Discipline.Operations => "opérateur·rice",
+        Discipline.Research => "chercheur·se",
         _ => "support / ops"
     };
 
@@ -142,6 +148,24 @@ public class Person
         Discipline.Design => "Design",
         Discipline.Code => "Développement",
         Discipline.Test => "Tests",
+        Discipline.Operations => "Production",
+        Discipline.Research => "Recherche",
         _ => "Support"
     };
+
+    /// <summary>
+    /// Les compétences de production et de recherche de quelqu'un qui n'en a pas fait son métier : une part de ses autres
+    /// compétences (la rigueur des tests et du code sert à la ligne ; le code et le design, à la recherche). Sans tirage.
+    /// </summary>
+    public static void FillSecondary(Dictionary<Discipline, double> skills)
+    {
+        double S(Discipline d) => skills.GetValueOrDefault(d);
+        if (!skills.ContainsKey(Discipline.Operations))
+            skills[Discipline.Operations] = Math.Round(0.5 * S(Discipline.Test) + 0.3 * S(Discipline.Code));
+        if (!skills.ContainsKey(Discipline.Research))
+            skills[Discipline.Research] = Math.Round(0.5 * Math.Max(S(Discipline.Code), S(Discipline.Design)) + 0.2 * S(Discipline.Test));
+    }
+
+    /// <summary>Rythme d'un opérateur à sa station selon sa compétence de production (1 vers 30, 1,36 pour un senior) ⚙️.</summary>
+    public static double OperatorPace(double skill) => Math.Clamp(0.85 + 0.006 * skill, 0.85, 1.4);
 }

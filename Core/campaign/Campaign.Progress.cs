@@ -27,7 +27,7 @@ public partial class Campaign
         // Le recrutement élargi agit tout de suite, pas seulement lundi prochain
         if (node.Id == "hiring")
             for (int i = 0; i < 2; i++)
-                Candidates.Add(team.Recruitment.Generate(Random, Minute, NewId(), Renown + 25));
+                Candidates.Add(team.Recruitment.Generate(Random, Minute, NewId(), Renown + 25, OpenJobs()));
         return CommandResult.Success($"{node.Name} débloqué.");
     }
 }

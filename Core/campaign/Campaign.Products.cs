@@ -43,20 +43,42 @@ public partial class Campaign
             Priority = Products.Count == 0 ? 0 : Products.Max(p => p.Priority) + 1,
         };
         Products.Add(product);
-        // Le matériel a ses concurrents, qui n'apparaissent qu'avec le premier projet de ce public
-        if (type.Hardware && Competitors.All(c => c.SegmentId != segment.Id))
-            for (int i = 0, n = Random.Next(1, 3); i < n; i++)
-                Competitors.Add(new Competitor
-                {
-                    Id = NewId(), Name = $"{(new[] { "Volta", "Kobalt", "Neon", "Ferro", "Quartz" })[Random.Next(0, 5)]} {segment.Name}",
-                    SegmentId = segment.Id, Appeal = Math.Round(Random.Range(0.2, 0.34), 2), Price = segment.ReferencePrice,
-                });
+        EnsureCompetitors(segment, type.Hardware);
         if (type.Hardware && IsUnlocked("online_shop"))
             product.SalesChannels.Add("shop");
         foreach (string defId in initial)
             QueueComponent(product.Id, defId);
         Notify(Severity.Info, "projet", $"{product.Name} : c'est parti", "L'équipe s'y met toute seule.", $"product:{product.Id}");
         return (CommandResult.Success(), product);
+    }
+
+    /// <summary>
+    /// Les concurrents d'un public qui n'en a pas encore, tirés au premier projet qui le vise. Le matériel garde son tirage
+    /// d'origine (parties du lot 5) ; l'IA et la XR tirent d'un hasard propre au public, sans toucher au hasard de la partie.
+    /// </summary>
+    private void EnsureCompetitors(Segment segment, bool hardware)
+    {
+        if (Competitors.Any(c => c.SegmentId == segment.Id))
+            return;
+        if (hardware)
+        {
+            for (int i = 0, n = Random.Next(1, 3); i < n; i++)
+                Competitors.Add(new Competitor
+                {
+                    Id = NewId(), Name = $"{(new[] { "Volta", "Kobalt", "Neon", "Ferro", "Quartz" })[Random.Next(0, 5)]} {segment.Name}",
+                    SegmentId = segment.Id, Appeal = Math.Round(Random.Range(0.2, 0.34), 2), Price = segment.ReferencePrice,
+                });
+            return;
+        }
+        ulong salt = segment.Id.Aggregate(0xCBF29CE484222325UL, (h, c) => (h ^ c) * 0x100000001B3UL);
+        var random = new SimRandom(Seed ^ salt);
+        string[] names = ["Nexa", "Synth", "Cortexa", "Lumen", "Halo", "Vista", "Prism", "Aether"];
+        for (int i = 0, n = random.Next(1, 3); i < n; i++)
+            Competitors.Add(new Competitor
+            {
+                Id = NewId(), Name = $"{random.Pick(names)} {segment.Name}", SegmentId = segment.Id,
+                Appeal = Math.Round(random.Range(0.18, 0.34), 2), Price = segment.ReferencePrice,
+            });
     }
 
     private string SuggestName(string typeId)

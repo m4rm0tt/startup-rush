@@ -153,7 +153,7 @@ public partial class Campaign
                 ? "Recherche : il manque un équipement sur ce site" : "Recherche : aucune recherche en cours";
             return;
         }
-        var discipline = new[] { Discipline.Code, Discipline.Test, Discipline.Design }.MaxBy(person.Skill);
+        var discipline = new[] { Discipline.Research, Discipline.Code, Discipline.Test, Discipline.Design }.MaxBy(person.Skill);
         double stations = Math.Min(2, site.Items.Count(i => i.DefId == "research_station"));
         double quantum = project.Def.Quantum && QuantumUnitsOnline >= 1 ? 1.25 : 1;
         double points = WorkRate(person, discipline) * (1 + 0.1 * stations) * quantum;

@@ -81,9 +81,12 @@ public partial class Campaign
         IncidentDays.RemoveAll(d => d < Day - 30);
 
         // Électricité et abonnements réseau, facturés avec le mois
-        decimal energy = Sites.Sum(s => (decimal)SiteInfra(s).KwhPerDay * Infrastructure.KwhPrice + SiteInfra(s).MonthlyCost / 30);
-        if (energy > 0)
-            Ledger.Accrue(Category.Energy, Math.Round(energy, 2));
+        foreach (var s in Sites)
+        {
+            decimal energy = Math.Round((decimal)SiteInfra(s).KwhPerDay * Infrastructure.KwhPrice + SiteInfra(s).MonthlyCost / 30, 2);
+            if (energy > 0)
+                Ledger.Accrue(Category.Energy, energy, s.Id);
+        }
 
         // Répartition : les projets d'abord, dans l'ordre du portefeuille, avec une marge de 25 % sur leur charge
         var totals = Infra();

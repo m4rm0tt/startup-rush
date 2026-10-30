@@ -85,8 +85,9 @@ public class SitesTest
         watchingOffice.AdvanceDays(12);
 
         Assert.That(watchingHome.Products[0].Components.Sum(c => c.Level), Is.GreaterThan(0));
-        string Without(Campaign c) => SaveStore.SerializeState(c).Replace($"\"SiteId\":{c.SiteId}", "");
-        Assert.That(Without(watchingHome), Is.EqualTo(Without(watchingOffice)), "le site affiché ne change rien");
+        // On remet la même vue des deux côtés : seule la simulation est comparée
+        watchingHome.ViewSite(watchingOffice.SiteId);
+        Assert.That(SaveStore.SerializeState(watchingHome), Is.EqualTo(SaveStore.SerializeState(watchingOffice)), "le site affiché ne change rien");
     }
 
     [Test]

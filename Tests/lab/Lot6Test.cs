@@ -3,6 +3,7 @@ using Core.campaign;
 using Core.persistence;
 using Core.products;
 using Core.space;
+using Core.team;
 using static Tests.campaign.CampaignTestKit;
 
 namespace Tests.lab;
@@ -311,6 +312,7 @@ public class Lot6Test
     public void AStudioScoresItsPartsWithCapsAndNeedsSomeoneOnSite()
     {
         var campaign = NewCampaign();
+        campaign.Founder.Skills[Discipline.Design] = 60;
         foreach (string id in new[] { "camera_tripod", "greenscreen_backdrop", "softbox_light", "softbox_light", "softbox_light", "mic_stand", "studio_monitors" })
             Install(campaign, id);
         var studio = campaign.StudioOf(campaign.Premises);
@@ -321,6 +323,12 @@ public class Lot6Test
         Install(campaign, "partition_acoustic");
         Assert.That(campaign.StudioOf(campaign.Premises).Score, Is.EqualTo(0.6 + 0.4).Within(1e-9));
         Assert.That(campaign.StudioOf(campaign.Premises).Bonus, Is.EqualTo(StudioSummary.MaxBonus).Within(1e-9), "le bonus est plafonné");
+
+        // Le studio se tient par compétence : sans designer de niveau suffisant sur le site, il ne rend qu'à moitié
+        campaign.Founder.Skills[Discipline.Design] = Campaign.StudioSkill - 1;
+        Assert.That(campaign.StudioOf(campaign.Premises).Score, Is.EqualTo(0.5).Within(1e-9));
+        Assert.That(campaign.StudioOf(campaign.Premises).Missing.Single(), Does.Contain("designer"));
+        campaign.Founder.Skills[Discipline.Design] = 60;
 
         var empty = new Premises { Id = campaign.NewId() };
         foreach (string id in new[] { "camera_tripod", "greenscreen_backdrop" })
@@ -334,6 +342,7 @@ public class Lot6Test
     public void TheStudioMakesContentBetterAndMarketingReachFurtherWithinTheCap()
     {
         var campaign = NewCampaign();
+        campaign.Founder.Skills[Discipline.Design] = 60;
         var (_, game) = campaign.CreateProject("Jeu", "casual", RevenueModel.Purchase, starters: []);
         game!.Components.AddRange([new ProjectComponent { DefId = "graphics", Level = 1, Quality = 0.5 }, new ProjectComponent { DefId = "gameplay", Level = 1, Quality = 0.5 }]);
         game.MarketingBudget = 600;
@@ -354,6 +363,7 @@ public class Lot6Test
     public void AHeadsetAloneServesAPrototypeAndTheFullZoneNeedsEverythingAndSomeone()
     {
         var campaign = NewCampaign();
+        campaign.Founder.Skills[Discipline.Test] = 60;
         Install(campaign, "xr_headset_stand");
         Assert.That(campaign.XrOf(campaign.Premises).Capacity, Is.EqualTo(0.4).Within(1e-9));
         Install(campaign, "xr_base_station");

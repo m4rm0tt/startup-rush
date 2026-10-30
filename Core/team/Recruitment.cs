@@ -30,9 +30,17 @@ public static class Recruitment
 
     public static string RandomName(SimRandom random) => $"{random.Pick(FirstNames)} {random.Pick(LastNames)}";
 
-    public static Candidate Generate(SimRandom random, long now, int id, double reputation)
+    /// <summary>Les métiers des projets, toujours ouverts au recrutement.</summary>
+    public static readonly IReadOnlyList<Discipline> ProjectJobs = [Discipline.Design, Discipline.Code, Discipline.Test, Discipline.Support];
+
+    /// <summary>
+    /// Un candidat d'un des métiers ouverts (les quatre des projets, plus production et recherche quand l'entreprise en a
+    /// l'usage). Sans métier ouvert en plus, les tirages sont exactement ceux d'avant (parties et bilans reproductibles).
+    /// </summary>
+    public static Candidate Generate(SimRandom random, long now, int id, double reputation, IReadOnlyList<Discipline>? jobs = null)
     {
-        var specialty = (Discipline)random.Next(0, 4);
+        jobs ??= ProjectJobs;
+        var specialty = jobs[random.Next(0, jobs.Count)];
         // Une meilleure réputation attire des profils plus expérimentés
         double seniorChance = 0.1 + reputation / 250;
         double main = random.Chance(seniorChance) ? random.Range(70, 88)
@@ -40,9 +48,10 @@ public static class Recruitment
             : random.Range(25, 44);
 
         var skills = new Dictionary<Discipline, double>();
-        foreach (var discipline in Enum.GetValues<Discipline>())
+        foreach (var discipline in ProjectJobs)
             skills[discipline] = discipline == specialty ? main : Math.Round(random.Range(5, main * 0.6));
         skills[specialty] = Math.Round(main);
+        Person.FillSecondary(skills);
 
         decimal salary = Math.Round((decimal)(3_800 + main * 70 + random.Range(-300, 300)) / 50m) * 50m;
         return new Candidate

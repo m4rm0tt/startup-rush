@@ -3,9 +3,34 @@ using Core.products;
 
 namespace Core.campaign;
 
+/// <summary>Le résultat d'exploitation d'un site sur un mois (SiteId 0 : ce qui est commun à l'entreprise).</summary>
+public record SiteResult(int SiteId, string Name, decimal Income, decimal Expenses)
+{
+    public decimal Result => Income + Expenses;
+}
+
 /// <summary>Financement et redressement : prêt bancaire, investisseur, plan de redressement. Aucun n'est illimité ni gratuit.</summary>
 public partial class Campaign
 {
+    /// <summary>
+    /// Le mois découpé par site : recettes et charges d'exploitation de chaque site (loyer, salaires de ceux qui y
+    /// travaillent, énergie, matières, ventes du matériel expédié, cloud selon la capacité), plus une ligne commune (logiciels,
+    /// marketing, hébergement externe, fondateur, intérêts). La somme des lignes est le résultat du mois, au centime.
+    /// </summary>
+    public IReadOnlyList<SiteResult> SiteResults(string month)
+    {
+        if (!Ledger.SiteMonths.TryGetValue(month, out var sites))
+            return [];
+        return sites.Select(kv =>
+            {
+                var operating = kv.Value.Where(t => t.Key is not (Category.Funding or Category.LoanReceived or Category.DepositRefund or Category.Deposit or Category.LoanRepayment)).ToList();
+                string name = kv.Key == Ledger.Common ? "Commun à l'entreprise" : FindSite(kv.Key)?.Name ?? "Ancien site";
+                return new SiteResult(kv.Key, name, operating.Where(t => t.Value > 0).Sum(t => t.Value), operating.Where(t => t.Value < 0).Sum(t => t.Value));
+            })
+            .OrderBy(r => r.SiteId == Ledger.Common ? int.MaxValue : Sites.FindIndex(s => s.Id == r.SiteId) is var i and >= 0 ? i : int.MaxValue - 1)
+            .ToList();
+    }
+
     /// <summary>Revenus d'exploitation moyens par mois sur les 3 derniers mois complets.</summary>
     public decimal AverageMonthlyRevenue()
     {

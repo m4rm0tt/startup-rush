@@ -41,7 +41,7 @@ public record SaveEntry(string Path, SaveKind Kind, string Label, SaveSummary? S
 /// </summary>
 public class SaveStore
 {
-    public const int CurrentFormat = 7;
+    public const int CurrentFormat = 8;
     public const int AutosaveSlots = 3;
 
     private static readonly JsonSerializerOptions Options = new()
@@ -135,7 +135,16 @@ public class SaveStore
             v3 = "Nouveau : les finitions des locaux (sols et murs) se refont dans l'aménagement (rien n'a été converti).";
             migrated = true;
         }
+        // Format 7 → 8 : métiers de production et de recherche (déduits des autres compétences), transferts, résultat par site
+        if (format == 7)
+        {
+            v3 = "Nouveau : les métiers d'opérateur·rice et de chercheur·se, les transferts de stock et le résultat par site.";
+            migrated = true;
+        }
         var campaign = campaignNode.Deserialize<Campaign>(Options) ?? throw new InvalidDataException("Campagne illisible.");
+        if (format < 8)
+            foreach (var person in campaign.People.Concat(campaign.Candidates.Select(c => c.Person)))
+                Core.team.Person.FillSecondary(person.Skills);
         if (campaign.People.Count == 0 || campaign.Companies.Count == 0)
             throw new InvalidDataException("Campagne incomplète.");
         if (format == 1)

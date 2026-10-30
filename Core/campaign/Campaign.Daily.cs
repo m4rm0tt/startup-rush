@@ -76,8 +76,7 @@ public partial class Campaign
             };
             var result = Market.Step(product, inputs, day);
             product.SupportDone = 0;
-            if (product.IsHardware)
-                SettleHardware(product, result);
+            var shipped = product.IsHardware ? SettleHardware(product, result) : null;
             if (result.Revenue > 0)
             {
                 if (product.Model == RevenueModel.Ads)
@@ -91,7 +90,7 @@ public partial class Campaign
                         RevenueModel.Purchase => Category.Sales,
                         _ => Category.Subscriptions
                     };
-                    Post(result.Revenue - fees, category, $"{product.Name} : encaissements du jour", product.CompanyId);
+                    Post(result.Revenue - fees, category, $"{product.Name} : encaissements du jour", product.CompanyId, split: shipped);
                 }
             }
 
@@ -156,9 +155,12 @@ public partial class Campaign
 
         foreach (var site in Sites.Where(s => s.Rent > 0))
             if (Processed.Add($"rent:{month}:{site.Id}"))
-                AddBill($"Loyer {site.Name}", Category.Rent, site.Rent, due5);
+                AddBill($"Loyer {site.Name}", Category.Rent, site.Rent, due5, siteId: site.Id);
+        // Charges : la part liée au loyer revient à chaque site, le forfait de base est commun
         if (Processed.Add($"utilities:{month}"))
-            AddBill("Internet, électricité, assurances", Category.Utilities, Tuning.Finance.Utilities + Sites.Sum(s => s.Rent) * 0.04m, due10);
+            AddBill("Internet, électricité, assurances", Category.Utilities, Tuning.Finance.Utilities + Sites.Sum(s => s.Rent) * 0.04m, due10,
+                split: Sites.Where(s => s.Rent > 0).ToDictionary(s => s.Id, s => Math.Round(s.Rent * 0.04m, 2))
+                    .Append(new(Ledger.Common, Tuning.Finance.Utilities)).ToDictionary());
 
         foreach (var (category, amount) in Ledger.Accrued.Where(a => a.Value > 0.5m).ToList())
             if (Processed.Add($"accrued:{category}:{previousMonth}"))
@@ -169,8 +171,9 @@ public partial class Campaign
                     Category.Research => $"Budget de recherche {previousMonth}",
                     Category.ChannelFees => $"Frais des canaux de vente {previousMonth}",
                     _ => $"Marketing {previousMonth}"
-                }, category, amount, due10);
+                }, category, amount, due10, split: AccruedSplit(category, amount));
         Ledger.Accrued.Clear();
+        Ledger.AccruedSites.Clear();
 
         if (Ledger.Cash < 0 && Processed.Add($"interest:{month}"))
             AddBill("Intérêts du découvert", Category.Interest, -Ledger.Cash * Tuning.Finance.OverdraftMonthlyRate, due10);
@@ -201,6 +204,15 @@ public partial class Campaign
         Notify(Severity.Info, "finance", $"Bilan de {GameTime.ToDate(Minute - 1):MMMM}", MonthSummary(previousMonth), "finance");
     }
 
+    /// <summary>Poids par site d'un coût accumulé : la part rattachée à chaque site, le reste en commun.</summary>
+    private Dictionary<int, decimal>? AccruedSplit(Category category, decimal amount)
+    {
+        if (!Ledger.AccruedSites.TryGetValue(category, out var parts) || parts.Count == 0)
+            return null;
+        var split = new Dictionary<int, decimal>(parts) { [Ledger.Common] = Math.Max(0, amount - parts.Values.Sum()) };
+        return split;
+    }
+
     public static decimal OperatingResult(Dictionary<Category, decimal> totals) =>
         totals.Where(t => t.Key is not (Category.Funding or Category.LoanReceived or Category.DepositRefund or Category.Deposit or Category.LoanRepayment)).Sum(t => t.Value);
 
@@ -224,7 +236,7 @@ public partial class Campaign
                 continue;
             double share = Math.Clamp((Minute - Math.Max(person.StartsAt, person.HiredAt)) / (30.0 * GameTime.MinutesPerDay), 0, 1);
             if (share > 0.02)
-                AddBill($"Salaire de {person.Name}", Category.Salaries, person.Salary * (decimal)share, due, person.Id);
+                AddBill($"Salaire de {person.Name}", Category.Salaries, person.Salary * (decimal)share, due, person.Id, SiteOf(person).Id);
         }
     }
 
@@ -240,7 +252,7 @@ public partial class Campaign
         int wanted = 3 + Math.Min(3, Staff.Count() / 3) + (IsUnlocked("hiring") ? 2 : 0) + SiteComfort().Recruits;
         double renown = Renown + (IsUnlocked("hiring") ? 25 : 0);
         while (Candidates.Count < wanted)
-            Candidates.Add(Recruitment.Generate(Random, Minute, NewId(), renown));
+            Candidates.Add(Recruitment.Generate(Random, Minute, NewId(), renown, OpenJobs()));
     }
 
     // ------------------------------------------------------------------ Encaissements et paiements
@@ -275,7 +287,7 @@ public partial class Campaign
                 continue;
             }
             bill.PaidAt = Minute;
-            Post(-bill.Amount, bill.Category, bill.Label, bill.CompanyId);
+            Post(-bill.Amount, bill.Category, bill.Label, bill.CompanyId, bill.SiteId, bill.SiteSplit);
             if (bill.PersonId is int id && FindPerson(id) is { } person)
                 person.UnpaidDays = 0;
         }

@@ -68,7 +68,7 @@ public partial class Campaign
     public CommandResult CheatHire()
     {
         if (Candidates.Count == 0)
-            Candidates.Add(Recruitment.Generate(Random, Minute, NewId(), Renown));
+            Candidates.Add(Recruitment.Generate(Random, Minute, NewId(), Renown, OpenJobs()));
         var candidate = Candidates.OrderByDescending(c => c.Person.Skill(c.Person.BestDiscipline)).First();
         candidate.NoticeWorkdays = 0;
         var result = Hire(candidate.Person.Id);

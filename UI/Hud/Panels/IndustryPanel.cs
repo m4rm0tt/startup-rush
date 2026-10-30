@@ -18,6 +18,9 @@ public class IndustryPanel : GamePanel
 {
     private static int _quantity = 20;
 
+    /// <summary>Site d'arrivée choisi pour les transferts (0 : le premier autre site).</summary>
+    private static int _transferTo;
+
     public override string Title => "Production et stocks";
     public override string Context => Campaign.Premises.Name;
     public override bool Large => true;
@@ -124,7 +127,9 @@ public class IndustryPanel : GamePanel
 
     private Control StockSection(Premises site)
     {
-        var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto,Auto,Auto,Auto,Auto"), RowSpacing = 4, ColumnSpacing = 10 };
+        var others = Campaign.Sites.Where(s => s != site).ToList();
+        var destination = others.FirstOrDefault(s => s.Id == _transferTo) ?? others.FirstOrDefault();
+        var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto,Auto,Auto,Auto,Auto,Auto"), RowSpacing = 4, ColumnSpacing = 10 };
         int row = 0;
         void Cell(Control c, int col)
         {
@@ -133,7 +138,7 @@ public class IndustryPanel : GamePanel
             grid.Children.Add(c);
         }
         grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
-        string[] heads = ["", "Article", "Dispo.", "Réservé", "En prod.", "En route", "Réserve auto"];
+        string[] heads = ["", "Article", "Dispo.", "Réservé", "En prod.", "En route", "Réserve auto", destination == null ? "" : $"Vers {destination.Name}"];
         for (int i = 0; i < heads.Length; i++)
             Cell(Ui.Text(heads[i], 12, Palette.Fog, wrap: false), i);
         var items = IndustryCatalog.Materials.Select(m => m.Id)
@@ -153,7 +158,17 @@ public class IndustryPanel : GamePanel
             Cell(Ui.Text($"{Campaign.StockAt(site.Id, item)}", 14, Palette.Snow, wrap: false), 2);
             Cell(Ui.Muted(material ? $"{Campaign.Reserved(site.Id, item)}" : "—", 13), 3);
             Cell(Ui.Muted($"{Campaign.InProduction(item)}", 13), 4);
-            Cell(Ui.Muted(material ? $"{Campaign.InTransit(site.Id, item)}" : "—", 13), 5);
+            Cell(Ui.Muted($"{Campaign.InTransit(site.Id, item)}", 13), 5);
+            int have = Campaign.StockAt(site.Id, item);
+            if (destination != null && have > 0)
+            {
+                int ten = System.Math.Min(10, have);
+                Cell(Ui.Row(4,
+                    Ui.Button($"{ten}", () => Run(Campaign.TransferStock(site.Id, destination.Id, item, ten)), "tab",
+                        tip: $"Transport : {Campaign.TransferCost(item, ten):N0} CHF, arrivée demain"),
+                    Ui.Button("tout", () => Run(Campaign.TransferStock(site.Id, destination.Id, item, have)), "tab",
+                        tip: $"{have} unité(s) · transport : {Campaign.TransferCost(item, have):N0} CHF, arrivée demain")), 7);
+            }
             if (material)
             {
                 int target = Campaign.Reserves.FirstOrDefault(r => r.SiteId == site.Id && r.Item == item)?.Target ?? 0;
@@ -164,9 +179,13 @@ public class IndustryPanel : GamePanel
             }
         }
         int used = Campaign.StockUsed(site.Id), capacity = Campaign.StorageCapacity(site);
+        Control? transfers = destination == null ? null : Ui.Row(8, Ui.Muted("Transférer vers :", 13),
+            Ui.Choice(others.Select(s => (s.Id, s.Name)), destination.Id, id => { _transferTo = id; Refresh(); }),
+            Ui.Muted($"forfait {Campaign.TransferBase:N0} CHF + {Campaign.TransferPerMaterial:N0} CHF par matière, {Campaign.TransferPerProduct:N0} CHF par produit ; la place d'arrivée est réservée à l'envoi.", 12));
         var column = Ui.Column(6,
             Ui.Row(8, Ui.Text($"Stock du site : {used}/{capacity} unités", 14, used >= capacity ? Palette.Ember : Palette.Cloud), Ui.Bar(used / (double)System.Math.Max(1, capacity), Palette.Gold, 8, 160)),
             grid,
+            transfers,
             Ui.Row(8, Ui.Muted("Plafond des achats automatiques par mois :", 13),
                 Ui.Choice([(1_000m, "1 000"), (5_000m, "5 000"), (20_000m, "20 000"), (100_000m, "100 000")], Campaign.ProcurementCap, c => Run(Campaign.SetProcurementCap(c)))),
             Ui.Muted($"Engagé ce mois-ci : {Campaign.ProcurementSpent:N0} CHF. Pour refaire toutes les réserves aujourd'hui : {Campaign.ProcurementPreview():N0} CHF. " +

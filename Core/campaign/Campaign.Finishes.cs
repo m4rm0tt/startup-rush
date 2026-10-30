@@ -18,7 +18,7 @@ public partial class Campaign
             return CommandResult.Fail($"À débloquer : {UnlockName(node)}.");
         if (Finishes.IsCurrent(Premises, finish))
             return CommandResult.Fail($"Le local a déjà : {finish.Name}.");
-        var paid = Spend(Finishes.Cost(Premises, finish), Category.Equipment, $"Travaux : {finish.Name}");
+        var paid = Spend(Finishes.Cost(Premises, finish), Category.Equipment, $"Travaux : {finish.Name}", Premises.Id);
         if (!paid.Ok)
             return paid;
         if (finish.Kind == FinishKind.Floor)

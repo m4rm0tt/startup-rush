@@ -54,6 +54,9 @@ public class Purchase
     public long ArrivesAt { get; set; }
     public decimal Cost { get; set; }
     public bool Auto { get; set; }
+
+    /// <summary>Transfert interne : le site d'où part la marchandise (null : un fournisseur). Rien n'est vendu ni racheté.</summary>
+    public int? FromSiteId { get; set; }
 }
 
 /// <summary>Une réserve à tenir : l'approvisionnement automatique recommande jusqu'à ce niveau (stock + en transit).</summary>
@@ -162,7 +165,7 @@ public partial class Campaign
             return CommandResult.Fail($"Pas assez de place sur le site : {Math.Max(0, room)} unité(s) au plus (ajoute des racks ou des palettes).");
         var material = IndustryCatalog.Material(item);
         decimal cost = material.Price * qty;
-        var paid = Spend(cost, Category.Materials, $"Achat : {qty} × {material.Name}");
+        var paid = Spend(cost, Category.Materials, $"Achat : {qty} × {material.Name}", siteId);
         if (!paid.Ok)
             return paid;
         Purchases.Add(new Purchase { Id = NewId(), SiteId = siteId, Item = item, Qty = qty, Cost = cost, ArrivesAt = GameTime.StartOfDay(Day + material.LeadDays) });
@@ -252,7 +255,7 @@ public partial class Campaign
             decimal cost = material.Price * qty;
             if (!Ledger.CanSpend(cost))
                 continue;
-            Post(-cost, Category.Materials, $"Approvisionnement : {qty} × {material.Name}");
+            Post(-cost, Category.Materials, $"Approvisionnement : {qty} × {material.Name}", siteId: site.Id);
             ProcurementSpent += cost;
             Purchases.Add(new Purchase { Id = NewId(), SiteId = site.Id, Item = reserve.Item, Qty = qty, Cost = cost, Auto = true, ArrivesAt = GameTime.StartOfDay(Day + material.LeadDays) });
         }
@@ -272,6 +275,82 @@ public partial class Campaign
         }
     }
 
+    // ------------------------------------------------------------------ Transferts entre sites
+
+    /// <summary>Forfait d'un transport entre sites, en CHF ⚙️.</summary>
+    public const decimal TransferBase = 60m;
+
+    /// <summary>Par unité transportée : matière, ou produit fini (plus encombrant) ⚙️.</summary>
+    public const decimal TransferPerMaterial = 1m, TransferPerProduct = 4m;
+
+    /// <summary>Jours de route d'un transfert entre sites ⚙️.</summary>
+    public const int TransferDays = 1;
+
+    public static decimal TransferCost(string item, int qty) =>
+        qty <= 0 ? 0 : TransferBase + qty * (IndustryCatalog.IsMaterial(item) ? TransferPerMaterial : TransferPerProduct);
+
+    /// <summary>Place libre d'un site, une fois compté ce qui est déjà en route vers lui (achats et transferts).</summary>
+    public int StockRoom(Premises site) => StockFree(site) - Purchases.Where(p => p.SiteId == site.Id).Sum(p => p.Qty);
+
+    /// <summary>
+    /// Transfère du stock d'un site à un autre : la marchandise quitte le site de départ tout de suite, voyage un jour et
+    /// arrive au stock d'arrivée (avec la place réservée à l'envoi). Le transport est payé ; aucune recette n'est créée.
+    /// </summary>
+    public CommandResult TransferStock(int fromSiteId, int toSiteId, string item, int qty)
+    {
+        var from = FindSite(fromSiteId);
+        var to = FindSite(toSiteId);
+        if (from == null || to == null || from == to)
+            return CommandResult.Fail("Choisis deux sites différents.");
+        if (qty <= 0)
+            return CommandResult.Fail("Rien à transférer.");
+        int have = StockAt(fromSiteId, item);
+        if (qty > have)
+            return CommandResult.Fail($"Il n'y a que {have} unité(s) sur {from.Name}.");
+        int room = StockRoom(to);
+        if (qty > room)
+            return CommandResult.Fail($"Pas assez de place sur {to.Name} : {Math.Max(0, room)} unité(s) au plus (ajoute des racks ou des palettes).");
+        decimal cost = TransferCost(item, qty);
+        string name = IndustryCatalog.ItemName(item, FindProduct);
+        var paid = Spend(cost, Category.Logistics, $"Transport : {qty} × {name} ({from.Name} → {to.Name})", toSiteId);
+        if (!paid.Ok)
+            return paid;
+        TakeStock(fromSiteId, item, qty);
+        Purchases.Add(new Purchase
+        {
+            Id = NewId(), SiteId = toSiteId, FromSiteId = fromSiteId, Item = item, Qty = qty, Cost = cost,
+            ArrivesAt = GameTime.StartOfDay(Day + TransferDays),
+        });
+        return CommandResult.Success($"{qty} × {name} en route vers {to.Name} (arrivée demain, {cost:N0} CHF de transport).");
+    }
+
+    /// <summary>
+    /// Un site quitté (fermeture ou déménagement) : son stock part vers le site d'arrivée (les déménageurs, sans frais, livré
+    /// selon la place), ses ordres s'arrêtent et les unités en cours rendent leurs matières. Rien n'est perdu ni dupliqué.
+    /// </summary>
+    private void RelocateStock(int fromSiteId, Premises to)
+    {
+        foreach (var unit in FlowUnits.Where(u => Orders.FirstOrDefault(o => o.Id == u.OrderId)?.SiteId == fromSiteId).ToList())
+        {
+            var order = Orders.First(o => o.Id == unit.OrderId);
+            if (RouteOf(order) is { } route)
+                foreach (var (item, qty) in route.Inputs)
+                    AddStock(fromSiteId, item, qty);
+            FlowUnits.Remove(unit);
+        }
+        Orders.RemoveAll(o => o.SiteId == fromSiteId);
+        Reserves.RemoveAll(r => r.SiteId == fromSiteId);
+        foreach (var purchase in Purchases.Where(p => p.SiteId == fromSiteId))
+            purchase.SiteId = to.Id;
+        if (Stock.Remove(fromSiteId, out var left))
+            foreach (var (item, qty) in left.Where(kv => kv.Value > 0))
+                Purchases.Add(new Purchase { Id = NewId(), SiteId = to.Id, FromSiteId = fromSiteId, Item = item, Qty = qty, ArrivesAt = Minute });
+        StressTested.Remove(fromSiteId);
+    }
+
+    /// <summary>Tout ce qui existe d'un article : stocks des sites et marchandise en route (achats compris).</summary>
+    public int StockEverywhere(string item) => TotalStock(item) + Purchases.Where(p => p.Item == item).Sum(p => p.Qty);
+
     // ------------------------------------------------------------------ Ordres
 
     public Route? RouteOf(ProductionOrder order)
@@ -290,7 +369,7 @@ public partial class Campaign
         return order.Mode switch
         {
             OrderMode.Quantity => Math.Max(0, order.Quantity - order.Started),
-            OrderMode.TargetStock => Math.Max(0, (int)Math.Ceiling((order.Quantity - TotalStock(route.Output) - InProduction(route.Output)) / (double)route.OutputQty)),
+            OrderMode.TargetStock => Math.Max(0, (int)Math.Ceiling((order.Quantity - StockEverywhere(route.Output) - InProduction(route.Output)) / (double)route.OutputQty)),
             _ => 1,
         };
     }
@@ -454,6 +533,8 @@ public partial class Campaign
 
             // Opérateurs : d'abord la supervision des automates (armoires de contrôle comprises), puis les postes manuels
             int present = OperatorsPresent(site);
+            var crew = People.Where(p => p.Assignment.Is(AssignmentKind.Production, site.Id) && p.Activity == Activity.Working).ToList();
+            double pace = crew.Count == 0 ? 1 : crew.Average(p => Person.OperatorPace(p.Skill(Discipline.Operations)));
             var stations = graph.Nodes.Values.Where(n => n.Station != null).ToList();
             int automates = stations.Count(n => !n.Station!.Manual);
             int cabinets = site.Items.Count(i => i.DefId == "control_cabinet");
@@ -483,7 +564,7 @@ public partial class Campaign
                     manualUsed++;
                 // Méthodes de la recherche : gabarits (postes manuels), cobotique (cellules robotisées)
                 double method = station.Manual && IsUnlocked("res_lean") ? 1.25 : station.Asset == "assembly_cell_robotic" && IsUnlocked("res_cobot") ? 1.3 : 1;
-                unit.Busy -= 10 * speed * method;
+                unit.Busy -= 10 * speed * method * pace;
                 Flow[unit.NodeId] = new FlowStatus(true, speed < 1 ? "Ralentie : électricité ou refroidissement insuffisants" : "En marche");
                 if (unit.Busy <= 0)
                 {
@@ -657,26 +738,31 @@ public partial class Campaign
     }
 
     /// <summary>Après la journée de ventes : on sort les unités vendues du stock (le plus gros stock d'abord) et on paie les retours.</summary>
-    private void SettleHardware(Product product, ProductDay day)
+    private Dictionary<int, decimal>? SettleHardware(Product product, ProductDay day)
     {
         int sold = (int)day.Sold;
         string item = $"p:{product.Id}";
+        var shipped = new Dictionary<int, decimal>();
         foreach (var (siteId, stock) in Stock.OrderByDescending(s => s.Value.GetValueOrDefault(item)).ToList())
         {
             int take = Math.Min(sold, stock.GetValueOrDefault(item));
             if (take > 0)
+            {
                 TakeStock(siteId, item, take);
+                shipped[siteId] = take;
+            }
             sold -= take;
         }
         // Garanties : les unités qui reviennent en panne coûtent leur réparation (au coût des matières)
         decimal warranty = Math.Round((decimal)(day.Sold * product.DefectRate) * IndustryCatalog.UnitCost(product), 2);
         if (warranty > 0)
-            Post(-warranty, Category.Warranty, $"{product.Name} : retours et garanties");
+            Post(-warranty, Category.Warranty, $"{product.Name} : retours et garanties", split: shipped);
         day.Costs += warranty;
         if (day.Lost >= 1)
             Notify(Severity.Warning, "production", $"{product.Name} en rupture", "Des clients repartent sans rien : fabrique plus, ou ouvre un canal plus grand.", $"product:{product.Id}", key: $"stockout:{product.Id}");
         else if (day.Sold > 0)
             Resolve($"stockout:{product.Id}");
+        return shipped.Count == 0 ? null : shipped;
     }
 
     /// <summary>Frais mensuels des canaux utilisés par au moins un produit en vente, comptés chaque jour.</summary>

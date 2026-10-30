@@ -79,6 +79,7 @@ public partial class Campaign
 
         StoreAll(old);
         Premises = RealEstate.Create(listing, NewId, offer.Place);
+        RelocateStock(old.Id, Premises);
         SendHome(Premises);
         Notify(Severity.Good, "local", $"Emménagement : {offer.Name}",
             $"{Storage.Count} objets sont dans les cartons. Ouvre Aménagement pour les installer. Nouveau loyer : {listing.Rent:N0} CHF par mois.", "build");
@@ -98,13 +99,13 @@ public partial class Campaign
         decimal cost = OpeningCost(listing);
         if (!Ledger.CanSpend(cost))
             return CommandResult.Fail($"Il faut {cost:N0} CHF (garantie, installation) pour ouvrir ce site.");
+        var site = RealEstate.Create(listing, NewId, offer.Place);
         if (listing.Deposit > 0)
-            Post(-listing.Deposit, Category.Deposit, $"Garantie de loyer : {offer.Name}");
+            Post(-listing.Deposit, Category.Deposit, $"Garantie de loyer : {offer.Name}", siteId: site.Id);
         if (cost > listing.Deposit)
-            Post(-(cost - listing.Deposit), Category.Moving, $"Ouverture du site : {offer.Name}");
+            Post(-(cost - listing.Deposit), Category.Moving, $"Ouverture du site : {offer.Name}", siteId: site.Id);
         Ledger.DepositHeld += listing.Deposit;
 
-        var site = RealEstate.Create(listing, NewId, offer.Place);
         Sites.Add(site);
         SiteId = site.Id;
         InvalidateLayout();
@@ -132,6 +133,7 @@ public partial class Campaign
             Post(refund, Category.DepositRefund, $"Garantie rendue : {site.Name}");
         Ledger.DepositHeld -= refund;
         StoreAll(site);
+        RelocateStock(site.Id, site == Headquarters ? Sites.First(s => s != site) : Headquarters);
         Sites.Remove(site);
         if (SiteId == site.Id)
             SiteId = Sites[0].Id;

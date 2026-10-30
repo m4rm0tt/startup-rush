@@ -59,6 +59,20 @@ public partial class Campaign
     }
 
     /// <summary>Capacité totale de ce type (tous sites), et ce qu'il en reste pour les offres (après tes projets).</summary>
+    /// <summary>Résultat par site : une recette cloud revient aux sites à proportion de leur capacité de ce type.</summary>
+    private Dictionary<int, decimal> CloudSplit(CloudKind kind) => Sites.ToDictionary(s => s.Id, s =>
+    {
+        var infra = SiteInfra(s);
+        return (decimal)(kind switch
+        {
+            CloudKind.Hosting => infra.Hosting,
+            CloudKind.Storage => infra.Storage,
+            CloudKind.Compute => infra.Compute,
+            CloudKind.Gpu => infra.Gpu,
+            _ => infra.Quantum,
+        });
+    });
+
     public double CloudCapacity(CloudKind kind, InfraTotals totals) => kind switch
     {
         CloudKind.Hosting => HostingLeft,
@@ -140,7 +154,7 @@ public partial class Campaign
                 if (offer.Revenue.Count > 30)
                     offer.Revenue.RemoveAt(0);
                 if (revenue > 0)
-                    Post(revenue, Category.Cloud, $"{info.Name} : clients du jour");
+                    Post(revenue, Category.Cloud, $"{info.Name} : clients du jour", split: CloudSplit(kind));
                 total += offer.Revenue30;
             }
         }

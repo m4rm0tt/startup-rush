@@ -13,7 +13,10 @@ public enum Category
     Cloud, Energy,
 
     // Lot 5 : matières achetées, garanties et retours, recherche, frais des canaux de vente
-    Materials, Warranty, Research, ChannelFees
+    Materials, Warranty, Research, ChannelFees,
+
+    // Finition : transport de stock entre sites
+    Logistics
 }
 
 /// <summary>Un mouvement de trésorerie (argent réellement entré ou sorti).</summary>
@@ -24,6 +27,9 @@ public class Entry
     public Category Category { get; set; }
     public string Label { get; set; } = "";
     public int? CompanyId { get; set; }
+
+    /// <summary>Site auquel le mouvement est rattaché (null : commun à l'entreprise).</summary>
+    public int? SiteId { get; set; }
 }
 
 /// <summary>
@@ -65,6 +71,12 @@ public class Bill
 
     /// <summary>Pour un salaire : la personne concernée.</summary>
     public int? PersonId { get; set; }
+
+    /// <summary>Site auquel la dette est rattachée (null : commune), ou répartition par site (le reste est commun).</summary>
+    public int? SiteId { get; set; }
+
+    /// <summary>Poids par site (clé 0 : commun) : le paiement est réparti à proportion.</summary>
+    public Dictionary<int, decimal>? SiteSplit { get; set; }
 
     public bool Open => PaidAt == null;
 
@@ -110,6 +122,17 @@ public class Ledger
     /// <summary>Coûts accumulés jour après jour, facturés en début de mois (hébergement, marketing).</summary>
     public Dictionary<Category, decimal> Accrued { get; set; } = new();
 
+    /// <summary>Part de ces coûts accumulés rattachée à un site (le reste est commun).</summary>
+    public Dictionary<Category, Dictionary<int, decimal>> AccruedSites { get; set; } = new();
+
+    /// <summary>
+    /// Les mêmes totaux mensuels, détaillés par site (clé 0 : commun à l'entreprise). Par construction, la somme des sites
+    /// d'un mois égale le total du mois : un mouvement n'est compté qu'une fois, sur un seul site ou réparti.
+    /// </summary>
+    public Dictionary<string, Dictionary<int, Dictionary<Category, decimal>>> SiteMonths { get; set; } = new();
+
+    public const int Common = 0;
+
     /// <summary>Garantie de loyer bloquée (rendue au départ du local).</summary>
     public decimal DepositHeld { get; set; }
 
@@ -126,16 +149,52 @@ public class Ledger
     public static bool IsIncome(Category category) => category <= Category.DepositRefund;
 
     /// <summary>Enregistre un mouvement réel de trésorerie.</summary>
-    public void Post(long minute, string month, decimal amount, Category category, string label, int? companyId = null)
+    public void Post(long minute, string month, decimal amount, Category category, string label, int? companyId = null,
+        int? siteId = null, IReadOnlyDictionary<int, decimal>? split = null)
     {
         Cash += amount;
-        Entries.Add(new Entry { Minute = minute, Amount = amount, Category = category, Label = label, CompanyId = companyId });
+        Entries.Add(new Entry { Minute = minute, Amount = amount, Category = category, Label = label, CompanyId = companyId, SiteId = siteId });
         if (Entries.Count > MaxEntries)
             Entries.RemoveRange(0, Entries.Count - MaxEntries);
         if (!Months.TryGetValue(month, out var totals))
             Months[month] = totals = new Dictionary<Category, decimal>();
         totals[category] = totals.GetValueOrDefault(category) + amount;
+
+        // Détail par site : « split » donne des poids par site (clé 0 : commun) et le montant est réparti à proportion ;
+        // l'arrondi revient au commun, la somme reste exacte
+        decimal left = amount;
+        if (split != null)
+        {
+            decimal total = split.Values.Where(v => v > 0).Sum();
+            if (total > 0)
+                foreach (var (site, part) in split.Where(s => s.Value > 0 && s.Key != Common).OrderBy(s => s.Key))
+                {
+                    decimal share = Math.Round(amount * part / total, 2);
+                    AddSite(month, site, category, share);
+                    left -= share;
+                }
+        }
+        AddSite(month, split == null ? siteId ?? Common : Common, category, left);
     }
 
-    public void Accrue(Category category, decimal amount) => Accrued[category] = Accrued.GetValueOrDefault(category) + amount;
+    private void AddSite(string month, int site, Category category, decimal amount)
+    {
+        if (amount == 0)
+            return;
+        if (!SiteMonths.TryGetValue(month, out var sites))
+            SiteMonths[month] = sites = new();
+        if (!sites.TryGetValue(site, out var totals))
+            sites[site] = totals = new();
+        totals[category] = totals.GetValueOrDefault(category) + amount;
+    }
+
+    public void Accrue(Category category, decimal amount, int? siteId = null)
+    {
+        Accrued[category] = Accrued.GetValueOrDefault(category) + amount;
+        if (siteId is not { } site || site == Common)
+            return;
+        if (!AccruedSites.TryGetValue(category, out var sites))
+            AccruedSites[category] = sites = new();
+        sites[site] = sites.GetValueOrDefault(site) + amount;
+    }
 }

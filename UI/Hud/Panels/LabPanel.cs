@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Core.campaign;
 using Core.space;
+using Core.team;
 using UI.Pixel;
 
 namespace UI.Hud.Panels;
@@ -53,7 +54,9 @@ public class LabPanel : GamePanel
             Meter("Vidéo (caméra, fond vert, éclairage)", studio.Video, $"{studio.Video:P0}"),
             Meter("Audio (micro, enceintes, acoustique)", studio.Audio, $"{studio.Audio:P0}"),
             Ui.Pair("Effet", $"contenu +{studio.Bonus:P0} (graphismes, sons, niveaux, immersion) · campagnes marketing +{studio.Bonus / 2:P0}"),
-            studio.Staffed ? null : Ui.Text("Personne ne travaille sur ce site : le studio ne rend qu'à moitié.", 13, Palette.Ember),
+            Campaign.StaffFor(site, Discipline.Design) is { } designer
+                ? Ui.Pair("Tenu par", $"{designer.Name} (Design {designer.Skill(Discipline.Design):0})")
+                : Ui.Text($"Aucun·e designer (Design {Campaign.StudioSkill:0}+) ne travaille sur ce site : le studio ne rend qu'à moitié.", 13, Palette.Ember),
             studio.Missing.Count > 0 ? Ui.Muted($"Il manque : {string.Join(", ", studio.Missing)}.", 13) : Ui.Text("Studio complet.", 13, Palette.Leaf),
             Ui.Muted("Plafonné à +30 % sur le contenu. Les studios de plusieurs sites ne s'additionnent pas.", 12));
         return Ui.Section("Studio audiovisuel", Ui.Card(body));
@@ -67,7 +70,8 @@ public class LabPanel : GamePanel
             Ui.Text($"Meilleure zone : {site.Name}", 15, Palette.Snow, bold: true),
             Meter("Capacité de test", zone.Capacity, $"{zone.Capacity:P0}"),
             Ui.Pair("Effet", $"−{zone.DefectCut:P0} de défauts sur chaque amélioration d'une application XR, −{zone.DefectCut * 0.67:P0} sur la série d'un kit XR"),
-            zone.Missing.Count > 0 ? Ui.Muted($"Il manque : {string.Join(", ", zone.Missing)}. Un casque seul sert au prototype (40 %).", 13) : Ui.Text("Zone complète : casque, balises, tapis et quelqu'un sur place.", 13, Palette.Leaf));
+            Campaign.StaffFor(site, Discipline.Test) is { } tester ? Ui.Pair("Tenue par", $"{tester.Name} (Tests {tester.Skill(Discipline.Test):0})") : null,
+            zone.Missing.Count > 0 ? Ui.Muted($"Il manque : {string.Join(", ", zone.Missing)}. Un casque seul sert au prototype (40 %).", 13) : Ui.Text("Zone complète : casque, balises, tapis et un·e testeur·se sur place.", 13, Palette.Leaf));
         return Ui.Section("Zone de test XR", Ui.Card(body));
     }
 

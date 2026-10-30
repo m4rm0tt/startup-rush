@@ -11,7 +11,10 @@ namespace Core.campaign;
 public partial class Campaign
 {
     /// <summary>Achète un objet et le pose au sol en (x, y) dans cette orientation.</summary>
-    public CommandResult BuyAndPlace(string defId, int x, int y, string? facing = null)
+    public CommandResult BuyAndPlace(string defId, int x, int y, string? facing = null) => BuyAndPlace(defId, x, y, facing, false);
+
+    /// <summary>Achète et pose un objet au sol ; « freeStanding » : une chaise seule (attente), sans bureau ni table.</summary>
+    private CommandResult BuyAndPlace(string defId, int x, int y, string? facing, bool freeStanding)
     {
         var def = FurnitureCatalog.Get(defId);
         if (!def.Buyable)
@@ -19,7 +22,7 @@ public partial class Campaign
         if (def.UnlockNode is { } node && !IsUnlocked(node))
             return CommandResult.Fail($"À débloquer : {UnlockName(node)}.");
         string f = facing ?? def.Pack.DefaultFacing;
-        var check = Layout.CanPlace(Premises, def, x, y, f);
+        var check = Layout.CanPlace(Premises, def, x, y, f, freeStanding: freeStanding);
         if (!check.Ok)
             return CommandResult.Fail(check.Reason);
         var paid = Spend(def.Price, Category.Equipment, $"Achat : {def.Name}", Premises.Id);

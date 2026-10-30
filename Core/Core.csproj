@@ -10,6 +10,7 @@
         <!-- Le pack original (assets/StartupRushOriginalAssets) : le moteur lit les emprises, sockets et plans de pièces -->
         <EmbeddedResource Include="..\assets\StartupRushOriginalAssets\manifest.json" LogicalName="pack/manifest.json" />
         <EmbeddedResource Include="..\assets\StartupRushOriginalAssets\rooms\*.json" LogicalName="pack/rooms/%(Filename).json" />
+        <EmbeddedResource Include="..\assets\StartupRushOriginalAssets\rooms\modules\*.json" LogicalName="pack/modules/%(Filename).json" />
     </ItemGroup>
 
 </Project>

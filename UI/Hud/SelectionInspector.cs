@@ -20,10 +20,23 @@ public static class SelectionInspector
         var campaign = session.Campaign;
         return session.SelectionKind switch
         {
+            SelectionKind.Item when session.SelectionId == RoomRenderer.CartonsId => Cartons(screen, campaign),
             SelectionKind.Item when campaign.Premises.Find(session.SelectionId) is { } item => Item(screen, campaign, item),
             SelectionKind.Person when campaign.FindPerson(session.SelectionId) is { } person => Person(screen, campaign, person),
             _ => null
         };
+    }
+
+    /// <summary>Les cartons de déménagement : ce qu'ils contiennent vraiment (les objets rangés), et où les déballer.</summary>
+    private static Control Cartons(GameScreen screen, Campaign campaign)
+    {
+        var thumb = PackLibrary.Thumbnail("moving_box");
+        var content = campaign.Storage.GroupBy(s => FurnitureCatalog.Get(s.DefId).Name).Select(g => g.Count() > 1 ? $"{g.Count()} × {g.Key}" : g.Key).ToList();
+        return Ui.Column(6,
+            Ui.Row(Ui.Image(thumb, thumb.PixelSize.Width, thumb.PixelSize.Height),
+                Ui.Column(2, Ui.Title("Cartons de déménagement", 18), Ui.Muted($"{campaign.Storage.Count} objet(s) à déballer.", 13))),
+            Ui.Muted(content.Count == 0 ? "Les cartons sont vides." : string.Join(", ", content), 13),
+            Ui.Button("Ouvrir les cartons", () => screen.OpenRoot(new BuildPanel()), "gold", campaign.Storage.Count > 0));
     }
 
     private static Control Item(GameScreen screen, Campaign campaign, PlacedItem item)
@@ -32,6 +45,9 @@ public static class SelectionInspector
         var thumb = PackLibrary.Thumbnail(def.Id);
         var column = Ui.Column(6, Ui.Row(Ui.Image(thumb, thumb.PixelSize.Width, thumb.PixelSize.Height),
             Ui.Column(2, Ui.Title(def.Name, 18), Ui.Muted(def.Effect, 13))));
+        // Les cartons du plan (chambre de départ) : ceux du déménagement, avec leur contenu réel
+        if (def.Id == "moving_box")
+            column.Children.Add(Cartons(screen, campaign));
 
         // Station de production : son étape, son temps, ce qui la bloque
         if (Core.industry.IndustryCatalog.Station(def.Id) is { } station)

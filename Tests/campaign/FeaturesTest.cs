@@ -101,6 +101,70 @@ public class FeaturesTest
         Assert.That(site.WallPattern, Is.Null);
     }
 
+    // ------------------------------------------------------------------ Modules de pièce du pack
+
+    [Test]
+    public void EveryRoomModuleOfThePackCanBeInstalledWithItsObjectsAndFloor()
+    {
+        Assert.That(Pack.Modules.Select(m => m.Id), Is.EquivalentTo(new[]
+            { "module_kitchenette", "module_lounge", "module_meeting_room", "module_pod_4", "module_reception", "module_restroom" }));
+        foreach (var module in Pack.Modules)
+        {
+            // Le premier grand local où il y a la place (le mur demandé peut déjà être meublé par le plan)
+            Campaign campaign = null!;
+            Premises site = null!;
+            int before = 0;
+            decimal cash = 0, cost = Campaign.ModuleCost(module);
+            CommandResult result = CommandResult.Fail("aucun local");
+            foreach (string listing in new[] { "large", "floor", "hq" })
+            {
+                campaign = NewCampaign();
+                campaign.Ledger.Cash = 1_000_000;
+                campaign.CheatUnlockAll();
+                Assert.That(campaign.RentSite(listing).Ok, Is.True);
+                site = campaign.Premises;
+                before = site.Items.Count;
+                cash = campaign.Ledger.Cash;
+                result = campaign.InstallModule(module.Id);
+                if (result.Ok)
+                    break;
+            }
+            Assert.That(result.Ok, Is.True, $"{module.Id} : {result.Message}");
+            int expected = module.Objects.Count + module.Objects.Sum(o => o.Children.Count);
+            Assert.That(site.Items.Count - before, Is.EqualTo(expected), $"{module.Id} : chaque objet et accessoire");
+            Assert.That(cash - campaign.Ledger.Cash, Is.EqualTo(cost), $"{module.Id} : payé une fois, au prix annoncé");
+            Assert.That(site.FloorPatches.Count, Is.EqualTo(module.Floors.Count), $"{module.Id} : sa zone de sol");
+            if (module.AgainstWall == "left" && site.Items.Skip(before).Where(i => i.HostId == null).Min(i => i.X) == 0)
+                Assert.That(site.Items.Skip(before).Where(i => i.HostId == null).Min(i => i.X), Is.EqualTo(0), "contre le mur gauche");
+            if (module.AgainstWall == "right" && site.Items.Skip(before).Where(i => i.HostId == null).Min(i => i.Y) == 0)
+                Assert.That(site.Items.Skip(before).Where(i => i.HostId == null).Min(i => i.Y), Is.EqualTo(0), "contre le mur droit");
+        }
+    }
+
+    [Test]
+    public void ModulesBringTheRealEffectsOfTheirFurniture()
+    {
+        var campaign = NewCampaign();
+        campaign.Ledger.Cash = 1_000_000;
+        campaign.CheatUnlockAll();
+        Assert.That(campaign.RentSite("large").Ok, Is.True);
+        var site = campaign.Premises;
+        int posts = site.Workstations.Count();
+        Assert.That(campaign.InstallModule("module_pod_4").Ok, Is.True);
+        int desks = Pack.FindModule("module_pod_4")!.Objects.Count(o => FurnitureCatalog.Get(o.Asset).Kind == FurnitureKind.Desk);
+        Assert.That(site.Workstations.Count(), Is.EqualTo(posts + desks), "l'îlot du pack : ses bureaux deviennent des postes");
+        Assert.That(site.Workstations.Count(w => Layout.Check(site, w) == WorkstationIssue.None), Is.GreaterThanOrEqualTo(desks), "postes complets (écran, clavier, tour, chaise)");
+        double coordination = Layout.Comfort(site, 6).Coordination;
+        Assert.That(campaign.InstallModule("module_meeting_room").Ok, Is.True);
+        Assert.That(Layout.Comfort(site, 6).Coordination, Is.GreaterThan(coordination), "la salle de réunion coordonne");
+        double pause = Layout.Comfort(site, 6).Break;
+        Assert.That(campaign.InstallModule("module_kitchenette").Ok, Is.True);
+        Assert.That(Layout.Comfort(site, 6).Break, Is.GreaterThan(pause), "la kitchenette repose");
+        Assert.That(Finishes.FloorGrid(site).Cast<string?>(), Does.Contain("floor_tile_ceramic"), "son carrelage est posé");
+        Assert.That(campaign.SetFinish("floor_parquet").Ok, Is.True);
+        Assert.That(site.FloorPatches, Is.Empty, "tout le sol refait recouvre les sols des modules");
+    }
+
     // ------------------------------------------------------------------ Avis : causes réelles (spec §8)
 
     private static Product Live(string archetype, string segment, params ProjectComponent[] components)

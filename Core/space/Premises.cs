@@ -97,6 +97,9 @@ public class Premises
     /// <summary>Habillage des deux murs du fond (« pattern_wood_panels »), null : les motifs du plan.</summary>
     public string? WallPattern { get; set; }
 
+    /// <summary>Zones de sol posées avec un module (carrelage d'une kitchenette...), par-dessus les sols du local.</summary>
+    public List<FloorPatch> FloorPatches { get; set; } = new();
+
     public Cell Entrance => new(EntranceX, EntranceY);
 
     /// <summary>Juste dehors, derrière la porte : là où l'on se trouve hors des heures de travail.</summary>

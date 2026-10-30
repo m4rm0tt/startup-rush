@@ -90,9 +90,10 @@ public static class Layout
     }
 
     /// <summary>Vérifie qu'un objet peut être posé au sol en (x, y) dans cette orientation. « ignoreId » : l'objet qu'on déplace.</summary>
-    public static PlacementCheck CanPlace(Premises premises, FurnitureDef def, int x, int y, string facing, int? ignoreId = null)
+    /// <param name="freeStanding">Une chaise posée seule au sol (chaises d'attente des modules du pack), sans meuble hôte.</param>
+    public static PlacementCheck CanPlace(Premises premises, FurnitureDef def, int x, int y, string facing, int? ignoreId = null, bool freeStanding = false)
     {
-        if (def.Attached)
+        if (def.Attached && !(freeStanding && def.Kind == FurnitureKind.Chair))
             return PlacementCheck.Invalid("Cet objet se pose sur un meuble : clique un bureau ou un plan de travail.");
         if (def.OnWall)
             return CanHang(premises, def, x, y, facing, ignoreId);

@@ -13,10 +13,10 @@ conservé dans `docs/equilibrage/reference_avant.md`.
 
 | Point | État constaté | Attendu | Fichiers | Validation | Blocage |
 |---|---|---|---|---|---|
-| Référence bots, graines fixes | à faire | bilan reproduit et archivé avant tout réglage | `Tests/balance/*`, `docs/equilibrage/` | même chiffres qu'au lot 7 | — |
+| Référence bots, graines fixes | **fait** (`docs/equilibrage/reference_avant.md`, reproduite à l'identique) | bilan reproduit et archivé avant tout réglage | `Tests/balance/*`, `docs/equilibrage/` | même chiffres qu'au lot 7 | — |
 | Studio/XR faible (38 k vs 198 k) | constaté au lot 6 | voie viable | `Campaign.Lab.cs`, `ProductCatalog.cs`, bots | bilan avant/après, 5 graines | — |
 | Quantique jamais atteint (36 mois) | constaté au lot 6 | atteignable tard dans une campagne longue bien gérée | `Furniture.cs`, `Campaign.Lab.cs`, bot `quantique` | horizon 36 mois, jalon « en service » | — |
-| `marketing_excessif` 4/5 faillites (2/5 au lot 5) | cause non isolée | cause prouvée par l'historique ou dite non prouvée | historique git, `Market.cs` | rejouer le bot aux commits du lot 5 et du lot 6 | — |
+| `marketing_excessif` 4/5 faillites (2/5 au lot 5) | **fait** : décalage du hasard prouvé (`docs/equilibrage/enquete_marketing_excessif.md`), corrigé (`1dec18a`), 2/5 à nouveau | cause prouvée par l'historique ou dite non prouvée | historique git, `Market.cs` | rejouer le bot aux commits du lot 5 et du lot 6 | — |
 | Carte à bas prix vs loyer d'atelier | constaté au lot 5 | matériel avec une utilité économique claire | `Industry.cs`, `ProductCatalog.cs` | bots matériel | — |
 | PC, serveurs, GPU sans bot | constaté | scénarios bots | `Core/bots/*` | bilan | — |
 | Salle serveur (≈ 78–86 k vs 192–198 k) | constaté au lot 4 | réévaluée avec les besoins de calcul de l'IA et de la recherche | `Campaign.Infra.cs`, `Campaign.Ai.cs` | bilan | — |
@@ -26,18 +26,18 @@ conservé dans `docs/equilibrage/reference_avant.md`.
 
 | Point | État constaté | Attendu | Fichiers | Validation | Blocage |
 |---|---|---|---|---|---|
-| Préparation de recherche au terminal | absent (spec §4.2) | le fondateur contribue à une recherche par le terminal, budget distribué, borné | `Campaign.Terminal.cs`, `Campaign.Research.cs`, `TerminalView.cs` | tests ciblés | — |
-| Transferts de stock entre sites | absent | transfert explicite avec délai et coût, sans duplication ni perte ; plus de prélèvement involontaire sur un autre site | `Campaign.Industry.cs`, `IndustryPanel.cs` | invariants de stock | — |
-| Studio : « quelqu'un sur le site » | constaté (`Campaign.Lab.cs` `Staffed`) | une affectation de métier (personne affectée au studio, compétence design) | `Campaign.Lab.cs`, `Person.cs` | tests | — |
-| Opérateurs assis aux postes | bulle près d'une station | personnages assis aux chaises des stations, présence = activité réelle | `SceneCanvas.cs`, `RoomRenderer.cs`, `Campaign.Industry.cs` | captures | — |
-| Graphe de dépendances, `comp_api`, `comp_storage`, `comp_game_menu` | absent (96 non implémentés dont `link_*`, `port_*`) | graphe affiché dans l'atelier, trois composants testés | `ProductCatalog.cs`, `ProjectPanel.cs`, `ComponentArt.cs` | tests + captures | — |
-| Composants de jeu de la spec (§6.2) | partiel | liste « moteur, menu, progression, sauvegarde, inventaire, classement, multijoueur simulé » couverte, sans doublon | `ProductCatalog.cs` | tests | — |
-| Métiers opérateur et chercheur | absent (4 disciplines) | métiers à part entière (recrutement, compétences, effets) | `Person.cs`, `Recruitment.cs`, `Campaign.*` | tests + migration | — |
-| Avis reliés aux causes (spec §8 : prix, rupture, performances, défauts, délai ; services : lenteur, manque de fonctions, support ; IA : qualité des réponses, délai/coût) | partiel (pas de rupture/défauts/qualité IA) | causes calculées avec levier | `Reviews.cs` | tests | — |
-| Résultat par site | absent | détail par site réconcilié avec le total | `Ledger.cs`, `FinancePanel.cs` | invariant de somme | — |
+| Préparation de recherche au terminal | **fait** (`59eabc6`, FeaturesTest) | le fondateur contribue à une recherche par le terminal, budget distribué, borné | `Campaign.Terminal.cs`, `Campaign.Research.cs`, `TerminalView.cs` | tests ciblés | — |
+| Transferts de stock entre sites | **fait** (`1dec18a`) + correctif stock fantôme d'un site fermé ou quitté | transfert explicite avec délai et coût, sans duplication ni perte ; plus de prélèvement involontaire sur un autre site | `Campaign.Industry.cs`, `IndustryPanel.cs` | invariants de stock | — |
+| Studio : « quelqu'un sur le site » | **fait** : designer / testeur·se de niveau 45 sur le site (`1dec18a`) | une affectation de métier (personne affectée au studio, compétence design) | `Campaign.Lab.cs`, `Person.cs` | tests | — |
+| Opérateurs assis aux postes | **fait** (`21f7918`, RendererTest, capture 30) | personnages assis aux chaises des stations, présence = activité réelle | `SceneCanvas.cs`, `RoomRenderer.cs`, `Campaign.Industry.cs` | captures | — |
+| Graphe de dépendances, `comp_api`, `comp_storage`, `comp_game_menu` | **fait** (`59eabc6`, PanelsTest, capture 09b) ; flèches haut/bas/gauche non utilisées (graphe orienté gauche → droite) | graphe affiché dans l'atelier, trois composants testés | `ProductCatalog.cs`, `ProjectPanel.cs`, `ComponentArt.cs` | tests + captures | — |
+| Composants de jeu de la spec (§6.2) | **fait** : moteur = gameplay, menu, progression = contenu, sauvegarde, inventaire, classement, multijoueur | liste « moteur, menu, progression, sauvegarde, inventaire, classement, multijoueur simulé » couverte, sans doublon | `ProductCatalog.cs` | tests | — |
+| Métiers opérateur et chercheur | **fait** (`1dec18a`, format 8) | métiers à part entière (recrutement, compétences, effets) | `Person.cs`, `Recruitment.cs`, `Campaign.*` | tests + migration | — |
+| Avis reliés aux causes (spec §8 : prix, rupture, performances, défauts, délai ; services : lenteur, manque de fonctions, support ; IA : qualité des réponses, délai/coût) | **fait** (`59eabc6`) ; le « délai » du matériel est dit par la rupture (pas de commandes en attente simulées) | causes calculées avec levier | `Reviews.cs` | tests | — |
+| Résultat par site | **fait** (`1dec18a`, somme exacte testée, capture 33b) | détail par site réconcilié avec le total | `Ledger.cs`, `FinancePanel.cs` | invariant de somme | — |
 | Saisie simplifiée du terminal | **déjà fait** (lot 3 : réglage, `TerminalView`) | vérifier qu'elle marche encore avec le terminal habillé du lot 7 | `TerminalView.cs` | test + capture | — |
-| Recoloration des tenues | absent (canaux primary/secondary/accent dans le pack) | tenue au choix à la création, sauvegardée | `Person.cs`, `RoomRenderer.cs`, `Portraits.cs` | capture + sauvegarde | — |
-| Estompage des objets hauts | absent (26 objets avec `occlusion` dans le manifeste) | objets hauts estompés quand ils cachent une personne ou le survol | `RoomRenderer.cs`, `SceneCanvas.cs` | capture | — |
+| Recoloration des tenues | **fait** (`21f7918`) : canaux primary/secondary ; « accent » laissé à la base | tenue au choix à la création, sauvegardée | `Person.cs`, `RoomRenderer.cs`, `Portraits.cs` | capture + sauvegarde | — |
+| Estompage des objets hauts | **fait** (`21f7918`, RendererTest) | objets hauts estompés quand ils cachent une personne ou le survol | `RoomRenderer.cs`, `SceneCanvas.cs` | capture | — |
 | Câblage et sécurité | scores par site | **simplification assumée** (pas de fil à fil, pas de zones) : documentée | `DESIGN_SIMULATION.md` | — | — |
 
 ## 4. Couverture des assets
@@ -56,13 +56,13 @@ conservé dans `docs/equilibrage/reference_avant.md`.
 
 | Point | État constaté | Attendu |
 |---|---|---|
-| Police pixel floue | signalé depuis le lot 2 | tailles natives (multiples) et rendu net |
-| Moins de personnages assis que de postes (campagne avancée) | non expliqué | cause trouvée, corrigée si défaut |
+| Police pixel floue | **fait** (`f5c1283`) : échelle continue en cause ; grille 12 px, Alias, échelle entière | tailles natives (multiples) et rendu net |
+| Moins de personnages assis que de postes (campagne avancée) | **expliqué, non reproduit** : sonde déterministe (graine 37) : 4 bureaux, 4 postes complets, 4 personnes assises ; une personne de dos face au bureau compact donnait l'illusion d'un poste vide | — |
 | Datacenter et siège sans test | constaté | tests dédiés |
 | Compositeur de référence du pack | jamais lu ni exécuté | lu, comparé, utilisé si pertinent |
-| Retour au sol d'origine du plan | absent | commande « revenir au plan » |
-| Panneaux acoustiques (motif mural) | décoratifs | effet vérifié dans la spec et implémenté si confirmé |
-| Vignettes du carrelage et du faux plancher | problème non écrit dans le dépôt | retrouver sur les captures et corriger |
+| Retour au sol d'origine du plan | **fait** (`a0f655f`) | commande « revenir au plan » |
+| Panneaux acoustiques (motif mural) | **fait** (`a0f655f`) : spec « contribution plafonnée à la concentration/qualité du studio » | effet vérifié dans la spec et implémenté si confirmé |
+| Vignettes du carrelage et du faux plancher | **fait** (`a0f655f`) : les dalles 2 × 2 montraient une croix au centre de la pastille | retrouver sur les captures et corriger |
 
 ## 6. Validation · 7. Livraison
 

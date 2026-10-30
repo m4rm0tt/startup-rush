@@ -2,6 +2,17 @@ namespace Core.space;
 
 public enum FinishKind { Floor, Wall }
 
+/// <summary>Une zone de sol posée avec un module de pièce : matériau du pack sur un rectangle de cases, avec ses couleurs.</summary>
+public class FloorPatch
+{
+    public string Material { get; set; } = "";
+    public int U { get; set; }
+    public int V { get; set; }
+    public int Width { get; set; }
+    public int Depth { get; set; }
+    public Dictionary<string, string> Swatches { get; set; } = new();
+}
+
 /// <summary>
 /// Une finition du local : un sol du pack (prix par case, posé sur toute la surface) ou un habillage des deux murs du fond
 /// (prix par segment de mur). La plupart ne font que l'identité du lieu ; quelques-unes ont un effet plafonné.
@@ -62,9 +73,13 @@ public static class Finishes
 
     /// <summary>Les zones de sol du local : tout le local dans le sol refait, sinon celles du plan.</summary>
     public static IReadOnlyList<PlanFloor> FloorZones(Premises premises) =>
-        premises.FloorMaterial is { } material
+        (premises.FloorMaterial is { } material
             ? [new PlanFloor(material, 0, 0, premises.Width, premises.Height, new Dictionary<string, string>())]
-            : Pack.FindPlan(premises.PlanId)?.Floors ?? [];
+            : Pack.FindPlan(premises.PlanId)?.Floors ?? [])
+        .Concat(premises.FloorPatches.Select(p => new PlanFloor(p.Material, p.U, p.V, p.Width, p.Depth, p.Swatches))).ToList();
+
+    /// <summary>Prix d'un sol posé avec un module, par case (le prix de la finition, 0 si elle n'est pas au catalogue).</summary>
+    public static decimal FloorPrice(string material) => Has(material) ? Get(material).Price : 0;
 
     /// <summary>Le matériau de chaque case (null : aucune zone ne la couvre).</summary>
     public static string?[,] FloorGrid(Premises premises)

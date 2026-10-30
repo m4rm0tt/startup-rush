@@ -80,13 +80,21 @@ public sealed class RoomRenderer
     /// Compose le local : « seated » donne, pour chaque chaise occupée en ce moment, qui y est assis ; « operators », pour
     /// chaque station tenue en ce moment, l'opérateur assis à sa case de travail (accès « work » ou « operate » du pack).
     /// </summary>
+    /// <summary>Zone cliquable des cartons de déménagement dessinés à l'entrée (objets à déballer).</summary>
+    public const int CartonsId = -9000;
+
+    /// <param name="cartons">Objets dans les cartons : quelques cartons du pack (moving_box) les représentent à l'entrée.</param>
     public static RoomImage Render(Premises premises, IReadOnlyDictionary<int, Seated> seated, IReadOnlyDictionary<int, Seated>? operators = null,
-        int fadeItem = 0)
+        int fadeItem = 0, int cartons = 0)
     {
         operators ??= new Dictionary<int, Seated>();
         var r = new RoomRenderer(premises.Width, premises.Height);
         var plan = PackLibrary.Room(premises.PlanId);
         r.Structure(plan, premises);
+        r.Markings(premises);
+        r.Thresholds(premises);
+        if (cartons > 0)
+            r.Cartons(premises, cartons);
         foreach (var item in premises.Floor)
         {
             var asset = PackLibrary.Asset(item.DefId);
@@ -268,6 +276,84 @@ public sealed class RoomRenderer
             Attach(premises, node, o, child, seated);
         _groups.Add(((item.X, item.X + su, item.Y, item.Y + sv), node));
         AddHit(false, item.Id, o, x, y, _groups.Count);
+    }
+
+    /// <summary>
+    /// Marquage au sol des machines (floor_marking, hachures) : les cases d'accès des stations et instruments de l'atelier,
+    /// de l'usine et des laboratoires, là où se tient l'opérateur ou se fait le chargement.
+    /// </summary>
+    private void Markings(Premises premises)
+    {
+        var none = new Dictionary<string, string>();
+        var marked = new HashSet<(int, int)>();
+        foreach (var item in premises.Floor)
+        {
+            var asset = PackLibrary.Asset(item.DefId);
+            string category = asset.TryGetProperty("category", out var c) ? c.GetString() ?? "" : "";
+            if (category is not ("industry_future" or "laboratories"))
+                continue;
+            var o = PackLibrary.Orient(asset, item.Facing);
+            if (!o.TryGetProperty("access", out var access))
+                continue;
+            foreach (var spot in access.EnumerateArray())
+            {
+                if (spot.GetProperty("kind").GetString() is not ("work" or "operate" or "load"))
+                    continue;
+                int u = item.X + spot.GetProperty("tile")[0].GetInt32(), v = item.Y + spot.GetProperty("tile")[1].GetInt32();
+                if (u >= 0 && v >= 0 && u < premises.Width && v < premises.Height && marked.Add((u, v)))
+                    FloorOverlay("floor_marking", "hatch", u, v, none);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Seuils (floor_threshold, barre laiton) : à la porte du local et partout où deux sols différents se touchent (zones du
+    /// plan, sols des modules). « along_v » longe le bord U = u d'une case, « along_u » son bord V = v.
+    /// </summary>
+    private void Thresholds(Premises premises)
+    {
+        var none = new Dictionary<string, string>();
+        var grid = Finishes.FloorGrid(premises);
+        for (int u = 0; u < premises.Width; u++)
+            for (int v = 0; v < premises.Height; v++)
+            {
+                if (u > 0 && grid[u, v] != null && grid[u - 1, v] != null && grid[u, v] != grid[u - 1, v])
+                    FloorOverlay("floor_threshold", "along_v", u, v, none);
+                if (v > 0 && grid[u, v] != null && grid[u, v - 1] != null && grid[u, v] != grid[u, v - 1])
+                    FloorOverlay("floor_threshold", "along_u", u, v, none);
+            }
+        var door = premises.Entrance;
+        if (premises.EntranceWall == "left")
+            FloorOverlay("floor_threshold", "along_v", 0, door.Y, none);
+        else if (premises.EntranceWall == "right")
+            FloorOverlay("floor_threshold", "along_u", door.X, 0, none);
+    }
+
+    /// <summary>
+    /// Les cartons de déménagement (moving_box) : un carton pour quelques objets à déballer (3 au plus), sur des cases libres
+    /// près de l'entrée ; un clic ouvre leur contenu réel.
+    /// </summary>
+    private void Cartons(Premises premises, int count)
+    {
+        var def = FurnitureCatalog.Get("moving_box");
+        int boxes = Math.Clamp((count + 3) / 4, 1, 3);
+        var door = premises.Entrance;
+        var cells = Enumerable.Range(0, premises.Width).SelectMany(u => Enumerable.Range(0, premises.Height).Select(v => (U: u, V: v)))
+            .Where(c => (c.U, c.V) != (door.X, door.Y))
+            .OrderBy(c => Math.Abs(c.U - door.X) + Math.Abs(c.V - door.Y)).ThenBy(c => c.U).ThenBy(c => c.V);
+        var asset = PackLibrary.Asset("moving_box");
+        foreach (var (u, v) in cells)
+        {
+            if (boxes == 0)
+                break;
+            if (!Layout.CanPlace(premises, def, u, v, "se").Ok)
+                continue;
+            var t = Tile(u, v);
+            var node = new Node { Aid = "moving_box", Facing = "se", Sx = (int)t.X, Sy = (int)t.Y, ItemId = CartonsId - boxes };
+            _groups.Add(((u, u + 1, v, v + 1), node));
+            AddHit(false, CartonsId, PackLibrary.Orient(asset, "se"), node.Sx, node.Sy, _groups.Count);
+            boxes--;
+        }
     }
 
     /// <summary>

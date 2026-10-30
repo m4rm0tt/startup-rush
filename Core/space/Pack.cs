@@ -106,9 +106,76 @@ public record RoomPlan(string Id, string NameFr, int Width, int Depth, Cell Entr
     }
 }
 
+/// <summary>
+/// Un module de pièce du pack (rooms/modules/*.json) : un ensemble prêt à poser (objets, accessoires, zone de sol) sur un
+/// rectangle de cases ; « contre un mur gauche » se pose contre le mur U = 0, « contre un mur droit » contre V = 0.
+/// </summary>
+public record RoomModule(string Id, string NameFr, int Width, int Depth, IReadOnlyList<PlanObject> Objects, IReadOnlyList<PlanFloor> Floors)
+{
+    /// <summary>« left », « right » ou null : le mur contre lequel le module doit être posé.</summary>
+    public string? AgainstWall => NameFr.Contains("mur gauche") ? "left" : NameFr.Contains("mur droit") ? "right" : null;
+
+    /// <summary>Le nom sans la consigne de pose (« Kitchenette »).</summary>
+    public string Name => NameFr.Split(" (")[0];
+}
+
 /// <summary>Le pack original, embarqué dans le moteur : manifeste et plans de pièces.</summary>
 public static class Pack
 {
+    private static readonly Lazy<Dictionary<string, RoomModule>> ModulesById = new(LoadModules);
+
+    /// <summary>Les six modules de pièce du pack, dans l'ordre du manifeste.</summary>
+    public static IReadOnlyList<RoomModule> Modules => ModulesById.Value.Values.OrderBy(m => m.Id).ToList();
+
+    public static RoomModule? FindModule(string id) => ModulesById.Value.GetValueOrDefault(id);
+
+    private static Dictionary<string, RoomModule> LoadModules()
+    {
+        var result = new Dictionary<string, RoomModule>();
+        foreach (string name in Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(n => n.StartsWith("pack/modules/")))
+        {
+            using var document = JsonDocument.Parse(Resource(name));
+            var root = document.RootElement;
+            var size = root.GetProperty("size_tiles");
+            string id = root.GetProperty("id").GetString()!;
+            result[id] = new RoomModule(id, root.GetProperty("name_fr").GetString()!, size[0].GetInt32(), size[1].GetInt32(), ReadObjects(root), ReadFloors(root));
+        }
+        return result;
+    }
+
+    private static List<PlanObject> ReadObjects(JsonElement root)
+    {
+        var objects = new List<PlanObject>();
+        foreach (var o in root.GetProperty("objects").EnumerateArray())
+        {
+            var children = new List<PlanChild>();
+            if (o.TryGetProperty("children", out var ch) && ch.ValueKind == JsonValueKind.Object)
+                foreach (var c in ch.EnumerateObject())
+                {
+                    if (c.Value.ValueKind == JsonValueKind.String)
+                        children.Add(new PlanChild(c.Name, c.Value.GetString()!, false));
+                    else if (c.Value.ValueKind == JsonValueKind.Object && c.Value.TryGetProperty("asset", out var ca))
+                        children.Add(new PlanChild(c.Name, ca.GetString()!, c.Value.TryGetProperty("character", out _)));
+                }
+            var swatches = new Dictionary<string, string>();
+            if (o.TryGetProperty("swatches", out var sw) && sw.ValueKind == JsonValueKind.Object)
+                foreach (var s in sw.EnumerateObject())
+                    swatches[s.Name] = s.Value.GetString()!;
+            objects.Add(new PlanObject(o.GetProperty("asset").GetString()!, o.GetProperty("tile")[0].GetInt32(), o.GetProperty("tile")[1].GetInt32(),
+                o.TryGetProperty("facing", out var f) ? f.GetString()! : "se", children, swatches));
+        }
+        return objects;
+    }
+
+    private static List<PlanFloor> ReadFloors(JsonElement root) =>
+        root.TryGetProperty("floor", out var fl) && fl.ValueKind == JsonValueKind.Array
+            ? fl.EnumerateArray().Select(x =>
+            {
+                var r = x.GetProperty("rect");
+                return new PlanFloor(x.GetProperty("material").GetString()!, r[0].GetInt32(), r[1].GetInt32(), r[2].GetInt32(), r[3].GetInt32(), Swatches(x));
+            }).ToList()
+            : [];
+
     private static readonly Lazy<Dictionary<string, PackAsset>> AssetsById = new(LoadAssets);
     private static readonly Lazy<Dictionary<string, RoomPlan>> PlansById = new(LoadPlans);
 
@@ -204,25 +271,7 @@ public static class Pack
             using var document = JsonDocument.Parse(Resource(name));
             var root = document.RootElement;
             var size = root.GetProperty("size_tiles");
-            var objects = new List<PlanObject>();
-            foreach (var o in root.GetProperty("objects").EnumerateArray())
-            {
-                var children = new List<PlanChild>();
-                if (o.TryGetProperty("children", out var ch) && ch.ValueKind == JsonValueKind.Object)
-                    foreach (var c in ch.EnumerateObject())
-                    {
-                        if (c.Value.ValueKind == JsonValueKind.String)
-                            children.Add(new PlanChild(c.Name, c.Value.GetString()!, false));
-                        else if (c.Value.ValueKind == JsonValueKind.Object && c.Value.TryGetProperty("asset", out var ca))
-                            children.Add(new PlanChild(c.Name, ca.GetString()!, c.Value.TryGetProperty("character", out _)));
-                    }
-                var swatches = new Dictionary<string, string>();
-                if (o.TryGetProperty("swatches", out var sw) && sw.ValueKind == JsonValueKind.Object)
-                    foreach (var s in sw.EnumerateObject())
-                        swatches[s.Name] = s.Value.GetString()!;
-                objects.Add(new PlanObject(o.GetProperty("asset").GetString()!, o.GetProperty("tile")[0].GetInt32(), o.GetProperty("tile")[1].GetInt32(),
-                    o.TryGetProperty("facing", out var f) ? f.GetString()! : "se", children, swatches));
-            }
+            var objects = ReadObjects(root);
             var entrance = root.GetProperty("entrances")[0];
             string id = root.GetProperty("id").GetString()!;
             List<string?> Segments(string wall) =>
@@ -231,13 +280,7 @@ public static class Pack
             var wallItems = root.TryGetProperty("wall_items", out var wi) && wi.ValueKind == JsonValueKind.Array
                 ? wi.EnumerateArray().Select(x => new PlanWallItem(x.GetProperty("asset").GetString()!, x.GetProperty("wall").GetString()!, x.GetProperty("index").GetInt32())).ToList()
                 : [];
-            var floors = root.TryGetProperty("floor", out var fl) && fl.ValueKind == JsonValueKind.Array
-                ? fl.EnumerateArray().Select(x =>
-                {
-                    var r = x.GetProperty("rect");
-                    return new PlanFloor(x.GetProperty("material").GetString()!, r[0].GetInt32(), r[1].GetInt32(), r[2].GetInt32(), r[3].GetInt32(), Swatches(x));
-                }).ToList()
-                : [];
+            var floors = ReadFloors(root);
             JsonElement? Wall(string wall) => root.TryGetProperty("walls", out var w) && w.TryGetProperty(wall, out var side) ? side : null;
             string? Pattern(string wall) => Wall(wall) is { } side && side.TryGetProperty("pattern", out var p) && p.ValueKind == JsonValueKind.String
                 ? "pattern_" + p.GetString() : null;

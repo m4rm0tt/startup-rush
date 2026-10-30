@@ -115,11 +115,13 @@ public partial class SceneCanvas : Control
         var operators = OperatorSeats();
         // Un objet haut survolé s'estompe pour laisser voir derrière lui
         int fade = _hoverHit is { Person: false } hit && Premises.Find(hit.Id) is { } hovered && RoomRenderer.Occludes(hovered) ? hit.Id : 0;
-        string signature = Signature(seated, operators) + "~" + fade;
+        // Les objets à déballer attendent en cartons à l'entrée du siège
+        int cartons = Premises == Campaign.Headquarters ? Campaign.Storage.Count : 0;
+        string signature = Signature(seated, operators) + "~" + fade + "~" + cartons;
         if (signature == _signature && _bitmap != null)
             return;
         _signature = signature;
-        _room = RoomRenderer.Render(Premises, seated, operators, fade);
+        _room = RoomRenderer.Render(Premises, seated, operators, fade, cartons);
         _bitmap = _room.Image.ToBitmap();
     }
 

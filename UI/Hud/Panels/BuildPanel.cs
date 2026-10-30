@@ -87,6 +87,7 @@ public class BuildPanel : GamePanel
         if (!RealEstate.Get(premises.ListingId).Technical)
             column.Children.Add(ComfortSection());
         column.Children.Add(FinishesSection());
+        column.Children.Add(ModulesSection());
 
         // Catalogue, une rubrique à la fois
         var groups = FurnitureCatalog.Buyable.GroupBy(GroupOf).ToList();
@@ -237,6 +238,36 @@ public class BuildPanel : GamePanel
             Ui.Text(left == right ? $"Murs : {left}" : $"Murs : {left} à gauche, {right} à droite", 14, Palette.Cloud), Cells(FinishKind.Wall),
             Ui.Muted("Le faux plancher distribue mieux le froid existant ; le lambris ajoute de l'ambiance ; la moquette et les panneaux acoustiques " +
                      "aident la concentration (plafond commun avec les cloisons). Le reste fait l'identité du local.", 12));
+    }
+
+    /// <summary>
+    /// Les modules de pièce du pack : un coin prêt à poser (kitchenette, détente, réunion, îlot, accueil, sanitaires), acheté
+    /// objet par objet au prix du catalogue avec son sol ; ses meubles donnent leurs effets habituels.
+    /// </summary>
+    private Control ModulesSection()
+    {
+        var wrap = new WrapPanel();
+        foreach (var module in Pack.Modules)
+        {
+            decimal cost = Core.campaign.Campaign.ModuleCost(module);
+            string? locked = Campaign.ModuleLock(module);
+            var kinds = module.Objects.Select(o => FurnitureCatalog.Get(o.Asset)).GroupBy(d => d.Name).Select(g => g.Count() > 1 ? $"{g.Count()} × {g.Key}" : g.Key);
+            string content = string.Join(", ", kinds);
+            var card = Ui.Card(Ui.Column(4,
+                Ui.Text(module.Name, 14, Palette.Snow, bold: true),
+                Ui.Muted($"{module.Width} × {module.Depth} cases · {cost:N0} CHF", 12),
+                Ui.Muted(content, 12),
+                Ui.Button("Installer", () => Screen.Confirm($"Installer : {module.Name} ?",
+                        $"{content}. {(module.Floors.Count > 0 ? "Avec son sol. " : "")}Coût : {cost:N0} CHF. Il se pose à la première place libre du site affiché" +
+                        $"{(module.AgainstWall != null ? $", contre le mur {(module.AgainstWall == "left" ? "gauche" : "droit")} si possible" : "")}.",
+                        "Installer", () => Run(Campaign.InstallModule(module.Id)), danger: false),
+                    locked == null && Campaign.Ledger.CanSpend(cost) ? "gold" : "", locked == null, locked)));
+            card.Width = 250;
+            card.Margin = new Thickness(0, 0, 8, 8);
+            wrap.Children.Add(card);
+        }
+        return Ui.Section("Modules prêts à poser", wrap,
+            Ui.Muted("Chaque objet est acheté au prix du catalogue et donne ses effets habituels (pause, coordination, postes, confort).", 12));
     }
 
     private Control FinishCell(FinishDef finish, Dictionary<string, string> wall)

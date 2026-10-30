@@ -467,6 +467,19 @@ public static class Capture
         }
         later.ClosePanels();
 
+        // Modules de pièce du pack, posés dans un grand open space, avec des objets encore dans les cartons au siège
+        if (advanced.RentSite("large").Ok)
+        {
+            var modules = new[] { "module_kitchenette", "module_meeting_room", "module_reception", "module_lounge" }.Select(m => $"{m} : {advanced.InstallModule(m).Message}").ToList();
+            report.Add("Modules : " + string.Join(" · ", modules));
+            later.Scene.ResetCamera();
+            await Wait(0.5);
+            await Shot(window, folder, "41_modules", report);
+            later.OpenRoot(new BuildPanel());
+            await Shot(window, folder, "41b_modules_panneau", report);
+            later.ClosePanels();
+        }
+
         // Faillite : trois embauches sans revenus
         var doomed = Campaign.New("Capture faillite", "Alex", "Studio Perdu", FounderProfile.Designer, 3);
         var reckless = new Autopilot(Strategies.All.First(s => s.Name == "recrutement_precoce"));

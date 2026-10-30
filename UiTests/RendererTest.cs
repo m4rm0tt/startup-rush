@@ -75,6 +75,48 @@ public class RendererTest
     }
 
     [Test]
+    public void PackedObjectsWaitInMovingBoxesAtTheEntranceAndCanBeClicked()
+    {
+        var campaign = Campaign.New("Rendu", "Alex", "Studio", FounderProfile.Developer, 42);
+        var empty = RoomRenderer.Render(campaign.Premises, Nobody);
+        var packed = RoomRenderer.Render(campaign.Premises, Nobody, cartons: 9);
+        Assert.That(empty.Hits.Any(h => h.Id == RoomRenderer.CartonsId), Is.False);
+        Assert.That(packed.Hits.Count(h => h.Id == RoomRenderer.CartonsId), Is.EqualTo(3), "un carton pour 4 objets, 3 au plus");
+        Assert.That(Differences(empty.Image, packed.Image), Is.GreaterThan(200));
+    }
+
+    [Test]
+    public void StationsGetFloorMarkingsAndModulesGetThresholds()
+    {
+        var campaign = Workshop();
+        var site = campaign.Premises;
+        var station = site.Items.First(i => IndustryCatalog.Station(i.DefId) is { Manual: true });
+        var with = RoomRenderer.Render(site, Nobody);
+        // Les hachures sont sur la case d'accès, devant la station : la station rangée, elles disparaissent avec elle
+        Assert.That(campaign.Store(station.Id).Ok, Is.True);
+        var without = RoomRenderer.Render(site, Nobody);
+        var o = PackLibrary.Orient(PackLibrary.Asset(station.DefId), station.Facing);
+        var spot = o.GetProperty("access").EnumerateArray().First().GetProperty("tile");
+        int u = station.X + spot[0].GetInt32(), v = station.Y + spot[1].GetInt32();
+        int cx = with.OriginX + (u - v) * 32, cy = with.OriginY + (u + v) * 16 + 16;
+        int changed = 0;
+        for (int y = cy - 4; y <= cy + 4; y++)
+            for (int x = cx - 12; x <= cx + 12; x++)
+            {
+                int i = (y * with.Image.W + x) * 4;
+                if (with.Image.P[i] != without.Image.P[i] || with.Image.P[i + 1] != without.Image.P[i + 1])
+                    changed++;
+            }
+        Assert.That(changed, Is.GreaterThan(10), "marquage au sol sur la case de l'opérateur");
+
+        // Un sol de module (carrelage) au milieu d'un autre : un seuil sur la bordure
+        var plain = RoomRenderer.Render(site, Nobody);
+        site.FloorPatches.Add(new FloorPatch { Material = "floor_tile_ceramic", U = 2, V = 2, Width = 2, Depth = 2 });
+        var patched = RoomRenderer.Render(site, Nobody);
+        Assert.That(Differences(plain.Image, patched.Image), Is.GreaterThan(500), "le carrelage et ses seuils (en partie sous les meubles)");
+    }
+
+    [Test]
     public void AHoveredTallObjectFadesOnlyAboveItsUsefulHeight()
     {
         var campaign = Workshop();

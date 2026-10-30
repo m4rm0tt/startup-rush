@@ -44,13 +44,16 @@ conservé dans `docs/equilibrage/reference_avant.md`.
 
 | Point | État constaté | Attendu | Validation |
 |---|---|---|---|
-| Registre | 141 validés, 349 partiels, 96 non implémentés (vérifié dans `docs/asset_usage.csv`) | chaque ligne justifiée : validé, partiel avec raison, ou non applicable | `AssetRegistryTest` + scénarios |
-| Six modules de pièce | non implémentés | posables comme lots, prix et effets comptés | tests |
-| `moving_box` | non implémenté | les cartons du déménagement visibles et ouvrables | capture + test |
-| `wall_corner_outer`, `wall_opening`, `floor_marking`, `floor_threshold` | non implémentés | usage réel ou non applicable justifié | — |
-| HUD restants (`hud_dropdown`, `hud_dropdown_list`, `hud_field_numeric`, `hud_stepper_up/down`, `hud_field_multiline`, `hud_field_search`, `hud_menu_panel/item/separator`, `hud_gauge_*`, `hud_banner`, `hud_chip_dark`, `hud_separator_h/v`, `hud_panel_secondary`, `hud_card`, `hud_chart_bar`, `hud_chart_grid_v`, défilement horizontal, `hud_progress_fill_striped`, `hud_titlebar`, `hud_theme_papier`) | non implémentés | branchés là où ils servent | captures |
-| Icônes sans usage (dont `icon_gpu`, `icon_server`, `icon_training`, 27 autres) | non implémentées ou mappées sans affichage | affichées là où elles servent | captures |
-| `cursor_busy`, `cursor_resize_v/d1/d2` | non implémentés | usage réel ou non applicable | captures |
+| Registre | 141 validés, 349 partiels, 96 non implémentés (vérifié dans `docs/asset_usage.csv`) | chaque ligne justifiée : validé, partiel avec raison, ou non applicable | **fait** : 252 validés, 319 partiels, 15 non applicables, 0 non implémenté (`tools/registry_finition.py`, `AssetRegistryTest`) |
+| Six modules de pièce | non implémentés | posables comme lots, prix et effets comptés | **fait** (`9e1cb36`, FeaturesTest, capture 41) |
+| `moving_box` | non implémenté | les cartons du déménagement visibles et ouvrables | **fait** (`9e1cb36`, RendererTest) |
+| `floor_marking`, `floor_threshold` | non implémentés | usage réel | **fait** (`9e1cb36`, RendererTest) |
+| `wall_corner_outer`, `wall_opening` | non implémentés | usage réel ou non applicable justifié | **non applicable** : aucun plan du pack n'a d'angle saillant ni de passage sans porte ; seuls les deux murs du fond sont dessinés |
+| HUD restants | non implémentés | branchés là où ils servent | **fait** (`UI/Hud/HudKit.cs`) : liste déroulante (catalogue, transferts), champ numérique (quantité), multiligne (notes de projet, sauvegardées), recherche (catalogue), menu contextuel (projets), jauges (sites), bandeau (factures en retard), puce sombre, séparateurs, panneau secondaire, carte (modules), barres (résultat par site), défilement horizontal (mois par mois), rayures (recherche du jour), barre de titre (inspecteur), grille verticale (courbes), thème Papier. Tests : `UiTests/HudKitTest.cs`, `PanelsTest.TheHudKitIsWiredIntoTheRealPanels` |
+| Icônes sans usage | non implémentées ou mappées sans affichage | affichées là où elles servent | **fait** : `icon_gpu` (chiffre « GPU des sites »), `icon_server` (dépense « Serveurs »), `icon_training` (Former, Entraîner, Compétences) ; 15 icônes de titres de section, besoins, causes d'avis, priorité, verrou. Correspondances mortes retirées. `icon_drag_grip` : non applicable (pas de glisser-déposer) |
+| `cursor_busy`, `cursor_resize_v/d1/d2` | non implémentés | usage réel ou non applicable | **fait** : `cursor_busy` au chargement et à la sauvegarde (test) ; redimensionnement vertical/diagonal non applicable (fenêtre Windows, panneau redimensionnable à l'horizontale seulement) |
+| Objets du catalogue « partiels » | affichage vu en capture, effets non testés | affichage, clic et effet vérifiés | **fait** : `UiTests/CatalogCoverageTest.cs` pose les 185 objets achetables, vérifie dessin, clic et chaque effet déclaré. **Défaut corrigé** : les objets centrés sans `selection_poly` (lampadaire, fontaine, trépied, poubelle…) n'étaient pas cliquables, donc ni déplaçables ni rangeables. Restent partiels : ordinateurs et stations dont l'effet est un rendement de travail (`Output`/`Quality`), objets agissant par leur identifiant (convoyeurs, entrepôt) |
+| Graphe de dépendances (`link_*`, `port_*`) | — | — | 13 pièces utilisées (partielles : capture 09b) ; 9 flèches et ports haut/bas/gauche non applicables (graphe orienté gauche → droite) |
 
 ## 5. Défauts et finitions
 

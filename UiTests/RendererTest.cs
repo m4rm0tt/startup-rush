@@ -55,6 +55,40 @@ public class RendererTest
         Assert.That(Math.Abs(hy - sy), Is.LessThan(120));
     }
 
+    /// <summary>
+    /// BUG-016 : une baie haute et un chemin de câbles sur la même case. Le guide du pack dessine le chemin de câbles après ce
+    /// qui est posé dessous ; l'ordre de pose ne doit rien changer à l'image.
+    /// </summary>
+    [Test]
+    public void ACableTrayIsDrawnOverTheRackBelowWhateverTheOrderOfPlacement()
+    {
+        Img Room(bool trayFirst, bool tray = true)
+        {
+            var campaign = Campaign.New("Rendu", "Alex", "Studio", FounderProfile.Developer, 42);
+            campaign.Ledger.Cash = 1_000_000;
+            campaign.CheatUnlockAll();
+            var spot = campaign.FindSpot(FurnitureCatalog.Get("rack_high_density"))!.Value;
+            var steps = new List<Func<CommandResult>>
+            {
+                () => campaign.BuyAndPlace("rack_high_density", spot.X, spot.Y, spot.Facing),
+            };
+            if (tray)
+                steps.Insert(trayFirst ? 0 : 1, () => campaign.BuyAndPlace("cable_tray_straight", spot.X, spot.Y, "se"));
+            foreach (var step in steps)
+            {
+                var result = step();
+                Assert.That(result.Ok, Is.True, result.Message);
+            }
+            return RoomRenderer.Render(campaign.Premises, Nobody).Image;
+        }
+        Assert.That(RoomRenderer.Overhead("cable_tray_straight"), Is.True);
+        Assert.That(RoomRenderer.Overhead("rack_high_density"), Is.False);
+        var trayLast = Room(trayFirst: false);
+        var trayFirst = Room(trayFirst: true);
+        Assert.That(Differences(trayLast, Room(false, tray: false)), Is.GreaterThan(50), "le chemin de câbles se voit");
+        Assert.That(Differences(trayFirst, trayLast), Is.Zero, "même image quel que soit l'ordre : le chemin de câbles est toujours au-dessus de la baie");
+    }
+
     [Test]
     public void AnOutfitRecolorsTheClothesWithoutTouchingTheRest()
     {

@@ -571,9 +571,25 @@ public sealed class RoomRenderer
     }
 
     /// <summary>Tri topologique des emprises (A derrière B si A.u1 ≤ B.u0 ou A.v1 ≤ B.v0), comme la référence.</summary>
-    private static List<int> TopoSort(List<(double u0, double u1, double v0, double v1)> fps)
+    /// <summary>
+    /// Un objet suspendu au-dessus de sa case (étiquette « overhead » du pack : chemins de câbles à z = 98-104). Le guide du pack :
+    /// « sur une case partagée avec un objet posé dessous, dessiner APRÈS cet objet ». Sans cette règle, deux emprises identiques
+    /// étaient départagées au hasard de l'ordre de pose, et une baie haute passait à travers le chemin de câbles.
+    /// </summary>
+    public static bool Overhead(string assetId) =>
+        PackLibrary.Has(assetId) && PackLibrary.Asset(assetId).TryGetProperty("tags", out var tags) && tags.ValueKind == JsonValueKind.Array
+        && tags.EnumerateArray().Any(t => t.GetString() == "overhead");
+
+    /// <summary>Le coin d'un chemin de câbles : le guide du pack le dessine après les deux segments voisins (il recouvre leur bout).</summary>
+    private static bool OverheadCorner(string assetId) => Overhead(assetId) && assetId.Contains("corner");
+
+    private static List<int> TopoSort(List<(double u0, double u1, double v0, double v1)> fps, IReadOnlyList<bool>? overhead = null,
+        IReadOnlyList<bool>? corner = null)
     {
         int n = fps.Count;
+        static bool Touch((double u0, double u1, double v0, double v1) a, (double u0, double u1, double v0, double v1) b) =>
+            (a.u1 == b.u0 || b.u1 == a.u0) && a.v0 < b.v1 && b.v0 < a.v1
+            || (a.v1 == b.v0 || b.v1 == a.v0) && a.u0 < b.u1 && b.u0 < a.u1;
         var before = Enumerable.Range(0, n).Select(_ => new HashSet<int>()).ToList();
         for (int i = 0; i < n; i++)
             for (int j = 0; j < n; j++)
@@ -582,8 +598,18 @@ public sealed class RoomRenderer
                     continue;
                 var a = fps[i];
                 var b = fps[j];
+                // Un coin de chemin de câbles passe après les segments qui le touchent, quel que soit leur côté
+                if (corner != null && overhead != null && overhead[i] && overhead[j] && corner[i] != corner[j] && Touch(a, b))
+                {
+                    if (corner[j])
+                        before[j].Add(i);
+                    continue;
+                }
                 bool behind = a.u1 <= b.u0 || a.v1 <= b.v0, inFront = b.u1 <= a.u0 || b.v1 <= a.v0;
                 if (behind && !inFront)
+                    before[j].Add(i);
+                // Emprises qui se chevauchent : ce qui est suspendu passe après ce qui est posé dessous
+                else if (!behind && !inFront && overhead != null && overhead[j] && !overhead[i])
                     before[j].Add(i);
             }
         var order = Enumerable.Range(0, n).OrderBy(k => fps[k].u1 + fps[k].v1).ThenBy(k => fps[k].u0 + fps[k].v0).ToList();
@@ -616,7 +642,8 @@ public sealed class RoomRenderer
             Blend.Over(img, s, x, y);
         var shadow = new byte[_w * _h];
         var objects = new Img(_w, _h);
-        var sorted = TopoSort(_groups.Select(g => g.fp).ToList());
+        var sorted = TopoSort(_groups.Select(g => g.fp).ToList(), _groups.Select(g => Overhead(g.node.Aid)).ToList(),
+            _groups.Select(g => OverheadCorner(g.node.Aid)).ToList());
 
         // Estompage : un objet haut dessiné devant un personnage qu'il recouvre, ou survolé, s'efface au-dessus de sa hauteur utile
         var people = new List<(int Order, (int X, int Y, int W, int H) Rect)>();

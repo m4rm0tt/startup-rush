@@ -48,6 +48,25 @@ public partial class Campaign
         _blocked.Clear();
         _comfort.Clear();
         _infra.Clear();
+        _placesDirty = true;
+    }
+
+    /// <summary>L'aménagement a changé depuis que chacun a pris sa place : on revoit qui peut s'asseoir.</summary>
+    private bool _placesDirty;
+
+    /// <summary>
+    /// Après un changement d'aménagement (poste installé, objet rangé, déménagement), chaque personne présente reprend sa place :
+    /// celle qui attendait à l'entrée s'assoit dès que son poste est complet, celle dont le poste vient d'être défait va attendre.
+    /// Sans cela, l'alerte « pas de poste » restait jusqu'au lendemain. Appelé à chaque minute et par l'interface (même en pause).
+    /// </summary>
+    public void SettlePlaces()
+    {
+        if (!_placesDirty)
+            return;
+        _placesDirty = false;
+        foreach (var person in People)
+            if (person.Activity is Activity.Working or Activity.Idle && person.TrainingDiscipline == null)
+                TakePlace(person);
     }
 
     private bool[,] Blocked(Premises site) => _blocked.TryGetValue(site.Id, out var grid) && grid.GetLength(0) == site.Width && grid.GetLength(1) == site.Height
@@ -99,6 +118,7 @@ public partial class Campaign
             crowd[key] = (current.Count + 1, current.Lead || p.IsLead && IsUnlocked("leads"));
         }
 
+        SettlePlaces();
         foreach (var person in People)
         {
             if (person.TrainingDiscipline != null)

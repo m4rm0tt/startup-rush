@@ -82,7 +82,7 @@ public partial class Campaign
         RelocateStock(old.Id, Premises);
         SendHome(Premises);
         Notify(Severity.Good, "local", $"Emménagement : {offer.Name}",
-            $"{Storage.Count} objets sont dans les cartons. Ouvre Aménagement pour les installer. Nouveau loyer : {listing.Rent:N0} CHF par mois.", "build");
+            $"{Storage.Count} objets sont dans les cartons. Ouvre Aménagement pour les installer. Nouveau loyer : {listing.Rent:N0} CHF par mois.", "build:cartons");
         return CommandResult.Success();
     }
 
@@ -140,7 +140,7 @@ public partial class Campaign
         InvalidateLayout();
         string who = people.Count == 0 ? "Personne n'y travaillait." : $"Sans poste à installer : {string.Join(", ", people.Select(p => p.Name))}.";
         Notify(people.Count == 0 ? Severity.Info : Severity.Warning, "local", $"Site fermé : {site.Name}",
-            $"{items} objets dans les cartons. {who}", people.Count == 0 ? "sites" : "build");
+            $"{items} objets dans les cartons. {who}", people.Count == 0 ? "sites" : "build:cartons");
         return CommandResult.Success();
     }
 

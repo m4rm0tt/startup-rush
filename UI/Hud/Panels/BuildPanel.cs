@@ -162,7 +162,10 @@ public class BuildPanel : GamePanel
             {
                 var def = FurnitureCatalog.Get(item.DefId);
                 var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto,Auto") };
-                grid.Children.Add(Ui.Text(def.Name, 14));
+                // Le nom centré sur la hauteur des boutons (il était collé en haut de la rangée)
+                var name = Ui.Text(def.Name, 14);
+                name.VerticalAlignment = VerticalAlignment.Center;
+                grid.Children.Add(name);
                 var place = Ui.Button("Poser", () => Session.SetTool(new BuildTool(def.Id, StoredId: item.Id)), "green");
                 Grid.SetColumn(place, 1);
                 grid.Children.Add(place);
@@ -302,8 +305,14 @@ public class BuildPanel : GamePanel
             var kinds = module.Objects.Select(o => FurnitureCatalog.Get(o.Asset)).GroupBy(d => d.Name).Select(g => g.Count() > 1 ? $"{g.Count()} × {g.Key}" : g.Key);
             string content = string.Join(", ", kinds);
             // Le titre est sur la bande sarcelle de la carte du pack : en blanc (4,8:1), l'encre n'y faisait que 3,2:1
+            // Le titre occupe toute la bande sarcelle de la carte (16 px du pack, soit 32) : la description commence sous la
+            // bande avec une vraie marge, au lieu d'en toucher le bord (BUG-011)
+            var title = Ui.Text(module.Name, 14, locked == null ? Palette.White : Palette.Snow, wrap: false);
+            title.TextTrimming = Avalonia.Media.TextTrimming.CharacterEllipsis;
+            title.Height = 22;
+            title.Margin = new Thickness(0, 0, 0, 8);
             var card = HudKit.Card(Ui.Column(4,
-                Ui.Text(module.Name, 14, locked == null ? Palette.White : Palette.Snow, bold: true),
+                title,
                 Ui.Muted($"{module.Width} × {module.Depth} cases · {cost:N0} CHF", 12),
                 Ui.Muted(content, 12),
                 Ui.Button("Installer", () => Screen.Confirm($"Installer : {module.Name} ?",
@@ -315,8 +324,10 @@ public class BuildPanel : GamePanel
             card.Margin = new Thickness(0, 0, 8, 8);
             wrap.Children.Add(card);
         }
-        return Ui.Section("Modules prêts à poser", wrap,
+        var section = Ui.Section("Modules prêts à poser", wrap,
             Ui.Muted("Chaque objet est acheté au prix du catalogue et donne ses effets habituels (pause, coordination, postes, confort).", 12));
+        section.Tag = "section:modules";
+        return section;
     }
 
     private Control FinishCell(FinishDef finish, Dictionary<string, string> wall)

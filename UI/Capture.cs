@@ -475,7 +475,7 @@ public static class Capture
             later.Scene.ResetCamera();
             await Wait(0.5);
             await Shot(window, folder, "41_modules", report);
-            later.OpenRoot(new BuildPanel());
+            later.OpenRoot(new BuildPanel { FocusTag = "section:modules" });
             await Shot(window, folder, "41b_modules_panneau", report);
             later.ClosePanels();
         }

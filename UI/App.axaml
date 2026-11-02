@@ -206,7 +206,7 @@
 
         <!-- Vrais onglets (navigation, onglets d'une fiche) : l'actif déborde sur le panneau -->
         <Style Selector="Button.tabs">
-            <Setter Property="Foreground" Value="{StaticResource Fog}"/>
+            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
             <Setter Property="FontSize" Value="17"/>
         </Style>
         <Style Selector="Button.tabs.selected">

@@ -27,6 +27,11 @@ public static class PixelText
         _installed = true;
         TextBlock.FontSizeProperty.OverrideMetadata<TextBlock>(new StyledPropertyMetadata<double>(Grid, coerce: (_, v) => Snap(v)));
         Avalonia.Controls.Documents.TextElement.FontSizeProperty.OverrideMetadata<TextPresenter>(new StyledPropertyMetadata<double>(Grid, coerce: (_, v) => Snap(v)));
+        // Les polices du pack n'existent qu'en graisse normale : un « gras » était épaissi par le moteur de texte, d'un pixel
+        // irrégulier, et collait les lettres (« mise » se lisait « nise »). La hiérarchie passe par la taille et la couleur.
+        TextBlock.FontWeightProperty.OverrideMetadata<TextBlock>(new StyledPropertyMetadata<FontWeight>(FontWeight.Normal, coerce: (_, _) => FontWeight.Normal));
+        Avalonia.Controls.Documents.TextElement.FontWeightProperty.OverrideMetadata<TextPresenter>(new StyledPropertyMetadata<FontWeight>(FontWeight.Normal, coerce: (_, _) => FontWeight.Normal));
+        Avalonia.Controls.Primitives.TemplatedControl.FontWeightProperty.OverrideMetadata<Avalonia.Controls.Primitives.TemplatedControl>(new StyledPropertyMetadata<FontWeight>(FontWeight.Normal, coerce: (_, _) => FontWeight.Normal));
     }
 
     /// <summary>

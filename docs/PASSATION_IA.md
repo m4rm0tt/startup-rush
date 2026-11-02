@@ -212,3 +212,23 @@ lots de `docs/V1_ETAT.md`, et le §11 ci-dessous pour ce que le lot 6 laisse en 
 - Autres pièges vus : un bureau n'a que deux emplacements d'objets ; un portable exige de retirer écran et clavier ; le fondateur
   commence sur une tour. Les objets d'un plan du pack entrent dans le jeu dès qu'ils sont au catalogue (coûts d'énergie, effets).
   Heredoc bash avec apostrophes : écrire le script Python avec l'outil d'écriture de fichiers.
+
+## 13. Corrections après les tests joueurs (novembre 2026)
+
+- Suivi : `docs/BUGFIX_TRACKER.md` (17 bugs, causes, tests, statuts), évolutions en attente : `docs/BACKLOG_TESTEURS.md`,
+  validation à la souris : `docs/BUGFIX_VALIDATION.md`. Retours bruts du testeur 1 : `docs/test.md`.
+- **Mise à jour sur place des menus** (`UI/Hud/UiPatch.cs`) : `RefreshPanel`, la barre du haut, la fiche de sélection et la barre
+  d'outils fusionnent le nouvel arbre dans l'arbre affiché au lieu de le remplacer. Règles à respecter dans tout nouveau menu
+  (détaillées en tête du fichier) : action de bouton par `Ui.OnClick` (jamais `Click +=` dans un menu), survol par
+  `PixelPanel.HoverSkin` / `FocusSkin` ou `HoverImage` (jamais un `PointerEntered` qui écrit une valeur), valeur partagée entre
+  deux contrôles dans un champ du menu (pas une variable locale de `Build`). Un contrôle d'un type du jeu est remplacé, sauf
+  `PixelPanel`, `HoverImage` et ce qui implémente `IPatchable`.
+- `GamePanel.BuildHeader()` : bandeau fixe hors du défilement ; `GamePanel.FocusTag` : section (Tag) amenée en vue à
+  l'ouverture (`BuildPanel.AtCartons()`).
+- `ClickGuard` : un bouton apparu depuis moins de 350 ms ignore la souris (double-clic qui traversait vers « Déplacer »).
+- `Campaign.SettlePlaces()` : après `InvalidateLayout`, chacun reprend sa place (appelé à chaque minute et par l'interface).
+- Rendu : les objets « overhead » du pack (chemins de câbles) passent après ce qui est dessous ; plus d'estompage au survol.
+- Police : graisse forcée à normale (`PixelText.Install`) ; la taille reste ramenée aux multiples de 12 (décision ouverte).
+- Pièges vus : pas de Python sur ce poste (script de remplacement en PowerShell) ; un fichier `.ps1` sans BOM casse les accents
+  (passer les textes par des fichiers UTF-8 lus explicitement) ; `Tests/bin` refusait d'écrire `.msCoverageSourceRootsMapping_*`
+  (supprimer le fichier) ; les tests lancés avec `-o` hors du dépôt échouent (ils cherchent la racine du dépôt).

@@ -90,7 +90,7 @@ public class AiPanel : GamePanel
             body.Children.Add(Ui.Row(6,
                 !candidate.Evaluated ? Ui.Button("Évaluer (mini-jeu)", () => ChallengeView.ShowEvaluation(Screen, model.Id), "gold") : null,
                 !candidate.Evaluated ? Ui.Button("Déléguer l'évaluation", () => Run(Campaign.DelegateEvaluation(model.Id)), "", canDelegate, canDelegate ? null : why) : null,
-                Ui.Button(live == null ? "Publier" : $"Publier (remplace la v{live.Number})", () => Run(Campaign.PublishAi(model.Id), $"{model.Name} version {candidate.Number} est en service."), candidate.Evaluated ? "gold" : ""),
+                Ui.Button(live == null ? "Publier" : $"Publier (remplace la v{live.Number})", () => Run(Campaign.PublishAi(model.Id)), candidate.Evaluated ? "gold" : ""),
                 Ui.Button("Jeter", () => Run(Campaign.DiscardAiCandidate(model.Id)))));
         }
         else

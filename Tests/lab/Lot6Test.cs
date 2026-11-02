@@ -165,6 +165,32 @@ public class Lot6Test
         Assert.That(product!.Queue.Any(q => q.DefId == "ai_core") || product.Level("ai_core") > 0, Is.True);
     }
 
+    /// <summary>
+    /// BUG-017 : « Publier » ne disait pas ce que ça change. Le message le dit (quel produit l'utilise, ou qu'aucun ne l'utilise
+    /// encore), et un produit doté d'un composant d'IA mais sans modèle relié le reçoit à la publication.
+    /// </summary>
+    [Test]
+    public void PublishingSaysWhatItChangesAndLinksAnAiProductLeftWithoutModel()
+    {
+        var campaign = WithAi();
+        var model = NewModel(campaign, AiGoal.Assistant);
+        campaign.StartAiTraining(model.Id, "public", true);
+        campaign.AdvanceDays(6);
+        var alone = campaign.PublishAi(model.Id);
+        Assert.That(alone.Ok, Is.True);
+        Assert.That(alone.Message, Does.Contain("aucun produit ne l'utilise"), "sans produit, un modèle publié ne rapporte rien : le joueur le lit");
+
+        var (_, product) = campaign.CreateProject("IA", "ai_assist", RevenueModel.Subscription, starters: []);
+        product!.Components.Add(new ProjectComponent { DefId = "ai_core", Level = 1, Quality = 0.1 });
+        Assert.That(product.AiModelId, Is.EqualTo(0), "un produit resté sans modèle (cas d'une ancienne partie)");
+        campaign.StartAiTraining(model.Id, "public", true);
+        campaign.AdvanceDays(6);
+        var linked = campaign.PublishAi(model.Id);
+        Assert.That(product.AiModelId, Is.EqualTo(model.Id), "la publication le relie au modèle");
+        Assert.That(product.Component("ai_core")!.Quality, Is.EqualTo(Campaign.AiQualityFor(model)).Within(0.001));
+        Assert.That(linked.Message, Does.Contain("IA l'utilise"));
+    }
+
     [Test]
     public void AnAiProductNeedsAPublishedModelAndTakesItsQuality()
     {

@@ -179,9 +179,17 @@ public partial class Campaign
         candidate.PublishedAt = Minute;
         foreach (var product in Products.Where(p => p.AiModelId == model.Id))
             RefreshAiComponents(product);
+        // Un produit dont le composant d'IA était fini avant tout modèle publié n'avait rien reçu (« Sans modèle », qualité 0,1) :
+        // la liaison automatique prévue à la fin du composant se fait aussi à la publication
+        foreach (var product in Products.Where(p => p.Level("ai_core") > 0 || p.Level("ai_feature") > 0))
+            AutoLinkAi(product);
+        var users = Products.Where(p => p.AiModelId == model.Id).ToList();
         Notify(Severity.Good, "ia", $"{model.Name} version {candidate.Number} est en service", $"Qualité : {candidate.Effective:P0}.", "ai");
         Award("ai:published", 1, "Premier modèle d'IA publié.");
-        return CommandResult.Success();
+        // Ce que la publication change, en clair : sans produit qui l'utilise, un modèle ne rapporte rien
+        return CommandResult.Success(users.Count > 0
+            ? $"{model.Name} v{candidate.Number} en service : {string.Join(", ", users.Select(p => p.Name))} l'utilise{(users.Count > 1 ? "nt" : "")} (qualité {AiQualityFor(model):P0})."
+            : $"{model.Name} v{candidate.Number} en service, mais aucun produit ne l'utilise encore : crée un produit d'IA ou ajoute « Fonctions d'IA » à une application.");
     }
 
     // ------------------------------------------------------------------ Produits qui utilisent un modèle

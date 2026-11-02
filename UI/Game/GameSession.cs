@@ -110,6 +110,8 @@ public class GameSession
     public void Update(double realSeconds)
     {
         realSeconds = Math.Min(realSeconds, 0.1);
+        // Même en pause : un poste qu'on vient de compléter est occupé tout de suite (l'alerte devant la porte disparaît)
+        Campaign.SettlePlaces();
         if (!Running)
             return;
 

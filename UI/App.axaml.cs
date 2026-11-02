@@ -14,6 +14,8 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        // Un double-clic ne traverse plus vers un bouton qui vient d'apparaître sous la souris (BUG-004)
+        UI.Hud.ClickGuard.Install();
     }
 
     public override void OnFrameworkInitializationCompleted()

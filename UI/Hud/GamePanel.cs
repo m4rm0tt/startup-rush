@@ -30,6 +30,19 @@ public abstract class GamePanel
 
     public abstract Control Build();
 
+    /// <summary>Un bandeau fixe au-dessus de la liste défilante (null : aucun) : ce qui doit rester en vue pendant qu'on fait défiler.</summary>
+    public virtual Control? BuildHeader() => null;
+
+    /// <summary>Section (Tag) à amener en vue à la prochaine construction, une seule fois (ex. les cartons après un déménagement).</summary>
+    public string? FocusTag { get; set; }
+
+    public string? TakeFocusTag()
+    {
+        var tag = FocusTag;
+        FocusTag = null;
+        return tag;
+    }
+
     protected void Refresh() => Screen.RefreshPanel();
 
     protected void Open(GamePanel panel) => Screen.PushPanel(panel);

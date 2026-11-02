@@ -70,7 +70,7 @@ public class NoticesPanel : GamePanel
             };
             button.Classes.Add("row");
             var n = notice;
-            button.Click += (_, _) => Screen.Navigate(n);
+            Ui.OnClick(button, () => Screen.Navigate(n));
             column.Children.Add(button);
         }
         if (column.Children.Count == 1)

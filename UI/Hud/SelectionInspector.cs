@@ -36,7 +36,7 @@ public static class SelectionInspector
             Ui.Row(Ui.Image(thumb, thumb.PixelSize.Width, thumb.PixelSize.Height),
                 Ui.Column(2, Ui.Title("Cartons de déménagement", 18), Ui.Muted($"{campaign.Storage.Count} objet(s) à déballer.", 13))),
             Ui.Muted(content.Count == 0 ? "Les cartons sont vides." : string.Join(", ", content), 13),
-            Ui.Button("Ouvrir les cartons", () => screen.OpenRoot(new BuildPanel()), "gold", campaign.Storage.Count > 0));
+            Ui.Button("Ouvrir les cartons", () => screen.OpenRoot(BuildPanel.AtCartons()), "gold", campaign.Storage.Count > 0));
     }
 
     private static Control Item(GameScreen screen, Campaign campaign, PlacedItem item)
@@ -91,7 +91,7 @@ public static class SelectionInspector
         if (!item.Included)
         {
             decimal resale = Campaign.ResaleValue(item.PaidPrice);
-            column.Children.Add(Ui.Row(
+            column.Children.Add(Actions(
                 item.HostId == null ? Ui.Button("Déplacer", () =>
                 {
                     screen.OpenRoot(new BuildPanel());
@@ -121,7 +121,7 @@ public static class SelectionInspector
         else
             column.Children.Add(Ui.Muted(item.HostId == null && def.Pack.Facings.Count > 1 ? "Livré avec le local : il reste ici, mais tu peux le déplacer." : "Livré avec le local : il reste ici."));
         if (item.Included && item.HostId == null)
-            column.Children.Add(Ui.Row(
+            column.Children.Add(Actions(
                 Ui.Button("Déplacer", () =>
                 {
                     screen.OpenRoot(new BuildPanel());
@@ -136,12 +136,33 @@ public static class SelectionInspector
         return column;
     }
 
+    /// <summary>
+    /// Les boutons d'action d'une fiche : ils passent à la ligne au lieu de sortir de la fiche (« Revendre 1 200 » était coupé à
+    /// droite quand il y avait quatre actions).
+    /// </summary>
+    private static WrapPanel Actions(params Control?[] buttons)
+    {
+        var wrap = new WrapPanel { Orientation = Avalonia.Layout.Orientation.Horizontal, Margin = new Avalonia.Thickness(0, 4, 0, 0) };
+        foreach (var button in buttons)
+            if (button != null)
+            {
+                button.Margin = new Avalonia.Thickness(0, 0, 6, 6);
+                wrap.Children.Add(button);
+            }
+        return wrap;
+    }
+
     private static Control Person(GameScreen screen, Campaign campaign, Person person)
     {
         var column = Ui.Column(6,
             Ui.Row(Ui.Portrait(Portraits.Of(person.Appearance)),
                 Ui.Column(2, Ui.Title(person.Name, 18), Ui.Muted(person.Title, 13))),
             Ui.Text(string.IsNullOrEmpty(person.Status) ? ActivityText(person) : person.Status, 14, Palette.Cloud),
+            // L'alerte au-dessus d'une personne qui attend à l'entrée : la raison et où la régler
+            person.Activity == Activity.Idle
+                ? Ui.Column(4, Ui.Text("Attend à l'entrée : il lui faut un poste complet (bureau, chaise, ordinateur, case libre devant).", 14, Palette.Ember),
+                    Ui.Button(campaign.Storage.Count > 0 ? "Ouvrir les cartons" : "Aménagement", () => screen.OpenRoot(campaign.Storage.Count > 0 ? BuildPanel.AtCartons() : new BuildPanel()), "gold"))
+                : null,
             Ui.Row(Ui.Muted("Énergie", 13), Ui.Bar(person.Energy / 100, person.Energy < 35 ? Palette.Ember : Palette.Leaf, 8, 90),
                 Ui.Muted("Moral", 13), Ui.Bar(person.Morale / 100, person.Morale < 35 ? Palette.Blood : Palette.Sky, 8, 90)),
             TeamPanel.AssignmentChoice(campaign, person, id =>

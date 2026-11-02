@@ -41,12 +41,20 @@ public class BuildPanel : GamePanel
     public override string Title => "Aménagement";
     public override string Context => Campaign.Premises.Name;
 
-    public override Control Build()
-    {
-        var premises = Campaign.Premises;
-        var column = Ui.Column(8);
+    /// <summary>Ouvre l'aménagement directement sur les cartons (après un déménagement, depuis les cartons de la scène).</summary>
+    public static BuildPanel AtCartons() => new() { FocusTag = CartonsTag };
 
-        if (Session.Tool is { } tool)
+    public const string CartonsTag = "section:cartons";
+
+    /// <summary>
+    /// L'objet en cours de pose reste en vue au-dessus du catalogue (hors du défilement) : choisir un meuble en bas de la liste ne
+    /// fait plus sauter la liste, et on voit toujours quoi arrêter.
+    /// </summary>
+    public override Control? BuildHeader()
+    {
+        if (Session.Tool is not { } tool)
+            return null;
+        var column = Ui.Column(8);
         {
             var def = FurnitureCatalog.Get(tool.DefId);
             string what = tool.MovingItemId != null ? $"Déplacer : {def.Name}" : tool.StoredId != null ? $"Poser depuis les cartons : {def.Name}" : $"Poser : {def.Name} ({def.Price:N0} CHF)";
@@ -61,6 +69,17 @@ public class BuildPanel : GamePanel
                 Ui.Muted(def.Attached ? "Clic droit ou Échap pour arrêter." : "R : tourner. Clic droit ou Échap pour arrêter."),
                 Ui.Button("Arrêter", () => Session.SetTool(null))), Palette.Gold));
         }
+        return column;
+    }
+
+    public override Control Build()
+    {
+        var premises = Campaign.Premises;
+        var column = Ui.Column(8);
+
+        // Les cartons d'abord : après un déménagement, c'est ce qu'il reste à faire
+        if (Campaign.Storage.Count > 0)
+            column.Children.Add(CartonsSection());
 
         // Postes de travail
         var posts = premises.Workstations.ToList();
@@ -75,7 +94,7 @@ public class BuildPanel : GamePanel
                 Ui.Text($"{(owner ?? "Libre")} — {Layout.Describe(issue)}", 14, issue == WorkstationIssue.None ? Palette.Cloud : Palette.Ember));
             var button = new Button { Content = line, Padding = new Thickness(4, 2) };
             button.Classes.Add("plain");
-            button.Click += (_, _) => Session.Select(SelectionKind.Item, desk.Id);
+            Ui.OnClick(button, () => Session.Select(SelectionKind.Item, desk.Id));
             stations.Children.Add(button);
         }
         if (posts.Count == 0)
@@ -109,7 +128,7 @@ public class BuildPanel : GamePanel
                 wrap.Children.Add(Ui.Muted("Aucun objet ne correspond.", 13));
         }
         Fill();
-        column.Children.Add(Ui.Section("Catalogue",
+        var catalog = Ui.Section("Catalogue",
             Ui.Row(8,
                 HudKit.Dropdown(groups.Select(g => (g.Key, g.Key)), _group, g =>
                 {
@@ -122,10 +141,21 @@ public class BuildPanel : GamePanel
                     _search = v;
                     Fill();
                 }, "Chercher un objet", 220, search: true)),
-            wrap));
+            wrap);
+        catalog.Tag = "section:catalogue";
+        column.Children.Add(catalog);
 
-        // Cartons
-        if (Campaign.Storage.Count > 0)
+        column.Children.Add(Ui.Section("Sites",
+            Ui.Muted($"{premises.Name} : {premises.Width} × {premises.Height} cases, {premises.Workstations.Count()} poste(s) installé(s), loyer {(premises.Rent > 0 ? Ui.Chf(premises.Rent) : "compris dans ta rémunération")}." +
+                     (Campaign.Sites.Count > 1 ? $" {Campaign.Sites.Count} sites en tout." : "")),
+            Ui.Row(6, Ui.Button(Campaign.Sites.Count > 1 ? "Tous les sites, locations" : "Locaux à louer", () => Open(new SitesPanel())),
+                Campaign.IsUnlocked("hardware") ? Ui.Button("Production et stocks", () => Open(new IndustryPanel())) : null)));
+        return column;
+    }
+
+    /// <summary>Les objets des cartons, chacun avec « Poser » et « Vendre ».</summary>
+    private Control CartonsSection()
+    {
         {
             var stored = Ui.Column(4);
             foreach (var item in Campaign.Storage)
@@ -143,15 +173,11 @@ public class BuildPanel : GamePanel
                 grid.Children.Add(sell);
                 stored.Children.Add(grid);
             }
-            column.Children.Add(Ui.Section($"Cartons ({Campaign.Storage.Count})", stored));
+            var section = Ui.Section($"Cartons ({Campaign.Storage.Count})", stored,
+                Ui.Muted("« Poser » prend l'objet en main : clique ensuite une case du local (ou un bureau pour un objet de bureau).", 13));
+            section.Tag = CartonsTag;
+            return section;
         }
-
-        column.Children.Add(Ui.Section("Sites",
-            Ui.Muted($"{premises.Name} : {premises.Width} × {premises.Height} cases, {premises.Workstations.Count()} poste(s) installé(s), loyer {(premises.Rent > 0 ? Ui.Chf(premises.Rent) : "compris dans ta rémunération")}." +
-                     (Campaign.Sites.Count > 1 ? $" {Campaign.Sites.Count} sites en tout." : "")),
-            Ui.Row(6, Ui.Button(Campaign.Sites.Count > 1 ? "Tous les sites, locations" : "Locaux à louer", () => Open(new SitesPanel())),
-                Campaign.IsUnlocked("hardware") ? Ui.Button("Production et stocks", () => Open(new IndustryPanel())) : null)));
-        return column;
     }
 
     /// <summary>L'infrastructure du site affiché : ce qu'elle fournit, ce qui la limite (électricité, froid, réseau), ses risques.</summary>
@@ -300,7 +326,11 @@ public class BuildPanel : GamePanel
         bool locked = finish.UnlockNode is { } node && !Campaign.IsUnlocked(node);
         decimal cost = Finishes.Cost(premises, finish);
         bool floor = finish.Kind == FinishKind.Floor;
-        var frame = Ui.Image(PackSkins.Sprite("hud_pattern_cell", current ? "selected" : "normal"), 52, 52);
+        var frame = new HoverImage
+        {
+            Normal = PackSkins.Sprite("hud_pattern_cell", current ? "selected" : "normal"),
+            Hover = current || locked ? null : PackSkins.Sprite("hud_pattern_cell", "hover"), Width = 52, Height = 52,
+        };
         var tile = Ui.Image(PackLibrary.FinishTile(finish.Id, floor ? new Dictionary<string, string>() : RoomRenderer.PatternColors(finish.Id, wall)), 36, 36);
         tile.Margin = new Thickness(8);
         tile.HorizontalAlignment = HorizontalAlignment.Left;
@@ -308,23 +338,18 @@ public class BuildPanel : GamePanel
         var content = new Panel { Width = 52, Height = 52, Children = { frame, tile }, Opacity = locked ? 0.5 : 1 };
         var button = new Button { Content = content, Padding = new Thickness(0), Margin = new Thickness(0, 0, 4, 4), IsEnabled = !locked };
         button.Classes.Add("plain");
-        if (!current)
-        {
-            button.PointerEntered += (_, _) => frame.Source = PackSkins.Sprite("hud_pattern_cell", "hover");
-            button.PointerExited += (_, _) => frame.Source = PackSkins.Sprite("hud_pattern_cell", "normal");
-        }
         string unit = floor ? $"{finish.Price:N0} CHF la case, {premises.Width * premises.Height} cases" : $"{finish.Price:N0} CHF le segment, {Finishes.WallSegments(premises)} segments";
         ToolTip.SetTip(button, locked ? $"{finish.Name} — à débloquer : {Core.campaign.Campaign.UnlockName(finish.UnlockNode!)}."
             : current ? $"{finish.Name} — en place. {finish.Effect}"
             : $"{finish.Name} — {finish.Effect} {cost:N0} CHF ({unit}).");
-        button.Click += (_, _) =>
+        Ui.OnClick(button, () =>
         {
             if (current)
                 return;
             Screen.Confirm(floor ? $"Refaire le sol : {finish.Name} ?" : $"Habiller les murs : {finish.Name} ?",
                 $"{finish.Effect} Coût : {cost:N0} CHF ({unit}). {(floor ? "Tout le sol est refait, zones de service comprises." : "Les deux murs du fond sont refaits.")}",
                 "Faire les travaux", () => Run(Campaign.SetFinish(finish.Id)), danger: false);
-        };
+        });
         return button;
     }
 
@@ -356,11 +381,11 @@ public class BuildPanel : GamePanel
             : $"{def.Name} — {def.Effect} Emprise : {cells} case(s).");
         if (locked)
             ToolTip.SetTip(button, $"{def.Name} — à débloquer : {Core.campaign.Campaign.UnlockName(def.UnlockNode!)}.");
-        button.Click += (_, _) =>
+        Ui.OnClick(button, () =>
         {
             Session.SetTool(selected ? null : new BuildTool(def.Id));
             Refresh();
-        };
+        });
         return button;
     }
 }

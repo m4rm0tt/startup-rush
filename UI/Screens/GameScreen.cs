@@ -6,6 +6,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 using Core.campaign;
 using Core.finance;
 using Core.persistence;
@@ -106,6 +107,13 @@ public class GameScreen : UserControl, IScreen
 
         _scaler = new LayoutTransformControl { Child = _hud };
         root.Children.Add(_scaler);
+        // Un seul curseur de base pour tout l'écran (celui du pack) : passer de la scène à un menu ne fait plus alterner
+        // la flèche du pack et celle de Windows ; les boutons et les champs gardent le leur (App.axaml)
+        root.Cursor = PackSkins.Cursor("cursor_normal");
+        // Un clic en cours : aucun menu ne se met à jour sous la souris entre l'appui et le relâchement
+        AddHandler(PointerPressedEvent, (_, _) => _pointerDown = true, Avalonia.Interactivity.RoutingStrategies.Tunnel, handledEventsToo: true);
+        AddHandler(PointerReleasedEvent, (_, _) => _pointerDown = false, Avalonia.Interactivity.RoutingStrategies.Tunnel, handledEventsToo: true);
+        AddHandler(PointerCaptureLostEvent, (_, _) => _pointerDown = false, Avalonia.Interactivity.RoutingStrategies.Tunnel, handledEventsToo: true);
         // Les clics sur l'interface ne doivent pas atteindre la scène : seule la zone transparente laisse passer
         _hud.Background = null;
         Content = root;
@@ -179,7 +187,8 @@ public class GameScreen : UserControl, IScreen
         }
 
         _refreshTimer += deltaTime;
-        if (_refreshTimer > 1 && _stack.LastOrDefault() is { AutoRefresh: true } && !TextInputFocused())
+        // Pas de mise à jour pendant un clic ou sous un menu ouvert (liste déroulante, menu « … ») : elle reprend juste après
+        if (_refreshTimer > 1 && _stack.LastOrDefault() is { AutoRefresh: true } && !TextInputFocused() && !_pointerDown && HudKit.OpenFlyout == null)
         {
             _refreshTimer = 0;
             RefreshPanel();
@@ -195,6 +204,8 @@ public class GameScreen : UserControl, IScreen
     }
 
     private bool TextInputFocused() => TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement() is TextBox;
+
+    private bool _pointerDown;
 
     public void Leave() => Session.Detach();
 
@@ -223,9 +234,17 @@ public class GameScreen : UserControl, IScreen
             speeds.Children.Add(Ui.IconButton($"icon_speed_{Math.Min(i, 3)}", () => Session.SetSpeed(speed),
                 $"Vitesse {i} ({GameSession.Speeds[i]:0} min de jeu par seconde) — touche {i}", $"{i}", !Session.PausedByPlayer && Session.Speed == i));
         }
-        Control timeInfo = Session.AutoPause != null
-            ? Ui.Tag($"PAUSE : {Session.AutoPause}", Palette.Lemon)
-            : Session.Settings.FastNights && !c.AnyoneInOffice && Session.Running ? Ui.Tag("Nuit accélérée", Palette.Steel, Palette.Snow) : new Control();
+        // L'état du temps a une place fixe à droite des vitesses : l'étiquette qui apparaît (nuit accélérée, pause) ne décale
+        // plus les vitesses ni le reste de la barre
+        Control timeInfo = new Border
+        {
+            Width = 200, Tag = "time-info",
+            Child = Session.AutoPause != null
+                ? Ui.Tag($"PAUSE : {Session.AutoPause}", Palette.Lemon)
+                : Session.Settings.FastNights && !c.AnyoneInOffice && Session.Running ? Ui.Tag("Nuit accélérée", Palette.Steel, Palette.Snow) : null,
+        };
+        if (((Border)timeInfo).Child is Control info)
+            info.HorizontalAlignment = HorizontalAlignment.Left;
 
         decimal monthly = c.RecurringRevenue30 - c.MonthlyFixedCosts;
         // Puce de trésorerie du pack (la pièce est dans sa marge gauche), résultat du mois dessous
@@ -264,7 +283,8 @@ public class GameScreen : UserControl, IScreen
 
         var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto,*"), Margin = new Thickness(8, 4, 8, 8) };
         grid.Children.Add(left);
-        var center = Ui.Row(10, speeds, timeInfo);
+        // Les vitesses restent centrées : l'emplacement de l'étiquette est compensé à gauche par un vide de même largeur
+        var center = Ui.Row(10, new Border { Width = 200, Tag = "time-balance" }, speeds, timeInfo);
         center.HorizontalAlignment = HorizontalAlignment.Center;
         Grid.SetColumn(center, 1);
         grid.Children.Add(center);
@@ -274,7 +294,8 @@ public class GameScreen : UserControl, IScreen
             child.VerticalAlignment = VerticalAlignment.Center;
         Grid.SetColumn(right, 2);
         grid.Children.Add(right);
-        _topBar.Content = new PixelPanel { Skin = "pack:hud_topbar_bg", Child = grid };
+        // Mise à jour sur place (4 fois par seconde) : les boutons de vitesse restent les mêmes sous la souris
+        UiPatch.Apply(_topBar, new PixelPanel { Skin = "pack:hud_topbar_bg", Child = grid });
     }
 
     // Couleurs lisibles sur le fond marine de la barre du haut (jetons du thème « Papier »)
@@ -362,7 +383,22 @@ public class GameScreen : UserControl, IScreen
 
     private void BuildToolbar()
     {
-        _toolbar.Children.Clear();
+        var fresh = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
+        BuildToolbar(fresh.Children);
+        // Fusion des boutons dans la barre affichée (le bouton cliqué n'est jamais détruit sous la souris)
+        var merged = UiPatch.Merge(_toolbarContent, fresh);
+        if (!ReferenceEquals(merged, _toolbarContent))
+        {
+            _toolbar.Children.Clear();
+            _toolbar.Children.Add(merged);
+            _toolbarContent = merged;
+        }
+    }
+
+    private Control? _toolbarContent;
+
+    private void BuildToolbar(Avalonia.Controls.Controls toolbar)
+    {
         // Le bouton du travail actif : le fondateur ne développe que par là
         var target = TerminalTarget();
         var work = new Button
@@ -374,13 +410,13 @@ public class GameScreen : UserControl, IScreen
             IsEnabled = target != null && _terminal == null,
         };
         work.Classes.Add("gold");
-        work.Click += (_, _) =>
+        Ui.OnClick(work, () =>
         {
             if (TerminalTarget() is { } product)
                 OpenTerminal(product.Id);
-        };
+        });
         ToolTip.SetTip(work, target != null ? $"Travailler au terminal sur {target.Name} (Entrée)" : "Rien à faire au terminal : crée un projet ou mets un composant en file.");
-        _toolbar.Children.Add(work);
+        toolbar.Add(work);
         foreach (var (label, icon, key, create) in Tools)
         {
             string badge = label == "Développement" && Session.Campaign.DevPoints > 0 ? $" ({Session.Campaign.DevPoints})" : "";
@@ -392,13 +428,13 @@ public class GameScreen : UserControl, IScreen
             if (active)
                 button.Classes.Add("selected");
             button.Classes.Add("tab");
-            button.Click += (_, _) =>
+            Ui.OnClick(button, () =>
             {
                 Sfx.Play(Sound.Select);
                 Toggle(create);
-            };
+            });
             ToolTip.SetTip(button, $"{label} ({key})");
-            _toolbar.Children.Add(button);
+            toolbar.Add(button);
         }
     }
 
@@ -467,8 +503,6 @@ public class GameScreen : UserControl, IScreen
         header.Margin = new Thickness(0, 0, 0, 8);
         header.Children[1].Margin = new Thickness(4, 0, 0, 0);
 
-        // On garde la position de défilement quand le contenu est reconstruit
-        double offset = (_panelBody.Content as DockPanel)?.Children.OfType<ScrollViewer>().FirstOrDefault()?.Offset.Y ?? 0;
         bool samePanel = ReferenceEquals(_lastBuilt, panel);
         _lastBuilt = panel;
         var body = panel.Build();
@@ -477,12 +511,33 @@ public class GameScreen : UserControl, IScreen
         var dock = new DockPanel();
         DockPanel.SetDock(header, Dock.Top);
         dock.Children.Add(header);
+        // Ce que le menu veut garder en vue (l'objet en cours de pose) reste au-dessus de la liste, hors du défilement
+        var sticky = panel.BuildHeader();
+        var stickyHost = new Border { Child = sticky, Margin = new Thickness(0, 0, 24, sticky != null ? 8 : 0), Tag = "panel-sticky" };
+        DockPanel.SetDock(stickyHost, Dock.Top);
+        dock.Children.Add(stickyHost);
         var scroll = Ui.Scroll(body);
+        scroll.Tag = "panel-scroll";
         dock.Children.Add(scroll);
-        _panelBody.Content = dock;
-        if (samePanel)
-            scroll.Offset = new Vector(0, offset);
+        // Le même menu : mise à jour sur place. La liste défilante, sa position, le bouton sous la souris et les infobulles restent
+        // les mêmes ; seules les valeurs qui ont changé sont recopiées. Un autre menu : on remplace (et il commence en haut).
+        if (samePanel && _panelBody.Content is DockPanel)
+            UiPatch.Apply(_panelBody, dock);
+        else
+            _panelBody.Content = dock;
         LayoutPanelFrame();
+        if (panel.TakeFocusTag() is { } focus)
+            Avalonia.Threading.Dispatcher.UIThread.Post(() => ScrollPanelTo(focus), Avalonia.Threading.DispatcherPriority.Background);
+    }
+
+    /// <summary>Fait défiler le menu ouvert jusqu'à la section marquée (Tag), en la plaçant en haut de la zone visible.</summary>
+    private void ScrollPanelTo(string tag)
+    {
+        if ((_panelBody.Content as DockPanel)?.Children.OfType<ScrollViewer>().FirstOrDefault() is not { Content: Control content } scroll)
+            return;
+        var target = content.GetVisualDescendants().OfType<Control>().FirstOrDefault(c => Equals(c.Tag, tag));
+        if (target?.TranslatePoint(new Point(0, 0), content) is { } at)
+            scroll.Offset = new Vector(0, Math.Max(0, at.Y - 4));
     }
 
     private GamePanel? _lastBuilt;
@@ -574,7 +629,10 @@ public class GameScreen : UserControl, IScreen
     private void BuildInspector()
     {
         var content = SelectionInspector.Build(this);
-        _inspector.Content = content == null ? null : new PixelPanel { Padding = new Thickness(12, 10), Width = 360, Child = content };
+        // Mise à jour sur place : la fiche d'une personne se rafraîchit 4 fois par seconde sans détruire ses boutons ;
+        // une autre sélection remplace la fiche (Tag différent)
+        UiPatch.Apply(_inspector, content == null ? null
+            : new PixelPanel { Padding = new Thickness(12, 10), Width = 380, Child = content, Tag = $"{Session.SelectionKind}:{Session.SelectionId}" });
     }
 
     // ------------------------------------------------------------------ Bulles de notification
@@ -694,7 +752,9 @@ public class GameScreen : UserControl, IScreen
                 OpenRoot(new FinancePanel());
                 break;
             case "build":
-                OpenRoot(new BuildPanel());
+                // Après un déménagement (et pour tout ce qui attend dans les cartons) : directement la section des cartons
+                OpenRoot(Session.Campaign.Storage.Count > 0 && (parts.Length > 1 && parts[1] == "cartons" || notice.Detail?.Contains("cartons") == true)
+                    ? BuildPanel.AtCartons() : new BuildPanel());
                 break;
             case "sites":
                 OpenRoot(new BuildPanel());

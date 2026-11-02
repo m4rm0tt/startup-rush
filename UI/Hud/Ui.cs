@@ -19,6 +19,23 @@ public static class Ui
 {
     public const double Gap = 8;
 
+    /// <summary>
+    /// L'action d'un bouton, gardée comme une valeur du contrôle : quand un menu se met à jour sur place (UiPatch), le bouton
+    /// affiché reçoit l'action de la dernière construction, avec ses données à jour.
+    /// </summary>
+    public static readonly AttachedProperty<Action?> ClickActionProperty =
+        AvaloniaProperty.RegisterAttached<Button, Control, Action?>("ClickAction");
+
+    /// <summary>Branche l'action d'un bouton (une seule fois par bouton : un nouvel appel remplace l'action).</summary>
+    public static T OnClick<T>(T button, Action action) where T : Button
+    {
+        bool wired = button.IsSet(ClickActionProperty);
+        button.SetValue(ClickActionProperty, action);
+        if (!wired)
+            button.Click += (_, _) => button.GetValue(ClickActionProperty)?.Invoke();
+        return button;
+    }
+
     public static TextBlock Text(string text, double size = 16, IBrush? color = null, bool bold = false, bool wrap = true) => new()
     {
         Text = text,
@@ -123,11 +140,11 @@ public static class Ui
         }
         foreach (var cls in style.Split(' ', StringSplitOptions.RemoveEmptyEntries))
             button.Classes.Add(cls);
-        button.Click += (_, _) =>
+        OnClick(button, () =>
         {
             Sfx.Play(Sound.Select);
             onClick();
-        };
+        });
         if (tip != null)
             ToolTip.SetTip(button, tip);
         return button;
@@ -152,11 +169,11 @@ public static class Ui
             button.Classes.Add(cls);
         if (selected)
             button.Classes.Add("selected");
-        button.Click += (_, _) =>
+        OnClick(button, () =>
         {
             Sfx.Play(Sound.Select);
             onClick();
-        };
+        });
         ToolTip.SetTip(button, tip);
         return button;
     }
@@ -164,10 +181,7 @@ public static class Ui
     /// <summary>Rangée de liste du pack (hud_list_row) qui contient ses propres boutons ; elle s'éclaire au survol.</summary>
     public static PixelPanel ListRow(Control content)
     {
-        var row = new PixelPanel { Skin = "pack:hud_list_row:normal", Padding = new Thickness(10, 6, 10, 9), Child = content };
-        row.PointerEntered += (_, _) => row.Skin = "pack:hud_list_row:hover";
-        row.PointerExited += (_, _) => row.Skin = "pack:hud_list_row:normal";
-        return row;
+        return new PixelPanel { Skin = "pack:hud_list_row:normal", HoverSkin = "pack:hud_list_row:hover", Padding = new Thickness(10, 6, 10, 9), Child = content };
     }
 
     /// <summary>Bloc encadré (cadre 9-slice en creux).</summary>
@@ -236,11 +250,23 @@ public static class Ui
             "danger" or "accent" => "danger",
             _ => "default",
         };
-        var track = new PixelPanel { Skin = "pack:hud_progress_track", Scale = 1, Height = Math.Max(8, height), Width = width, MinWidth = 40, Padding = new Thickness(1) };
-        var bar = new PixelPanel { Skin = $"pack:hud_progress_fill_{fill}", Scale = 1, HorizontalAlignment = HorizontalAlignment.Left };
-        track.Child = bar;
-        track.SizeChanged += (_, e) => bar.Width = Math.Clamp(fraction, 0, 1) * Math.Max(0, e.NewSize.Width - 2);
-        return track;
+        return new PixelPanel
+        {
+            Skin = "pack:hud_progress_track", Scale = 1, Height = Math.Max(8, height), Width = width, MinWidth = 40, Padding = new Thickness(1),
+            Child = Fill($"pack:hud_progress_fill_{fill}", fraction),
+        };
+    }
+
+    /// <summary>
+    /// Le remplissage d'une barre : deux colonnes proportionnelles, la première peinte. Rien n'est calculé dans un gestionnaire
+    /// de taille : une mise à jour du menu change seulement la proportion.
+    /// </summary>
+    public static Grid Fill(string skin, double fraction)
+    {
+        double f = Math.Round(Math.Clamp(double.IsNaN(fraction) ? 0 : fraction, 0, 1), 3);
+        var grid = new Grid { ColumnDefinitions = new ColumnDefinitions { new ColumnDefinition(f, GridUnitType.Star), new ColumnDefinition(1 - f, GridUnitType.Star) } };
+        grid.Children.Add(new PixelPanel { Skin = skin, Scale = 1, IsVisible = f > 0 });
+        return grid;
     }
 
     /// <summary>Une icône : identifiant du pack (« icon_save ») ou nom du jeu (voir Icons).</summary>
@@ -282,14 +308,9 @@ public static class Ui
             Padding = new Thickness(search ? 28 : 8, 4, 8, 6), VerticalContentAlignment = VerticalAlignment.Center,
         };
         box.Classes.Add("bare");
-        var frame = new PixelPanel { Skin = $"pack:{component}:normal", Width = width, Child = box };
+        var frame = new PixelPanel { Skin = $"pack:{component}:normal", HoverSkin = $"pack:{component}:hover", FocusSkin = $"pack:{component}:focus", Width = width, Child = box };
         if (!double.IsNaN(width))
             frame.HorizontalAlignment = HorizontalAlignment.Left;
-        void State() => frame.Skin = $"pack:{component}:{(box.IsFocused ? "focus" : box.IsPointerOver ? "hover" : "normal")}";
-        box.GotFocus += (_, _) => State();
-        box.LostFocus += (_, _) => State();
-        box.PointerEntered += (_, _) => State();
-        box.PointerExited += (_, _) => State();
         box.TextChanged += (_, _) => changed(box.Text ?? "");
         if (!search)
             return frame;
@@ -314,23 +335,20 @@ public static class Ui
     {
         string prefix = on ? "on" : "off";
         var normal = PackSkins.Sprite(id, $"{prefix}_{(enabled ? "normal" : "disabled")}");
-        var image = Image(normal, normal.PixelSize.Width * 2, normal.PixelSize.Height * 2);
-        image.VerticalAlignment = VerticalAlignment.Center;
+        var image = new HoverImage
+        {
+            Normal = normal, Hover = enabled ? PackSkins.Sprite(id, $"{prefix}_hover") : null,
+            Width = normal.PixelSize.Width * 2, Height = normal.PixelSize.Height * 2, VerticalAlignment = VerticalAlignment.Center,
+        };
         var caption = Text(label, 15, enabled ? Palette.Ink : Palette.Fog);
         caption.VerticalAlignment = VerticalAlignment.Center;
         var button = new Button { Content = Row(8, image, caption), IsEnabled = enabled, Padding = new Thickness(2, 2, 6, 2), HorizontalAlignment = HorizontalAlignment.Left };
         button.Classes.Add("plain");
-        if (enabled)
-        {
-            button.PointerEntered += (_, _) => image.Source = PackSkins.Sprite(id, $"{prefix}_hover");
-            button.PointerExited += (_, _) => image.Source = normal;
-        }
-        button.Click += (_, _) =>
+        return OnClick(button, () =>
         {
             Sfx.Play(Sound.Select);
             changed(!on);
-        };
-        return button;
+        });
     }
 
     /// <summary>
@@ -371,20 +389,19 @@ public static class Ui
     /// <summary>Case de couleur du pack (hud_swatch_cell) : la couleur peinte sous le cadre, survol et sélection du cadre.</summary>
     public static Button Swatch(Color color, bool selected, Action pick, string tip)
     {
-        var frame = Image(PackSkins.Sprite("hud_swatch_cell", selected ? "selected" : "normal"), 36, 36);
+        var frame = new HoverImage
+        {
+            Normal = PackSkins.Sprite("hud_swatch_cell", selected ? "selected" : "normal"),
+            Hover = selected ? null : PackSkins.Sprite("hud_swatch_cell", "hover"), Width = 36, Height = 36,
+        };
         var fill = new Border { Background = new SolidColorBrush(color), Width = 20, Height = 20, Margin = new Thickness(8), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
         var button = new Button { Content = new Panel { Width = 36, Height = 36, Children = { fill, frame } }, Padding = new Thickness(0), Margin = new Thickness(0, 0, 4, 0) };
         button.Classes.Add("plain");
-        if (!selected)
-        {
-            button.PointerEntered += (_, _) => frame.Source = PackSkins.Sprite("hud_swatch_cell", "hover");
-            button.PointerExited += (_, _) => frame.Source = PackSkins.Sprite("hud_swatch_cell", "normal");
-        }
-        button.Click += (_, _) =>
+        OnClick(button, () =>
         {
             Sfx.Play(Sound.Select);
             pick();
-        };
+        });
         ToolTip.SetTip(button, tip);
         return button;
     }

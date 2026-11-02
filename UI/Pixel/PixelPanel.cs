@@ -112,10 +112,37 @@ public class PixelPanel : Decorator, Avalonia.Rendering.ICustomHitTest
     public static readonly StyledProperty<Thickness> BorderThicknessProperty =
         Border.BorderThicknessProperty.AddOwner<PixelPanel>();
 
+    /// <summary>Habillage pendant le survol (null : le même) : l'état vient de la souris, jamais d'un gestionnaire qui l'écrirait.</summary>
+    public static readonly StyledProperty<string?> HoverSkinProperty =
+        AvaloniaProperty.Register<PixelPanel, string?>(nameof(HoverSkin));
+
+    /// <summary>Habillage quand le champ qu'il contient a le focus clavier (null : le même).</summary>
+    public static readonly StyledProperty<string?> FocusSkinProperty =
+        AvaloniaProperty.Register<PixelPanel, string?>(nameof(FocusSkin));
+
     static PixelPanel()
     {
-        AffectsRender<PixelPanel>(SkinProperty, BackgroundProperty, BorderBrushProperty, BorderThicknessProperty);
+        AffectsRender<PixelPanel>(SkinProperty, BackgroundProperty, BorderBrushProperty, BorderThicknessProperty, HoverSkinProperty, FocusSkinProperty,
+            IsPointerOverProperty, IsKeyboardFocusWithinProperty);
     }
+
+    public string? HoverSkin
+    {
+        get => GetValue(HoverSkinProperty);
+        set => SetValue(HoverSkinProperty, value);
+    }
+
+    public string? FocusSkin
+    {
+        get => GetValue(FocusSkinProperty);
+        set => SetValue(FocusSkinProperty, value);
+    }
+
+    /// <summary>L'habillage dessiné maintenant : focus, sinon survol, sinon l'habillage de base.</summary>
+    public string EffectiveSkin =>
+        FocusSkin != null && IsKeyboardFocusWithin ? FocusSkin
+        : HoverSkin != null && IsPointerOver ? HoverSkin
+        : Skin;
 
     /// <summary>Nom du cadre (panel, inset, button, gold...), ou « none » pour ne rien dessiner.</summary>
     public string Skin
@@ -147,9 +174,10 @@ public class PixelPanel : Decorator, Avalonia.Rendering.ICustomHitTest
     public override void Render(DrawingContext context)
     {
         var size = Bounds.Size;
-        if (Skin == "none")
+        string skin = EffectiveSkin;
+        if (skin == "none")
             return;
-        var (image, slice) = Frame(Skin);
+        var (image, slice) = Frame(skin);
         double unit = Scale;
         if (size.Width < (slice[0] + slice[2]) * unit || size.Height < (slice[1] + slice[3]) * unit)
             return;

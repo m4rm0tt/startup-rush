@@ -32,7 +32,8 @@ public static class HudKit
         var text = Ui.Text(label, 12, Palette.Ink, wrap: false);
         var frame = new PixelPanel
         {
-            Skin = enabled ? "pack:hud_dropdown:normal" : "pack:hud_dropdown:disabled", Width = width, Padding = new Thickness(8, 4, 6, 6),
+            Skin = enabled ? "pack:hud_dropdown:normal" : "pack:hud_dropdown:disabled", HoverSkin = enabled ? "pack:hud_dropdown:hover" : null,
+            Width = width, Padding = new Thickness(8, 4, 6, 6),
             Child = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto"), Children = { text, caret } },
         };
         Grid.SetColumn(caret, 1);
@@ -42,9 +43,10 @@ public static class HudKit
         var popup = new Flyout { Placement = PlacementMode.BottomEdgeAlignedLeft, Content = new PixelPanel { Skin = "pack:hud_dropdown_list", Padding = new Thickness(4, 4, 4, 8), MinWidth = width, Child = rows } };
         foreach (var (value, name) in list)
         {
+            // Le menu affiché est celui du bouton gardé à l'écran (UiPatch) : on ferme celui qui est ouvert, pas celui de cette construction
             var row = Ui.Button(name, () =>
             {
-                popup.Hide();
+                CloseOpenFlyout();
                 pick(value);
             }, EqualityComparer<T>.Default.Equals(value, current) ? "tab selected" : "tab");
             row.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -52,11 +54,30 @@ public static class HudKit
             rows.Children.Add(row);
         }
         button.Flyout = popup;
-        button.PointerEntered += (_, _) => frame.Skin = enabled ? "pack:hud_dropdown:hover" : frame.Skin;
-        button.PointerExited += (_, _) => frame.Skin = enabled ? popup.IsOpen ? "pack:hud_dropdown:open" : "pack:hud_dropdown:normal" : frame.Skin;
-        popup.Opened += (_, _) => frame.Skin = "pack:hud_dropdown:open";
-        popup.Closed += (_, _) => frame.Skin = "pack:hud_dropdown:normal";
+        Track(popup, open => frame.Skin = open ? "pack:hud_dropdown:open" : enabled ? "pack:hud_dropdown:normal" : "pack:hud_dropdown:disabled");
         return button;
+    }
+
+    /// <summary>Le menu ou la liste déroulante ouvert en ce moment (un seul à la fois), ou null.</summary>
+    public static FlyoutBase? OpenFlyout { get; private set; }
+
+    /// <summary>Ferme le menu ouvert, s'il y en a un.</summary>
+    public static void CloseOpenFlyout() => OpenFlyout?.Hide();
+
+    /// <summary>Retient le menu ouvert : tant qu'il l'est, les menus ne se mettent pas à jour sous lui (il resterait ouvert sur d'anciennes valeurs).</summary>
+    private static void Track(FlyoutBase flyout, Action<bool>? changed = null)
+    {
+        flyout.Opened += (_, _) =>
+        {
+            OpenFlyout = flyout;
+            changed?.Invoke(true);
+        };
+        flyout.Closed += (_, _) =>
+        {
+            if (ReferenceEquals(OpenFlyout, flyout))
+                OpenFlyout = null;
+            changed?.Invoke(false);
+        };
     }
 
     // ------------------------------------------------------------------ Champ numérique (hud_field_numeric, hud_stepper_up/down)
@@ -71,14 +92,14 @@ public static class HudKit
         Control Stepper(string id, int delta)
         {
             bool enabled = delta > 0 ? value < max : value > min;
-            var image = Ui.Image(PackSkins.Sprite(id, enabled ? "normal" : "disabled"), 20, 14);
+            var image = new HoverImage
+            {
+                Normal = PackSkins.Sprite(id, enabled ? "normal" : "disabled"), Hover = enabled ? PackSkins.Sprite(id, "hover") : null,
+                Pressed = enabled ? PackSkins.Sprite(id, "pressed") : null, Width = 20, Height = 14,
+            };
             var button = new Button { Content = image, Padding = new Thickness(0), IsEnabled = enabled, Tag = id };
             button.Classes.Add("plain");
-            button.PointerEntered += (_, _) => image.Source = PackSkins.Sprite(id, enabled ? "hover" : "disabled");
-            button.PointerExited += (_, _) => image.Source = PackSkins.Sprite(id, enabled ? "normal" : "disabled");
-            button.AddHandler(InputElement.PointerPressedEvent, (_, _) => image.Source = PackSkins.Sprite(id, "pressed"), Avalonia.Interactivity.RoutingStrategies.Tunnel);
-            button.Click += (_, _) => changed(Math.Clamp(value + delta, min, max));
-            return button;
+            return Ui.OnClick(button, () => changed(Math.Clamp(value + delta, min, max)));
         }
         var arrows = new StackPanel { HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 3, 0),
             Children = { Stepper("hud_stepper_up", step), Stepper("hud_stepper_down", -step) } };
@@ -96,12 +117,7 @@ public static class HudKit
             Background = Brushes.Transparent, BorderThickness = new Thickness(0), Padding = new Thickness(8, 6, 14, 14),
         };
         box.Classes.Add("bare");
-        var frame = new PixelPanel { Skin = "pack:hud_field_multiline:normal", Child = box };
-        void State() => frame.Skin = $"pack:hud_field_multiline:{(box.IsFocused ? "focus" : box.IsPointerOver ? "hover" : "normal")}";
-        box.GotFocus += (_, _) => State();
-        box.LostFocus += (_, _) => State();
-        box.PointerEntered += (_, _) => State();
-        box.PointerExited += (_, _) => State();
+        var frame = new PixelPanel { Skin = "pack:hud_field_multiline:normal", HoverSkin = "pack:hud_field_multiline:hover", FocusSkin = "pack:hud_field_multiline:focus", Child = box };
         box.TextChanged += (_, _) => changed(box.Text ?? "");
         return frame;
     }
@@ -116,6 +132,7 @@ public static class HudKit
     {
         var column = new StackPanel { MinWidth = 200 };
         var flyout = new Flyout { Placement = PlacementMode.Pointer, Content = new PixelPanel { Skin = "pack:hud_menu_panel", Padding = new Thickness(4, 4, 4, 8), Child = column } };
+        Track(flyout);
         foreach (var entry in entries)
         {
             if (entry == null)
@@ -123,12 +140,10 @@ public static class HudKit
                 column.Children.Add(new PixelPanel { Skin = "pack:hud_menu_separator", Height = 10, Margin = new Thickness(4, 2) });
                 continue;
             }
-            var frame = new PixelPanel { Skin = entry.Enabled ? "pack:hud_menu_item:normal" : "pack:hud_menu_item:disabled", Padding = new Thickness(24, 3, 10, 5),
+            var frame = new PixelPanel { Skin = entry.Enabled ? "pack:hud_menu_item:normal" : "pack:hud_menu_item:disabled", HoverSkin = entry.Enabled ? "pack:hud_menu_item:hover" : null, Padding = new Thickness(24, 3, 10, 5),
                 Child = Ui.Row(6, entry.Icon != null ? Ui.Image(Icons.Get(entry.Icon, "#2b2128"), 16, 16) : null, Ui.Text(entry.Label, 12, entry.Enabled ? Palette.Ink : Palette.Fog, wrap: false)) };
             var item = new Button { Content = frame, Padding = new Thickness(0), IsEnabled = entry.Enabled, HorizontalAlignment = HorizontalAlignment.Stretch, Tag = entry.Label };
             item.Classes.Add("plain");
-            item.PointerEntered += (_, _) => frame.Skin = entry.Enabled ? "pack:hud_menu_item:hover" : frame.Skin;
-            item.PointerExited += (_, _) => frame.Skin = entry.Enabled ? "pack:hud_menu_item:normal" : frame.Skin;
             item.Click += (_, _) =>
             {
                 flyout.Hide();
@@ -157,8 +172,8 @@ public static class HudKit
     /// <summary>Le bouton « … » (icon_more) qui ouvre le même menu au clic gauche.</summary>
     public static Button MoreButton(Func<IEnumerable<MenuEntry?>> entries)
     {
-        var button = Ui.IconButton("icon_more", () => { }, "Plus d'actions");
-        button.Click += (_, _) => Menu(entries()).ShowAt(button);
+        Button? button = null;
+        button = Ui.IconButton("icon_more", () => Menu(entries()).ShowAt(button!), "Plus d'actions");
         return button;
     }
 
@@ -218,13 +233,11 @@ public static class HudKit
     public static PixelPanel Card(Control content, bool enabled = true, bool selected = false)
     {
         string state = !enabled ? "disabled" : selected ? "selected" : "normal";
-        var card = new PixelPanel { Skin = $"pack:hud_card:{state}", Padding = new Thickness(10, 10, 10, 14), Child = content, Tag = "card" };
-        if (enabled && !selected)
+        return new PixelPanel
         {
-            card.PointerEntered += (_, _) => card.Skin = "pack:hud_card:hover";
-            card.PointerExited += (_, _) => card.Skin = "pack:hud_card:normal";
-        }
-        return card;
+            Skin = $"pack:hud_card:{state}", HoverSkin = enabled && !selected ? "pack:hud_card:hover" : null,
+            Padding = new Thickness(10, 10, 10, 14), Child = content, Tag = "card",
+        };
     }
 
     // ------------------------------------------------------------------ Barres de graphique (hud_chart_bar)
@@ -275,11 +288,11 @@ public static class HudKit
     /// <summary>Une barre « en cours » : le remplissage rayé du pack, pour un travail qui avance en ce moment.</summary>
     public static Control Striped(double fraction, double height = 8)
     {
-        var track = new PixelPanel { Skin = "pack:hud_progress_track", Scale = 1, Height = Math.Max(8, height), MinWidth = 40, Padding = new Thickness(1), Tag = "striped" };
-        var bar = new PixelPanel { Skin = "pack:hud_progress_fill_striped", Scale = 1, HorizontalAlignment = HorizontalAlignment.Left };
-        track.Child = bar;
-        track.SizeChanged += (_, e) => bar.Width = Math.Clamp(fraction, 0, 1) * Math.Max(0, e.NewSize.Width - 2);
-        return track;
+        return new PixelPanel
+        {
+            Skin = "pack:hud_progress_track", Scale = 1, Height = Math.Max(8, height), MinWidth = 40, Padding = new Thickness(1), Tag = "striped",
+            Child = Ui.Fill("pack:hud_progress_fill_striped", fraction),
+        };
     }
 
     /// <summary>Un contenu qui défile à l'horizontale (barre du pack hud_scroll_*_h, flèches gauche et droite).</summary>

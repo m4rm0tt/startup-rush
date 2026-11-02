@@ -166,7 +166,7 @@ public class HudKitTest
         // La carte réagit au survol
         window.MouseMove(card.TranslatePoint(new Point(5, 5), window)!.Value);
         Dispatcher.UIThread.RunJobs();
-        Assert.That(card.Skin, Is.EqualTo("pack:hud_card:hover"));
+        Assert.That(card.EffectiveSkin, Is.EqualTo("pack:hud_card:hover"), "le cadre dessiné suit le survol");
         Assert.That(HudKit.Card(new TextBlock(), enabled: false).Skin, Is.EqualTo("pack:hud_card:disabled"));
         window.Close();
     }

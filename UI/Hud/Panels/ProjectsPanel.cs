@@ -122,7 +122,7 @@ public class ProjectsPanel : GamePanel
             child.HorizontalAlignment = HorizontalAlignment.Center;
         var button = new Button { Content = content, Width = 300, Height = 200, Margin = new Thickness(0, 0, 10, 10) };
         button.Classes.Add(Campaign.Products.Count == 0 ? "gold" : "tab");
-        button.Click += (_, _) => Open(new NewProjectPanel());
+        Ui.OnClick(button, () => Open(new NewProjectPanel()));
         return button;
     }
 }
@@ -168,11 +168,11 @@ public class NewProjectPanel : GamePanel
             button.Classes.Add("tab");
             if (t.Id == _type)
                 button.Classes.Add("selected");
-            button.Click += (_, _) =>
+            Ui.OnClick(button, () =>
             {
                 _type = t.Id;
                 Refresh();
-            };
+            });
             types.Children.Add(button);
         }
 

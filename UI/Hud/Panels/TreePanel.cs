@@ -67,11 +67,11 @@ public class TreePanel : GamePanel
         var button = new Button { Content = content, HorizontalAlignment = HorizontalAlignment.Stretch, HorizontalContentAlignment = HorizontalAlignment.Left, Padding = new Thickness(8, 4, 8, 8) };
         button.Classes.Add(_selected == node.Id ? "selected" : "tab");
         button.Classes.Add("tab");
-        button.Click += (_, _) =>
+        Ui.OnClick(button, () =>
         {
             _selected = node.Id;
             Refresh();
-        };
+        });
         return button;
     }
 

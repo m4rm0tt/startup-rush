@@ -113,8 +113,10 @@ public partial class SceneCanvas : Control
     {
         var seated = SeatedPeople();
         var operators = OperatorSeats();
-        // Un objet haut survolé s'estompe pour laisser voir derrière lui
-        int fade = _hoverHit is { Person: false } hit && Premises.Find(hit.Id) is { } hovered && RoomRenderer.Occludes(hovered) ? hit.Id : 0;
+        // Un objet survolé reste entier : l'estomper (haut à 35 %) donnait l'impression d'un objet coupé et transparent, et
+        // recomposait toute la pièce à chaque entrée et sortie du survol. Les objets hauts s'estompent seulement devant une
+        // personne assise (RoomRenderer.Compose).
+        const int fade = 0;
         // Les objets à déballer attendent en cartons à l'entrée du siège
         int cartons = Premises == Campaign.Headquarters ? Campaign.Storage.Count : 0;
         string signature = Signature(seated, operators) + "~" + fade + "~" + cartons;
@@ -270,6 +272,7 @@ public partial class SceneCanvas : Control
     private void DrawBubbles(DrawingContext context)
     {
         int waiting = 0;
+        var waitingHits = new List<HitRegion>();
         // Les stations de production : en marche (vert) ou arrêtées, avec leur raison dans la fiche (clic)
         var stations = Premises.Floor.Where(i => Core.industry.IndustryCatalog.Station(i.DefId) != null).OrderBy(i => i.Id).ToList();
         if (Campaign.Orders.Any(o => o.SiteId == Premises.Id))
@@ -327,6 +330,8 @@ public partial class SceneCanvas : Control
                 heads.Add((x, y));
             if (person.Activity == Activity.Idle)
             {
+                // L'alerte se clique : elle sélectionne la personne, dont la fiche dit ce qui manque et où le régler
+                waitingHits.Add(new HitRegion(true, person.Id, [(x - 12, y - 36), (x + 12, y - 36), (x + 12, y + 4), (x - 12, y + 4)], int.MaxValue));
                 // Personne sans poste : l'alerte du pack pulse (1 ↔ 0,6 toutes les 0,8 s) au-dessus de sa tête
                 DrawEffect(context, "vfx_alert", x, y - 8, Effects && (int)(_clock / 0.4) % 2 == 1 ? 0.6 : 1, 2);
                 continue;
@@ -347,7 +352,16 @@ public partial class SceneCanvas : Control
             }
         }
         WatchDay(heads);
+        _waitingHits = waitingHits;
     }
+
+    /// <summary>Les alertes des personnes qui attendent à l'entrée (zones cliquables, coordonnées de la pièce).</summary>
+    private List<HitRegion> _waitingHits = new();
+
+    /// <summary>Ce qui est sous ce point de la pièce : une alerte d'attente d'abord, sinon l'objet ou la personne la plus proche.</summary>
+    private HitRegion? HitAt(Point world) =>
+        _waitingHits.FirstOrDefault(h => Inside(h.Polygon, world))
+        ?? _room?.Hits.OrderByDescending(h => h.Order).FirstOrDefault(h => Inside(h.Polygon, world));
 
     private Discipline? CurrentDiscipline(Person person) =>
         person.CurrentWorkItemId is int id ? Campaign.FindWork(id)?.Discipline : null;
@@ -486,8 +500,7 @@ public partial class SceneCanvas : Control
         var cell = CellAt(point);
         _hoverPinned = false;
         _hover = Premises.InBounds(cell) ? cell : null;
-        var world = ToWorld(point);
-        _hoverHit = _room.Hits.OrderByDescending(h => h.Order).FirstOrDefault(h => Inside(h.Polygon, world));
+        _hoverHit = HitAt(ToWorld(point));
     }
 
     protected override void OnPointerExited(PointerEventArgs e)
@@ -530,8 +543,7 @@ public partial class SceneCanvas : Control
             Place(tool, cell);
         else
         {
-            var world = ToWorld(point.Position);
-            var hit = _room.Hits.OrderByDescending(h => h.Order).FirstOrDefault(h => Inside(h.Polygon, world));
+            var hit = HitAt(ToWorld(point.Position));
             if (hit != null)
             {
                 _session.Select(hit.Person ? SelectionKind.Person : SelectionKind.Item, hit.Id);

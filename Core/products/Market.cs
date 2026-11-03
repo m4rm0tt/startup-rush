@@ -106,9 +106,9 @@ public static class Market
     }
 
     /// <summary>Une mise à jour fait revenir des joueurs et reparler du projet : une partie du public déjà informé redevient curieuse.</summary>
-    public static void UpdateBoost(Product product)
+    public static void UpdateBoost(Product product, double strength = 1)
     {
-        product.Aware = Math.Max(0, product.Aware - (HasLaunchHype(product) ? 150 + product.TotalBuyers * 0.05 : 50));
+        product.Aware = Math.Max(0, product.Aware - strength * (HasLaunchHype(product) ? 150 + product.TotalBuyers * 0.05 : 50));
     }
 
     /// <summary>Avance le projet d'un jour. Ne touche qu'au projet : l'argent est comptabilisé par la campagne.</summary>
@@ -144,7 +144,8 @@ public static class Market
         double sellerShare = archetype.Id == "marketplace" ? product.SellerMarketingShare : 0;
         double reach = Reach(product);
         double lastSatisfaction = product.History.Count > 0 ? Satisfaction(product.History[^1]) : 0.4;
-        double wordOfMouth = product.Users * Tuning.Products.WordOfMouth * archetype.WordOfMouthFactor * lastSatisfaction;
+        // La communauté construite par des versions régulières fait parler du produit (jusqu'à +50 %)
+        double wordOfMouth = product.Users * Tuning.Products.WordOfMouth * archetype.WordOfMouthFactor * lastSatisfaction * (1 + 0.5 * product.Community);
         double unaware = Math.Max(0, segment.Size - product.Aware);
         double organic = Tuning.Products.OrganicAwarenessPerDay * (0.4 + 2 * appeal);
         // Un marché étroit (PME, analystes) attire moins de curieux par jour qu'un grand public : le référencement et la publicité
@@ -196,7 +197,8 @@ public static class Market
         double satisfaction = appeal * supportFactor * (1 - downtime / 24 * 0.6)
                               * (archetype.Id == "marketplace" ? 0.4 + 0.6 * liquidity : 1)
                               * (product.Model == RevenueModel.Ads ? 0.92 : 1);
-        double churnFactor = Math.Clamp(1.8 - 2 * satisfaction, 0.3, 2.5) * (inputs.Loyalty ? 0.85 : 1);
+        // ... et retient ses membres (jusqu'à 30 % de départs en moins)
+        double churnFactor = Math.Clamp(1.8 - 2 * satisfaction, 0.3, 2.5) * (inputs.Loyalty ? 0.85 : 1) * (1 - 0.3 * product.Community);
         double churned = product.Users * Tuning.Products.BaseDailyChurn * archetype.ChurnFactor * churnFactor
                          + product.Users * 0.01 * downtime / 24;
         product.Users = Math.Max(0, product.Users + signups - churned);

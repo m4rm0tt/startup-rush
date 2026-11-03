@@ -93,7 +93,8 @@ public class ProjectPanel(int productId) : GamePanel
         }
         column.Children.Add(Ui.Text("Canaux de vente", 13, Palette.Fog));
         column.Children.Add(channels);
-        column.Children.Add(Ui.Button("Production et stocks", () => Open(new IndustryPanel()), "gold"));
+        column.Children.Add(Ui.Row(6, Ui.Button("Production", () => Screen.OpenRoot(ProjectsPanel.At("production")), "gold"),
+            Ui.Button("Stock", () => Screen.OpenRoot(ProjectsPanel.At("stock")), "tab")));
         return Ui.Section("Fabrication et ventes", column);
     }
 
@@ -123,8 +124,14 @@ public class ProjectPanel(int productId) : GamePanel
         // L'action principale du moment
         if (!product.IsLive && Campaign.CanLaunch(product) && product.Queue.Count == 0)
             column.Children.Add(Ui.Button("Lancer le projet", () => LaunchView.Show(Screen, product.Id), "gold big"));
+        else if (product.IsLive && product.Staged.Count > 0 && product.Queue.Count == 0)
+            column.Children.Add(Ui.Button($"Publier la version {product.Version + 1}", () => LaunchView.ShowRelease(Screen, product.Id), "gold big"));
         else if (product.Queue.Count == 0)
             column.Children.Add(Ui.Button(product.IsLive ? "Préparer une mise à jour" : "Ajouter des composants", () => { Current = Tab.Components; Refresh(); }, "gold"));
+
+        // La prochaine version : ce qui est prêt, ce qui est en file, et la publier quand on veut
+        if (product.IsLive)
+            column.Children.Add(NextVersion(product));
 
         // Les grosses actions : me les proposer, ne pas me déranger, ou les déléguer (arbre « Outils du boss »)
         if (!product.IsLive)
@@ -182,6 +189,9 @@ public class ProjectPanel(int productId) : GamePanel
             stats.Children.Add(Ui.Stat("Revenus 30 j", Ui.Chf(revenue), Palette.Leaf));
             stats.Children.Add(Ui.Stat("Résultat 30 j", Ui.SignedChf(result), Ui.Signed(result), tip: "Revenus moins hébergement et marketing (hors salaires)."));
             stats.Children.Add(Ui.Stat("Note", $"{Reviews.Rating(product):0.0} / 5", Palette.Lemon));
+            stats.Children.Add(Ui.Stat("Communauté", $"{product.Community:P0}", product.Community >= 0.3 ? Palette.Leaf : null,
+                tip: "Construite par des versions régulières : moins de départs (jusqu'à −30 %) et plus de bouche-à-oreille (jusqu'à +50 %). " +
+                     $"Elle s'effrite après {Campaign.CommunityGraceDays} jours sans nouvelle version."));
             column.Children.Add(stats);
 
             var top = Reviews.Trends(product, Campaign.Minute, Campaign.IsUnlocked).FirstOrDefault(t => !t.Positive);
@@ -229,29 +239,83 @@ public class ProjectPanel(int productId) : GamePanel
         return column;
     }
 
+    /// <summary>
+    /// La prochaine version d'un projet en ligne : les évolutions prêtes (elles attendent la publication), ce qui est encore en
+    /// file, l'attrait avant et après, publier ; et l'historique des versions avec leur bilan d'une semaine.
+    /// </summary>
+    private Control NextVersion(Product product)
+    {
+        int next = product.Version + 1;
+        var column = Ui.Column(6);
+        if (product.Staged.Count == 0 && product.Queue.Count == 0)
+            column.Children.Add(Ui.Muted("Rien en préparation. Ajoute ou améliore des composants : ils formeront la prochaine version.", 13));
+        foreach (var change in product.Staged)
+            column.Children.Add(Ui.Row(6, Ui.Icon("check", 16), Ui.Text(Campaign.ChangeName(change), 14, Palette.Leaf, wrap: false),
+                Ui.Tag(Approaches.Name(change.Approach), Palette.Steel, Palette.Snow), Ui.Muted($"qualité {change.Quality:P0}", 12)));
+        if (product.Queue.Count > 0)
+            column.Children.Add(Ui.Muted($"{product.Queue.Count} évolution(s) encore en file (voir « En cours »).", 12));
+        if (product.Staged.Count > 0)
+        {
+            double before = Design.Appeal(product), after = Campaign.AppealWithStaged(product);
+            var appeal = Ui.Text($"Attrait : {before:P0} → {after:P0}", 14, after > before ? Palette.Leaf : Palette.Cloud, wrap: false);
+            appeal.VerticalAlignment = VerticalAlignment.Center;
+            column.Children.Add(Ui.Row(12, appeal, Ui.Button($"Publier la version {next}", () => LaunchView.ShowRelease(Screen, product.Id), "gold")));
+            if (product.Queue.Count > 0)
+                column.Children.Add(Ui.Muted("Tu peux publier maintenant, ou attendre la suite : une version qui apporte plus fait plus parler d'elle.", 12));
+        }
+        column.Children.Add(Ui.Switch("Publier chaque évolution dès qu'elle est prête", Campaign.AutoPublish, v => { Campaign.AutoPublish = v; Refresh(); }));
+
+        var history = Ui.Column(4);
+        foreach (var release in product.Releases.AsEnumerable().Reverse().Take(8))
+        {
+            string effect = release.UsersAfter is double users
+                ? $"{(users - release.UsersBefore >= 0 ? "+" : "−")}{Math.Abs(users - release.UsersBefore):N0} utilisateurs la semaine suivante"
+                : release.Version == 1 ? "lancement" : "bilan dans quelques jours";
+            history.Children.Add(Ui.Column(1,
+                Ui.Text($"Version {release.Version} · {Core.campaign.GameTime.FormatDate(release.Minute)} · {effect}", 13, Palette.Cloud),
+                Ui.Muted(string.Join(", ", release.Changes), 12)));
+        }
+        if (history.Children.Count > 0)
+            column.Children.Add(Ui.Details("Versions publiées", history));
+        return Ui.Section($"Version {next} en préparation", column);
+    }
+
     private Control QueueView(Product product)
     {
         if (product.Queue.Count == 0)
             return Ui.Section("En cours", Ui.Muted("Rien en file.", 13));
         var list = Ui.Column(6);
-        foreach (var queued in product.Queue)
+        for (int i = 0; i < product.Queue.Count; i++)
         {
+            var queued = product.Queue[i];
             var def = ProductCatalog.Component(queued.DefId);
             double fraction = Campaign.QueueProgress(queued);
-            var row = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,200,*,Auto") };
-            row.Children.Add(Ui.Icon(def.Icon, 22));
+            var row = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,Auto,Auto,180,*,Auto") };
+            // L'ordre de la file est celui du travail : monter ou descendre une évolution change ce que l'équipe fait d'abord
+            var up = Ui.Button("▲", () => Run(Campaign.MoveQueued(product.Id, queued.Id, -1)), "tab", i > 0, "Passer avant");
+            var down = Ui.Button("▼", () => Run(Campaign.MoveQueued(product.Id, queued.Id, 1)), "tab", i < product.Queue.Count - 1, "Passer après");
+            down.Margin = new Thickness(2, 0, 6, 0);
+            Grid.SetColumn(down, 1);
+            row.Children.Add(up);
+            row.Children.Add(down);
+            var icon = Ui.Icon(def.Icon, 22);
+            Grid.SetColumn(icon, 2);
+            row.Children.Add(icon);
             var name = Ui.Text(queued.ToLevel > 1 ? $"{def.Name} niv. {queued.ToLevel}" : def.Name, 14, Palette.Snow, wrap: false);
             name.Margin = new Thickness(8, 0);
-            Grid.SetColumn(name, 1);
+            name.VerticalAlignment = VerticalAlignment.Center;
+            name.TextTrimming = TextTrimming.CharacterEllipsis;
+            ToolTip.SetTip(name, $"{def.Name} · {Approaches.Name(queued.Approach)}");
+            Grid.SetColumn(name, 3);
             row.Children.Add(name);
             var bar = Ui.Bar(fraction, Palette.Gold, 8);
             bar.VerticalAlignment = VerticalAlignment.Center;
-            Grid.SetColumn(bar, 2);
+            Grid.SetColumn(bar, 4);
             row.Children.Add(bar);
             var cancel = Ui.Button("✕", () => Screen.Confirm($"Retirer {def.Name} de la file ?", fraction > 0 ? "Le travail déjà fait sera perdu." : "Rien n'a encore été fait.", "Retirer",
                 () => Run(Campaign.CancelQueued(product.Id, queued.Id))), "tab", tip: "Retirer de la file");
             cancel.Margin = new Thickness(8, 0, 0, 0);
-            Grid.SetColumn(cancel, 3);
+            Grid.SetColumn(cancel, 5);
             row.Children.Add(cancel);
             list.Children.Add(row);
         }
@@ -269,7 +333,7 @@ public class ProjectPanel(int productId) : GamePanel
         else if (link == "ai")
             Open(new AiPanel());
         else if (link == "industry")
-            Open(new IndustryPanel());
+            Screen.OpenRoot(ProjectsPanel.At("stock"));
         else
             Show(Tab.Settings, link);
         Refresh();
@@ -277,23 +341,45 @@ public class ProjectPanel(int productId) : GamePanel
 
     // ------------------------------------------------------------------ Atelier de composants
 
+    /// <summary>Façon de développer choisie dans l'atelier (gardée le temps de la session).</summary>
+    private static string _approach = Approaches.Standard;
+
     private Control Components(Product product)
     {
         var requested = Reviews.Trends(product, Campaign.Minute, Campaign.IsUnlocked).Where(t => !t.Positive && t.Link.StartsWith("component:"))
             .Select(t => t.Link["component:".Length..]).ToHashSet();
         double speed = Campaign.TeamOf(product).Sum(p => Campaign.WorkRate(p, p.BestDiscipline) * 60 * 7);
+        // Ce que chaque composant apporterait vraiment à ce public (points d'attrait) : les plus utiles d'abord, les recommandés
+        // marqués, ceux qui n'apportent presque rien à ce public rangés à part (ils restent possibles)
+        var defs = Design.ForType(product.ArchetypeId).ToList();
+        var gains = defs.ToDictionary(d => d.Id, d => Campaign.AppealGain(product, d.Id));
+        var possible = defs.Where(d => Design.CanQueue(product, d.Id, Campaign.IsUnlocked).Ok).ToList();
+        var recommended = possible.Where(d => gains[d.Id] > 0.004)
+            .OrderByDescending(d => gains[d.Id] / Math.Max(1, Design.TotalEffort(d, product.PlannedLevel(d.Id) + 1))).Take(2).Select(d => d.Id).ToHashSet();
+        bool Useful(ComponentDef d) => gains[d.Id] > 0.004 || d.IsPerformance || d.Tickets < 0 || product.PlannedLevel(d.Id) > 0 || requested.Contains(d.Id);
         var wrap = new WrapPanel();
-        foreach (var def in Design.ForType(product.ArchetypeId))
-            wrap.Children.Add(ComponentCard(product, def, speed, requested.Contains(def.Id) || _highlight == def.Id));
+        foreach (var def in defs.Where(Useful).OrderByDescending(d => recommended.Contains(d.Id)).ThenByDescending(d => gains[d.Id]))
+            wrap.Children.Add(ComponentCard(product, def, speed, requested.Contains(def.Id) || _highlight == def.Id, gains[def.Id], recommended.Contains(def.Id)));
+        var others = new WrapPanel();
+        foreach (var def in defs.Where(d => !Useful(d)))
+            others.Children.Add(ComponentCard(product, def, speed, false, gains[def.Id], false));
+        var approach = Ui.Column(4,
+            Ui.Row(8, Ui.Text("Façon de faire", 13, Palette.Gold, bold: true),
+                Ui.Choice(Approaches.All.Select(a => (a, Approaches.Name(a))), _approach, a => { _approach = a; Refresh(); })),
+            Ui.Muted(Approaches.Pitch(_approach), 12));
         var graph = new DependencyGraph(product);
         Control? dependencies = graph.Children.Count == 0 ? null : Ui.Details("Dépendances entre composants", Ui.Column(6,
             Ui.Row(6, Ui.Image(Icons.Get("icon_dependency", "#2b2128"), 16, 16), Ui.Muted("Ce que chaque composant demande avant d'exister.", 12)), graph,
             Ui.Muted("Un composant relié à droite demande celui de gauche. Vert : acquis · sarcelle : en file · pointillés : possible plus tard · rouge : il manque ce qu'il demande.", 12)));
         return Ui.Column(8,
-            Hint("components", "Chaque composant répond à un besoin. Ajouter ou améliorer met le travail en file : l'équipe s'en charge."),
+            Hint("components", product.IsLive
+                ? "Ce que tu ajoutes ici entre dans la prochaine version : tu la publies quand tu veux (Aperçu)."
+                : "Chaque composant répond à un besoin. Ajouter ou améliorer met le travail en file : l'équipe s'en charge."),
             NeedsBar(product),
+            Ui.Card(approach),
             dependencies,
-            wrap);
+            wrap,
+            others.Children.Count > 0 ? Ui.Details($"Autres composants ({others.Children.Count}) : presque rien pour ce public", others) : null);
     }
 
     private Control NeedsBar(Product product)
@@ -328,21 +414,28 @@ public class ProjectPanel(int productId) : GamePanel
         : trend.Cause == "price" ? "icon_sell"
         : "warning";
 
-    private Control ComponentCard(Product product, ComponentDef def, double speed, bool requested)
+    private Control ComponentCard(Product product, ComponentDef def, double speed, bool requested, double gain, bool recommended)
     {
-        int level = product.Level(def.Id);
+        int level = product.ReadyLevel(def.Id);
         int planned = product.PlannedLevel(def.Id);
         var (ok, reason, next) = Design.CanQueue(product, def.Id, Campaign.IsUnlocked);
-        double points = next <= ProductCatalog.MaxLevel ? Design.TotalEffort(def, next) : 0;
-        string effect = def.IsPerformance ? "Serveurs moins chargés" : string.Join(", ", def.Needs.OrderByDescending(n => n.Value).Select(n => "+" + ProductCatalog.NeedName(n.Key)));
+        double points = next <= ProductCatalog.MaxLevel ? Design.TotalEffort(def, next) * Approaches.Effort(_approach) * Campaign.ScopeFactor(product) : 0;
+        // L'effet en clair : ce que le public y gagne vraiment (points d'attrait), puis les besoins touchés
+        string effect = def.IsPerformance ? "Serveurs moins chargés (−25 % de charge)"
+            : def.Tickets < 0 && gain <= 0.004 ? "Moins de questions au support"
+            : (gain > 0.0005 ? $"+{gain * 100:0.0} pts d'attrait · " : "") + string.Join(", ", def.Needs.OrderByDescending(n => n.Value).Select(n => ProductCatalog.NeedName(n.Key)));
 
         string action = planned > level ? "En file" : level == 0 ? "Ajouter" : "Améliorer";
-        var button = Ui.Button(ok ? $"{action} · ~{(speed > 0 ? Math.Ceiling(points / speed) : 0)} j" : action == "En file" ? "En file" : "Verrouillé",
-            () => Run(Campaign.QueueComponent(product.Id, def.Id)), ok ? (requested ? "gold" : "green") : "tab", ok, ok ? null : reason);
+        // Sans équipe, c'est le fondateur qui tape au terminal : on dit le travail en mots plutôt qu'un délai à zéro
+        string estimate = speed > 0 ? $"~{Math.Ceiling(points / speed)} j" : $"~{Math.Ceiling(points / Tuning.Terminal.PointsPerWord / 1.2)} mots";
+        var button = Ui.Button(ok ? $"{action} · {estimate}" : action == "En file" ? "En file" : "Verrouillé",
+            () => Run(Campaign.QueueComponent(product.Id, def.Id, _approach)), ok ? (requested || recommended ? "gold" : "green") : "tab", ok, ok ? null : reason);
 
         // Carte de composant du pack : la couleur d'en-tête dit l'état, le libellé le redit en toutes lettres
         bool locked = !ok && level == 0 && planned == level;
         var (state, label) = planned > level ? ("in_dev", "En développement")
+            : product.ReadyLevel(def.Id) > product.Level(def.Id) ? ("in_dev", "Prêt pour la version")
+            : recommended ? ("planned", "Recommandé")
             : requested && level > 0 ? ("bug", "Demandé dans les avis")
             : level > 0 ? ("done", "En service")
             : locked ? ("locked", "Verrouillé")

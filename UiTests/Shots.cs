@@ -136,3 +136,45 @@ public class Lot2Shots
         window.Close();
     }
 }
+
+[Explicit, Category("Shots")]
+public class Lot3Shots
+{
+    [AvaloniaTest]
+    public void ProjectsVersionsAndMiniGames()
+    {
+        var (window, game, campaign) = Shots.Fresh(tutorial: false);
+        campaign.Ledger.Cash = 500_000;
+        campaign.CheatUnlockAll();
+        var (_, product) = campaign.CreateProject("Planio", "freelances", Core.products.RevenueModel.Subscription);
+        campaign.CheatFinishWork();
+        campaign.Launch(product!.Id);
+        campaign.AdvanceDays(10);
+        campaign.QueueComponent(product.Id, "export");
+        campaign.QueueComponent(product.Id, "ui", Core.products.Approaches.Polish);
+        campaign.CheatFinishWork();
+        campaign.QueueComponent(product.Id, "search");
+        campaign.QueueComponent(product.Id, "notifications", Core.products.Approaches.Quick);
+        game.OpenRoot(new UI.Hud.Panels.ProjectsPanel());
+        game.PushPanel(new UI.Hud.Panels.ProjectPanel(product.Id));
+        game.Tick(0.3);
+        Shots.Save(window, "lot3_project_overview");
+        game.PushPanel(new UI.Hud.Panels.ProjectPanel(product.Id).Show(UI.Hud.Panels.ProjectPanel.Tab.Components));
+        game.Tick(0.3);
+        Shots.Save(window, "lot3_components");
+        game.ClosePanels();
+        // Chaque genre de mini-jeu de publication, tiré pour des versions successives
+        for (int v = 0; v < 5; v++)
+        {
+            UI.Hud.LaunchView.ShowRelease(game, product.Id);
+            game.Tick(0.3);
+            Shots.Save(window, $"lot3_release_{campaign.ReleaseChallenge(product.Id).Kind}");
+            game.CloseModal();
+            product.Version++;
+        }
+        game.OpenRoot(UI.Hud.Panels.ProjectsPanel.At("stock"));
+        game.Tick(0.3);
+        Shots.Save(window, "lot3_projects_stock");
+        window.Close();
+    }
+}

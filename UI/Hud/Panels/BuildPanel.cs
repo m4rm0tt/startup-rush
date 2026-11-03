@@ -169,7 +169,7 @@ public class BuildPanel : GamePanel
             Ui.Muted($"{premises.Name} : {premises.Width} × {premises.Height} cases, {premises.Workstations.Count()} poste(s) installé(s), loyer {(premises.Rent > 0 ? Ui.Chf(premises.Rent) : "compris dans ta rémunération")}." +
                      (Campaign.Sites.Count > 1 ? $" {Campaign.Sites.Count} sites en tout." : "")),
             Ui.Row(6, Ui.Button(Campaign.Sites.Count > 1 ? "Tous les sites, locations" : "Locaux à louer", () => Open(new SitesPanel())),
-                Campaign.IsUnlocked("hardware") ? Ui.Button("Production et stocks", () => Open(new IndustryPanel())) : null)));
+                Campaign.IsUnlocked("hardware") ? Ui.Button("Production (Projets)", () => Screen.OpenRoot(ProjectsPanel.At("production"))) : null)));
         return column;
     }
 

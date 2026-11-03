@@ -41,7 +41,7 @@ public record SaveEntry(string Path, SaveKind Kind, string Label, SaveSummary? S
 /// </summary>
 public class SaveStore
 {
-    public const int CurrentFormat = 8;
+    public const int CurrentFormat = 9;
     public const int AutosaveSlots = 3;
 
     private static readonly JsonSerializerOptions Options = new()
@@ -139,6 +139,13 @@ public class SaveStore
         if (format == 7)
         {
             v3 = "Nouveau : les métiers d'opérateur·rice et de chercheur·se, les transferts de stock et le résultat par site.";
+            migrated = true;
+        }
+        // Format 8 → 9 : versions préparées puis publiées, communauté, tutoriel, déchets, finitions par mur et par case, couleurs
+        // des meubles. Rien n'est converti : les nouvelles données partent de leur valeur par défaut (pas de tutoriel)
+        if (format is >= 1 and <= 8)
+        {
+            v3 = string.Join(" ", new[] { v3, "Nouveau : les mises à jour se préparent puis se publient (ce qui est terminé attend la prochaine version)." }.Where(n => n != ""));
             migrated = true;
         }
         var campaign = campaignNode.Deserialize<Campaign>(Options) ?? throw new InvalidDataException("Campagne illisible.");

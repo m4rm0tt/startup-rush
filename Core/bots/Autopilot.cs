@@ -22,6 +22,9 @@ public record Strategy(string Name, string Description)
     /// <summary>Mots tapés au terminal par jour ouvré (moins d'une minute de saisie : l'équivalent de l'ancien fondateur seul).</summary>
     public int WordsPerDay { get; init; } = 30;
 
+    /// <summary>Évolutions réunies avant de publier une version (le bot prépare de vraies mises à jour).</summary>
+    public int ReleaseBatch { get; init; } = 2;
+
     /// <summary>Le fondateur arrête de taper dès qu'il a autant d'employés (0 : il tape toujours).</summary>
     public int StopTypingWithStaff { get; init; }
 
@@ -190,6 +193,14 @@ public class Autopilot(Strategy strategy)
             Act(campaign.SetMarketing(product.Id, Strategy.Marketing));
         if (product.Queue.Count > 0)
             return;
+        // Les évolutions finies attendent une version : on la publie quand elle en réunit assez, ou au bout de deux semaines
+        if (product.Staged.Count > 0 && (product.Staged.Count >= Strategy.ReleaseBatch
+                                         || campaign.Minute - product.Staged.Min(s => s.FinishedAt) >= 14L * GameTime.MinutesPerDay
+                                         || Strategy.BugCeiling > 0 && product.Bugs >= Strategy.BugCeiling))
+        {
+            Act(campaign.PublishRelease(product.Id, MiniGameScore));
+            return;
+        }
         // L'automatisation avancée prépare elle-même les petites mises à jour (le lundi) : on la laisse faire
         if (Strategy.Delegate && campaign.IsUnlocked("automation") && campaign.Staff.Any())
             return;

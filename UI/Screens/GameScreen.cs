@@ -844,7 +844,12 @@ public class GameScreen : UserControl, IScreen
                 PushPanel(new ProjectPanel(id));
                 LaunchView.Show(this, id);
                 break;
-            case "product" or "launch" when Session.Campaign.FindProduct(id) != null:
+            case "release" when Session.Campaign.FindProduct(id) is { } prepared && Session.Campaign.CanPublish(prepared).Ok && prepared.Queue.Count == 0 && _terminal == null:
+                OpenRoot(new ProjectsPanel());
+                PushPanel(new ProjectPanel(id));
+                LaunchView.ShowRelease(this, id);
+                break;
+            case "product" or "launch" or "release" when Session.Campaign.FindProduct(id) != null:
                 OpenRoot(new ProjectsPanel());
                 PushPanel(new ProjectPanel(id));
                 break;
@@ -875,8 +880,7 @@ public class GameScreen : UserControl, IScreen
                 PushPanel(new CloudPanel());
                 break;
             case "industry":
-                OpenRoot(new BuildPanel());
-                PushPanel(new IndustryPanel());
+                OpenRoot(ProjectsPanel.At("production"));
                 break;
             case "research":
                 OpenRoot(new TreePanel());

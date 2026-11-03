@@ -16,13 +16,28 @@ namespace UI.Hud.Panels;
 public class ProjectsPanel : GamePanel
 {
     public override string Title => "Projets";
-    public override string Context => $"{Campaign.Products.Count} projet(s)";
+    public override string Context => _category == "dev" ? $"{Campaign.Products.Count} projet(s)" : Campaign.Premises.Name;
     public override bool Large => true;
+
+    /// <summary>Catégorie ouverte : « dev » (le portefeuille), « production » (lignes, ordres) ou « stock » (stock, achats).</summary>
+    private static string _category = "dev";
+
+    /// <summary>Ouvre Projets sur une catégorie (« production », « stock »).</summary>
+    public static ProjectsPanel At(string category)
+    {
+        _category = category;
+        return new ProjectsPanel();
+    }
+
+    /// <summary>Production et stock n'existent qu'avec le matériel (Développement) ou une fabrication en cours.</summary>
+    private bool Industry => Campaign.IsUnlocked("hardware") || Campaign.Products.Any(p => p.IsHardware) || Campaign.Orders.Count > 0;
 
     public static string Stage(Campaign campaign, Product product)
     {
         if (product.IsLive)
-            return product.Queue.Count > 0 ? $"En ligne · v{product.Version} · mise à jour en cours" : $"En ligne · v{product.Version}";
+            return product.Queue.Count > 0 ? $"En ligne · v{product.Version} · v{product.Version + 1} en préparation"
+                : product.Staged.Count > 0 ? $"En ligne · v{product.Version} · v{product.Version + 1} prête à publier"
+                : $"En ligne · v{product.Version}";
         if (product.Queue.Count == 0)
             return campaign.CanLaunch(product) ? "Prêt à sortir" : "En conception";
         return "En développement";
@@ -30,7 +45,18 @@ public class ProjectsPanel : GamePanel
 
     public override Control Build()
     {
-        var column = Ui.Column(10, Hint("projects", "Chaque projet avance tout seul : choisis ses composants, l'équipe les développe, puis lance-le."));
+        if (!Industry)
+            _category = "dev";
+        var tabs = Industry
+            ? Ui.Tabs([("dev", "Développement"), ("production", "Production"), ("stock", "Stock")], _category, c => { _category = c; Refresh(); })
+            : null;
+        if (_category != "dev")
+        {
+            var industry = new IndustryPanel();
+            industry.Attach(Screen);
+            return Ui.Column(10, tabs, _category == "production" ? industry.BuildProduction() : industry.BuildStock());
+        }
+        var column = Ui.Column(10, tabs, Hint("projects", "Chaque projet avance tout seul : choisis ses composants, l'équipe les développe, puis lance-le."));
         var wrap = new WrapPanel();
         foreach (var product in Campaign.Products.OrderBy(p => p.Priority))
             wrap.Children.Add(Card(product));

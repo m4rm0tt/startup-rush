@@ -94,8 +94,16 @@ public partial class Campaign
     }
 
     /// <summary>Met en file l'ajout d'un composant, ou son niveau suivant. Les tâches (design → développement → tests) sont créées tout de suite.</summary>
-    public CommandResult QueueComponent(int productId, string defId)
+    public CommandResult QueueComponent(int productId, string defId) => QueueComponent(productId, defId, Approaches.Standard);
+
+    /// <summary>
+    /// Met en file l'ajout d'un composant ou son niveau suivant, avec une façon de faire (rapide, équilibrée, soignée) qui
+    /// change le travail demandé, la qualité obtenue et les bugs.
+    /// </summary>
+    public CommandResult QueueComponent(int productId, string defId, string approach)
     {
+        if (!Approaches.All.Contains(approach))
+            return CommandResult.Fail("Façon de faire inconnue.");
         var product = FindProduct(productId);
         if (product == null)
             return CommandResult.Fail("Projet inconnu.");
@@ -107,7 +115,9 @@ public partial class Campaign
 
         var def = ProductCatalog.Component(defId);
         var (design, code, test) = Design.Effort(def, level);
-        var queued = new QueuedWork { Id = NewId(), DefId = defId, ToLevel = level };
+        double scope = Approaches.Effort(approach) * ScopeFactor(product);
+        (design, code, test) = (design * scope, code * scope, test * Approaches.Tests(approach) * ScopeFactor(product));
+        var queued = new QueuedWork { Id = NewId(), DefId = defId, ToLevel = level, Approach = approach };
         string title = level == 1 ? def.Name : $"{def.Name} niv. {level}";
         var previous = new List<int>();
         foreach (var (discipline, points) in new[] { (Discipline.Design, design), (Discipline.Code, code), (Discipline.Test, test) })
@@ -176,6 +186,11 @@ public partial class Campaign
             return CommandResult.Fail("Il faut au moins deux composants terminés.");
         product.LaunchedAt = Minute;
         product.Version = 1;
+        product.Releases.Add(new Release
+        {
+            Version = 1, Minute = Minute, AppealBefore = Design.Appeal(product), AppealAfter = Design.Appeal(product), Bugs = product.Bugs,
+            Changes = product.Components.Where(c => c.Level > 0).Select(c => c.Def.Name).ToList(),
+        });
         double buyers = Market.Launch(product);
         if (buyers > 0)
         {
@@ -190,11 +205,19 @@ public partial class Campaign
         return CommandResult.Success();
     }
 
-    /// <summary>Une amélioration de la file est terminée : le composant gagne son niveau (et une mise à jour sort si le projet est en ligne).</summary>
+    /// <summary>
+    /// Une amélioration de la file est terminée. Avant la sortie, le composant gagne son niveau tout de suite. Sur un projet en
+    /// ligne, elle attend la prochaine version (Campaign.Releases.cs) : rien ne change pour les utilisateurs avant la publication.
+    /// </summary>
     private void CompleteQueued(Product product, QueuedWork queued)
     {
         var items = queued.WorkItemIds.Select(FindWork).Where(w => w != null).Select(w => w!).ToList();
-        double quality = items.Sum(w => w.QualityPoints) / Math.Max(1e-6, items.Sum(w => w.Progress));
+        double quality = Math.Clamp(items.Sum(w => w.QualityPoints) / Math.Max(1e-6, items.Sum(w => w.Progress)) + Approaches.Quality(queued.Approach), 0.1, 1);
+        if (product.IsLive)
+        {
+            StageChange(product, queued, items, quality);
+            return;
+        }
         var component = product.Component(queued.DefId);
         if (component == null)
         {
@@ -205,11 +228,24 @@ public partial class Campaign
         component.Quality = component.Level == 0 ? quality : Math.Round(component.Quality * 0.4 + quality * 0.6, 3);
         component.Level = Math.Max(component.Level, queued.ToLevel);
 
-        // Bugs : code écrit × complexité × (1,2 − qualité), moins ce que les tests ont attrapé
+        double bugs = WorkBugs(product, component.Def, items, quality);
+        if (component.DefId is "ai_core" or "ai_feature")
+            AutoLinkAi(product);
+        product.Bugs += Math.Round(bugs, 1);
+
+        Work.RemoveAll(w => queued.WorkItemIds.Contains(w.Id));
+        product.Queue.Remove(queued);
+        if (product.Queue.Count == 0)
+            ProposeLaunches();
+    }
+
+    /// <summary>Bugs d'un travail fini : code écrit × complexité × (1,2 − qualité), moins ce que les tests ont attrapé.</summary>
+    private double WorkBugs(Product product, ComponentDef def, List<WorkItem> items, double quality)
+    {
         double code = items.Where(w => w.Discipline == Discipline.Code).Sum(w => w.Effort);
         double tests = items.Where(w => w.Discipline == Discipline.Test).Sum(w => w.Effort);
         double caught = Math.Min(0.85, tests / Math.Max(1, code * 0.35) * 0.7 * quality / 0.6);
-        double bugs = code * 0.1 * component.Def.Complexity * (1.2 - quality) * (1 - caught) * Random.Range(0.6, 1.4);
+        double bugs = code * 0.1 * def.Complexity * (1.2 - quality) * (1 - caught) * Random.Range(0.6, 1.4);
         // Les tests immersifs de la zone XR font disparaître une part des défauts d'un produit XR
         if (product.ArchetypeId == "xr_app")
             bugs *= 1 - BestXr().DefectCut;
@@ -217,24 +253,15 @@ public partial class Campaign
         if (product.ArchetypeId == "game" && HasAnywhere("console_test_kit")
             || product.ArchetypeId is "saas" or "social" or "marketplace" or "ai" && HasAnywhere("device_test_rack"))
             bugs *= 1 - TestBenchCut;
-        if (component.DefId is "ai_core" or "ai_feature")
-            AutoLinkAi(product);
-        product.Bugs += Math.Round(bugs, 1);
-
-        Work.RemoveAll(w => queued.WorkItemIds.Contains(w.Id));
-        product.Queue.Remove(queued);
-
-        string what = queued.ToLevel == 1 ? component.Def.Name : $"{component.Def.Name} niveau {queued.ToLevel}";
-        if (product.IsLive)
-        {
-            product.Version++;
-            product.LastUpdateAt = Minute;
-            Market.UpdateBoost(product);
-            Notify(Severity.Good, "projet", $"{product.Name} : mise à jour {product.Version}", $"{what} est en ligne.", $"product:{product.Id}", key: $"update:{product.Id}");
-        }
-        else if (product.Queue.Count == 0)
-            ProposeLaunches();
+        return bugs;
     }
+
+    /// <summary>
+    /// Ce que coûte une évolution de plus sur un gros produit : chaque composant déjà en place ajoute un peu d'intégration
+    /// (+4 % par composant au-delà de trois), plafonné à +40 %. Un produit qui grandit demande plus de soin.
+    /// </summary>
+    public static double ScopeFactor(Product product) =>
+        1 + Math.Min(Tuning.Projects.IntegrationCap, Math.Max(0, product.Components.Count(c => c.Level > 0) - 3) * Tuning.Projects.IntegrationPerComponent);
 
     /// <summary>Termine les améliorations dont tout le travail est déjà fait (après une migration, par exemple).</summary>
     public void CheckQueue(Product product)

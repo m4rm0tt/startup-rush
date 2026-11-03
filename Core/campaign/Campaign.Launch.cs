@@ -16,8 +16,17 @@ public record LaunchChallenge(string Kind, string Rule, IReadOnlyList<string> It
     /// <summary>« signals » : stabiliser des signaux couplés (mise en route quantique).</summary>
     public bool Signals => Kind == "signals";
 
-    /// <summary>« match » : associer chaque échantillon à son résultat (évaluation d'un modèle d'IA).</summary>
-    public bool Matching => Kind == "match";
+    /// <summary>
+    /// Un choix parmi des options pour chaque ligne : « match » (évaluation d'un modèle d'IA), « firewall » (passe ou bloqué),
+    /// « merge » (garder A ou B).
+    /// </summary>
+    public bool Matching => Kind is "match" or "firewall" or "merge";
+
+    /// <summary>« command » : une commande à taper (noter avec <see cref="Score(string)"/>).</summary>
+    public bool Typing => Kind == "command";
+
+    /// <summary>Note d'une commande tapée (« command »).</summary>
+    public double Score(string typed) => Typing && Items.Count > 0 ? MiniGames.ScoreText(Items[0], typed) : 0;
 
     /// <summary>Les résultats possibles d'un échantillon (« match »).</summary>
     public IReadOnlyList<string> Options { get; init; } = [];
@@ -41,6 +50,8 @@ public record LaunchChallenge(string Kind, string Rule, IReadOnlyList<string> It
             int right = Enumerable.Range(0, Math.Min(answer.Count, Answer.Count)).Count(i => answer[i] == Answer[i]);
             return (double)right / Answer.Count;
         }
+        if (Typing)
+            return 0;
         if (Calibration || Signals)
         {
             // Pile sur la cible : plein score ; à un cran : la moitié ; au-delà : rien
@@ -120,10 +131,48 @@ public partial class Campaign
     private static readonly string[] DeploySteps =
         ["Sauvegarder les données", "Migrer la base", "Mettre en ligne", "Vérifier le service", "Annoncer la sortie"];
 
+    /// <summary>Sorties déjà faites dans la partie (lancements et versions) : la difficulté des mini-jeux en dépend.</summary>
+    public int ReleasesDone => Products.Sum(p => p.Releases.Count);
+
+    /// <summary>
+    /// Le mini-jeu de publication d'une version : tiré pour ce projet et cette version (deux versions de suite n'ont pas le même
+    /// jeu), parmi ceux du logiciel, de plus en plus fourni avec l'expérience.
+    /// </summary>
+    public LaunchChallenge ReleaseChallenge(int productId)
+    {
+        var product = FindProduct(productId) ?? throw new ArgumentException("Projet inconnu.");
+        int version = product.Version + 1;
+        var random = new SimRandom(Seed ^ ((ulong)productId * 0xD1B54A32D192ED03UL) ^ ((ulong)version * 0x9E3779B97F4A7C15UL) ^ 0xBEEF);
+        var pool = product.ArchetypeId == "game" ? new[] { "review", "logs", "merge", "command" } : MiniGames.SoftwareKinds;
+        int start = (int)((ulong)productId * 2654435761UL % (ulong)pool.Length);
+        return Generate(pool[(start + version) % pool.Length], product, version, random);
+    }
+
+    /// <summary>Un mini-jeu d'un genre donné pour ce projet.</summary>
+    private LaunchChallenge Generate(string kind, Product product, int version, SimRandom random)
+    {
+        int difficulty = MiniGames.Difficulty(ReleasesDone);
+        return kind switch
+        {
+            "logs" => MiniGames.Logs(random, difficulty),
+            "firewall" => MiniGames.Firewall(random, difficulty),
+            "merge" => MiniGames.Merge(random, difficulty),
+            "command" => MiniGames.Command(random, product, version, difficulty),
+            "review" => Review(random),
+            _ => Deploy(random),
+        };
+    }
+
     public LaunchChallenge Challenge(int productId)
     {
         var product = FindProduct(productId) ?? throw new ArgumentException("Projet inconnu.");
         var random = new SimRandom(Seed ^ ((ulong)productId * 0xD1B54A32D192ED03UL) ^ 0x5EED);
+        if (!product.IsHardware && ReleasesDone > 0)
+        {
+            // Après la première sortie de la partie, les lancements varient aussi (le tout premier reste le déploiement)
+            var pool = product.ArchetypeId == "game" ? new[] { "review", "logs", "merge", "command" } : MiniGames.SoftwareKinds;
+            return Generate(pool[random.Next(0, pool.Length)], product, 1, random);
+        }
         if (product.IsHardware)
         {
             // Calibration de la première série : trois réglages à amener dans leur zone (0 à 10)
@@ -131,9 +180,13 @@ public partial class Campaign
             var targets = knobs.Select(_ => random.Next(2, 9)).ToList();
             return new LaunchChallenge("calibrate", "Amène chaque réglage sur sa valeur cible (zone verte).", knobs, targets);
         }
-        if (product.ArchetypeId == "game")
+        return product.ArchetypeId == "game" ? Review(random) : Deploy(random);
+    }
+
+    /// <summary>Recette d'un jeu : huit comptes rendus de test, trois ne donnent pas le résultat attendu.</summary>
+    private static LaunchChallenge Review(SimRandom random)
+    {
         {
-            // Huit comptes rendus de test ; trois ne donnent pas le résultat attendu
             string[] checks = ["Sauvegarde", "Niveau 1", "Son", "Menu pause", "Score", "Chargement", "Succès", "Options"];
             var anomalies = new HashSet<int>();
             while (anomalies.Count < 3)
@@ -146,6 +199,11 @@ public partial class Campaign
             }).ToList();
             return new LaunchChallenge("review", "Repère les tests dont le résultat ne correspond pas à l'attendu.", items, anomalies.OrderBy(i => i).ToList());
         }
+    }
+
+    /// <summary>Déploiement : remettre les étapes dans l'ordre.</summary>
+    private static LaunchChallenge Deploy(SimRandom random)
+    {
         var order = Enumerable.Range(0, DeploySteps.Length).ToList();
         var shuffled = order.ToList();
         do

@@ -92,9 +92,17 @@ public class ProjectTest
         campaign.QueueComponent(product.Id, "export");
         FinishQueue(campaign, product);
 
+        // Terminé, mais pas encore chez les utilisateurs : il attend la prochaine version
+        Assert.That(product.Version, Is.EqualTo(1));
+        Assert.That(product.Level("export"), Is.EqualTo(0));
+        Assert.That(product.Staged.Select(s => s.DefId), Is.EquivalentTo(new[] { "export" }));
+        Assert.That(campaign.Notices.Any(n => n.Title.Contains("version 2 en préparation")), Is.True);
+
+        Assert.That(campaign.PublishRelease(product.Id, 0).Ok, Is.True);
         Assert.That(product.Version, Is.EqualTo(2));
         Assert.That(product.Level("export"), Is.EqualTo(1));
-        Assert.That(campaign.Notices.Any(n => n.Title.Contains("mise à jour")), Is.True);
+        Assert.That(product.Staged, Is.Empty);
+        Assert.That(campaign.Notices.Any(n => n.Title.Contains("2 est en ligne")), Is.True);
     }
 
     [Test]

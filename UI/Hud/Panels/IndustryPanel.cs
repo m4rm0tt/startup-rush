@@ -35,6 +35,17 @@ public class IndustryPanel : GamePanel
         return column;
     }
 
+    /// <summary>La catégorie « Production » de Projets : les lignes du site affiché et les ordres de fabrication.</summary>
+    public Control BuildProduction()
+    {
+        var site = Campaign.Premises;
+        return Ui.Column(10, Hint("industry", "Une ligne : des stations reliées par des convoyeurs, dans le sens des flèches, jusqu'à une fin de ligne. Il faut des opérateurs."),
+            Lines(site), Orders(site));
+    }
+
+    /// <summary>La catégorie « Stock » de Projets : le stock, les achats et les transferts.</summary>
+    public Control BuildStock() => StockSection(Campaign.Premises);
+
     private Control Lines(Premises site)
     {
         var graph = Campaign.SiteFlow(site);

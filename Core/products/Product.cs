@@ -17,6 +17,38 @@ public class QueuedWork
     public string DefId { get; set; } = "";
     public int ToLevel { get; set; }
     public List<int> WorkItemIds { get; set; } = new();
+
+    /// <summary>Façon de le faire (Approaches) : « quick », « standard » ou « polish ».</summary>
+    public string Approach { get; set; } = Approaches.Standard;
+}
+
+/// <summary>
+/// La façon de développer un composant : un vrai choix entre le temps et la qualité. Rapide : un tiers de travail en moins,
+/// moins bien fait et peu testé (plus de bugs). Soigné : un tiers de travail en plus, mieux fait et bien testé.
+/// </summary>
+public static class Approaches
+{
+    public const string Quick = "quick", Standard = "standard", Polish = "polish";
+
+    public static readonly string[] All = [Quick, Standard, Polish];
+
+    public static string Name(string approach) => approach switch { Quick => "Rapide", Polish => "Soigné", _ => "Équilibré" };
+
+    public static string Pitch(string approach) => approach switch
+    {
+        Quick => "−35 % de travail, qualité −12 points, peu testé : plus de bugs.",
+        Polish => "+35 % de travail, qualité +10 points, bien testé : moins de bugs.",
+        _ => "Le travail normal.",
+    };
+
+    /// <summary>Multiplicateur de l'effort de design et de développement.</summary>
+    public static double Effort(string approach) => approach switch { Quick => 0.65, Polish => 1.35, _ => 1 };
+
+    /// <summary>Multiplicateur de l'effort de tests (ce qui attrape les bugs).</summary>
+    public static double Tests(string approach) => approach switch { Quick => 0.35, Polish => 1.6, _ => 1 };
+
+    /// <summary>Qualité ajoutée au travail fini.</summary>
+    public static double Quality(string approach) => approach switch { Quick => -0.12, Polish => 0.10, _ => 0 };
 }
 
 /// <summary>
@@ -31,6 +63,8 @@ public class StagedChange
 
     /// <summary>Bugs que cette évolution apportera à la publication (ce que les tests n'ont pas attrapé).</summary>
     public double Bugs { get; set; }
+
+    public string Approach { get; set; } = Approaches.Standard;
 
     public long FinishedAt { get; set; }
 
@@ -152,6 +186,12 @@ public class Product
     /// <summary>Les versions publiées, de la plus ancienne à la plus récente.</summary>
     public List<Release> Releases { get; set; } = new();
 
+    /// <summary>
+    /// Communauté (0 à 1) : ce que des mises à jour régulières construisent. Elle retient les utilisateurs (moins de départs)
+    /// et fait parler du produit (bouche-à-oreille). Elle s'effrite si le produit n'évolue plus (Campaign.Releases.cs).
+    /// </summary>
+    public double Community { get; set; }
+
     public int Version { get; set; }
     public long? LaunchedAt { get; set; }
     public long? LastUpdateAt { get; set; }
@@ -251,7 +291,11 @@ public class Product
     public int Level(string defId) => Component(defId)?.Level ?? 0;
 
     /// <summary>Niveau visé en comptant la file (pour savoir quelle amélioration proposer ensuite).</summary>
-    public int PlannedLevel(string defId) => Math.Max(Level(defId), Queue.Where(q => q.DefId == defId).Select(q => q.ToLevel).DefaultIfEmpty(0).Max());
+    public int PlannedLevel(string defId) => Math.Max(Math.Max(Level(defId), Staged.Where(s => s.DefId == defId).Select(s => s.Level).DefaultIfEmpty(0).Max()),
+        Queue.Where(q => q.DefId == defId).Select(q => q.ToLevel).DefaultIfEmpty(0).Max());
+
+    /// <summary>Niveau prêt pour la prochaine version (publié ou en attente de publication), sans la file.</summary>
+    public int ReadyLevel(string defId) => Math.Max(Level(defId), Staged.Where(s => s.DefId == defId).Select(s => s.Level).DefaultIfEmpty(0).Max());
 
     public int NewLocalId() => NextLocalId++;
 }

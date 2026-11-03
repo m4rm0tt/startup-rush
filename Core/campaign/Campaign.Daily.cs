@@ -25,7 +25,9 @@ public partial class Campaign
         PayResearch();
         ChannelFees();
         RunProducts(yesterday, date.DayOfWeek == DayOfWeek.Monday);
+        RunReleases();
         AutoLaunch();
+        AutoPublishReady();
 
         if (date.Day == 1)
             StartMonth(GameTime.MonthKey(Minute - 1));

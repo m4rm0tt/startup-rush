@@ -66,6 +66,11 @@ public static class Tuning
         /// 92 points : quelque 380 mots au terminal pour le fondateur seul (une douzaine de minutes de saisie).
         /// </summary>
         public const double EffortScale = 2.2;
+
+        /// <summary>Intégration : travail en plus par composant déjà en place au-delà de trois, et au plus.</summary>
+        public const double IntegrationPerComponent = 0.04;
+
+        public const double IntegrationCap = 0.4;
     }
 
     /// <summary>Le terminal du fondateur : son seul moyen de produire (voir Campaign.Terminal.cs).</summary>

@@ -50,12 +50,13 @@ gardé en `.corrupt` et signalé dans la liste, migrations des formats 4 à 7 te
 
 | Tâche | Statut | Détail |
 |---|---|---|
-| Format des nombres centralisé (fr-CH) | à faire | |
-| Texte agrandi | à faire | |
-| Résolutions 1280 × 720 à 4K | à faire | |
-| Performances (grande partie, nuit) | à faire | |
-| Journaux d'erreur, dossier, dernière sauvegarde valide | à faire | |
-| Plein écran / fenêtré, volumes | à faire | |
+| Format des nombres centralisé | fait | `Core.GameCulture` (suisse romand : « 15 840 CHF », « 2,5 % », espace fine insécable présente dans les deux polices), installée au démarrage du jeu, des tests et du rapport d'équilibrage. `GameCultureTest` (système en anglais, allemand, français), captures regardées |
+| Texte agrandi | fait | Réglage « Texte agrandi » : texte courant, boutons et onglets de 12 à 18 px, appliqué sans relancer. Six menus et la scène relus en capture (rien de coupé). Moins net que la grille de 12 du pack (décision BUG-010 toujours ouverte pour le défaut) |
+| Résolutions | fait | `PixelText.AutoScale` : jamais sous 1 dès 1280 × 720 (avant : 0,84, flou), 4K à 100 % → échelle 2 (avant : 1). Bulles de notification qui ne couvrent plus la barre d'outils en 1280 × 720. `AutoScaleTest` ; captures 1280 × 720, 1366 × 768, 1920 × 1080, 2560 × 1080, 3840 × 2160 regardées. **Windows** : mise à l'échelle 125 / 150 % |
+| Performances | mesuré | `PerfProbe` : simulation ~1 ms par image, 5 jours ~85 ms, interface seule ~12 ms ; une image complète ~500 ms **sur ce VPS sans carte graphique**, même avec une scène vide (redessin de toute la fenêtre au processeur), donc pas un goulot du code. Essai « bitmap figé » sans effet, retiré. `AnAdvancedCampaignRendersAFrameQuickly` reste en échec ici. **Windows** : mesurer avec une carte graphique |
+| Journaux d'erreur, dossier, sauvegarde d'urgence | fait | `CrashLog` : journal dans `%AppData%\StartupRush\logs` (pile, version, système, partie), sauvegarde d'urgence `crash.json` sans toucher aux autres ; bouton « Ouvrir le dossier des journaux ». `CrashLogTest` |
+| Plein écran / fenêtré, volumes | fait | Plein écran dans les réglages et F11, retenu ; volumes musique et bruitages déjà présents |
+| Écran de chargement | non nécessaire | Démarrage rapide : pas de barre ajoutée |
 
 ## Lot 4 — Équilibrage
 

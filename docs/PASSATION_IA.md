@@ -249,5 +249,5 @@ lots de `docs/V1_ETAT.md`, et le §11 ci-dessous pour ce que le lot 6 laisse en 
 - Le rapport d'équilibrage prend ~15 minutes sur ce VPS (pas 2). `AnAdvancedCampaignRendersAFrameQuickly` y échoue (rendu
   processeur seul) : à juger sur un poste Windows.
 - Ouvert : BUG-010 (taille du texte, décision de direction artistique), BUG-013 (trois icônes pour quatre vitesses), BUG-009
-  (Recherche, Laboratoire, Cloud, Production, Journal pas encore relus), stratégie « marketing_excessif » à surveiller, et tout reste à
+  (fenêtres plus petites que 1600 × 900 non vérifiées), stratégie « marketing_excessif » à surveiller, et tout reste à
   valider à la souris sous Windows.

@@ -33,12 +33,12 @@ Statuts : **terminé** (comportement vérifié par un test automatique ou une ca
 | A2 Tutoriel interactif | terminé | 11 étapes validées par les vraies actions (`Campaign.Tutorial.cs`), carte de consigne non bloquante, menu concerné marqué d'une étoile, anneau sur le fondateur, « Passer », +1 point à la fin ; sauvegardé. Tests moteur et interface. |
 | A3 Dormir dans son lit | terminé | Le fondateur reste dans sa chambre : assis à son bureau le soir (`Activity.Home`), dans son lit de 23 h à 7 h (`Activity.Sleeping`, bulle « zZ » cliquable). Pas de pose couchée dans le pack : bulle au-dessus du lit. Sans lit (bureaux), il rentre chez lui. |
 | A4 Pause (Espace, menus) | terminé | Plus de pause dans les grands menus par défaut (réglages déjà écrits mis à jour une fois, `Settings.Version` 2). Espace ou une vitesse relancent le temps arrêté par un grand menu. Pauses gardées : menu pause, confirmations, mini-jeux, saisie (réglage). |
-| B1 Aperçu des sols et murs | non commencé | |
-| B2 Choisir un mur ou une zone de sol | non commencé | |
-| B3 Couleurs des meubles | non commencé | |
-| B4 Retirer les objets livrés | non commencé | |
-| B5 Capacité des espaces de travail | non commencé | |
-| B6 Déchets | non commencé | |
+| B1 Aperçu des sols et murs | terminé | Choisir une finition la montre dans la scène sans payer (copie du local, `Premises.PreviewCopy`) ; bandeau « Aperçu » avec le prix et « Faire les travaux » / « Annuler » ; en mode zone, case ou mur visé, l'aperçu suit la souris et le clic pose. Test `APreviewCopyNeverTouchesThePremises`, captures. |
+| B2 Choisir un mur ou une zone de sol | terminé | Sol : tout le local, une zone (celle sous la case cliquée) ou une seule case ; murs : les deux, ou un mur visé dans la scène. Couleur au choix (canaux « floor » et « wall » du pack). Coût = cases ou segments couverts. Sauvegardé (`LeftPattern`, `RightPattern`, couleurs des murs, zones de sol). |
+| B3 Couleurs des meubles | terminé | Un seul système : les canaux recolorables du masque de chaque objet du pack (tissu, bois, couleur principale, métal, détails, feuillage) ; teintes du pack ; fiche de l'objet, « Couleurs d'origine ». Gratuit, sauvegardé, suit l'objet dans les cartons. |
+| B4 Retirer les objets livrés | terminé | Les objets livrés se retirent (cartons) ou se jettent, un par un ou « Retirer le décor » ; restent en place : sanitaires, cuisine équipée, installations techniques (`FurnitureDef.Structural`) et le lit de la chambre. Confirmation avant de retirer. |
+| B5 Capacité des espaces de travail | terminé | « Postes : 4 / 7 » : postes complets sur le plafond réel (bail de la chambre, sinon postes installés + bureaux compacts qui tiennent encore selon les règles de pose). Tuiles postes / équipe / bureaux en plus. |
+| B6 Déchets | terminé | Chaque jour de travail, qui n'a pas de corbeille (corbeilles et bacs de tri couvrent 3 et 8 personnes) laisse parfois un déchet par terre (hasard séparé, 24 au plus) ; −0,75 de moral par déchet (5 au plus) ; clic pour ramasser, « Tout ramasser » ; avec assez de corbeilles l'équipe en ramasse un par jour. Section Propreté. |
 | C1 Production et Stock dans Projets | non commencé | |
 | C2 Ordre des composants | non commencé | |
 | C3 Profondeur des composants | non commencé | |
@@ -50,4 +50,4 @@ Statuts : **terminé** (comportement vérifié par un test automatique ou une ca
 | E1 Moins de texte | non commencé | |
 | E2 Mini-jeux | non commencé | |
 | E3 IA expliquée | non commencé | |
-| E4 Indicateurs sur les équipements | non commencé | |
+| E4 Indicateurs sur les équipements | terminé | « ! » au-dessus de l'objet en cause (baie sans switch, tiroir de disques sans stockage 2U, cryostat incomplet, site qui manque d'électricité, de froid ou de débit), cliquable ; la fiche liste « Ce qui manque » avec un bouton d'achat ; disparaît dès que c'est réglé (test). Notifications gardées. |

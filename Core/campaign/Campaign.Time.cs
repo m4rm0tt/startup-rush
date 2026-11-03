@@ -256,11 +256,33 @@ public partial class Campaign
         double energy = person.Energy >= 40 ? 1 : 0.6 + person.Energy / 100;
         double morale = 0.85 + person.Morale / 100 * 0.3;
         double overtime = GameTime.Hour(Minute) >= Tuning.Work.DayEndHour ? 0.9 : 1;
-        int free = (lead ? Tuning.Work.CoordinationFreeTeamWithLead : Tuning.Work.CoordinationFreeTeam) + (int)Math.Floor(SiteComfort(SiteOf(person)).Coordination)
-                   + (IsUnlocked("bigteam") ? 2 : 0);
-        double coordination = teamSize <= free ? 1 : 1 / (1 + Tuning.Work.CoordinationLossPerExtraPerson * (teamSize - free));
+        double coordination = Coordination(person, teamSize, lead);
         double tools = IsUnlocked("ai_tools") ? 1.1 : 1;
-        return Tuning.Work.PointsPerHourAtLevel50 * skill * StationOutput(person) * energy * morale * overtime * coordination * tools / 60;
+        return Tuning.Work.PointsPerHourAtLevel50 * skill * StationOutput(person) * energy * morale * overtime * coordination * tools * Onboarding(person) / 60;
+    }
+
+    /// <summary>
+    /// Efficacité d'une personne dans une équipe de cette taille sur un même projet : sans perte jusqu'à 3 (5 avec un
+    /// responsable), puis chaque personne de plus coûte de la coordination ; le local (tableaux, réunions) et le nœud
+    /// « Grandes équipes » réduisent cette perte sans l'annuler.
+    /// </summary>
+    public double Coordination(Person person, int teamSize, bool lead)
+    {
+        int free = lead ? Tuning.Work.CoordinationFreeTeamWithLead : Tuning.Work.CoordinationFreeTeam;
+        if (teamSize <= free)
+            return 1;
+        double tools = 1 + Tuning.Work.CoordinationPerComfortPoint * Math.Floor(SiteComfort(SiteOf(person)).Coordination)
+                         + (IsUnlocked("bigteam") ? Tuning.Work.CoordinationBigTeam : 0);
+        return 1 / (1 + Tuning.Work.CoordinationLossPerExtraPerson / tools * (teamSize - free));
+    }
+
+    /// <summary>Prise de poste : une recrue monte en régime sur ses premières semaines (le fondateur connaît déjà la maison).</summary>
+    public double Onboarding(Person person)
+    {
+        if (person.IsFounder)
+            return 1;
+        double days = Math.Max(0, (Minute - Math.Max(person.HiredAt, person.StartsAt)) / (double)GameTime.MinutesPerDay);
+        return Math.Min(1, Tuning.Work.OnboardingStart + (1 - Tuning.Work.OnboardingStart) * days / Tuning.Work.OnboardingDays);
     }
 
     public double WorkQuality(Person person, Discipline discipline)

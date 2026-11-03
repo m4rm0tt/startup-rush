@@ -74,6 +74,8 @@ public class BalanceReportTest
     [Test, Explicit("Long : écrit BALANCE_REPORT.md")]
     public void WriteBalanceReport()
     {
+        // Nombres au format français quelle que soit la langue de la machine (sinon 87,760 sur un serveur en anglais)
+        System.Globalization.CultureInfo.CurrentCulture = new System.Globalization.CultureInfo("fr-FR");
         // Chaque partie est indépendante (son propre hasard) : jouées en parallèle, dans l'ordre du rapport
         var results = Strategies.All.SelectMany(s => Seeds.Select(seed => (s, seed))).AsParallel().AsOrdered().Select(x => Play(x.s, x.seed)).ToList();
         string Med<T>(IEnumerable<T> values, Func<T, string> format) where T : IComparable<T>
@@ -209,7 +211,8 @@ public class BalanceReportTest
         {
             var r = Play(Strategies.All.First(s => s.Name == "un_projet"), seed, 9);
             Assert.That(r.Liquidated, Is.False, $"graine {seed}");
-            Assert.That(r.FirstLaunchDay, Is.InRange(10, 60), $"graine {seed} : première sortie");
+            // Le premier projet est un prototype (demande des testeurs : début trop lent) : il sort en une à trois semaines
+            Assert.That(r.FirstLaunchDay, Is.InRange(5, 30), $"graine {seed} : première sortie");
             Assert.That(r.FirstRevenueDay, Is.GreaterThan(0).And.LessThan(90), $"graine {seed} : premiers revenus");
         }
     }

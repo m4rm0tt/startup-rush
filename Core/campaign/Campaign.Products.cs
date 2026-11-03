@@ -41,6 +41,8 @@ public partial class Campaign
             Color = ProjectColors[Products.Count % ProjectColors.Length],
             CreatedAt = Minute,
             Priority = Products.Count == 0 ? 0 : Products.Max(p => p.Priority) + 1,
+            // Le tout premier projet de la partie est un prototype : moins de travail pour sortir vite et voir le jeu tourner
+            Prototype = Products.Count == 0 && !Milestones.ContainsKey("first_launch"),
         };
         Products.Add(product);
         EnsureCompetitors(segment, type.Hardware);
@@ -115,8 +117,9 @@ public partial class Campaign
 
         var def = ProductCatalog.Component(defId);
         var (design, code, test) = Design.Effort(def, level);
-        double scope = Approaches.Effort(approach) * ScopeFactor(product);
-        (design, code, test) = (design * scope, code * scope, test * Approaches.Tests(approach) * ScopeFactor(product));
+        double prototype = product.Prototype && !product.IsLive ? Tuning.Projects.PrototypeScope : 1;
+        double scope = Approaches.Effort(approach) * ScopeFactor(product) * prototype;
+        (design, code, test) = (design * scope, code * scope, test * Approaches.Tests(approach) * ScopeFactor(product) * prototype);
         var queued = new QueuedWork { Id = NewId(), DefId = defId, ToLevel = level, Approach = approach };
         string title = level == 1 ? def.Name : $"{def.Name} niv. {level}";
         var previous = new List<int>();

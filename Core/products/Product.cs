@@ -192,6 +192,9 @@ public class Product
     /// </summary>
     public double Community { get; set; }
 
+    /// <summary>Le tout premier projet de la partie : un prototype, au travail réduit (Tuning.Projects.PrototypeScope).</summary>
+    public bool Prototype { get; set; }
+
     public int Version { get; set; }
     public long? LaunchedAt { get; set; }
     public long? LastUpdateAt { get; set; }

@@ -39,8 +39,28 @@ public static class Tuning
         /// <summary>Au-delà de ce nombre de personnes sur une même cible, la coordination coûte (sans responsable).</summary>
         public const int CoordinationFreeTeam = 3;
 
-        public const int CoordinationFreeTeamWithLead = 6;
-        public const double CoordinationLossPerExtraPerson = 0.12;
+        public const int CoordinationFreeTeamWithLead = 5;
+
+        /// <summary>
+        /// Perte de coordination par personne au-delà de l'équipe sans perte (avant les tests joueurs : 0,12). Plus forte, pour qu'une
+        /// grande équipe sur un même projet ne finisse pas tout en un clin d'œil : il faut des responsables, des salles de réunion,
+        /// ou répartir l'équipe sur plusieurs projets.
+        /// </summary>
+        public const double CoordinationLossPerExtraPerson = 0.3;
+
+        /// <summary>
+        /// Ce qui réduit la perte de coordination (au lieu d'agrandir l'équipe sans perte, ce qui rendait une équipe de huit aussi
+        /// efficace qu'une de trois) : chaque point de coordination du local (tableaux, salles de réunion, planning ; 3 au plus)
+        /// et le nœud « Grandes équipes ».
+        /// </summary>
+        public const double CoordinationPerComfortPoint = 0.15;
+
+        public const double CoordinationBigTeam = 0.25;
+
+        /// <summary>Prise de poste : une nouvelle recrue produit la moitié la première semaine, puis tout au bout de ce nombre de jours.</summary>
+        public const int OnboardingDays = 20;
+
+        public const double OnboardingStart = 0.5;
 
         /// <summary>Énergie perdue par heure travaillée (0-100), puis en heures supplémentaires.</summary>
         public const double EnergyPerHour = 1.6;
@@ -71,6 +91,12 @@ public static class Tuning
         public const double IntegrationPerComponent = 0.04;
 
         public const double IntegrationCap = 0.4;
+
+        /// <summary>
+        /// Le tout premier projet de la partie est un prototype : ses composants demandent une part de leur travail habituel. Le
+        /// début de partie (tout au terminal) passe d'environ 380 mots à environ 150 (application) ou 200 (jeu), série comprise.
+        /// </summary>
+        public const double PrototypeScope = 0.45;
     }
 
     /// <summary>Le terminal du fondateur : son seul moyen de produire (voir Campaign.Terminal.cs).</summary>

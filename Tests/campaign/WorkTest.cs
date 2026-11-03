@@ -81,7 +81,9 @@ public class WorkTest
         }
 
         Assert.That(product.Queue, Is.Empty);
-        Assert.That(words, Is.InRange(150, 450), "un premier lancement en 10 à 20 minutes de saisie, pas en heures");
+        // Prototype et série au terminal (demande des testeurs : début trop lent) : quelques minutes de saisie
+        Assert.That(product.Prototype, Is.True);
+        Assert.That(words, Is.InRange(100, 250), "un premier lancement en 5 à 10 minutes de saisie, pas en heures");
         Assert.That(product.Components.Select(c => c.DefId), Is.EquivalentTo(new[] { "login", "dashboard", "subscribe" }));
         Assert.That(product.Components.All(c => c.Level == 1), Is.True, "chaque composant terminé une seule fois");
         Assert.That(campaign.CanLaunch(product), Is.True);

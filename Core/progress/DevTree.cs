@@ -23,9 +23,9 @@ public static class DevTree
         new("marketplace", "Création", "Places de marché", "tag", "Nouveau type de projet : place de marché à commission.", 3, "community"),
 
         new("hiring", "Organisation", "Recrutement élargi", "user", "2 candidats de plus chaque semaine, souvent plus expérimentés.", 1),
-        new("leads", "Organisation", "Responsables", "crown", "On peut nommer des responsables : une équipe de 6 travaille sans perte.", 1),
+        new("leads", "Organisation", "Responsables", "crown", "On peut nommer des responsables : une équipe de 5 travaille sans perte.", 1),
         new("academy", "Organisation", "Formation interne", "calendar", "Formations à moitié prix et 30 % plus efficaces.", 2, "hiring"),
-        new("bigteam", "Organisation", "Grandes équipes", "building", "+2 personnes par projet sans perte de coordination.", 2, "leads"),
+        new("bigteam", "Organisation", "Grandes équipes", "building", "Une grande équipe sur un même projet perd moins en coordination.", 2, "leads"),
         new("multisite", "Organisation", "Plusieurs sites", "home", "Louer d'autres locaux sans quitter les tiens (et le siège) ; tout se gère depuis la vue Sites.", 1),
 
         new("cloud_m", "Infrastructure", "Cloud M", "wifi", "Offre d'hébergement Cloud M (capacité ×4).", 1),

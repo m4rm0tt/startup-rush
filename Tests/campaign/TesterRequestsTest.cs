@@ -133,7 +133,10 @@ public class TesterRequestsTest
     public void AStreakOfCorrectWordsYieldsMoreAndAMistakeResetsIt()
     {
         var campaign = NewCampaign();
+        NewProject(campaign);
+        // Un projet ordinaire (le prototype a de petites tâches, qui plafonneraient ce que rapporte un mot)
         var product = NewProject(campaign);
+        Assert.That(product.Prototype, Is.False);
         Assert.That(campaign.OpenTerminal(product.Id).Ok, Is.True);
         var session = campaign.Terminal!;
         double first = campaign.SubmitWord(session.Word, session.Word.Length / 4.0).Points;

@@ -51,3 +51,18 @@ quand le jeu tourne que les anciens bugs (menus reconstruits chaque seconde) se 
 ## Sauvegarde et reprise
 - [ ] Charger une sauvegarde faite **avant** ces corrections : elle s'ouvre et la partie continue normalement.
 - [ ] Sauvegarder, quitter, Continuer : on retrouve la même partie.
+
+## Phase « version Steam » (3 novembre 2026) — à valider sous Windows
+
+Vérifié ici par des tests automatiques et des captures (VPS Linux sans écran), **jamais à la souris sous Windows** :
+- [ ] Vitesses : quatre icônes distinctes (la 4e a quatre chevrons), touches 1 à 4.
+- [ ] Charger : chaque partie a son nom et sa date ; « Supprimer la partie » demande confirmation ; la partie disparaît de la
+      liste et son dossier se retrouve dans `%AppData%\StartupRush\deleted\`.
+- [ ] Sauvegarder pendant que le disque est plein ou le dossier en lecture seule : message d'erreur, ancienne sauvegarde intacte.
+- [ ] Abîmer un fichier de sauvegarde (le tronquer) : le chargement propose la version précédente ou la dernière automatique.
+- [ ] Windows en anglais : les montants s'écrivent « 15 840 CHF » (espace fine), pas « 15,840 ».
+- [ ] Réglages : plein écran (et F11) retenu après redémarrage ; texte agrandi appliqué tout de suite, rien de coupé.
+- [ ] Mise à l'échelle Windows 125 % et 150 %, écrans 1280 × 720, 1920 × 1080, 2560 × 1440, 4K : interface nette et entière.
+- [ ] Réglages › Assistance › « Ouvrir le dossier des journaux » ouvre l'explorateur ; après un plantage, un `crash-*.txt`
+      s'y trouve et « Sauvegarde d'urgence » apparaît dans Charger.
+- [ ] Vitesse d'affichage d'une grande partie avec une vraie carte graphique (sur le VPS : ~500 ms par image au processeur).

@@ -27,6 +27,8 @@ CC0 n'impose aucune mention ; elle est faite par courtoisie.
 | Bibliothèque | Usage |
 |---|---|
 | Avalonia (https://avaloniaui.net) | Interface |
+| Avalonia.Fonts.Inter : police Inter de Rasmus Andersson (police sous SIL Open Font License 1.1) | Police de repli (`WithInterFont`) |
+| SkiaSharp, HarfBuzzSharp (dépendances d'Avalonia ; Skia BSD-3, HarfBuzz Old MIT) | Rendu et mise en forme du texte |
 | NAudio (Mark Heath) | Mélange et sortie audio |
 | NAudio.Vorbis et NVorbis (Andrew Ward) | Lecture des fichiers OGG |
 

@@ -90,8 +90,7 @@ public class SitesPanel : GamePanel
         var column = Ui.Column(4);
         column.Margin = new Avalonia.Thickness(0, 0, 14, 0);
         if (totals.Hosting + totals.Compute + totals.Gpu + totals.Storage <= 0)
-            column.Children.Add(Ui.Muted("Aucun serveur pour l'instant : tes projets sont chez un hébergeur. Un serveur tour suffit pour commencer ; " +
-                                         "la salle serveur (Développement) accueille des baies."));
+            column.Children.Add(Ui.Muted("Aucun serveur pour l'instant : tes projets sont chez un hébergeur."));
         else
         {
             column.Children.Add(Ui.Pair("Tous sites réunis", Capacities(totals.Hosting, totals.Compute, totals.Gpu, totals.Storage)));
@@ -103,16 +102,14 @@ public class SitesPanel : GamePanel
                     Campaign.HostingReserve = v;
                     Refresh();
                 })));
-            column.Children.Add(Ui.Muted("Ordre d'usage : tes projets d'abord (dans l'ordre du portefeuille), puis les offres cloud. " +
-                                         "Une même unité n'est jamais promise deux fois.", 13));
         }
-        return Ui.Section("Capacités de l'entreprise", column);
+        return Ui.HelpSection("Capacités de l'entreprise", "Un serveur tour suffit pour commencer ; la salle serveur (Développement) accueille des baies. " +
+                              "Ordre d'usage : tes projets d'abord (dans l'ordre du portefeuille), puis les offres cloud. Une même unité n'est jamais promise deux fois.", column);
     }
 
     private Control Offers()
     {
-        var column = Ui.Column(8, Ui.Muted("« Déménager » remplace le site affiché (ton matériel part dans les cartons). « Ouvrir en plus » ajoute un site " +
-                                           "et garde les autres. Ce qui est livré avec un local y reste ; les postes, baies et serveurs des plans ne sont qu'un aperçu.", 13));
+        var column = Ui.Column(8);
         var free = RealEstate.Offers(Campaign.Sites).ToList();
         foreach (var listing in RealEstate.Listings)
         {
@@ -150,6 +147,7 @@ public class SitesPanel : GamePanel
             var frame = Ui.Card(card);
             column.Children.Add(frame);
         }
-        return Ui.Section("Locaux à louer", column);
+        return Ui.HelpSection("Locaux à louer", "« Déménager » remplace le site affiché (ton matériel part dans les cartons). « Ouvrir en plus » ajoute un site " +
+                              "et garde les autres. Ce qui est livré avec un local y reste ; les postes, baies et serveurs des plans ne sont qu'un aperçu.", column);
     }
 }

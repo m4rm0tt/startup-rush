@@ -252,6 +252,8 @@ public static class HudKit
     {
         decimal max = Math.Max(1, values.Count == 0 ? 1 : values.Max(v => Math.Abs(v.Value)));
         var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 10, Tag = "bars" };
+        // Pas de moitié basse vide quand rien n'est négatif : l'étiquette restait loin sous les barres
+        bool anyNegative = values.Any(v => v.Value < 0);
         foreach (var (label, value) in values)
         {
             string hex = value >= 0 ? "#62a04b" : "#c8453d";
@@ -271,14 +273,16 @@ public static class HudKit
             var bar = new Image { Source = tinted, Width = 24, Height = h, Stretch = Stretch.Fill, Tag = $"bar:{value}" };
             RenderOptions.SetBitmapInterpolationMode(bar, BitmapInterpolationMode.None);
             var top = new Border { Height = height / 2, Child = value >= 0 ? bar : null, VerticalAlignment = VerticalAlignment.Bottom };
-            var bottom = new Border { Height = height / 2, Child = value < 0 ? bar : null };
+            var bottom = new Border { Height = anyNegative ? height / 2 : 0, Child = value < 0 ? bar : null };
             if (value >= 0)
                 bar.VerticalAlignment = VerticalAlignment.Bottom;
             else
                 bar.VerticalAlignment = VerticalAlignment.Top;
             var caption = Ui.Text(label, 12, Palette.Fog, wrap: false);
             caption.HorizontalAlignment = HorizontalAlignment.Center;
-            var column = new StackPanel { Width = 92, Children = { top, new PixelPanel { Skin = "pack:hud_separator_h", Height = 2 }, bottom, caption } };
+            var amount = Ui.Text($"{value:N0}", 12, value >= 0 ? Palette.Leaf : Palette.Blood, wrap: false);
+            amount.HorizontalAlignment = HorizontalAlignment.Center;
+            var column = new StackPanel { Width = 92, Spacing = 2, Children = { top, new PixelPanel { Skin = "pack:hud_separator_h", Height = 2 }, bottom, caption, amount } };
             ToolTip.SetTip(column, $"{label} : {value:N0} CHF");
             row.Children.Add(column);
         }

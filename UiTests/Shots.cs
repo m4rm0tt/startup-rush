@@ -200,3 +200,34 @@ public class Lot4Shots
         window.Close();
     }
 }
+
+[Explicit, Category("Shots")]
+public class Lot5Shots
+{
+    [AvaloniaTest]
+    public void OtherMenus()
+    {
+        var (window, game, campaign) = Shots.Fresh(tutorial: false);
+        campaign.Ledger.Cash = 500_000;
+        campaign.CheatUnlockAll();
+        var (_, product) = campaign.CreateProject("Planio", "freelances", Core.products.RevenueModel.Subscription);
+        campaign.CheatFinishWork();
+        campaign.Launch(product!.Id);
+        campaign.CheatHire();
+        campaign.AdvanceDays(40);
+        foreach (var (name, panel) in new (string, UI.Hud.GamePanel)[]
+                 {
+                     ("team", new UI.Hud.Panels.TeamPanel()), ("finance", new UI.Hud.Panels.FinancePanel()),
+                     ("tree", new UI.Hud.Panels.TreePanel()), ("sites", new UI.Hud.Panels.SitesPanel()),
+                 })
+        {
+            game.OpenRoot(panel);
+            game.Tick(0.3);
+            Shots.Save(window, "lot5_" + name);
+        }
+        game.OpenRoot(new UI.Hud.Panels.PersonPanel(campaign.Founder.Id));
+        game.Tick(0.3);
+        Shots.Save(window, "lot5_person");
+        window.Close();
+    }
+}

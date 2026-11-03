@@ -369,8 +369,8 @@ public class ProjectPanel(int productId) : GamePanel
             Ui.Muted(Approaches.Pitch(_approach), 12));
         var graph = new DependencyGraph(product);
         Control? dependencies = graph.Children.Count == 0 ? null : Ui.Details("Dépendances entre composants", Ui.Column(6,
-            Ui.Row(6, Ui.Image(Icons.Get("icon_dependency", "#2b2128"), 16, 16), Ui.Muted("Ce que chaque composant demande avant d'exister.", 12)), graph,
-            Ui.Muted("Un composant relié à droite demande celui de gauche. Vert : acquis · sarcelle : en file · pointillés : possible plus tard · rouge : il manque ce qu'il demande.", 12)));
+            Ui.Row(6, Ui.Image(Icons.Get("icon_dependency", "#2b2128"), 16, 16), Ui.Muted("Ce que chaque composant demande avant d'exister.", 12),
+                Ui.Help("Un composant relié à droite demande celui de gauche. Vert : acquis · sarcelle : en file · pointillés : possible plus tard · rouge : il manque ce qu'il demande.")), graph));
         return Ui.Column(8,
             Hint("components", product.IsLive
                 ? "Ce que tu ajoutes ici entre dans la prochaine version : tu la publies quand tu veux (Aperçu)."
@@ -554,8 +554,8 @@ public class ProjectPanel(int productId) : GamePanel
         column.Children.Add(highlightBox("hosting", Ui.Section("Serveurs",
             Ui.Row(8, Ui.Text(where, 15, Palette.Snow, bold: true), Ui.Bar(load / System.Math.Max(0.01, product.Capacity), load > product.Capacity * 0.8 ? Palette.Ember : Palette.Leaf, 8, 120)),
             ownServers ? Ui.Choice([(false, "Chez un hébergeur"), (true, "Sur tes serveurs")], product.HostingInternal, v => Run(Campaign.SetInternalHosting(product.Id, v))) : null,
-            product.HostingInternal ? Ui.Muted("Ce qui ne tient pas sur tes serveurs déborde chez l'hébergeur, sans dépasser le plafond (0 : jamais).", 12) : null,
-            Ui.Choice([(true, "Automatique"), (false, "Manuel")], product.HostingAuto, a => Run(Campaign.SetHosting(product.Id, a, product.HostingCap))),
+            Ui.Row(8, Ui.Choice([(true, "Automatique"), (false, "Manuel")], product.HostingAuto, a => Run(Campaign.SetHosting(product.Id, a, product.HostingCap))),
+                product.HostingInternal ? Ui.Help("Ce qui ne tient pas sur tes serveurs déborde chez l'hébergeur, sans dépasser le plafond (0 : jamais).") : null),
             product.HostingAuto
                 ? Ui.Column(4, Ui.Text("Plafond mensuel", 13, Palette.Fog), Ui.Choice(caps.Where(c => c > 0 || product.HostingInternal).Select(c => (c, c == 0 ? "Jamais" : $"{c:N0} CHF")), product.HostingCap, c => Run(Campaign.SetHosting(product.Id, true, c))))
                 : Ui.Choice(ProductCatalog.Hosting.Where(Campaign.PlanAvailable).Select(h => (h.Id, $"{h.Name} ({h.MonthlyCost:N0})")), product.HostingId, id => Run(Campaign.SetHosting(product.Id, false, product.HostingCap, id))))));

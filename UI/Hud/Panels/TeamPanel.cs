@@ -133,22 +133,29 @@ public class PersonPanel(int personId) : GamePanel
 
         var skills = Ui.Column(4);
         foreach (var (discipline, level) in person.Skills.OrderBy(s => s.Key))
-            skills.Children.Add(Ui.Row(Ui.Text(Person.DisciplineName(discipline), 14, Palette.Fog), Ui.Bar(level / 100, Palette.Sky, 8, 130), Ui.Number($"{level:0}", 18),
+        {
+            // Colonnes fixes : les barres commencent toutes au même endroit, quelle que soit la longueur du nom
+            var name = Ui.Text(Person.DisciplineName(discipline), 14, Palette.Fog);
+            name.Width = 110;
+            name.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            var value = Ui.Number($"{level:0}", 18);
+            value.Width = 36;
+            skills.Children.Add(Ui.Row(name, Ui.Bar(level / 100, Palette.Sky, 8, 130), value,
                 Ui.Button("Former", () => Screen.Confirm($"Former {person.Name} en {Person.DisciplineName(discipline).ToLowerInvariant()} ?",
                         $"{Campaign.TrainingPrice:N0} CHF et {Campaign.TrainingWorkdays} jours d'absence.", "Former", () => Run(Campaign.Train(person.Id, discipline)), danger: false),
                     "tab", person.TrainingDiscipline == null && !Campaign.OnVacation(person))));
+        }
 
         var column = Ui.Column(8,
             Ui.Section("Travaille sur", Ui.Text(TeamPanel.AssignmentText(Campaign, person), 15, Palette.Lemon),
                 TeamPanel.AssignmentChoice(Campaign, person, id => Run(TeamPanel.ApplyAssignment(Campaign, person, id)))),
             Ui.Section("Compétences", skills),
-            Ui.Section("Horaire", Ui.Choice([(WorkSchedule.Normal, "9 h – 17 h"), (WorkSchedule.Extended, "9 h – 20 h")], person.Schedule, s => Run(Campaign.SetSchedule(person.Id, s))),
-                Ui.Muted("Les soirées produisent un peu plus mais fatiguent et pèsent sur le moral.", 12)),
-            Ui.Section("Tenue", Ui.Row(12, Ui.Portrait(UI.Iso.Portraits.Of(person.Appearance)), Ui.Column(4,
+            Ui.HelpSection("Horaire", "Les soirées produisent un peu plus mais fatiguent et pèsent sur le moral.",
+                Ui.Choice([(WorkSchedule.Normal, "9 h – 17 h"), (WorkSchedule.Extended, "9 h – 20 h")], person.Schedule, s => Run(Campaign.SetSchedule(person.Id, s)))),
+            Ui.HelpSection("Tenue", "Sans effet sur le travail : seulement l'allure dans le local et sur les portraits.", Ui.Row(12, Ui.Portrait(UI.Iso.Portraits.Of(person.Appearance)), Ui.Column(4,
                 OutfitSwatches(Appearance.Outfits, person.Appearance.Outfit, r => Run(Campaign.SetOutfit(person.Id, r, person.Appearance.OutfitTrim)), "Tenue"),
                 OutfitSwatches(Appearance.Trims, person.Appearance.OutfitTrim, r => Run(Campaign.SetOutfit(person.Id, person.Appearance.Outfit, r)), "Détails"),
-                Ui.Button("Tenue d'origine", () => Run(Campaign.SetOutfit(person.Id, null, null)), "tab", person.Appearance.Outfit != null || person.Appearance.OutfitTrim != null))),
-                Ui.Muted("Sans effet sur le travail : seulement l'allure dans le local et sur les portraits.", 12)));
+                Ui.Button("Tenue d'origine", () => Run(Campaign.SetOutfit(person.Id, null, null)), "tab", person.Appearance.Outfit != null || person.Appearance.OutfitTrim != null)))));
 
         if (!person.IsFounder)
         {

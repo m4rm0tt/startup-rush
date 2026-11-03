@@ -57,9 +57,8 @@ public class LabPanel : GamePanel
             Campaign.StaffFor(site, Discipline.Design) is { } designer
                 ? Ui.Pair("Tenu par", $"{designer.Name} (Design {designer.Skill(Discipline.Design):0})")
                 : Ui.Text($"Aucun·e designer (Design {Campaign.StudioSkill:0}+) ne travaille sur ce site : le studio ne rend qu'à moitié.", 13, Palette.Ember),
-            studio.Missing.Count > 0 ? Ui.Muted($"Il manque : {string.Join(", ", studio.Missing)}.", 13) : Ui.Text("Studio complet.", 13, Palette.Leaf),
-            Ui.Muted("Plafonné à +30 % sur le contenu. Les studios de plusieurs sites ne s'additionnent pas.", 12));
-        return Ui.Section("Studio audiovisuel", Ui.Card(body));
+            studio.Missing.Count > 0 ? Ui.Muted($"Il manque : {string.Join(", ", studio.Missing)}.", 13) : Ui.Text("Studio complet.", 13, Palette.Leaf));
+        return Ui.HelpSection("Studio audiovisuel", "Plafonné à +30 % sur le contenu. Les studios de plusieurs sites ne s'additionnent pas.", Ui.Card(body));
     }
 
     private Control Xr()
@@ -107,8 +106,7 @@ public class LabPanel : GamePanel
             lab ? null : Ui.Button("Louer un laboratoire avancé", () => Open(new SitesPanel()), "gold"),
             Ui.Button("Recherche", () => Open(new ResearchPanel()), "tab"),
             Campaign.IsUnlocked("quantum_offers") ? Ui.Button("Service quantique", () => Open(new CloudPanel()), "tab") : null));
-        column.Children.Add(Ui.Muted("Le cryostat ouvert sert à la recherche et à la calibration ; le cryostat fermé, une fois la calibration cryogénique terminée, fournit " +
-                                     $"{Infrastructure.QuantumPerUnit:0} unités de calcul quantique après {Campaign.QuantumWarmupDays} jours de mise en route. Le quantique n'accélère pas tout : seulement la recherche de calcul intensif (+25 %) et le service vendu.", 12));
-        return Ui.Section("Laboratoire avancé et quantique", column);
+        return Ui.HelpSection("Laboratoire avancé et quantique", "Le cryostat ouvert sert à la recherche et à la calibration ; le cryostat fermé, une fois la calibration cryogénique terminée, fournit " +
+                              $"{Infrastructure.QuantumPerUnit:0} unités de calcul quantique après {Campaign.QuantumWarmupDays} jours de mise en route. Le quantique n'accélère pas tout : seulement la recherche de calcul intensif (+25 %) et le service vendu.", column);
     }
 }

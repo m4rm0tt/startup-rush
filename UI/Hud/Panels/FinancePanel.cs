@@ -47,7 +47,7 @@ public class FinancePanel : GamePanel
         column.Children.Add(Ui.Section("Où va l'argent chaque mois", Costs()));
         column.Children.Add(Ui.Section("D'où il vient", Incomes()));
         if (Campaign.Sites.Count > 1 || Campaign.Ledger.SiteMonths.Values.Any(m => m.Keys.Any(k => k != Core.finance.Ledger.Common)))
-            column.Children.Add(Ui.Section("Résultat par site", BySite()));
+            column.Children.Add(Ui.HelpSection("Résultat par site", SiteHelp, BySite()));
         column.Children.Add(Ui.Details("Détails : factures, mois par mois, financement", Ui.Column(10, Bills(), MonthTable(), Funding())));
         return column;
     }
@@ -64,9 +64,9 @@ public class FinancePanel : GamePanel
             SolvencyState.Notice => ($"Mise en demeure : tout payer avant le {GameTime.FormatDate(s.NoticeUntil ?? Campaign.Minute)}, sinon faillite.", Palette.Blood),
             _ => ("Faillite.", Palette.Blood)
         };
-        var actions = Ui.Muted("Pour réagir : baisser le marketing (Projets → Réglages), fermer un projet qui perd de l'argent, " +
-                               "revendre du matériel (Aménagement), réduire l'équipe ou déménager plus petit.", 13);
-        var column = Ui.Column(6, Ui.Text(text, 16, color, bold: true), actions);
+        var actions = Ui.Help("Pour réagir : baisser le marketing (Projets → Réglages), fermer un projet qui perd de l'argent, " +
+                              "revendre du matériel (Aménagement), réduire l'équipe ou déménager plus petit.");
+        var column = Ui.Column(6, Ui.Row(8, Ui.Text(text, 16, color, bold: true), actions));
         if (s.State is SolvencyState.Overdue or SolvencyState.Notice)
         {
             var (allowed, condition) = Campaign.RecoveryPlanTerms();
@@ -136,7 +136,7 @@ public class FinancePanel : GamePanel
             list.Children.Add(Ui.Pair($"{GameTime.FormatDate(invoice.DueAt)} · à recevoir : {invoice.Label}", Ui.Chf(invoice.Amount), Palette.Sky));
         if (list.Children.Count == 0)
             list.Children.Add(Ui.Muted("Rien à payer ni à recevoir.", 13));
-        return Ui.Section("À payer et à recevoir", list, Ui.Muted("Tout est payé automatiquement à l'échéance, s'il y a l'argent.", 12));
+        return Ui.HelpSection("À payer et à recevoir", "Tout est payé automatiquement à l'échéance, s'il y a l'argent.", list);
     }
 
     private Control MonthTable()
@@ -173,6 +173,10 @@ public class FinancePanel : GamePanel
     }
 
     /// <summary>Le mois en cours et le précédent, découpés par site ; la dernière ligne est le résultat du mois (même total).</summary>
+    private const string SiteHelp = "Chaque site porte son loyer, ses charges, les salaires de ceux qui y travaillent, son électricité, ses achats, " +
+                                    "ses travaux, le matériel qu'il expédie et le cloud à proportion de sa capacité. Les logiciels, le marketing, " +
+                                    "l'hébergement externe, ta rémunération et les intérêts sont communs. La somme des lignes est le résultat du mois.";
+
     private Control BySite()
     {
         var months = Campaign.Ledger.SiteMonths.Keys.OrderByDescending(k => k).Take(2).ToList();
@@ -213,9 +217,6 @@ public class FinancePanel : GamePanel
             column.Children.Add(grid);
             column.Children.Add(HudKit.SeparatorH());
         }
-        column.Children.Add(Ui.Muted("Chaque site porte son loyer, ses charges, les salaires de ceux qui y travaillent, son électricité, ses achats, " +
-                                     "ses travaux, le matériel qu'il expédie et le cloud à proportion de sa capacité. Les logiciels, le marketing, " +
-                                     "l'hébergement externe, ta rémunération et les intérêts sont communs. La somme des lignes est le résultat du mois.", 12));
         return column;
     }
 

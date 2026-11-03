@@ -99,7 +99,7 @@ public class GameScreen : UserControl, IScreen
         _inspector.Margin = new Thickness(10, 0, 0, 10);
         _hud.Children.Add(_inspector);
         // Les bulles se posent au-dessus de la fiche de sélection (elles la recouvraient en bas à gauche)
-        _inspector.SizeChanged += (_, e) => _toasts.Margin = new Thickness(10, 0, 0, Math.Max(84, e.NewSize.Height + 20));
+        _inspector.SizeChanged += (_, e) => _inspectorHeight = e.NewSize.Height;
         _panelFrame.Child = new Grid { Children = { _panelBody, PanelHandle() } };
         _panelFrame.IsVisible = false;
         _hud.Children.Add(_panelFrame);
@@ -810,12 +810,20 @@ public class GameScreen : UserControl, IScreen
         _toasts.Children.Add(frame);
         _toastAges.Add((frame, 0));
         // Un panneau ouvert : seulement les deux plus récentes, pour ne pas couvrir son contenu (tout reste dans le journal)
-        while (_toasts.Children.Count > (_stack.Count > 0 ? 2 : 4))
+        while (_toasts.Children.Count > MaxToasts)
             _toasts.Children.RemoveAt(0);
     }
 
+    private double _inspectorHeight;
+
+    /// <summary>Un grand menu couvre l'écran : une seule bulle, sous lui à gauche de la barre d'outils (elles cachaient son bas).</summary>
+    private int MaxToasts => TopPanel is { Large: true } ? 1 : _stack.Count > 0 ? 2 : 4;
+
     private void UpdateToasts(double deltaTime)
     {
+        _toasts.Margin = TopPanel is { Large: true } ? new Thickness(10, 0, 0, 6) : new Thickness(10, 0, 0, Math.Max(84, _inspectorHeight + 20));
+        while (_toasts.Children.Count > MaxToasts)
+            _toasts.Children.RemoveAt(0);
         for (int i = _toastAges.Count - 1; i >= 0; i--)
         {
             var (control, age) = _toastAges[i];

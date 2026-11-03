@@ -327,6 +327,17 @@ public class SaveTest
     }
 
     [Test]
+    public void UnreadableSettingsFallBackToDefaults()
+    {
+        string path = Path.Combine(_root, "settings.json");
+        File.WriteAllText(path, "{ pas du json");
+        var settings = Settings.Load(path, Path.Combine(_root, "none.json"));
+        Assert.That(settings.MusicVolume, Is.EqualTo(new Settings().MusicVolume));
+        Directory.CreateDirectory(Path.Combine(_root, "dossier.json"));
+        Assert.That(() => Settings.Load(Path.Combine(_root, "dossier.json"), Path.Combine(_root, "none.json")), Throws.Nothing);
+    }
+
+    [Test]
     public void MigrationCopiesAreNotListedAsSaves()
     {
         var store = new SaveStore(_root);

@@ -32,7 +32,7 @@ public static class LegacyProfile
                 ReduceEffects = node["ReduceEffects"]?.GetValue<bool>() ?? false,
             };
         }
-        catch (Exception e) when (e is IOException or JsonException or InvalidOperationException or FormatException)
+        catch (Exception e) when (e is IOException or JsonException or InvalidOperationException or FormatException or UnauthorizedAccessException)
         {
             return null;
         }
@@ -117,7 +117,8 @@ public class Settings
                 return settings;
             }
         }
-        catch (Exception e) when (e is IOException or JsonException)
+        // Fichier illisible, verrouillé ou sans droit de lecture : réglages par défaut plutôt qu'un plantage au lancement
+        catch (Exception e) when (e is IOException or JsonException or UnauthorizedAccessException or NotSupportedException)
         {
         }
         var legacy = LegacyProfile.ReadSettings(legacyPath);

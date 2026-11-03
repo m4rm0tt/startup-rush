@@ -116,8 +116,9 @@ public class BuildPanel : GamePanel
             stat.Margin = new Thickness(0, 0, 6, 6);
             stats.Children.Add(stat);
         }
-        column.Children.Add(Ui.Section($"Postes : {capacity.Complete} / {capacity.Max}", stats, stations,
-            Ui.Muted("Un poste = bureau, chaise, ordinateur et une case libre devant. Clique un bureau pour l'attribuer.", 12)));
+        column.Children.Add(Ui.HelpSection($"Postes : {capacity.Complete} / {capacity.Max}",
+            "Un poste = un bureau, une chaise, un ordinateur (portable, ou tour avec écran et clavier) et une case libre devant. Clique un bureau pour l'attribuer.",
+            stats, stations));
         if (premises.Litter.Count > 0 || Core.campaign.Campaign.BinCapacity(premises) < capacity.People)
             column.Children.Add(CleanSection(capacity.People));
         if (IncludedSection() is { } included)
@@ -179,12 +180,11 @@ public class BuildPanel : GamePanel
         var premises = Campaign.Premises;
         int bins = Core.campaign.Campaign.BinCapacity(premises);
         double penalty = Core.campaign.Campaign.MessPenalty(premises);
-        return Ui.Section("Propreté",
+        return Ui.HelpSection("Propreté", "Sans corbeille, les déchets finissent par terre et coûtent du moral. Une corbeille couvre 3 personnes, des bacs de tri 8. Clique un déchet dans la scène pour le ramasser.",
             Ui.Pair("Corbeilles", $"{System.Math.Min(bins, people)} personne(s) couverte(s) sur {people}", bins < people ? Palette.Ember : null),
             Ui.Pair("Déchets au sol", premises.Litter.Count == 0 ? "aucun" : $"{premises.Litter.Count} (−{penalty:0.#} de moral)", premises.Litter.Count > 0 ? Palette.Ember : null),
             Ui.Row(6, Ui.Button("Tout ramasser", () => Run(Campaign.CleanUp()), "gold", premises.Litter.Count > 0),
-                Ui.Button("Acheter une corbeille", () => Session.SetTool(new BuildTool("trash_bin")), "", bins < people)),
-            Ui.Muted("Sans corbeille, les déchets finissent par terre. Clique un déchet dans la scène pour le ramasser.", 12));
+                Ui.Button("Acheter une corbeille", () => Session.SetTool(new BuildTool("trash_bin")), "", bins < people)));
     }
 
     /// <summary>
@@ -211,9 +211,9 @@ public class BuildPanel : GamePanel
             grid.Children.Add(remove);
             list.Children.Add(grid);
         }
-        var section = Ui.Section($"Livré avec le local ({removable.Count})",
-            Ui.Muted("Ces objets étaient déjà là. Retirés, ils partent dans les cartons : tu peux les reposer ailleurs ou les jeter." +
-                     (fixedCount > 0 ? $" {fixedCount} élément(s) font partie du bâtiment et restent en place." : ""), 12),
+        var section = Ui.HelpSection($"Livré avec le local ({removable.Count})",
+            "Ces objets étaient déjà là. Retirés, ils partent dans les cartons : tu peux les reposer ailleurs ou les jeter." +
+            (fixedCount > 0 ? $" {fixedCount} élément(s) font partie du bâtiment et restent en place." : ""),
             Ui.Details("Voir la liste", list),
             Ui.Button("Retirer le décor", () => Screen.Confirm("Retirer le décor livré ?",
                 "Le décor part dans les cartons. Les postes de travail, le lit, les sanitaires, la cuisine équipée et les installations techniques restent.",
@@ -251,8 +251,8 @@ public class BuildPanel : GamePanel
                 grid.Children.Add(sell);
                 stored.Children.Add(grid);
             }
-            var section = Ui.Section($"Cartons ({Campaign.Storage.Count})", stored,
-                Ui.Muted("« Poser » prend l'objet en main : clique ensuite une case du local (ou un bureau pour un objet de bureau).", 13));
+            var section = Ui.HelpSection($"Cartons ({Campaign.Storage.Count})",
+                "« Poser » prend l'objet en main : clique ensuite une case du local (ou un bureau pour un objet de bureau).", stored);
             section.Tag = CartonsTag;
             return section;
         }
@@ -314,8 +314,9 @@ public class BuildPanel : GamePanel
         Line("bolt", "Pause", (c.Break - Layout.BaseBreak) / (Layout.MaxBreak - Layout.BaseBreak), $"{c.Break:0.#} énergie",
             "Une boisson ou une collation, et une place assise, pour chacun tant qu'il reste des places. 3 sans rien, 15 au plus.");
         Line("screen", "Concentration", c.Focus / Layout.MaxFocus, $"+{c.Focus:P0}", "Production en plus grâce aux cloisons, selon les personnes couvertes. 4 % au plus.");
-        Line("crown", "Coordination", c.Coordination / Layout.MaxCoordination, $"+{System.Math.Floor(c.Coordination):0} pers.",
-            "Personnes de plus par équipe sans perte : tableaux, planning, tables de réunion avec leurs chaises. 3 au plus.");
+        double cut = 1 - 1 / (1 + Tuning.Work.CoordinationPerComfortPoint * System.Math.Floor(c.Coordination));
+        Line("crown", "Coordination", c.Coordination / Layout.MaxCoordination, $"−{cut:P0} de perte",
+            "Les grandes équipes perdent moins en coordination : tableaux, planning, tables de réunion avec leurs chaises. 3 points au plus.");
         Line("calendar", "Formation", c.Training / Layout.MaxTraining, $"+{c.Training:P0}", "Bibliothèques, livres, schémas, écran de présentation. 40 % au plus.");
         if (c.Recruits > 0)
             Line("user", "Accueil", 1, $"+{c.Recruits} candidat", "Une banque d'accueil : un candidat de plus chaque semaine.");
@@ -388,11 +389,11 @@ public class BuildPanel : GamePanel
         back.VerticalAlignment = VerticalAlignment.Center;
         cells.Children.Add(back);
 
-        var section = Ui.Section("Finitions",
+        var section = Ui.HelpSection("Finitions",
+            "Choisis une finition : la scène la montre avant de payer. Le faux plancher distribue mieux le froid, le lambris ajoute de l'ambiance, " +
+            "la moquette et les panneaux acoustiques aident la concentration. Le reste fait l'identité du local.",
             Ui.Muted(left == right ? $"Sol : {floor} · murs : {left}" : $"Sol : {floor} · murs : {left} à gauche, {right} à droite", 12),
-            Ui.Row(8, kind, where), colors, cells,
-            Ui.Muted("Choisis une finition : la scène la montre avant de payer. Le faux plancher distribue mieux le froid, le lambris ajoute " +
-                     "de l'ambiance, la moquette et les panneaux acoustiques aident la concentration.", 12));
+            Ui.Row(8, kind, where), colors, cells);
         section.Tag = "section:finitions";
         return section;
     }
@@ -501,8 +502,7 @@ public class BuildPanel : GamePanel
             card.Margin = new Thickness(0, 0, 8, 8);
             wrap.Children.Add(card);
         }
-        var section = Ui.Section("Modules prêts à poser", wrap,
-            Ui.Muted("Chaque objet est acheté au prix du catalogue et donne ses effets habituels (pause, coordination, postes, confort).", 12));
+        var section = Ui.HelpSection("Modules prêts à poser", "Chaque objet est acheté au prix du catalogue et donne ses effets habituels (pause, coordination, postes, confort).", wrap);
         section.Tag = "section:modules";
         return section;
     }

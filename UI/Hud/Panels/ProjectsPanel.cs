@@ -63,9 +63,8 @@ public class ProjectsPanel : GamePanel
         wrap.Children.Add(NewCard());
         column.Children.Add(wrap);
         if (Campaign.Products.Count > 1)
-            column.Children.Add(Ui.Row(6, Ui.Image(Icons.Get("icon_sort", "#6f5f5d"), 16, 16),
-                Ui.Muted("Ordre de priorité, de gauche à droite : les personnes en automatique travaillent sur le premier projet qui a du travail en file. " +
-                         "Change l'ordre avec ◀ ▶ ou le menu « … » (clic droit sur une carte).", 13)));
+            column.Children.Add(Ui.Row(6, Ui.Image(Icons.Get("icon_sort", "#6f5f5d"), 16, 16), Ui.Muted("Priorité : de gauche à droite.", 13),
+                Ui.Help("Les personnes en automatique travaillent sur le premier projet qui a du travail en file. Change l'ordre avec ◀ ▶ ou le menu « … » (clic droit sur une carte).")));
         // Les activités du lot 6 apparaissent avec leur déblocage
         if (Campaign.IsUnlocked("ai_models"))
             column.Children.Add(Ui.Section("Intelligence artificielle", Ui.Row(10,

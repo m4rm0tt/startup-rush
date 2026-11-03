@@ -27,7 +27,7 @@ public class AiPanel : GamePanel
 
     public override Control Build()
     {
-        var column = Ui.Column(10, Hint("ai", "Entraîne un modèle (objectif, taille, données), évalue-le, publie-le : tes produits d'IA et tes fonctions d'IA l'utilisent."));
+        var column = Ui.Column(10, Path());
         column.Children.Add(Capacity());
 
         var models = Ui.Column(8);
@@ -39,6 +39,64 @@ public class AiPanel : GamePanel
         column.Children.Add(NewModel());
         column.Children.Add(Products());
         return column;
+    }
+
+    // ------------------------------------------------------------------ Le chemin d'un modèle jusqu'à l'argent
+
+    /// <summary>
+    /// Comment l'IA rapporte, en cinq étapes, avec celle où tu en es : un modèle ne gagne rien tout seul. Publier une version la
+    /// met au service des produits branchés ; ce sont leurs utilisateurs qui paient.
+    /// </summary>
+    private Control Path()
+    {
+        var models = Campaign.AiModels;
+        bool created = models.Count > 0;
+        bool trained = models.Any(m => m.Versions.Count > 0 || m.Candidate != null);
+        bool evaluated = models.Any(m => m.Versions.Any(v => v.Evaluated) || m.Candidate is { Evaluated: true });
+        bool published = Campaign.PublishedModels.Any();
+        bool earning = Campaign.Products.Any(p => p.IsLive && p.AiModelId != 0 && Campaign.FindAiModel(p.AiModelId)?.Live != null);
+        var steps = new (string Title, string What, bool Done)[]
+        {
+            ("1. Créer", "Objectif (le public servi) et taille (plafond de qualité, coût, GPU par utilisateur).", created),
+            ("2. Entraîner", "Données et calcul : la qualité de la version. Ça coûte, ça ne rapporte pas encore.", trained),
+            ("3. Évaluer", "Facultatif : un mini-jeu qui fait gagner un peu de qualité.", evaluated),
+            ("4. Publier", "La version passe en service : les produits branchés l'utilisent.", published),
+            ("5. Encaisser", "Un produit d'IA ou une « Fonction d'IA » : ce sont ses utilisateurs qui paient.", earning),
+        };
+        int current = Array.FindIndex(steps, s => !s.Done);
+        var row = new WrapPanel();
+        for (int i = 0; i < steps.Length; i++)
+        {
+            var (title, what, done) = steps[i];
+            bool now = i == current;
+            var card = Ui.Card(Ui.Column(3,
+                Ui.Row(4, Ui.Icon(done ? "check" : now ? "star" : "lock", 16), Ui.Text(title, 14, done ? Palette.Leaf : now ? Palette.Gold : Palette.Fog, bold: true, wrap: false)),
+                Ui.Text(what, 12, now ? Palette.Snow : Palette.Fog)), now ? Palette.Gold : null);
+            card.Width = 200;
+            card.Margin = new Thickness(0, 0, 6, 6);
+            row.Children.Add(card);
+        }
+        string next = current switch
+        {
+            0 => "Commence par créer un modèle (en bas).",
+            1 => "Entraîne une première version de ton modèle.",
+            2 or 3 => "Ta version est prête : évalue-la si tu veux, puis publie-la.",
+            4 => "Ton modèle est publié mais ne rapporte rien : crée un produit d'IA, ou ajoute « Fonctions d'IA » à une application en ligne.",
+            _ => "Ton IA rapporte : améliore le modèle (nouvelle version) pour que tes produits gagnent en qualité.",
+        };
+        return Ui.Section("Comment l'IA rapporte", row, Ui.Text(next, 13, current >= 0 ? Palette.Lemon : Palette.Leaf));
+    }
+
+    /// <summary>Les produits qui utilisent ce modèle et ce qu'ils ont rapporté en 30 jours (un modèle ne rapporte rien seul).</summary>
+    private Control Usage(AiModel model)
+    {
+        var users = Campaign.Products.Where(p => p.AiModelId == model.Id).ToList();
+        if (users.Count == 0)
+            return Ui.Row(6, Ui.Icon("warning", 16), Ui.Text(model.Live != null
+                ? "Aucun produit ne l'utilise : il ne rapporte rien pour l'instant."
+                : "Une fois publié, branche-le sur un produit pour qu'il rapporte.", 13, Palette.Ember));
+        decimal revenue = users.Sum(p => p.History.TakeLast(30).Sum(d => d.Revenue));
+        return Ui.Text($"Utilisé par {string.Join(", ", users.Select(p => p.Name))} · {revenue:N0} CHF de revenus sur 30 jours", 13, Palette.Leaf);
     }
 
     // ------------------------------------------------------------------ Capacité
@@ -65,7 +123,7 @@ public class AiPanel : GamePanel
             Ui.Tag(model.GoalDef.Name, Palette.Sky), Ui.Tag(model.Base.Name, Palette.Steel, Palette.Snow),
             Ui.Tag(model.Stage.ToUpperInvariant(), model.Training != null ? Palette.Lemon : model.Candidate != null ? Palette.Gold : live != null ? Palette.Leaf : Palette.Steel,
                 model.Live == null && model.Candidate == null && model.Training == null ? Palette.Snow : Palette.Ink));
-        var body = Ui.Column(5, head);
+        var body = Ui.Column(5, head, Usage(model));
 
         if (live != null)
             body.Children.Add(Ui.Row(12, Ui.Text($"Version {live.Number} en service", 14, Palette.Leaf, bold: true),
@@ -90,7 +148,8 @@ public class AiPanel : GamePanel
             body.Children.Add(Ui.Row(6,
                 !candidate.Evaluated ? Ui.Button("Évaluer (mini-jeu)", () => ChallengeView.ShowEvaluation(Screen, model.Id), "gold") : null,
                 !candidate.Evaluated ? Ui.Button("Déléguer l'évaluation", () => Run(Campaign.DelegateEvaluation(model.Id)), "", canDelegate, canDelegate ? null : why) : null,
-                Ui.Button(live == null ? "Publier" : $"Publier (remplace la v{live.Number})", () => Run(Campaign.PublishAi(model.Id)), candidate.Evaluated ? "gold" : ""),
+                Ui.Button(live == null ? "Publier" : $"Publier (remplace la v{live.Number})", () => Run(Campaign.PublishAi(model.Id)), candidate.Evaluated ? "gold" : "", true,
+                    "Publier : les produits branchés sur ce modèle passent à cette version (leur qualité d'IA devient la sienne). Sans produit branché, cela ne rapporte rien."),
                 Ui.Button("Jeter", () => Run(Campaign.DiscardAiCandidate(model.Id)))));
         }
         else
@@ -166,9 +225,9 @@ public class AiPanel : GamePanel
             chosen = AiCatalog.Bases[0];
         return Ui.Section("Nouveau modèle",
             Ui.Row(8, Ui.Muted("Objectif :", 13), goals),
-            Ui.Muted(goal.Pitch, 13),
+            Ui.Muted($"{goal.Pitch} L'objectif décide quels produits d'IA il sert le mieux.", 13),
             Ui.Row(8, Ui.Muted("Taille :", 13), bases),
-            Ui.Muted($"{chosen.Pitch} Plafond de qualité {chosen.Ceiling:P0}.", 13),
+            Ui.Muted($"{chosen.Pitch} Plafond de qualité {chosen.Ceiling:P0} · {chosen.TrainingPoints:N0} points d'entraînement · {chosen.InferencePerThousand:0.#} GPU pour 1 000 utilisateurs.", 13),
             Ui.Button("Créer ce modèle", () => Run(Campaign.CreateAiModel("", _goal, chosen.Id).Result), "gold"));
     }
 

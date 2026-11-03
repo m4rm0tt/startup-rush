@@ -178,3 +178,25 @@ public class Lot3Shots
         window.Close();
     }
 }
+
+[Explicit, Category("Shots")]
+public class Lot4Shots
+{
+    [AvaloniaTest]
+    public void HelpTabsAndAi()
+    {
+        var (window, game, campaign) = Shots.Fresh(tutorial: false);
+        campaign.Ledger.Cash = 500_000;
+        campaign.CheatUnlockAll();
+        game.OpenRoot(new UI.Hud.Panels.AiPanel());
+        game.Tick(0.3);
+        Shots.Save(window, "lot4_ai");
+        game.OpenRoot(new UI.Hud.Panels.ProjectsPanel());
+        game.Tick(0.3);
+        Shots.Save(window, "lot4_projects_tabs");
+        game.OpenRoot(new UI.Hud.Panels.BuildPanel());
+        game.Tick(0.3);
+        Shots.Save(window, "lot4_build_help");
+        window.Close();
+    }
+}

@@ -208,6 +208,36 @@ public static class Ui
         ("Fabrication et ventes", "icon_product"), ("Recrutement", "icon_recruit"), ("Compétences", "icon_training"),
     ];
 
+    /// <summary>
+    /// Une explication rangée derrière un « ? » (infobulle) plutôt qu'affichée en paragraphe : la règle reste à portée de souris,
+    /// sans charger le menu de texte (demande des testeurs : « moins de texte »).
+    /// </summary>
+    public static Control Help(string text)
+    {
+        var glyph = Text("?", 16, Palette.Ink, wrap: false);
+        glyph.HorizontalAlignment = HorizontalAlignment.Center;
+        glyph.VerticalAlignment = VerticalAlignment.Center;
+        var mark = new PixelPanel
+        {
+            Skin = "pack:hud_badge_count", Padding = new Thickness(0), Width = 24, Height = 24,
+            Child = glyph, VerticalAlignment = VerticalAlignment.Center,
+        };
+        ToolTip.SetTip(mark, text);
+        ToolTip.SetShowDelay(mark, 0);
+        return mark;
+    }
+
+    /// <summary>Section titrée avec son explication derrière un « ? » à côté du titre.</summary>
+    public static Control HelpSection(string title, string help, params Control?[] children)
+    {
+        var section = (StackPanel)Section(title, children);
+        var header = section.Children[0];
+        section.Children.RemoveAt(0);
+        var row = Row(6, header, Help(help));
+        section.Children.Insert(0, row);
+        return section;
+    }
+
     /// <summary>Section titrée : en-tête du pack (hud_section_header) avec son icône, puis son contenu.</summary>
     public static Control Section(string title, params Control?[] children)
     {
@@ -417,16 +447,21 @@ public static class Ui
         },
     };
 
-    /// <summary>Onglets du pack (hud_tabs) : l'actif, clair, déborde sur le contenu ; les autres restent en retrait.</summary>
+    /// <summary>
+    /// Onglets d'un menu : le contrôle segmenté du pack (l'actif en sarcelle, texte clair ; les autres à l'encre sur fond clair),
+    /// un peu plus grand que les choix ordinaires. Les onglets « hud_tabs » (barre orange, inactifs gris sur beige, bouton
+    /// Réglages à moitié noyé dans le fond) gênaient les testeurs (BUG-012).
+    /// </summary>
     public static Control Tabs<T>(IEnumerable<(T Value, string Label)> options, T current, Action<T> pick)
     {
-        var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 2, Margin = new Thickness(0, 0, 0, -4) };
-        foreach (var (value, label) in options)
-        {
-            bool selected = EqualityComparer<T>.Default.Equals(value, current);
-            row.Children.Add(Button(label, () => pick(value), selected ? "tabs selected" : "tabs"));
-        }
-        // Le filet sous les onglets : l'onglet actif le recouvre
+        var row = Choice(options, current, pick);
+        foreach (var child in row.Children)
+            if (child is Button button)
+            {
+                button.Padding = new Thickness(14, 6, 14, 8);
+                button.MinWidth = 96;
+            }
+        row.Margin = new Thickness(0, 0, 0, 6);
         return new StackPanel { Children = { row, new Border { Height = 2, Background = Palette.Steel } } };
     }
 

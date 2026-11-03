@@ -34,7 +34,7 @@ public class FinancePanel : GamePanel
         stats.Children.Add(Ui.Stat("Dépenses / mois", Ui.Chf(Campaign.MonthlyFixedCosts), Palette.Ember, 190));
         stats.Children.Add(Ui.Stat("Tiens encore", double.IsInfinity(runway) ? "sans limite" : $"{runway:0} jours", runway < 60 ? Palette.Ember : null, 190, assumptions));
 
-        var column = Ui.Column(10, stats);
+        var column = Ui.Column(10, stats, Goals());
         var situation = Situation();
         if (situation != null)
         {
@@ -50,6 +50,27 @@ public class FinancePanel : GamePanel
             column.Children.Add(Ui.HelpSection("Résultat par site", SiteHelp, BySite()));
         column.Children.Add(Ui.Details("Détails : factures, mois par mois, financement", Ui.Column(10, Bills(), MonthTable(), Funding())));
         return column;
+    }
+
+    /// <summary>L'objectif final (valorisation) et les trois prochains jalons, sans récompense nouvelle.</summary>
+    private Control Goals()
+    {
+        decimal valuation = Campaign.Valuation();
+        double progress = (double)Math.Clamp(valuation / Campaign.FinalGoalValuation, 0, 1);
+        string final = Campaign.FinalGoalReachedAt is { } at
+            ? $"Atteint le {GameTime.FormatDate(at)} : la partie continue."
+            : $"Valorisation estimée {Ui.Chf(valuation)} sur {Ui.Chf(Campaign.FinalGoalValuation)}.";
+        var bar = Ui.Bar(progress, Campaign.FinalGoalReachedAt != null ? Palette.Leaf : Palette.Gold, 8, 360);
+        bar.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+        var column = Ui.Column(6,
+            Ui.Text("Objectif final : une entreprise valorisée 2 millions de CHF", 15, Palette.Snow, bold: true),
+            bar,
+            Ui.Muted(final, 13));
+        foreach (var (_, name, description) in Campaign.NextGoals())
+            column.Children.Add(Ui.Row(8, Ui.Text("○ " + name, 14, Palette.Cloud), Ui.Muted(description, 13)));
+        return Ui.HelpSection("Objectifs", "Valorisation : ce que vaut l'entreprise (trésorerie, matériel, créances, moins les dettes) " +
+                                          "plus trois ans du bénéfice actuel des produits. L'entreprise doit être saine (pas d'impayés) et avoir un produit en ligne. " +
+                                          "Les objectifs suivants sont les prochains jalons : ils donnent leurs points de développement habituels.", column);
     }
 
     private Control? Situation()

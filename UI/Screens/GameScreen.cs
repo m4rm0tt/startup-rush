@@ -214,6 +214,8 @@ public class GameScreen : UserControl, IScreen
             _lostShown = true;
             ShowDefeat();
         }
+        else if (Session.Campaign.FinalGoalReachedAt != null && !Session.Campaign.FinalGoalAcknowledged && !_modalLayer.IsVisible)
+            ShowVictory();
     }
 
     private bool TextInputFocused() => TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement() is TextBox;
@@ -1037,6 +1039,45 @@ public class GameScreen : UserControl, IScreen
         then();
     }
 
+    /// <summary>Le bilan d'une partie : durée, finances, utilisateurs, principaux produits (réussite comme faillite).</summary>
+    public static Control SummaryView(GameSummary s)
+    {
+        var column = Ui.Column(4,
+            Ui.Pair("Durée", $"{s.Days} jours ({s.Days / 365.0:0.0} an(s))"),
+            Ui.Pair("Argent", Ui.Chf(s.Cash), Ui.Signed(s.Cash)),
+            Ui.Pair("Revenus des projets / mois", Ui.Chf(s.Revenue30)),
+            Ui.Pair("Dépenses fixes / mois", Ui.Chf(s.MonthlyCosts)),
+            s.LowestCash is { } low ? Ui.Pair("Pire creux de trésorerie", Ui.Chf(low), Ui.Signed(low)) : null,
+            Ui.Pair("Utilisateurs", $"{s.Users:N0}"),
+            Ui.Pair("Équipe", $"{s.People} personne(s)"),
+            Ui.Pair("Valorisation estimée", Ui.Chf(s.Valuation)));
+        if (s.Products.Count > 0)
+        {
+            column.Children.Add(Ui.Text("Principaux produits", 15, Palette.Snow, bold: true));
+            foreach (var p in s.Products)
+                column.Children.Add(Ui.Pair(p.Name, $"{p.Users:N0} utilisateurs · {Ui.Chf(p.Revenue30)} sur 30 jours"));
+        }
+        return Ui.Card(column);
+    }
+
+    /// <summary>Objectif final atteint : le bilan, une seule fois, puis la partie continue si le joueur le veut.</summary>
+    private void ShowVictory()
+    {
+        var c = Session.Campaign;
+        c.FinalGoalAcknowledged = true;
+        Sfx.Play(Sound.Milestone);
+        _pauseMenu = true;
+        ShowModal(Ui.Column(12,
+            Ui.Title("Objectif atteint !", 28),
+            Ui.Text($"{c.MainCompany.Name} est valorisée {Ui.Chf(c.Valuation())} : plus de {Ui.Chf(Campaign.FinalGoalValuation)}, avec une entreprise saine.", 15),
+            SummaryView(c.Summary()),
+            Ui.Muted("Tu peux continuer : la partie reste ouverte, sans nouvel objectif final. Ce bilan ne reviendra pas."),
+            Ui.Row(Ui.Button("Continuer la partie", CloseModal, "gold"),
+                Ui.Button("Menu principal", () => Leave(() => Window.ShowTitle())))), null, 640);
+        _pauseMenu = true;
+        UpdateAutoPause();
+    }
+
     private void ShowDefeat()
     {
         var c = Session.Campaign;
@@ -1044,6 +1085,7 @@ public class GameScreen : UserControl, IScreen
         ShowModal(Ui.Column(12,
             Ui.Title("Entreprise liquidée", 28),
             Ui.Text(c.Solvency.LiquidationReport ?? "", 15),
+            SummaryView(c.Summary()),
             Ui.Muted("Cette campagne est terminée. Ses sauvegardes restent intactes : tu peux recharger un moment antérieur."),
             Ui.Row(Ui.Button("Charger une sauvegarde", () => Leave(() => Window.ShowLoad()), "gold"),
                 Ui.Button("Nouvelle partie", () => Leave(() => Window.ShowNewCampaign())),

@@ -80,7 +80,7 @@ public static class CrashLog
             text.AppendLine($"Partie : {campaign.Name} ({campaign.Id}), {Core.campaign.GameTime.Format(campaign.Minute)}, graine {campaign.Seed}");
             string folder = Window.Store.CampaignFolder(campaign.Id);
             Directory.CreateDirectory(folder);
-            string path = Path.Combine(folder, "crash.json");
+            string path = Path.Combine(folder, SaveStore.EmergencyName + ".json");
             SaveStore.WriteAtomic(path, SaveStore.Serialize(campaign));
             text.AppendLine($"Sauvegarde d'urgence : {path} (les autres sauvegardes ne sont pas touchées)");
             return path;

@@ -338,6 +338,19 @@ public class SaveTest
     }
 
     [Test]
+    public void ContinueNeverPicksTheEmergencySave()
+    {
+        var store = new SaveStore(_root);
+        var campaign = NewCampaign(9);
+        store.Save(campaign, SaveKind.Auto);
+        string folder = store.CampaignFolder(campaign.Id);
+        File.WriteAllText(Path.Combine(folder, "crash.json"), SaveStore.Serialize(campaign));
+        File.SetLastWriteTimeUtc(Path.Combine(folder, "crash.json"), DateTime.UtcNow.AddMinutes(5));
+        Assert.That(store.List(campaign.Id).Any(e => SaveStore.IsEmergency(e.Path)), Is.True, "proposée dans la liste");
+        Assert.That(SaveStore.IsEmergency(store.Latest()!.Path), Is.False, "jamais reprise par « Continuer »");
+    }
+
+    [Test]
     public void MigrationCopiesAreNotListedAsSaves()
     {
         var store = new SaveStore(_root);

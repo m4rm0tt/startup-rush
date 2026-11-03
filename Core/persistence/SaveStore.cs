@@ -277,11 +277,11 @@ public class SaveStore
         foreach (string path in Directory.GetFiles(folder, "*.json").Where(f => !MigrationCopy.IsMatch(Path.GetFileName(f))))
         {
             string name = Path.GetFileNameWithoutExtension(path);
-            var kind = name.StartsWith("manual-") ? SaveKind.Manual : name is "exit" or "crash" ? SaveKind.Quick : SaveKind.Auto;
+            var kind = name.StartsWith("manual-") ? SaveKind.Manual : name is "exit" or EmergencyName ? SaveKind.Quick : SaveKind.Auto;
             string label = kind switch
             {
                 SaveKind.Manual => name["manual-".Length..],
-                SaveKind.Quick when name == "crash" => "Sauvegarde d'urgence (après une erreur)",
+                SaveKind.Quick when name == EmergencyName => "Sauvegarde d'urgence (après une erreur)",
                 SaveKind.Quick => "Sauvegarde de sortie",
                 _ => $"Automatique {name[^1]}"
             };
@@ -364,7 +364,15 @@ public class SaveStore
     }
 
     /// <summary>La sauvegarde la plus récente toutes campagnes confondues (pour « Continuer »).</summary>
-    public SaveEntry? Latest() => List().FirstOrDefault(e => !e.Corrupt);
+    /// <remarks>
+    /// La sauvegarde d'urgence (« crash.json », écrite pendant une erreur, état peut-être incohérent) n'est jamais reprise
+    /// d'office : elle reste proposée dans la liste « Charger ».
+    /// </remarks>
+    public SaveEntry? Latest() => List().FirstOrDefault(e => !e.Corrupt && !IsEmergency(e.Path));
+
+    public const string EmergencyName = "crash";
+
+    public static bool IsEmergency(string path) => Path.GetFileNameWithoutExtension(path) == EmergencyName;
 
     private static string Sanitize(string label)
     {

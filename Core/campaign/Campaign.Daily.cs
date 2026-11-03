@@ -46,6 +46,7 @@ public partial class Campaign
         UpdateMarket();
         UpdateSolvency();
         CheckMilestones();
+        CheckGoals();
     }
 
     // ------------------------------------------------------------------ Projets

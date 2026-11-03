@@ -19,6 +19,9 @@ public class StoredItem
 
     /// <summary>Prix payé à l'achat : la revente en rend la moitié.</summary>
     public decimal PaidPrice { get; set; }
+
+    /// <summary>Couleurs choisies, gardées dans les cartons et retrouvées à la pose.</summary>
+    public Dictionary<string, string> Swatches { get; set; } = new();
 }
 
 /// <summary>Résultat d'une commande du joueur : réussie ou non, avec la raison.</summary>

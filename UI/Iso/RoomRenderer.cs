@@ -138,8 +138,15 @@ public sealed class RoomRenderer
         var left = walls.GetProperty("left");
         var right = walls.GetProperty("right");
         string? leftPattern = Finishes.Pattern(premises, "left"), rightPattern = Finishes.Pattern(premises, "right");
-        var leftSw = PatternColors(leftPattern, Sw(left, "swatches"));
-        var rightSw = PatternColors(rightPattern, Sw(right, "swatches"));
+        // La couleur choisie pour un mur passe avant celle du plan (canal « wall » du pack)
+        var leftBase = Sw(left, "swatches");
+        var rightBase = Sw(right, "swatches");
+        if (Finishes.WallColor(premises, "left") is { } leftColor)
+            leftBase["wall"] = leftColor;
+        if (Finishes.WallColor(premises, "right") is { } rightColor)
+            rightBase["wall"] = rightColor;
+        var leftSw = PatternColors(leftPattern, leftBase);
+        var rightSw = PatternColors(rightPattern, rightBase);
         Wall("wall_corner_inner", "all", 0, 0, null, Sw(left, "swatches"));
         int vi = 0;
         foreach (var k in left.GetProperty("segments").EnumerateArray())

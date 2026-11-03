@@ -45,7 +45,7 @@ public static class SelectionInspector
         var thumb = PackLibrary.Thumbnail(def.Id);
         var column = Ui.Column(6, new PixelPanel { Skin = "pack:hud_titlebar", Padding = new Avalonia.Thickness(8, 3, 8, 5), Tag = "titlebar",
                 Child = Ui.Text(def.Name, 12, Palette.Ink, bold: true, wrap: false) },
-            Ui.Row(Ui.Image(thumb, thumb.PixelSize.Width, thumb.PixelSize.Height), Ui.Muted(def.Effect, 13)));
+            ImageAndText(Ui.Image(thumb, thumb.PixelSize.Width, thumb.PixelSize.Height), Ui.Muted(def.Effect, 13)));
         // Les cartons du plan (chambre de départ) : ceux du déménagement, avec leur contenu réel
         if (def.Id == "moving_box")
             column.Children.Add(Cartons(screen, campaign));
@@ -88,6 +88,60 @@ public static class SelectionInspector
                 }));
             }
 
+        // Ce qui manque à cet équipement pour marcher (le « ! » de la scène), avec de quoi le résoudre
+        if (campaign.ItemIssues(campaign.Premises).TryGetValue(item.Id, out var issues) && issues.Count > 0)
+        {
+            var problems = Ui.Column(4);
+            foreach (var issue in issues)
+            {
+                problems.Children.Add(Ui.Row(6, Ui.Icon("warning", 16), Ui.Text(issue.Text, 13, Palette.Ember)));
+                if (issue.Fix is { } fix && FurnitureCatalog.All.Any(f => f.Id == fix))
+                {
+                    var fixDef = FurnitureCatalog.Get(fix);
+                    bool locked = fixDef.UnlockNode is { } node && !campaign.IsUnlocked(node);
+                    problems.Children.Add(Ui.Button(locked ? $"{fixDef.Name} : à débloquer" : $"Acheter : {fixDef.Name} ({fixDef.Price:N0} CHF)", () =>
+                    {
+                        screen.OpenRoot(new BuildPanel());
+                        screen.Session.SetTool(new BuildTool(fix));
+                        screen.Toast(fixDef.Pack.RackModule ? "Clique la baie pour y poser le module." : "Clique une case libre pour le poser.", true);
+                    }, "gold", !locked));
+                }
+            }
+            column.Children.Add(Ui.Section("Ce qui manque", problems));
+        }
+
+        // Couleurs : chaque partie recolorable de l'objet (masques du pack), gratuit et purement visuel
+        var channels = Campaign.ColorChannels(item);
+        if (channels.Count > 0)
+        {
+            var colors = Ui.Column(2);
+            foreach (var (channel, current, options) in channels)
+            {
+                var row = new WrapPanel();
+                var label = Ui.Text(Campaign.ChannelName(channel), 12, Palette.Fog, wrap: false);
+                label.Width = 120;
+                label.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+                row.Children.Add(label);
+                foreach (string ramp in options)
+                {
+                    string chosen = ramp;
+                    row.Children.Add(Ui.Swatch(PackLibrary.RampColor(ramp), ramp == current, () =>
+                    {
+                        var result = campaign.SetItemColor(item.Id, channel, chosen);
+                        if (!result.Ok)
+                            screen.Toast(result.Message, false);
+                        screen.Session.Select(SelectionKind.Item, item.Id);
+                    }, $"{Campaign.ChannelName(channel)} : {UI.Screens.NewCampaignScreen.OutfitName(ramp)}"));
+                }
+                colors.Children.Add(row);
+            }
+            column.Children.Add(Ui.Details("Couleurs", Ui.Column(4, colors, Ui.Button("Couleurs d'origine", () =>
+            {
+                campaign.ResetItemColors(item.Id);
+                screen.Session.Select(SelectionKind.Item, item.Id);
+            }, "tab", item.Swatches.Count > 0)), open: true));
+        }
+
         if (!item.Included)
         {
             decimal resale = Campaign.ResaleValue(item.PaidPrice);
@@ -118,10 +172,19 @@ public static class SelectionInspector
                         screen.Session.ClearSelection();
                     }), "red")));
         }
+        else if (!Campaign.CanRemove(item).Ok)
+            column.Children.Add(Ui.Muted(Campaign.CanRemove(item).Reason));
         else
-            column.Children.Add(Ui.Muted(item.HostId == null && def.Pack.Facings.Count > 1 ? "Livré avec le local : il reste ici, mais tu peux le déplacer." : "Livré avec le local : il reste ici."));
+            column.Children.Add(Ui.Muted("Livré avec le local : tu peux le garder, le déplacer, ou le retirer (il part dans les cartons)."));
         if (item.Included && item.HostId == null)
             column.Children.Add(Actions(
+                Campaign.CanRemove(item).Ok ? Ui.Button("Retirer", () => screen.Confirm($"Retirer {def.Name} ?",
+                    "Il part dans les cartons : tu pourras le reposer ailleurs, ou le jeter.", "Retirer", () =>
+                    {
+                        var result = campaign.Store(item.Id);
+                        screen.Toast(result.Ok ? $"{def.Name} : dans les cartons." : result.Message, result.Ok);
+                        screen.Session.ClearSelection();
+                    }, danger: false)) : null,
                 Ui.Button("Déplacer", () =>
                 {
                     screen.OpenRoot(new BuildPanel());
@@ -134,6 +197,17 @@ public static class SelectionInspector
                         screen.Toast(result.Message, false);
                 }) : null));
         return column;
+    }
+
+    /// <summary>Une vignette et son texte, qui revient à la ligne dans la largeur de la fiche (une rangée le laissait sortir).</summary>
+    private static Grid ImageAndText(Control image, Control text)
+    {
+        var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*"), ColumnSpacing = 8 };
+        image.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        grid.Children.Add(image);
+        Grid.SetColumn(text, 1);
+        grid.Children.Add(text);
+        return grid;
     }
 
     /// <summary>

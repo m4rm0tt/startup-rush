@@ -14,6 +14,43 @@ public enum SelectionKind { None, Item, Person }
 public record BuildTool(string DefId, int? StoredId = null, int? MovingItemId = null, string? Facing = null);
 
 /// <summary>
+/// Outil de finitions en cours : la finition choisie, sa couleur, et où la poser. Sol : « all » (tout le local, aperçu tout de
+/// suite), « zone » ou « tile » (aperçu sur la case survolée, clic pour poser). Mur : « both » (aperçu tout de suite) ou
+/// « pick » (survoler un mur du fond, clic pour poser).
+/// </summary>
+public record FinishTool(string FinishId, string Mode, string? Color = null)
+{
+    public Core.space.FinishDef Def => Core.space.Finishes.Get(FinishId);
+
+    /// <summary>L'aperçu se fait sur toute la cible sans survol (tout le sol, les deux murs).</summary>
+    public bool Immediate => Mode is "all" or "both";
+
+    /// <summary>La cible de l'outil pour la case survolée (null : rien à montrer ni à poser).</summary>
+    public Core.space.FinishTarget? Target(Core.space.Premises premises, Core.space.Cell? hover)
+    {
+        switch (Mode)
+        {
+            case "all" or "both":
+                return Core.space.FinishTarget.Everywhere;
+            case "left" or "right":
+                return new Core.space.FinishTarget(Mode);
+        }
+        if (hover is not { } cell || !premises.InBounds(cell))
+            return null;
+        return Mode switch
+        {
+            "zone" => Core.space.Finishes.ZoneAt(premises, cell),
+            "tile" => Core.space.FinishTarget.Rect(cell.X, cell.Y, 1, 1),
+            // Un mur du fond se vise en survolant une case qui le longe (comme pour accrocher un objet au mur)
+            "pick" when cell.X == 0 && cell.Y == 0 => null,
+            "pick" when cell.X == 0 => new Core.space.FinishTarget("left"),
+            "pick" when cell.Y == 0 => new Core.space.FinishTarget("right"),
+            _ => null,
+        };
+    }
+}
+
+/// <summary>
 /// La partie en cours côté interface : la campagne, le rythme du temps, les sauvegardes automatiques,
 /// la sélection et l'outil d'aménagement. Le temps avance au rythme réel mesuré, jamais au rythme des images.
 /// </summary>
@@ -45,6 +82,16 @@ public class GameSession
     public SelectionKind SelectionKind { get; private set; }
     public int SelectionId { get; private set; }
     public BuildTool? Tool { get; private set; }
+
+    /// <summary>L'outil de finitions (sol, murs) en cours, ou null. Exclusif avec <see cref="Tool"/>.</summary>
+    public FinishTool? Finish { get; private set; }
+
+    public void SetFinish(FinishTool? tool)
+    {
+        Finish = tool;
+        if (tool != null)
+            Tool = null;
+    }
 
     public bool BuildMode { get; set; }
 
@@ -179,7 +226,10 @@ public class GameSession
     {
         Tool = tool;
         if (tool != null)
+        {
             BuildMode = true;
+            Finish = null;
+        }
         SelectionChanged?.Invoke();
     }
 }

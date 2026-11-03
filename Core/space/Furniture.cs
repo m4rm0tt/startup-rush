@@ -182,6 +182,13 @@ public record FurnitureDef(string Id, string Name, FurnitureKind Kind, decimal P
     public bool OnWall => Pack.WallMount;
 
     public bool IsComputer => Kind is FurnitureKind.Laptop or FurnitureKind.Tower;
+
+    /// <summary>
+    /// Fait partie du bâtiment (plomberie, cuisine équipée, électricité, réseau, installations techniques) : un objet livré
+    /// avec le local de ce genre ne se retire pas, pour ne pas casser le local par erreur.
+    /// </summary>
+    public bool Structural => Kind is FurnitureKind.Sanitary or FurnitureKind.Kitchen or FurnitureKind.Utility or FurnitureKind.Cabling
+        or FurnitureKind.Facility or FurnitureKind.Backup or FurnitureKind.Supervision;
 }
 
 /// <summary>Le catalogue des meubles jouables, et un repli « décor » pour les autres assets du pack livrés avec un local.</summary>

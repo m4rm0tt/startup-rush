@@ -49,6 +49,12 @@ public record PackAsset(
     /// <summary>On marche dessous ou dessus (chemin de câbles, passe-câble) : il ne prend la case de personne.</summary>
     public bool Walkable { get; init; }
 
+    /// <summary>
+    /// Canaux de couleur que le masque de l'objet permet de recolorer (« fabric », « wood »...), avec la teinte d'origine.
+    /// Vide : l'objet garde ses couleurs.
+    /// </summary>
+    public IReadOnlyDictionary<string, string> Channels { get; init; } = new Dictionary<string, string>();
+
     public bool RackModule => Kind == "rack_module";
 
     public PackFacing Facing(string facing) => Facings.TryGetValue(facing, out var f) ? f : Facings.Values.First();
@@ -190,6 +196,16 @@ public static class Pack
 
     public static bool Has(string id) => AssetsById.Value.ContainsKey(id);
 
+    /// <summary>Teintes que le pack propose pour un canal de couleur (« fabric » → teal, coral, sun...), dans l'ordre du pack.</summary>
+    public static IReadOnlyList<string> SwatchOptions(string channel) => SwatchesByChannel.Value.GetValueOrDefault(channel) ?? [];
+
+    private static readonly Lazy<Dictionary<string, string[]>> SwatchesByChannel = new(() =>
+    {
+        using var document = JsonDocument.Parse(Resource("pack/manifest.json"));
+        return document.RootElement.GetProperty("channels").GetProperty("swatches").EnumerateObject()
+            .ToDictionary(c => c.Name, c => c.Value.EnumerateArray().Select(x => x.GetString()!).ToArray());
+    });
+
     public static PackAsset Asset(string id) => AssetsById.Value[id];
 
     public static RoomPlan Plan(string id) => PlansById.Value[id];
@@ -265,6 +281,9 @@ public static class Pack
                 Units = a.TryGetProperty("units", out var u) && u.ValueKind == JsonValueKind.Number ? u.GetInt32() : 0,
                 Fits = a.TryGetProperty("fits", out var fi) && fi.ValueKind == JsonValueKind.Array ? fi.EnumerateArray().Select(x => x.GetString()!).ToArray() : [],
                 Walkable = a.TryGetProperty("walkable", out var w) && w.ValueKind == JsonValueKind.True,
+                Channels = a.TryGetProperty("channels", out var ch) && ch.ValueKind == JsonValueKind.Object
+                    ? ch.EnumerateObject().Where(x => x.Value.ValueKind == JsonValueKind.String).ToDictionary(x => x.Name, x => x.Value.GetString()!)
+                    : new Dictionary<string, string>(),
             };
         }
         return result;

@@ -48,6 +48,8 @@ public partial class Campaign
         _blocked.Clear();
         _comfort.Clear();
         _infra.Clear();
+        _capacity.Clear();
+        _itemIssues.Clear();
         _placesDirty = true;
     }
 

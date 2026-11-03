@@ -87,7 +87,9 @@ public partial class Campaign
         if (!check.Ok)
             return CommandResult.Fail(check.Reason);
         Storage.Remove(stored);
-        Premises.Items.Add(Placed(stored.Id, def, x, y, f, stored.PaidPrice));
+        var placed = Placed(stored.Id, def, x, y, f, stored.PaidPrice);
+        placed.Swatches = new Dictionary<string, string>(stored.Swatches);
+        Premises.Items.Add(placed);
         InvalidateLayout();
         return CommandResult.Success($"{def.Name} installé·e.");
     }
@@ -103,7 +105,8 @@ public partial class Campaign
         if (!check.Ok)
             return CommandResult.Fail(check.Reason);
         Storage.Remove(stored);
-        Premises.Items.Add(new PlacedItem { Id = stored.Id, DefId = def.Id, HostId = host!.Id, Socket = s, Facing = host.Facing, PaidPrice = stored.PaidPrice });
+        Premises.Items.Add(new PlacedItem { Id = stored.Id, DefId = def.Id, HostId = host!.Id, Socket = s, Facing = host.Facing, PaidPrice = stored.PaidPrice,
+            Swatches = new Dictionary<string, string>(stored.Swatches) });
         InvalidateLayout();
         return CommandResult.Success($"{def.Name} installé·e.");
     }
@@ -163,23 +166,33 @@ public partial class Campaign
     public static decimal ResaleValue(decimal paid) => Math.Round(paid * (decimal)Tuning.Finance.ResaleShare / 5m) * 5m;
 
     /// <summary>Retire un objet du local vers les cartons, avec ce qui est accroché dessus. Les chaises libèrent leur poste.</summary>
-    private void Unplace(PlacedItem item)
+    private void Unplace(PlacedItem item, bool keepIncluded = false)
     {
         foreach (var child in AllChildren(item).Prepend(item))
         {
             Premises.Items.Remove(child);
-            if (!child.Included)
-                Storage.Add(new StoredItem { Id = child.Id, DefId = child.DefId, PaidPrice = child.PaidPrice });
+            // Un objet livré avec le local qu'on retire volontairement devient le tien : il part dans les cartons
+            if (!child.Included || keepIncluded && !child.Def.Structural)
+                Storage.Add(new StoredItem { Id = child.Id, DefId = child.DefId, PaidPrice = child.PaidPrice, Swatches = new Dictionary<string, string>(child.Swatches) });
         }
         InvalidateLayout();
     }
 
+    /// <summary>Peut-on retirer cet objet du local ? Les objets livrés le peuvent, sauf ceux qui font partie du bâtiment.</summary>
+    public static (bool Ok, string Reason) CanRemove(PlacedItem item) =>
+        !item.Included ? (true, "")
+        : item.Def.Kind == FurnitureKind.Bed ? (false, "C'est ton lit : il reste dans ta chambre (tu y dors chaque nuit).")
+        : item.Def.Structural ? (false, $"{item.Def.Name} fait partie du bâtiment (plomberie, électricité ou installation technique) : il reste en place.")
+        : (true, "");
+
     public CommandResult Sell(int itemId)
     {
         var item = Premises.Find(itemId);
-        if (item == null || item.Included)
-            return CommandResult.Fail("Cet objet fait partie du local : il ne se vend pas.");
-        Unplace(item);
+        if (item == null)
+            return CommandResult.Fail("Objet introuvable.");
+        if (CanRemove(item) is { Ok: false } refused)
+            return CommandResult.Fail(refused.Reason);
+        Unplace(item, keepIncluded: true);
         var stored = Storage.First(s => s.Id == item.Id);
         Storage.Remove(stored);
         decimal value = ResaleValue(item.PaidPrice);
@@ -204,9 +217,11 @@ public partial class Campaign
     public CommandResult Store(int itemId)
     {
         var item = Premises.Find(itemId);
-        if (item == null || item.Included)
-            return CommandResult.Fail("Cet objet fait partie du local : il reste en place.");
-        Unplace(item);
+        if (item == null)
+            return CommandResult.Fail("Objet introuvable.");
+        if (CanRemove(item) is { Ok: false } refused)
+            return CommandResult.Fail(refused.Reason);
+        Unplace(item, keepIncluded: true);
         return CommandResult.Success();
     }
 

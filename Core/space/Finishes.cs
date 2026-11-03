@@ -20,6 +20,19 @@ public class FloorPatch
 public record FinishDef(string Id, FinishKind Kind, string Name, decimal Price, string Effect, string? UnlockNode = null);
 
 /// <summary>
+/// Où poser une finition. Mur : « left », « right » ou null (les deux). Sol : un rectangle de cases (une zone, ou une seule
+/// case), ou tout le local si la largeur vaut 0.
+/// </summary>
+public record FinishTarget(string? Wall = null, int U = 0, int V = 0, int Width = 0, int Depth = 0)
+{
+    public static readonly FinishTarget Everywhere = new();
+
+    public bool WholeFloor => Width <= 0 || Depth <= 0;
+
+    public static FinishTarget Rect(int u, int v, int width, int depth) => new(null, u, v, width, depth);
+}
+
+/// <summary>
 /// Les finitions : ce que le local porte vraiment (celles du plan, ou celles que tu as refaites) et leurs effets. Le faux
 /// plancher distribue mieux le froid existant sans en créer ; le lambris ajoute un peu d'ambiance, dans son plafond.
 /// </summary>
@@ -92,19 +105,116 @@ public static class Finishes
         return grid;
     }
 
-    /// <summary>Le motif d'un mur du fond (« left » ou « right ») : l'habillage refait, sinon celui du plan.</summary>
+    /// <summary>Le motif d'un mur du fond (« left » ou « right ») : celui de ce mur, sinon l'habillage des deux, sinon le plan.</summary>
     public static string? Pattern(Premises premises, string wall) =>
-        premises.WallPattern ?? (Pack.FindPlan(premises.PlanId) is { } plan ? wall == "left" ? plan.LeftPattern : plan.RightPattern : null);
+        (wall == "left" ? premises.LeftPattern : premises.RightPattern)
+        ?? premises.WallPattern ?? (Pack.FindPlan(premises.PlanId) is { } plan ? wall == "left" ? plan.LeftPattern : plan.RightPattern : null);
+
+    /// <summary>La couleur choisie pour un mur (teinte du canal « wall »), null : celle du plan.</summary>
+    public static string? WallColor(Premises premises, string wall) => wall == "left" ? premises.LeftWallColor : premises.RightWallColor;
 
     /// <summary>Segments des deux murs du fond (une grande fenêtre compte pour un).</summary>
-    public static int WallSegments(Premises premises) =>
+    public static int WallSegments(Premises premises) => WallSegments(premises, "left") + WallSegments(premises, "right");
+
+    /// <summary>Segments d'un mur du fond.</summary>
+    public static int WallSegments(Premises premises, string wall) =>
         Pack.FindPlan(premises.PlanId) is { } plan
-            ? plan.LeftWall.Count(s => s != null) + plan.RightWall.Count(s => s != null)
-            : premises.Width + premises.Height;
+            ? (wall == "left" ? plan.LeftWall : plan.RightWall).Count(s => s != null)
+            : wall == "left" ? premises.Height : premises.Width;
 
     /// <summary>Le prix des travaux dans ce local : par case pour un sol, par segment de mur pour un habillage.</summary>
-    public static decimal Cost(Premises premises, FinishDef finish) =>
-        finish.Price * (finish.Kind == FinishKind.Floor ? premises.Width * premises.Height : WallSegments(premises));
+    public static decimal Cost(Premises premises, FinishDef finish) => Cost(premises, finish, FinishTarget.Everywhere);
+
+    /// <summary>Le prix des travaux sur une cible : les cases du rectangle, ou les segments du ou des murs choisis.</summary>
+    public static decimal Cost(Premises premises, FinishDef finish, FinishTarget target)
+    {
+        if (finish.Kind == FinishKind.Wall)
+            return finish.Price * (target.Wall is { } wall ? WallSegments(premises, wall) : WallSegments(premises));
+        if (target.WholeFloor)
+            return finish.Price * premises.Width * premises.Height;
+        int u0 = Math.Max(0, target.U), v0 = Math.Max(0, target.V);
+        int u1 = Math.Min(premises.Width, target.U + target.Width), v1 = Math.Min(premises.Height, target.V + target.Depth);
+        return finish.Price * Math.Max(0, u1 - u0) * Math.Max(0, v1 - v0);
+    }
+
+    /// <summary>Teintes proposées pour un sol (canal « floor ») ou un mur (canal « wall »).</summary>
+    public static IReadOnlyList<string> Colors(FinishKind kind) => Pack.SwatchOptions(kind == FinishKind.Floor ? "floor" : "wall");
+
+    /// <summary>
+    /// La zone de sol qui couvre cette case : la dernière zone posée par-dessus (module, case refaite), sinon celle du plan,
+    /// sinon tout le local. C'est ce que « Une zone » refait quand on clique une case.
+    /// </summary>
+    public static FinishTarget ZoneAt(Premises premises, Cell cell)
+    {
+        foreach (var zone in FloorZones(premises).Reverse())
+            if (cell.X >= zone.U && cell.X < zone.U + zone.Width && cell.Y >= zone.V && cell.Y < zone.V + zone.Depth)
+                return FinishTarget.Rect(Math.Max(0, zone.U), Math.Max(0, zone.V),
+                    Math.Min(premises.Width, zone.U + zone.Width) - Math.Max(0, zone.U), Math.Min(premises.Height, zone.V + zone.Depth) - Math.Max(0, zone.V));
+        return FinishTarget.Everywhere;
+    }
+
+    /// <summary>
+    /// Pose une finition (sans la payer : <c>Campaign.SetFinish</c> s'en charge, et l'aperçu l'applique à une copie du local).
+    /// Sol : tout le local (les zones posées disparaissent), ou une zone de sol par-dessus. Mur : un mur ou les deux, avec sa
+    /// couleur si elle est donnée.
+    /// </summary>
+    public static void Apply(Premises premises, FinishDef finish, FinishTarget target, string? color = null)
+    {
+        if (finish.Kind == FinishKind.Floor)
+        {
+            var swatches = color != null ? new Dictionary<string, string> { ["floor"] = color } : new Dictionary<string, string>();
+            if (target.WholeFloor && color == null)
+            {
+                premises.FloorMaterial = finish.Id;
+                premises.FloorPatches.Clear();
+                return;
+            }
+            if (target.WholeFloor)
+            {
+                premises.FloorMaterial = finish.Id;
+                premises.FloorPatches.Clear();
+                premises.FloorPatches.Add(new FloorPatch { Material = finish.Id, U = 0, V = 0, Width = premises.Width, Depth = premises.Height, Swatches = swatches });
+                return;
+            }
+            // Une zone refaite remplace celles qu'elle recouvre entièrement (pas d'empilement inutile de cases)
+            premises.FloorPatches.RemoveAll(p => p.U >= target.U && p.V >= target.V && p.U + p.Width <= target.U + target.Width && p.V + p.Depth <= target.V + target.Depth);
+            premises.FloorPatches.Add(new FloorPatch { Material = finish.Id, U = target.U, V = target.V, Width = target.Width, Depth = target.Depth, Swatches = swatches });
+            return;
+        }
+        foreach (string wall in target.Wall is { } w ? [w] : new[] { "left", "right" })
+        {
+            if (wall == "left")
+            {
+                premises.LeftPattern = finish.Id;
+                if (color != null)
+                    premises.LeftWallColor = color;
+            }
+            else
+            {
+                premises.RightPattern = finish.Id;
+                if (color != null)
+                    premises.RightWallColor = color;
+            }
+        }
+        if (target.Wall == null)
+            premises.WallPattern = finish.Id;
+    }
+
+    /// <summary>La cible porte-t-elle déjà exactement cette finition (et cette couleur) ?</summary>
+    public static bool IsCurrent(Premises premises, FinishDef finish, FinishTarget target, string? color)
+    {
+        if (finish.Kind == FinishKind.Wall)
+            return (target.Wall is { } w ? [w] : new[] { "left", "right" })
+                .All(wall => Pattern(premises, wall) == finish.Id && (color == null || WallColor(premises, wall) == color));
+        if (color != null)
+            return false;
+        var grid = FloorGrid(premises);
+        for (int u = 0; u < premises.Width; u++)
+        for (int v = 0; v < premises.Height; v++)
+            if ((target.WholeFloor || u >= target.U && u < target.U + target.Width && v >= target.V && v < target.V + target.Depth) && grid[u, v] != finish.Id)
+                return false;
+        return true;
+    }
 
     /// <summary>Le local porte-t-il déjà cette finition partout ?</summary>
     public static bool IsCurrent(Premises premises, FinishDef finish) =>

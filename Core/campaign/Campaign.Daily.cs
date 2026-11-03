@@ -39,6 +39,7 @@ public partial class Campaign
 
         CollectInvoices();
         PayDueBills();
+        RunLitter(yesterday);
         UpdateTeam();
         UpdateMarket();
         UpdateSolvency();
@@ -322,7 +323,7 @@ public partial class Campaign
                 person.UnpaidDays++;
 
             bool hasPost = post != null && space.Layout.Check(site, post) == space.WorkstationIssue.None;
-            double target = 58 + comfort.Morale + (post == null ? 0 : space.Layout.PostMorale(site, post));
+            double target = 58 + comfort.Morale - MessPenalty(site) + (post == null ? 0 : space.Layout.PostMorale(site, post));
             if (!person.IsFounder)
             {
                 target += Math.Clamp((double)((person.Salary - MarketSalary(person)) / MarketSalary(person)) * 40, -12, 12);

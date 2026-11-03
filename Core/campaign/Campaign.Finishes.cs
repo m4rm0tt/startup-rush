@@ -9,28 +9,37 @@ namespace Core.campaign;
 /// </summary>
 public partial class Campaign
 {
-    public CommandResult SetFinish(string finishId)
+    public CommandResult SetFinish(string finishId) => SetFinish(finishId, FinishTarget.Everywhere);
+
+    /// <summary>
+    /// Refait le sol (tout le local, une zone ou une case) ou l'habillage (un mur ou les deux) du site affiché, avec une couleur
+    /// au choix parmi celles du pack. Payé d'un coup, au prix de la cible.
+    /// </summary>
+    public CommandResult SetFinish(string finishId, FinishTarget target, string? color = null)
     {
         if (!Finishes.Has(finishId))
             return CommandResult.Fail("Finition inconnue.");
         var finish = Finishes.Get(finishId);
         if (finish.UnlockNode is { } node && !IsUnlocked(node))
             return CommandResult.Fail($"À débloquer : {UnlockName(node)}.");
-        if (Finishes.IsCurrent(Premises, finish))
-            return CommandResult.Fail($"Le local a déjà : {finish.Name}.");
-        var paid = Spend(Finishes.Cost(Premises, finish), Category.Equipment, $"Travaux : {finish.Name}", Premises.Id);
+        if (color != null && !Finishes.Colors(finish.Kind).Contains(color))
+            return CommandResult.Fail("Couleur inconnue.");
+        if (target.Wall is not (null or "left" or "right"))
+            return CommandResult.Fail("Mur inconnu.");
+        if (finish.Kind == FinishKind.Floor && !target.WholeFloor
+            && (target.U < 0 || target.V < 0 || target.U + target.Width > Premises.Width || target.V + target.Depth > Premises.Height))
+            return CommandResult.Fail("Hors du local.");
+        if (Finishes.IsCurrent(Premises, finish, target, color))
+            return CommandResult.Fail($"C'est déjà : {finish.Name}.");
+        var paid = Spend(Finishes.Cost(Premises, finish, target), Category.Equipment, $"Travaux : {finish.Name}", Premises.Id);
         if (!paid.Ok)
             return paid;
-        if (finish.Kind == FinishKind.Floor)
-        {
-            // Tout le sol est refait : les sols posés avec des modules disparaissent sous le nouveau
-            Premises.FloorMaterial = finish.Id;
-            Premises.FloorPatches.Clear();
-        }
-        else
-            Premises.WallPattern = finish.Id;
+        Finishes.Apply(Premises, finish, target, color);
         InvalidateLayout();
-        return CommandResult.Success(finish.Kind == FinishKind.Floor ? $"Nouveau sol : {finish.Name}." : $"Nouveaux murs : {finish.Name}.");
+        string where = finish.Kind == FinishKind.Floor
+            ? target.WholeFloor ? "Nouveau sol" : target.Width * target.Depth == 1 ? "Case refaite" : "Zone refaite"
+            : target.Wall == "left" ? "Mur de gauche refait" : target.Wall == "right" ? "Mur de droite refait" : "Nouveaux murs";
+        return CommandResult.Success($"{where} : {finish.Name}.");
     }
 
     // ------------------------------------------------------------------ Modules de pièce
@@ -120,7 +129,9 @@ public partial class Campaign
     /// <summary>Remise des sols ou des murs du site affiché tels que le plan les prévoit (sans frais, sans remboursement des travaux).</summary>
     public CommandResult ResetFinish(FinishKind kind)
     {
-        if (kind == FinishKind.Floor ? Premises.FloorMaterial == null && Premises.FloorPatches.Count == 0 : Premises.WallPattern == null)
+        bool wallsRedone = Premises.WallPattern != null || Premises.LeftPattern != null || Premises.RightPattern != null
+                           || Premises.LeftWallColor != null || Premises.RightWallColor != null;
+        if (kind == FinishKind.Floor ? Premises.FloorMaterial == null && Premises.FloorPatches.Count == 0 : !wallsRedone)
             return CommandResult.Fail(kind == FinishKind.Floor ? "Les sols sont déjà ceux du plan." : "Les murs sont déjà ceux du plan.");
         if (kind == FinishKind.Floor)
         {
@@ -128,7 +139,11 @@ public partial class Campaign
             Premises.FloorPatches.Clear();
         }
         else
+        {
             Premises.WallPattern = null;
+            Premises.LeftPattern = Premises.RightPattern = null;
+            Premises.LeftWallColor = Premises.RightWallColor = null;
+        }
         InvalidateLayout();
         return CommandResult.Success(kind == FinishKind.Floor ? "Sols remis comme sur le plan." : "Murs remis comme sur le plan.");
     }

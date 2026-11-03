@@ -52,6 +52,8 @@ public class BuildPanel : GamePanel
     /// </summary>
     public override Control? BuildHeader()
     {
+        if (Session.Finish is { } finish)
+            return FinishHeader(finish);
         if (Session.Tool is not { } tool)
             return null;
         var column = Ui.Column(8);
@@ -99,9 +101,27 @@ public class BuildPanel : GamePanel
         }
         if (posts.Count == 0)
             stations.Children.Add(Ui.Muted("Aucun bureau."));
-        int people = Campaign.People.Count;
-        column.Children.Add(Ui.Section($"Postes : {complete} complet(s) pour {people} personne(s)", stations,
-            Ui.Muted("Un poste = un bureau, une chaise, un ordinateur (un portable, ou une tour avec écran et clavier) et une case libre devant. Clique un bureau pour l'attribuer.")));
+        // Capacité réelle de l'espace de travail : postes complets sur ce que le local peut accueillir (règles de pose)
+        var capacity = Campaign.Capacity(premises);
+        var stats = new WrapPanel();
+        foreach (var stat in new[]
+                 {
+                     Ui.Stat("Postes", $"{capacity.Complete} / {capacity.Max}", capacity.Complete < capacity.People ? Palette.Ember : null, 140,
+                         $"{capacity.Complete} poste(s) complet(s), {capacity.Installed} installé(s), {capacity.Max} au plus dans ce local."),
+                     Ui.Stat("Équipe ici", $"{capacity.People} pers.", null, 140, "Personnes dont le poste est dans ce local."),
+                     Ui.Stat("Bureaux en plus", capacity.LimitedByLease ? $"{capacity.Spare}" : $"+{capacity.Spare}", capacity.Spare == 0 ? Palette.Ember : null, 140,
+                         capacity.LimitedByLease ? $"Le bail limite ce local à {premises.MaxDesks} bureau(x)." : "Bureaux compacts qui tiennent encore, passages et accès compris."),
+                 })
+        {
+            stat.Margin = new Thickness(0, 0, 6, 6);
+            stats.Children.Add(stat);
+        }
+        column.Children.Add(Ui.Section($"Postes : {capacity.Complete} / {capacity.Max}", stats, stations,
+            Ui.Muted("Un poste = bureau, chaise, ordinateur et une case libre devant. Clique un bureau pour l'attribuer.", 12)));
+        if (premises.Litter.Count > 0 || Core.campaign.Campaign.BinCapacity(premises) < capacity.People)
+            column.Children.Add(CleanSection(capacity.People));
+        if (IncludedSection() is { } included)
+            column.Children.Add(included);
 
         var infra = Campaign.SiteInfra(premises);
         if (infra.Any || RealEstate.Get(premises.ListingId).Technical)
@@ -151,6 +171,61 @@ public class BuildPanel : GamePanel
             Ui.Row(6, Ui.Button(Campaign.Sites.Count > 1 ? "Tous les sites, locations" : "Locaux à louer", () => Open(new SitesPanel())),
                 Campaign.IsUnlocked("hardware") ? Ui.Button("Production et stocks", () => Open(new IndustryPanel())) : null)));
         return column;
+    }
+
+    /// <summary>Propreté : corbeilles pour qui, déchets au sol, et les ramasser.</summary>
+    private Control CleanSection(int people)
+    {
+        var premises = Campaign.Premises;
+        int bins = Core.campaign.Campaign.BinCapacity(premises);
+        double penalty = Core.campaign.Campaign.MessPenalty(premises);
+        return Ui.Section("Propreté",
+            Ui.Pair("Corbeilles", $"{System.Math.Min(bins, people)} personne(s) couverte(s) sur {people}", bins < people ? Palette.Ember : null),
+            Ui.Pair("Déchets au sol", premises.Litter.Count == 0 ? "aucun" : $"{premises.Litter.Count} (−{penalty:0.#} de moral)", premises.Litter.Count > 0 ? Palette.Ember : null),
+            Ui.Row(6, Ui.Button("Tout ramasser", () => Run(Campaign.CleanUp()), "gold", premises.Litter.Count > 0),
+                Ui.Button("Acheter une corbeille", () => Session.SetTool(new BuildTool("trash_bin")), "", bins < people)),
+            Ui.Muted("Sans corbeille, les déchets finissent par terre. Clique un déchet dans la scène pour le ramasser.", 12));
+    }
+
+    /// <summary>
+    /// Les objets livrés avec le local (plan d'origine) : on peut les retirer (ils partent dans les cartons, et deviennent les
+    /// tiens), sauf ce qui fait partie du bâtiment (sanitaires, cuisine équipée, électricité, réseau).
+    /// </summary>
+    private Control? IncludedSection()
+    {
+        var premises = Campaign.Premises;
+        var removable = premises.Floor.Concat(premises.WallItems).Where(i => i.Included && Core.campaign.Campaign.CanRemove(i).Ok).ToList();
+        int fixedCount = premises.Items.Count(i => i.Included && i.HostId == null && !Core.campaign.Campaign.CanRemove(i).Ok);
+        if (removable.Count == 0)
+            return null;
+        var list = Ui.Column(3);
+        foreach (var group in removable.GroupBy(i => i.Def.Name).OrderBy(g => g.Key))
+        {
+            var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
+            var name = Ui.Text(group.Count() > 1 ? $"{group.Count()} × {group.Key}" : group.Key, 13);
+            name.VerticalAlignment = VerticalAlignment.Center;
+            grid.Children.Add(name);
+            var first = group.First();
+            var remove = Ui.Button("Retirer", () => Run(Campaign.Store(first.Id), $"{first.Def.Name} : dans les cartons."), "tab");
+            Grid.SetColumn(remove, 1);
+            grid.Children.Add(remove);
+            list.Children.Add(grid);
+        }
+        var section = Ui.Section($"Livré avec le local ({removable.Count})",
+            Ui.Muted("Ces objets étaient déjà là. Retirés, ils partent dans les cartons : tu peux les reposer ailleurs ou les jeter." +
+                     (fixedCount > 0 ? $" {fixedCount} élément(s) font partie du bâtiment et restent en place." : ""), 12),
+            Ui.Details("Voir la liste", list),
+            Ui.Button("Retirer le décor", () => Screen.Confirm("Retirer le décor livré ?",
+                "Le décor part dans les cartons. Les postes de travail, le lit, les sanitaires, la cuisine équipée et les installations techniques restent.",
+                "Retirer", () =>
+                {
+                    // Le décor seulement : les postes (bureau, chaise, ordinateur) et le lit se retirent un par un, exprès
+                    foreach (var item in removable.Where(i => i.HostId == null && i.Def.Kind is not (FurnitureKind.Desk or FurnitureKind.Chair or FurnitureKind.Bed) && !i.Def.IsComputer))
+                        Campaign.Store(item.Id);
+                    Run(CommandResult.Success("Le local est vidé : tout est dans les cartons."));
+                }, danger: false), "tab"));
+        section.Tag = "section:livre";
+        return section;
     }
 
     /// <summary>Les objets des cartons, chacun avec « Poser » et « Vendre ».</summary>
@@ -258,37 +333,139 @@ public class BuildPanel : GamePanel
         return Ui.Section(title, grid, Ui.Details("Ce qui y contribue", contributors));
     }
 
+    /// <summary>Finitions : sol ou murs (gardé le temps de la session).</summary>
+    private static FinishKind _finishKind = FinishKind.Floor;
+
+    /// <summary>Où poser : sol « all », « zone » ou « tile » ; murs « both » ou « pick ».</summary>
+    private static string _floorMode = "all", _wallMode = "both";
+
+    /// <summary>Couleur choisie (null : la couleur d'origine du matériau ou du mur).</summary>
+    private static string? _floorColor, _wallColor;
+
+    private static string Mode => _finishKind == FinishKind.Floor ? _floorMode : _wallMode;
+
+    private static string? Color => _finishKind == FinishKind.Floor ? _floorColor : _wallColor;
+
     /// <summary>
-    /// Finitions du site affiché : le sol et l'habillage des murs du fond, en pastilles du pack (hud_pattern_cell). Ce qui est
-    /// en place est sélectionné ; les travaux se confirment (ils se paient par case ou par segment de mur).
+    /// Finitions du site affiché : choisir sol ou murs, où (tout, une zone, une case ; les deux murs, ou un mur visé dans la
+    /// scène), la couleur, puis la finition. Choisir une finition la montre dans la scène avant de payer (aperçu) : on pose en
+    /// confirmant, ou en cliquant la case ou le mur visé.
     /// </summary>
     private Control FinishesSection()
     {
         var premises = Campaign.Premises;
-        var wall = new Dictionary<string, string>(Pack.FindPlan(premises.PlanId)?.LeftSwatches ?? new Dictionary<string, string>());
-        WrapPanel Cells(FinishKind kind)
-        {
-            var wrap = new WrapPanel();
-            foreach (var finish in Finishes.Catalog.Where(f => f.Kind == kind))
-                wrap.Children.Add(FinishCell(finish, wall));
-            // Revenir à ce que prévoit le plan (zones de service, motifs d'origine), sans frais
-            bool redone = kind == FinishKind.Floor ? premises.FloorMaterial != null : premises.WallPattern != null;
-            var back = Ui.Button(kind == FinishKind.Floor ? "Sols du plan" : "Murs du plan", () => Screen.Confirm(
-                kind == FinishKind.Floor ? "Remettre les sols du plan ?" : "Remettre les murs du plan ?",
-                "Le local retrouve ce que prévoit son plan. Les travaux déjà payés ne sont pas remboursés.", "Remettre",
-                () => Run(Campaign.ResetFinish(kind)), danger: false), "tab", redone);
-            back.VerticalAlignment = VerticalAlignment.Center;
-            wrap.Children.Add(back);
-            return wrap;
-        }
         string Name(string? id) => id != null && Finishes.Has(id) ? Finishes.Get(id).Name : "celui du plan";
-        string floor = premises.FloorMaterial is { } m ? Name(m) : "ceux du plan";
         string left = Name(Finishes.Pattern(premises, "left")), right = Name(Finishes.Pattern(premises, "right"));
-        return Ui.Section("Finitions",
-            Ui.Text($"Sol : {floor}", 14, Palette.Cloud), Cells(FinishKind.Floor),
-            Ui.Text(left == right ? $"Murs : {left}" : $"Murs : {left} à gauche, {right} à droite", 14, Palette.Cloud), Cells(FinishKind.Wall),
-            Ui.Muted("Le faux plancher distribue mieux le froid existant ; le lambris ajoute de l'ambiance ; la moquette et les panneaux acoustiques " +
-                     "aident la concentration (plafond commun avec les cloisons). Le reste fait l'identité du local.", 12));
+        string floor = premises.FloorMaterial is { } m && premises.FloorPatches.Count == 0 ? Name(m) : premises.FloorMaterial == null && premises.FloorPatches.Count == 0 ? "ceux du plan" : "plusieurs zones";
+
+        var kind = Ui.Choice([(FinishKind.Floor, "Sol"), (FinishKind.Wall, "Murs")], _finishKind, k =>
+        {
+            _finishKind = k;
+            Session.SetFinish(null);
+            Refresh();
+        });
+        var where = _finishKind == FinishKind.Floor
+            ? Ui.Choice([("all", "Tout le local"), ("zone", "Une zone"), ("tile", "Une case")], _floorMode, mode => { _floorMode = mode; Retool(); })
+            : Ui.Choice([("both", "Les deux murs"), ("pick", "Un mur (vise-le)")], _wallMode, mode => { _wallMode = mode; Retool(); });
+
+        var colors = new WrapPanel();
+        colors.Children.Add(Ui.Button("D'origine", () => { SetColor(null); }, Color == null ? "tab selected" : "tab"));
+        foreach (string ramp in Finishes.Colors(_finishKind))
+            colors.Children.Add(Ui.Swatch(PackLibrary.RampColor(ramp), Color == ramp, () => SetColor(ramp), $"Couleur : {UI.Screens.NewCampaignScreen.OutfitName(ramp)}"));
+
+        var wall = new Dictionary<string, string>(Pack.FindPlan(premises.PlanId)?.LeftSwatches ?? new Dictionary<string, string>());
+        if (_wallColor != null)
+            wall["wall"] = _wallColor;
+        var cells = new WrapPanel();
+        foreach (var finish in Finishes.Catalog.Where(f => f.Kind == _finishKind))
+            cells.Children.Add(FinishCell(finish, wall));
+        bool redone = _finishKind == FinishKind.Floor ? premises.FloorMaterial != null || premises.FloorPatches.Count > 0
+            : premises.WallPattern != null || premises.LeftPattern != null || premises.RightPattern != null || premises.LeftWallColor != null || premises.RightWallColor != null;
+        var back = Ui.Button(_finishKind == FinishKind.Floor ? "Sols du plan" : "Murs du plan", () => Screen.Confirm(
+            _finishKind == FinishKind.Floor ? "Remettre les sols du plan ?" : "Remettre les murs du plan ?",
+            "Le local retrouve ce que prévoit son plan. Les travaux déjà payés ne sont pas remboursés.", "Remettre",
+            () => Run(Campaign.ResetFinish(_finishKind)), danger: false), "tab", redone);
+        back.VerticalAlignment = VerticalAlignment.Center;
+        cells.Children.Add(back);
+
+        var section = Ui.Section("Finitions",
+            Ui.Muted(left == right ? $"Sol : {floor} · murs : {left}" : $"Sol : {floor} · murs : {left} à gauche, {right} à droite", 12),
+            Ui.Row(8, kind, where), colors, cells,
+            Ui.Muted("Choisis une finition : la scène la montre avant de payer. Le faux plancher distribue mieux le froid, le lambris ajoute " +
+                     "de l'ambiance, la moquette et les panneaux acoustiques aident la concentration.", 12));
+        section.Tag = "section:finitions";
+        return section;
+    }
+
+    /// <summary>Change la couleur ; l'aperçu en cours la reprend aussitôt.</summary>
+    private void SetColor(string? color)
+    {
+        if (_finishKind == FinishKind.Floor)
+            _floorColor = color;
+        else
+            _wallColor = color;
+        Retool();
+    }
+
+    /// <summary>L'aperçu en cours suit le nouveau réglage (mode, couleur).</summary>
+    private void Retool()
+    {
+        if (Session.Finish is { } tool && tool.Def.Kind == _finishKind)
+            StartFinish(tool.FinishId);
+        else
+            Refresh();
+    }
+
+    private void StartFinish(string finishId)
+    {
+        Session.SetFinish(new FinishTool(finishId, Mode, Color));
+        Session.BuildMode = !Session.Finish!.Immediate;
+        Refresh();
+    }
+
+    /// <summary>L'aperçu d'une finition : ce qu'elle coûte et comment la poser (bandeau fixe au-dessus de la liste).</summary>
+    private Control FinishHeader(FinishTool tool)
+    {
+        var def = tool.Def;
+        var premises = Campaign.Premises;
+        string color = tool.Color != null ? $", {UI.Screens.NewCampaignScreen.OutfitName(tool.Color)}" : "";
+        Control body;
+        if (tool.Immediate)
+        {
+            var target = FinishTarget.Everywhere;
+            decimal cost = Finishes.Cost(premises, def, target);
+            bool current = Finishes.IsCurrent(premises, def, target, tool.Color);
+            body = Ui.Column(4,
+                Ui.Muted(def.Kind == FinishKind.Floor ? "Aperçu sur tout le sol, dans la scène." : "Aperçu sur les deux murs du fond, dans la scène."),
+                Ui.Row(6,
+                    Ui.Button(current ? "Déjà en place" : $"Faire les travaux · {cost:N0} CHF", () =>
+                    {
+                        var result = Campaign.SetFinish(def.Id, target, tool.Color);
+                        if (result.Ok)
+                            Session.SetFinish(null);
+                        Run(result);
+                    }, "gold", !current && Campaign.Ledger.CanSpend(cost)),
+                    Ui.Button("Annuler", StopFinish)));
+        }
+        else
+        {
+            string unit = def.Kind == FinishKind.Wall ? $"{def.Price:N0} CHF le segment de mur"
+                : $"{def.Price:N0} CHF la case";
+            body = Ui.Column(4,
+                Ui.Muted(tool.Mode == "pick" ? "Survole une case le long d'un mur du fond : l'aperçu montre ce mur. Clic : faire les travaux."
+                    : tool.Mode == "zone" ? "Survole le local : l'aperçu montre la zone de sol sous la souris. Clic : faire les travaux."
+                    : "Survole le local : l'aperçu montre la case sous la souris. Clic : la refaire (on peut enchaîner)."),
+                Ui.Muted($"{unit}. Clic droit ou Échap : arrêter."),
+                Ui.Button("Arrêter", StopFinish));
+        }
+        return Ui.Card(Ui.Column(4, Ui.Text($"Aperçu : {def.Name}{color}", 16, Palette.Gold, bold: true), body), Palette.Gold);
+    }
+
+    private void StopFinish()
+    {
+        Session.SetFinish(null);
+        Session.BuildMode = false;
+        Refresh();
     }
 
     /// <summary>
@@ -333,33 +510,33 @@ public class BuildPanel : GamePanel
     private Control FinishCell(FinishDef finish, Dictionary<string, string> wall)
     {
         var premises = Campaign.Premises;
-        bool current = Finishes.IsCurrent(premises, finish);
-        bool locked = finish.UnlockNode is { } node && !Campaign.IsUnlocked(node);
-        decimal cost = Finishes.Cost(premises, finish);
         bool floor = finish.Kind == FinishKind.Floor;
+        bool previewing = Session.Finish?.FinishId == finish.Id;
+        bool current = Finishes.IsCurrent(premises, finish, FinishTarget.Everywhere, Color);
+        bool locked = finish.UnlockNode is { } node && !Campaign.IsUnlocked(node);
         var frame = new HoverImage
         {
-            Normal = PackSkins.Sprite("hud_pattern_cell", current ? "selected" : "normal"),
-            Hover = current || locked ? null : PackSkins.Sprite("hud_pattern_cell", "hover"), Width = 52, Height = 52,
+            Normal = PackSkins.Sprite("hud_pattern_cell", previewing || current ? "selected" : "normal"),
+            Hover = previewing || locked ? null : PackSkins.Sprite("hud_pattern_cell", "hover"), Width = 52, Height = 52,
         };
-        var tile = Ui.Image(PackLibrary.FinishTile(finish.Id, floor ? new Dictionary<string, string>() : RoomRenderer.PatternColors(finish.Id, wall)), 36, 36);
+        var swatches = floor ? (_floorColor != null ? new Dictionary<string, string> { ["floor"] = _floorColor } : new Dictionary<string, string>())
+            : RoomRenderer.PatternColors(finish.Id, wall);
+        var tile = Ui.Image(PackLibrary.FinishTile(finish.Id, swatches), 36, 36);
         tile.Margin = new Thickness(8);
         tile.HorizontalAlignment = HorizontalAlignment.Left;
         tile.VerticalAlignment = VerticalAlignment.Top;
         var content = new Panel { Width = 52, Height = 52, Children = { frame, tile }, Opacity = locked ? 0.5 : 1 };
         var button = new Button { Content = content, Padding = new Thickness(0), Margin = new Thickness(0, 0, 4, 4), IsEnabled = !locked };
         button.Classes.Add("plain");
-        string unit = floor ? $"{finish.Price:N0} CHF la case, {premises.Width * premises.Height} cases" : $"{finish.Price:N0} CHF le segment, {Finishes.WallSegments(premises)} segments";
+        string unit = floor ? $"{finish.Price:N0} CHF la case" : $"{finish.Price:N0} CHF le segment de mur";
         ToolTip.SetTip(button, locked ? $"{finish.Name} — à débloquer : {Core.campaign.Campaign.UnlockName(finish.UnlockNode!)}."
-            : current ? $"{finish.Name} — en place. {finish.Effect}"
-            : $"{finish.Name} — {finish.Effect} {cost:N0} CHF ({unit}).");
+            : $"{finish.Name} — {finish.Effect} {unit}. Clic : aperçu dans la scène.");
         Ui.OnClick(button, () =>
         {
-            if (current)
-                return;
-            Screen.Confirm(floor ? $"Refaire le sol : {finish.Name} ?" : $"Habiller les murs : {finish.Name} ?",
-                $"{finish.Effect} Coût : {cost:N0} CHF ({unit}). {(floor ? "Tout le sol est refait, zones de service comprises." : "Les deux murs du fond sont refaits.")}",
-                "Faire les travaux", () => Run(Campaign.SetFinish(finish.Id)), danger: false);
+            if (previewing)
+                StopFinish();
+            else
+                StartFinish(finish.Id);
         });
         return button;
     }

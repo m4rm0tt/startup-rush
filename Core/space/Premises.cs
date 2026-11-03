@@ -5,6 +5,14 @@ public readonly record struct Cell(int X, int Y)
     public Cell Offset(int dx, int dy) => new(X + dx, Y + dy);
 }
 
+/// <summary>Un déchet au sol (Campaign.Litter.cs) : sa case et son aspect (papier, gobelet, emballage).</summary>
+public class LitterSpot
+{
+    public int X { get; set; }
+    public int Y { get; set; }
+    public int Kind { get; set; }
+}
+
 /// <summary>
 /// Un objet du local. Posé au sol : sa case d'origine (X = U, Y = V, coin nord de l'emprise) et son orientation.
 /// Accroché : l'objet hôte (HostId) et le socket occupé ; il n'a pas de case à lui. Au mur : le mur du fond (Wall) et la
@@ -97,8 +105,32 @@ public class Premises
     /// <summary>Habillage des deux murs du fond (« pattern_wood_panels »), null : les motifs du plan.</summary>
     public string? WallPattern { get; set; }
 
+    /// <summary>Habillage d'un seul mur (gauche ou droit), prioritaire sur <see cref="WallPattern"/>.</summary>
+    public string? LeftPattern { get; set; }
+
+    public string? RightPattern { get; set; }
+
+    /// <summary>Couleur choisie pour un mur (teinte du canal « wall » du pack), null : celle du plan.</summary>
+    public string? LeftWallColor { get; set; }
+
+    public string? RightWallColor { get; set; }
+
+    /// <summary>Copie pour un aperçu (finitions à l'essai) : mêmes objets, finitions modifiables sans toucher au local.</summary>
+    public Premises PreviewCopy()
+    {
+        var copy = (Premises)MemberwiseClone();
+        copy.FloorPatches = FloorPatches.Select(p => new FloorPatch
+        {
+            Material = p.Material, U = p.U, V = p.V, Width = p.Width, Depth = p.Depth, Swatches = new Dictionary<string, string>(p.Swatches),
+        }).ToList();
+        return copy;
+    }
+
     /// <summary>Zones de sol posées avec un module (carrelage d'une kitchenette...), par-dessus les sols du local.</summary>
     public List<FloorPatch> FloorPatches { get; set; } = new();
+
+    /// <summary>Déchets laissés par terre faute de corbeille (Campaign.Litter.cs).</summary>
+    public List<LitterSpot> Litter { get; set; } = new();
 
     public Cell Entrance => new(EntranceX, EntranceY);
 

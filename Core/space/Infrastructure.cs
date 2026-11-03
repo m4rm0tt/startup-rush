@@ -178,4 +178,58 @@ public static class Infrastructure
             power, draw, cooling, heat, backup, orgScore, Math.Min(1, security / FullSecurity), supervised, monthly, factor, issues,
             quantumUnits, quantumUnits * QuantumPerUnit * factor);
     }
+
+    /// <summary>Un problème d'un équipement : ce qui manque pour qu'il marche, et l'objet du catalogue qui le résout (s'il y en a un).</summary>
+    public record ItemIssue(string Text, string? Fix = null);
+
+    /// <summary>
+    /// Les problèmes de chaque équipement du local (pour l'indicateur au-dessus de l'objet) : une baie dont les serveurs n'ont
+    /// pas de switch, un tiroir de disques sans stockage 2U, un cryostat sans sa baie de contrôle ou son support, et les baies
+    /// et serveurs d'un site qui manque d'électricité, de froid ou de débit. Calculé d'après les mêmes règles que <see cref="Of"/>.
+    /// </summary>
+    public static Dictionary<int, List<ItemIssue>> ItemIssues(Premises premises)
+    {
+        var result = new Dictionary<int, List<ItemIssue>>();
+        void Add(PlacedItem item, ItemIssue issue)
+        {
+            if (!result.TryGetValue(item.Id, out var list))
+                result[item.Id] = list = new List<ItemIssue>();
+            list.Add(issue);
+        }
+        foreach (var rack in premises.Floor.Where(i => i.Def.Kind == FurnitureKind.Rack))
+        {
+            var modules = Modules(premises, rack).Select(m => m.Module).ToList();
+            bool servers = modules.Any(m => m.Def.Hosting + m.Def.Compute + m.Def.Gpu + m.Def.Storage > 0);
+            if (servers && modules.All(m => m.DefId != "module_network_switch_1u"))
+                Add(rack, new ItemIssue("Pas de switch : ses serveurs ne sont pas reliés au réseau.", "module_network_switch_1u"));
+            if (modules.Any(m => m.DefId == "module_storage_jbod_4u") && modules.All(m => m.DefId != "module_storage_2u"))
+                Add(rack, new ItemIssue("Le tiroir de disques demande un stockage 2U dans la même baie.", "module_storage_2u"));
+        }
+        int Count(string id) => premises.Items.Count(i => i.DefId == id);
+        int controls = Count("quantum_control_rack"), cryo = Count("cryo_support_unit");
+        int index = 0;
+        foreach (var cryostat in premises.Floor.Where(i => i.DefId == "quantum_cryostat_closed").OrderBy(i => i.Id))
+        {
+            if (index >= controls)
+                Add(cryostat, new ItemIssue("Il lui faut une baie de contrôle micro-ondes.", "quantum_control_rack"));
+            if (index >= cryo)
+                Add(cryostat, new ItemIssue("Il lui faut un support cryogénique.", "cryo_support_unit"));
+            index++;
+        }
+        // Ce qui manque au site entier se signale sur ses baies et ses serveurs, là où ça bloque
+        var summary = Of(premises);
+        var site = new List<ItemIssue>();
+        if (summary.PowerDraw > summary.PowerSupply)
+            site.Add(new ItemIssue($"Électricité insuffisante sur le site : {summary.PowerDraw:0.#} kW pour {summary.PowerSupply:0.#}.", "power_distribution_cabinet"));
+        if (summary.Heat > summary.Cooling)
+            site.Add(new ItemIssue($"Le site chauffe : {summary.Heat:0.#} kW de chaleur pour {summary.Cooling:0.#} évacués.", "crac_unit"));
+        if (summary.NetworkNeeded > summary.Network)
+            site.Add(new ItemIssue($"Débit réseau insuffisant : {summary.NetworkNeeded:0} demandés pour {summary.Network:0}.", "router"));
+        if (site.Count > 0)
+            foreach (var item in premises.Floor.Where(i => i.Def.Kind is FurnitureKind.Rack or FurnitureKind.Server && i.Def.Power > 0
+                                                           || i.Def.Kind == FurnitureKind.Rack))
+                foreach (var issue in site)
+                    Add(item, issue);
+        return result;
+    }
 }

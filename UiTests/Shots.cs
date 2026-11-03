@@ -78,3 +78,61 @@ public class Lot1Shots
         menu.Close();
     }
 }
+
+[Explicit, Category("Shots")]
+public class Lot2Shots
+{
+    [AvaloniaTest]
+    public void BuildingAndCustomization()
+    {
+        var (window, game, campaign) = Shots.Fresh(tutorial: false);
+        campaign.Ledger.Cash = 2_000_000;
+        campaign.CheatUnlockAll();
+        campaign.MoveTo("small");
+        foreach (var bin in campaign.Premises.Items.Where(i => i.DefId is "trash_bin" or "recycling_station").ToList())
+            campaign.Premises.Items.Remove(bin);
+        campaign.InvalidateLayout();
+        campaign.SeatEveryone(buy: true);
+        for (int i = 0; i < 6; i++)
+        {
+            campaign.Premises.Litter.Add(new Core.space.LitterSpot { X = 2 + i % 3, Y = 3 + i / 3, Kind = i % 3 });
+        }
+        game.Tick(0.3);
+        game.OpenRoot(new UI.Hud.Panels.BuildPanel());
+        game.Tick(0.3);
+        Shots.Save(window, "lot2_build_panel");
+
+        // Aperçu : parquet sur tout le sol, couleur noyer
+        game.Session.SetFinish(new UI.Game.FinishTool("floor_parquet", "all", "walnut"));
+        game.RefreshPanel();
+        game.Tick(0.3);
+        Shots.Save(window, "lot2_preview_floor");
+        game.Session.SetFinish(new UI.Game.FinishTool("pattern_brick", "both", "sage"));
+        game.RefreshPanel();
+        game.Tick(0.3);
+        Shots.Save(window, "lot2_preview_walls");
+        game.Session.SetFinish(null);
+
+        // Un canapé recoloré et sa fiche
+        var (x, y, f) = campaign.FindSpot(Core.space.FurnitureCatalog.Get("sofa"))!.Value;
+        campaign.BuyAndPlace("sofa", x, y, f);
+        var sofa = campaign.Premises.Items.Last();
+        campaign.SetItemColor(sofa.Id, "fabric", "rose");
+        game.ClosePanels();
+        game.Session.Select(UI.Game.SelectionKind.Item, sofa.Id);
+        game.Tick(0.3);
+        Shots.Save(window, "lot2_sofa_colors");
+
+        // Une baie sans switch dans une salle serveur
+        campaign.RentSite("server_room");
+        var spot = campaign.FindSpot(Core.space.FurnitureCatalog.Get("rack_standard"))!.Value;
+        campaign.BuyAndPlace("rack_standard", spot.X, spot.Y, spot.Facing);
+        var rack = campaign.Premises.Items.Last();
+        campaign.BuyAndAttach("module_server_1u", rack.Id);
+        game.Session.Select(UI.Game.SelectionKind.Item, rack.Id);
+        game.Scene.ResetCamera();
+        game.Tick(0.3);
+        Shots.Save(window, "lot2_rack_issue");
+        window.Close();
+    }
+}

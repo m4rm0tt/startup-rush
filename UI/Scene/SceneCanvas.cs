@@ -54,6 +54,31 @@ public partial class SceneCanvas : Control
     private Campaign Campaign => _session.Campaign;
     private Premises Premises => Campaign.Premises;
 
+    private string? _shownKey;
+    private Premises? _shown;
+
+    /// <summary>
+    /// Le local tel qu'on le dessine : le vrai, ou une copie avec la finition à l'essai (aperçu de l'outil de finitions, sur
+    /// toute la cible ou sur la case survolée). Rien n'est payé ni modifié tant qu'on ne pose pas.
+    /// </summary>
+    private Premises Shown
+    {
+        get
+        {
+            if (_session.Finish is not { } tool || tool.Target(Premises, _hover) is not { } target)
+                return Premises;
+            string key = $"{Premises.Id}|{Premises.GetHashCode()}|{tool}|{target}|{Premises.FloorPatches.Count}|{Premises.FloorMaterial}|{Premises.LeftPattern}|{Premises.RightPattern}|{Premises.WallPattern}|{Premises.LeftWallColor}|{Premises.RightWallColor}";
+            if (key != _shownKey || _shown == null)
+            {
+                var copy = Premises.PreviewCopy();
+                Finishes.Apply(copy, tool.Def, target, tool.Color);
+                _shown = copy;
+                _shownKey = key;
+            }
+            return _shown;
+        }
+    }
+
     public int Zoom => _zoom;
 
     /// <summary>Place le survol sur une case (utilisé par le parcours de captures, sans souris).</summary>
@@ -99,7 +124,12 @@ public partial class SceneCanvas : Control
 
     private string Signature(Dictionary<int, Seated> seated, Dictionary<int, Seated> operators)
     {
-        var sb = new StringBuilder(Premises.PlanId).Append('|').Append(Premises.FloorMaterial).Append('|').Append(Premises.WallPattern);
+        var shown = Shown;
+        var sb = new StringBuilder(shown.PlanId).Append('|').Append(shown.FloorMaterial).Append('|').Append(shown.WallPattern)
+            .Append('|').Append(shown.LeftPattern).Append(shown.RightPattern).Append(shown.LeftWallColor).Append(shown.RightWallColor);
+        foreach (var p in shown.FloorPatches)
+            sb.Append('/').Append(p.Material).Append(p.U).Append(',').Append(p.V).Append(',').Append(p.Width).Append(',').Append(p.Depth)
+                .Append(string.Join(",", p.Swatches.Select(kv => kv.Key + kv.Value)));
         foreach (var i in Premises.Items)
             sb.Append('|').Append(i.Id).Append(i.DefId).Append(i.X).Append(',').Append(i.Y).Append(i.Facing).Append(i.HostId).Append(i.Socket)
                 .Append(string.Join(",", i.Swatches.Select(kv => kv.Key + kv.Value)));
@@ -124,7 +154,7 @@ public partial class SceneCanvas : Control
         if (signature == _signature && _bitmap != null)
             return;
         _signature = signature;
-        _room = RoomRenderer.Render(Premises, seated, operators, fade, cartons);
+        _room = RoomRenderer.Render(Shown, seated, operators, fade, cartons);
         _bitmap = _room.Image.ToBitmap();
     }
 
@@ -259,6 +289,7 @@ public partial class SceneCanvas : Control
         context.DrawImage(_bitmap, new Rect(0, 0, _bitmap.PixelSize.Width, _bitmap.PixelSize.Height),
             new Rect(origin.X, origin.Y, _room.Image.W * Scale, _room.Image.H * Scale));
 
+        DrawLitter(context);
         if (_session.BuildMode)
             DrawBuildOverlay(context);
         DrawSelection(context);
@@ -287,6 +318,20 @@ public partial class SceneCanvas : Control
                 var at = ToScreen(sx - 8, sy - 56);
                 context.DrawImage(mark, new Rect(0, 0, 16, 16), new Rect(at.X, at.Y, 16 * Scale, 16 * Scale));
             }
+        // Équipements à problème (baie sans switch, cryostat incomplet, site qui manque d'électricité...) : un « ! » au-dessus de
+        // l'objet, qui se clique ; la fiche dit ce qui manque et propose de l'acheter. Il disparaît dès que c'est réglé.
+        foreach (var (itemId, issues) in Campaign.ItemIssues(Premises))
+        {
+            if (issues.Count == 0 || _room!.Hits.FirstOrDefault(h => !h.Person && h.Id == itemId) is not { } hit)
+                continue;
+            double cx = hit.Polygon.Average(p => p.X), top = hit.Polygon.Min(p => p.Y);
+            var rect = new Rect(ToScreen(cx - 9, top - 22), new Size(18 * Scale, 18 * Scale));
+            bool blink = Effects && (int)(_clock / 0.5) % 2 == 1;
+            context.FillRectangle(Palette.Brush("#2b2128"), rect.Inflate(Scale));
+            context.FillRectangle(Palette.Brush(blink ? "#f29483" : "#c8453d"), rect);
+            context.DrawImage(PackLibrary.Icon("icon_warning", "#fbf5e6"), new Rect(0, 0, 16, 16), rect.Deflate(Scale));
+            waitingHits.Add(new HitRegion(false, itemId, [(cx - 11, top - 24), (cx + 11, top - 24), (cx + 11, top - 2), (cx - 11, top - 2)], int.MaxValue));
+        }
         int operatorIndex = 0;
         var heads = new List<(double X, double Y)>();
         foreach (var person in Campaign.People)
@@ -364,6 +409,32 @@ public partial class SceneCanvas : Control
         }
         WatchDay(heads);
         _waitingHits = waitingHits;
+    }
+
+    // Trois déchets en pixel art (papier froissé, gobelet, emballage), dessinés point par point : (x, y, couleur)
+    private static readonly (int X, int Y, string Color)[][] LitterArt =
+    [
+        [(1, 0, "#fbf5e6"), (2, 0, "#fbf5e6"), (0, 1, "#fbf5e6"), (1, 1, "#d6c6aa"), (2, 1, "#fbf5e6"), (3, 1, "#fbf5e6"), (0, 2, "#d6c6aa"),
+         (1, 2, "#fbf5e6"), (2, 2, "#d6c6aa"), (3, 2, "#fbf5e6"), (1, 3, "#9c8878"), (2, 3, "#9c8878")],
+        [(0, 0, "#fbf5e6"), (1, 0, "#fbf5e6"), (2, 0, "#fbf5e6"), (0, 1, "#c8453d"), (1, 1, "#c8453d"), (2, 1, "#c8453d"), (0, 2, "#fbf5e6"),
+         (1, 2, "#c8453d"), (2, 2, "#fbf5e6"), (1, 3, "#9c8878"), (2, 3, "#9c8878"), (3, 2, "#9c8878")],
+        [(0, 1, "#ecb841"), (1, 0, "#ecb841"), (2, 1, "#fbd769"), (3, 0, "#ecb841"), (1, 1, "#d39a2f"), (2, 0, "#fbd769"), (0, 2, "#9c8878"),
+         (1, 2, "#d39a2f"), (2, 2, "#9c8878"), (3, 1, "#d39a2f")],
+    ];
+
+    /// <summary>Les déchets au sol du site affiché (Campaign.Litter.cs), à leur case : un clic les ramasse.</summary>
+    private void DrawLitter(DrawingContext context)
+    {
+        foreach (var spot in Premises.Litter)
+        {
+            var (x, y) = Tile(spot.X + 0.5 + (spot.Kind - 1) * 0.15, spot.Y + 0.5);
+            var art = LitterArt[Math.Clamp(spot.Kind, 0, LitterArt.Length - 1)];
+            double px = 2 * Scale;
+            var origin = ToScreen(x - 4, y - 6);
+            context.FillRectangle(Palette.Brush("#402b2128"), new Rect(origin.X - px * 0.5, origin.Y + px * 3, px * 5, px * 1.5));
+            foreach (var (dx, dy, color) in art)
+                context.FillRectangle(Palette.Brush(color), new Rect(origin.X + dx * px, origin.Y + dy * px, px, px));
+        }
     }
 
     /// <summary>Une bulle de sommeil (« z Z ») en pixel art, qui monte doucement au-dessus du lit.</summary>
@@ -556,6 +627,13 @@ public partial class SceneCanvas : Control
         var point = e.GetCurrentPoint(this);
         if (point.Properties.IsRightButtonPressed || point.Properties.IsMiddleButtonPressed)
         {
+            if (point.Properties.IsRightButtonPressed && _session.Finish != null)
+            {
+                _session.SetFinish(null);
+                Feedback?.Invoke("", true);
+                e.Handled = true;
+                return;
+            }
             if (point.Properties.IsRightButtonPressed && _session.Tool != null)
             {
                 _session.SetTool(null);
@@ -572,6 +650,25 @@ public partial class SceneCanvas : Control
         var cell = CellAt(point.Position);
         if (_session.Tool is { } tool)
             Place(tool, cell);
+        else if (_session.Finish is { Immediate: false } finish)
+        {
+            // Finitions : la case cliquée (ou le mur qui la longe) reçoit ce que montrait l'aperçu
+            var target = finish.Target(Premises, cell);
+            var result = target == null ? CommandResult.Fail(finish.Mode == "pick" ? "Clique une case le long d'un mur du fond." : "Clique une case du local.")
+                : Campaign.SetFinish(finish.FinishId, target, finish.Color);
+            Sfx.Play(result.Ok ? Sound.Place : Sound.Error);
+            if (result.Ok)
+                Sparkle(cell);
+            Feedback?.Invoke(result.Message, result.Ok);
+        }
+        else if (Premises.Litter.Any(l => l.X == cell.X && l.Y == cell.Y) && HitAt(ToWorld(point.Position)) is not { Person: true })
+        {
+            // Un déchet au sol se ramasse d'un clic
+            var result = Campaign.PickUpLitter(cell.X, cell.Y);
+            Sfx.Play(Sound.Click);
+            Sparkle(cell);
+            Feedback?.Invoke(result.Message, result.Ok);
+        }
         else
         {
             var hit = HitAt(ToWorld(point.Position));

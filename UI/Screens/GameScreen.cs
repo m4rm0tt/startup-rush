@@ -98,6 +98,8 @@ public class GameScreen : UserControl, IScreen
 
         _inspector.Margin = new Thickness(10, 0, 0, 10);
         _hud.Children.Add(_inspector);
+        // Les bulles se posent au-dessus de la fiche de sélection (elles la recouvraient en bas à gauche)
+        _inspector.SizeChanged += (_, e) => _toasts.Margin = new Thickness(10, 0, 0, Math.Max(84, e.NewSize.Height + 20));
         _panelFrame.Child = new Grid { Children = { _panelBody, PanelHandle() } };
         _panelFrame.IsVisible = false;
         _hud.Children.Add(_panelFrame);
@@ -497,6 +499,7 @@ public class GameScreen : UserControl, IScreen
     public void ClosePanels()
     {
         _stack.Clear();
+        Session.SetFinish(null);
         Session.BuildMode = false;
         Session.SetTool(null);
         Session.BuildMode = false;
@@ -1135,6 +1138,13 @@ public class GameScreen : UserControl, IScreen
         if (Session.Tool != null)
         {
             Session.SetTool(null);
+            return;
+        }
+        if (Session.Finish != null)
+        {
+            Session.SetFinish(null);
+            Session.BuildMode = false;
+            RefreshPanel();
             return;
         }
         if (_stack.Count > 0)

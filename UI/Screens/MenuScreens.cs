@@ -206,7 +206,9 @@ public class NewCampaignScreen : MenuScreen
     public static string OutfitName(string id) => id switch
     {
         "teal" => "sarcelle", "coral" => "corail", "sun" => "soleil", "sky" => "ciel", "sage" => "sauge", "navy" => "marine",
-        "rose" => "rose", "graphite" => "graphite", "plastic" => "blanc cassé", "steel" => "acier", _ => id
+        "rose" => "rose", "graphite" => "graphite", "plastic" => "blanc cassé", "steel" => "acier",
+        "oak" => "chêne", "walnut" => "noyer", "birch" => "bouleau", "brass" => "laiton", "copper" => "cuivre", "cream" => "crème",
+        "sand" => "sable", "concrete" => "béton", "leaf" => "feuille", "red" => "rouge", _ => id
     };
 
     private static string RampName(string id) => id switch

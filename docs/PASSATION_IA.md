@@ -251,3 +251,22 @@ lots de `docs/V1_ETAT.md`, et le §11 ci-dessous pour ce que le lot 6 laisse en 
 - Ouvert : BUG-010 (taille du texte, décision de direction artistique), BUG-013 (trois icônes pour quatre vitesses), BUG-009
   (fenêtres plus petites que 1600 × 900 non vérifiées), stratégie « marketing_excessif » à surveiller, et tout reste à
   valider à la souris sous Windows.
+
+## 15. Phase « première version Steam » (3 novembre 2026)
+
+- Consigne : six lots dans l'ordre (bugs, sauvegardes, interface/stabilité/performances, équilibrage, prise en main et
+  objectifs, anglais et distribution), puis Steam. La liste des « 100 améliorations » est une réserve d'idées, pas une commande.
+  Hors périmètre : nouveaux mini-jeux, concurrents/rachats/bourse, relations entre employés, mods, héritage, météo, animaux,
+  rotation de caméra, cloisons, manette, villes, scénarios.
+- **Suivi : `docs/CHECKLIST_STEAM_V1.md`** (état vérifié avant de commencer, puis une ligne par tâche, avec ses tests).
+- Identité Git de cette phase : `m4rm0tt` / `esteban.madrazo-bb@proton.me` (config locale), avec les lignes `Co-Authored-By`
+  et `Claude-Session` demandées par la session. Push SSH sur `origin new-assets`.
+- Nouveaux points d'entrée : `Core/GameCulture.cs` (format des nombres, installé au démarrage et dans les tests par
+  `GameCultureSetup`), `UI/CrashLog.cs` (journaux et sauvegarde d'urgence), `PixelText.AutoScale` et `PixelText.Large`,
+  `SaveStore.DeleteCampaign` / `TrashFolder`, `PackLibrary.SpeedFour`.
+- Captures utiles (`UiTests/Shots.cs`, catégorie Shots) : `SteamShots`, `LargeTextShots`, `ResolutionShots` (5 résolutions),
+  `Lot6Shots` ; sonde `PerfProbe` (Explicit).
+- Lots 4 à 6 menés en parallèle par des agents dans des worktrees, fusionnés dans `new-assets` : voir leurs comptes rendus
+  (`docs/equilibrage/bilan_steam_v1.md`, `docs/LOT5_OBJECTIFS.md`, `docs/LOT6_ANGLAIS.md`) et la checklist pour ce qui est
+  réellement fait.
+

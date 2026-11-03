@@ -6,6 +6,13 @@ Registre d'usage : [`docs/asset_usage.csv`](asset_usage.csv), tenu par `tools/bu
 
 Ce fichier sert à reprendre le travail : il dit ce qui existe vraiment dans le code, ce qui manque, et où en est chaque lot.
 
+> **Vérifié le 3 novembre 2026** (phase « version Steam », suivi dans `docs/CHECKLIST_STEAM_V1.md`) : plusieurs « reste à
+> faire » plus bas sont **périmés** et ont été vérifiés dans le code : `moving_box` est intégré (commit `9e1cb36` : cartons
+> à l'entrée du siège tant que des objets attendent, clic = contenu réel) ; les opérateurs de production sont assis devant
+> leur station (`RoomRenderer.OperatorSeat`) ; le fondateur prépare la recherche au terminal (`Campaign.ResearchTerminal`,
+> bouton de Recherche) ; les transferts de stock entre sites existent (`Campaign.Industry.cs`, « Transferts entre sites »).
+> Les lignes historiques ci-dessous sont gardées telles quelles.
+
 ## Décisions qui changent la base
 
 | Sujet | Avant (version tycoon 2.1) | V1 |

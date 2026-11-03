@@ -232,3 +232,22 @@ lots de `docs/V1_ETAT.md`, et le §11 ci-dessous pour ce que le lot 6 laisse en 
 - Pièges vus : pas de Python sur ce poste (script de remplacement en PowerShell) ; un fichier `.ps1` sans BOM casse les accents
   (passer les textes par des fichiers UTF-8 lus explicitement) ; `Tests/bin` refusait d'écrire `.msCoverageSourceRootsMapping_*`
   (supprimer le fichier) ; les tests lancés avec `-o` hors du dépôt échouent (ils cherchent la racine du dépôt).
+
+## 14. Demandes des testeurs, sur le VPS (novembre 2026)
+
+- Reprise sur un VPS Linux sans écran (Ubuntu 24.04). SDK .NET 9 dans `/root/.dotnet`, hors PATH : préfixer chaque commande par
+  `export PATH=$PATH:/root/.dotnet DOTNET_ROOT=/root/.dotnet DOTNET_NOLOGO=1`. Push par SSH (clé du VPS sur le compte GitHub).
+- Pour cette mission, commits sous **Esteban Madrazo / esteban.madrazo-bb@proton.me** (config locale du dépôt), **sans ligne
+  `Co-Authored-By`** (consigne explicite de l'utilisateur, prioritaire sur §3).
+- Suivi détaillé : `docs/DEVELOPMENT_PROGRESS.md` (chaque demande, fichiers, tests, mesures) ; état par demande :
+  `docs/BACKLOG_TESTEURS.md`. Toutes les demandes des testeurs sont faites sauf E1 (moins de texte), partiel.
+- Nouveaux fichiers du moteur : `Campaign.Tutorial.cs`, `Campaign.Customize.cs` (couleurs, capacité), `Campaign.Litter.cs`,
+  `Campaign.Releases.cs` (versions préparées puis publiées, communauté), `MiniGames.cs` (mini-jeux de terminal) ; interface :
+  `UI/Hud/MiniGames.cs`, `Ui.Help`. Format de sauvegarde 9.
+- Voir l'interface sans Windows : captures rendues sans fenêtre, `STARTUPRUSH_SHOTS=<dossier> dotnet test UiTests/UiTests.csproj
+  --filter "FullyQualifiedName~Lot4Shots"` (classes `Lot1Shots` à `Lot4Shots` dans `UiTests/Shots.cs`).
+- Le rapport d'équilibrage prend ~15 minutes sur ce VPS (pas 2). `AnAdvancedCampaignRendersAFrameQuickly` y échoue (rendu
+  processeur seul) : à juger sur un poste Windows.
+- Ouvert : BUG-010 (taille du texte, décision de direction artistique), BUG-013 (trois icônes pour quatre vitesses), BUG-009
+  (audit complet des alignements), E1 sur les autres menus, stratégie « marketing_excessif » à surveiller, et tout reste à
+  valider à la souris sous Windows.

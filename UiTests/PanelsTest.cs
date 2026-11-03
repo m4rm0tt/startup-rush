@@ -23,6 +23,8 @@ public class PanelsTest
         var window = new MainWindow(new SaveStore(root), new Settings(), Path.Combine(root, "settings.json"));
         var campaign = Campaign.New("Tests UI", "Alex", "Studio Test", FounderProfile.Generalist, 42);
         campaign.Ledger.Cash = 3_000_000;
+        // Une partie avancée a déjà vu son bilan de réussite (lot 5) : il n'interrompt pas les tests des menus
+        campaign.FinalGoalAcknowledged = true;
         campaign.CheatUnlockAll();
         Assert.That(campaign.RentSite("hw_workshop").Ok, Is.True);
         Assert.That(campaign.InstallLayout("assembly").Ok, Is.True);

@@ -32,14 +32,19 @@ Statuts : **fait** (vérifié par un test automatique ou une capture regardée, 
 
 ## Lot 2 — Sauvegardes fiables
 
+Déjà là avant cette phase (vérifié dans `SaveStore.cs` et `SaveTest`) : un dossier par partie, sauvegardes manuelles nommées,
+3 automatiques tournantes, sauvegarde de sortie, écriture par fichier temporaire + remplacement avec `.bak`, fichier abîmé
+gardé en `.corrupt` et signalé dans la liste, migrations des formats 4 à 7 testées, copie d'avant migration (`.v<n>.json`).
+
 | Tâche | Statut | Détail |
 |---|---|---|
-| Plusieurs parties (nom, date, chargement) | à faire | |
-| Trois sauvegardes automatiques tournantes | à faire | |
-| Écriture robuste (fichier temporaire puis remplacement) | à faire | |
-| Récupération depuis une sauvegarde automatique | à faire | |
-| Anciennes sauvegardes | à faire | |
-| Confirmation avant suppression | à faire | |
+| Plusieurs parties (nom, date, chargement) | fait (existant) | Écran « Charger » : une rubrique par partie (nom — entreprise), date de jeu, date d'écriture. Capture `steam_load` regardée |
+| Trois sauvegardes automatiques tournantes | fait (existant) | `CampaignsAreStoredSeparatelyAndAutosavesRotate` |
+| Écriture robuste | fait | Temporaire vidé jusqu'au disque (`Flush(true)`) avant remplacement ; en cas d'échec, l'ancien fichier reste intact et le temporaire est effacé (`AFailedWriteLeavesThePreviousSaveIntactAndNoTemporaryFile`) |
+| Récupération depuis une sauvegarde automatique | fait | Fichier puis `.bak` illisibles : la sauvegarde lisible la plus récente de la même partie est chargée, avec un message (`WhenTheSaveAndItsBackupAreUnreadableTheLatestAutosaveIsLoaded`) |
+| Anciennes sauvegardes | fait (existant) | Formats 4 à 7 testés ; les copies d'avant migration ne sont plus listées comme sauvegardes (« Automatique 7 », `MigrationCopiesAreNotListedAsSaves`) |
+| Confirmation avant suppression | fait | « Supprimer la partie » → confirmation → dossier déplacé dans `StartupRush/deleted/` (rien d'effacé). `DeletingACampaignMovesItOutOfTheListWithoutErasingIt`, `LoadScreenTest` |
+| **Windows** | à valider | Écriture et remplacement sur NTFS (`File.Replace`), dossier `%AppData%\StartupRush` |
 
 ## Lot 3 — Interface, stabilité, performances
 

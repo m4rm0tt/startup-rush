@@ -260,3 +260,29 @@ public class Lot6Shots
         window.Close();
     }
 }
+
+[Explicit, Category("Shots")]
+public class SteamShots
+{
+    [AvaloniaTest]
+    public void LoadScreen()
+    {
+        string root = Path.Combine(Path.GetTempPath(), "startuprush_uitests", Guid.NewGuid().ToString("N"), "campaigns");
+        var store = new SaveStore(root);
+        var a = Campaign.New("Partie A", "Alex", "Studio Léman", FounderProfile.Generalist, 1);
+        a.AdvanceDays(40);
+        store.Save(a, SaveKind.Manual, "Avant la levée");
+        for (int i = 0; i < 4; i++)
+        {
+            a.AdvanceDays(3);
+            store.Save(a, SaveKind.Auto);
+        }
+        var b = Campaign.New("Partie B", "Sam", "Atelier Rhône", FounderProfile.Generalist, 2);
+        store.Save(b, SaveKind.Quick);
+        var window = new MainWindow(store, new Settings(), Path.Combine(root, "settings.json")) { Width = 1600, Height = 900 };
+        window.Show();
+        window.ShowLoad();
+        Shots.Save(window, "steam_load");
+        window.Close();
+    }
+}

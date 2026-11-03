@@ -271,6 +271,72 @@ public class SaveTest
     }
 
     [Test]
+    public void WhenTheSaveAndItsBackupAreUnreadableTheLatestAutosaveIsLoaded()
+    {
+        var store = new SaveStore(_root);
+        var campaign = NewCampaign(4);
+        campaign.AdvanceDays(3);
+        store.Save(campaign, SaveKind.Auto);
+        long autosaveMinute = campaign.Minute;
+        string path = store.Save(campaign, SaveKind.Quick);
+        File.WriteAllText(path, "{ abîmé");
+        File.WriteAllText(path + ".bak", "aussi abîmé");
+        File.SetLastWriteTimeUtc(path, DateTime.UtcNow.AddMinutes(1));
+
+        var (loaded, message) = store.LoadWithRecovery(path);
+
+        Assert.That(loaded, Is.Not.Null, message);
+        Assert.That(loaded!.Minute, Is.EqualTo(autosaveMinute));
+        Assert.That(message, Does.Contain("auto-1"));
+        Assert.That(File.Exists(path + ".corrupt"), Is.True);
+    }
+
+    [Test]
+    public void AFailedWriteLeavesThePreviousSaveIntactAndNoTemporaryFile()
+    {
+        var store = new SaveStore(_root);
+        var campaign = NewCampaign(5);
+        string path = store.Save(campaign, SaveKind.Manual, "Partie");
+        string before = File.ReadAllText(path);
+        // Le temporaire est occupé par un dossier : l'écriture échoue avant de toucher au fichier
+        Directory.CreateDirectory(path + ".tmp");
+        Assert.That(() => SaveStore.WriteAtomic(path, "nouveau contenu"), Throws.InstanceOf<Exception>());
+        Assert.That(File.ReadAllText(path), Is.EqualTo(before));
+        Directory.Delete(path + ".tmp");
+
+        SaveStore.WriteAtomic(path, before);
+        Assert.That(File.Exists(path + ".tmp"), Is.False, "pas de temporaire après une écriture réussie");
+    }
+
+    [Test]
+    public void DeletingACampaignMovesItOutOfTheListWithoutErasingIt()
+    {
+        var store = new SaveStore(Path.Combine(_root, "campaigns"));
+        var kept = NewCampaign(6);
+        var removed = NewCampaign(7);
+        store.Save(kept, SaveKind.Manual, "A");
+        store.Save(removed, SaveKind.Manual, "B");
+        store.Save(removed, SaveKind.Auto);
+
+        string? target = store.DeleteCampaign(removed.Id);
+
+        Assert.That(target, Is.Not.Null);
+        Assert.That(store.List().Select(e => e.Summary!.CampaignId), Is.All.EqualTo(kept.Id));
+        Assert.That(Directory.GetFiles(target!, "*.json"), Has.Length.EqualTo(2), "les fichiers sont gardés dans « deleted »");
+        Assert.That(store.DeleteCampaign("inconnue"), Is.Null);
+    }
+
+    [Test]
+    public void MigrationCopiesAreNotListedAsSaves()
+    {
+        var store = new SaveStore(_root);
+        var campaign = NewCampaign(8);
+        string path = store.Save(campaign, SaveKind.Auto);
+        File.Copy(path, Path.ChangeExtension(path, ".v7.json"));
+        Assert.That(store.List(campaign.Id), Has.Count.EqualTo(1));
+    }
+
+    [Test]
     public void TheLegacyRoguelikeProfileIsReadButNeverModified()
     {
         string legacy = Path.Combine(_root, "profile.json");

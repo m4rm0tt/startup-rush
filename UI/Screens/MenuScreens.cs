@@ -277,7 +277,16 @@ public class LoadScreen : MenuScreen
         foreach (var group in entries.GroupBy(e => e.Summary?.CampaignId ?? System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(e.Path))))
         {
             var first = group.FirstOrDefault(e => e.Summary != null)?.Summary;
-            list.Children.Add(Ui.Text(first != null ? $"{first.CampaignName} — {first.Company}" : "Campagne illisible", 17, Palette.Gold, bold: true));
+            string title = first != null ? $"{first.CampaignName} — {first.Company}" : "Campagne illisible";
+            string campaignId = group.Key;
+            var header = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
+            var name = Ui.Text(title, 17, Palette.Gold, bold: true);
+            name.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+            header.Children.Add(name);
+            var delete = Ui.Button("Supprimer la partie", () => ConfirmDelete(campaignId, title, group.Count()));
+            Grid.SetColumn(delete, 1);
+            header.Children.Add(delete);
+            list.Children.Add(header);
             foreach (var entry in group)
             {
                 Control line;
@@ -305,6 +314,32 @@ public class LoadScreen : MenuScreen
         var scroll = Ui.Scroll(list);
         scroll.MaxHeight = 460;
         Content = Frame(Ui.Column(12, Ui.Title("Charger une partie"), scroll, Ui.Button("Retour", () => Window.ShowTitle())), 680);
+    }
+
+    /// <summary>Confirmation avant de retirer une partie : son dossier part dans « deleted », rien n'est effacé du disque.</summary>
+    private void ConfirmDelete(string campaignId, string title, int saves)
+    {
+        Content = Frame(Ui.Column(12,
+            Ui.Title("Supprimer cette partie ?"),
+            Ui.Text($"« {title} » et ses {saves} sauvegarde(s) disparaîtront de la liste.", 15, Palette.Snow),
+            Ui.Muted($"Les fichiers sont déplacés dans {Window.Store.TrashFolder} : on peut encore les récupérer à la main."),
+            Ui.Row(10,
+                Ui.Button("Supprimer", () =>
+                {
+                    try
+                    {
+                        Window.Store.DeleteCampaign(campaignId);
+                        Sfx.Play(Sound.Select);
+                    }
+                    catch (Exception e) when (e is System.IO.IOException or UnauthorizedAccessException)
+                    {
+                        Sfx.Play(Sound.Error);
+                        Content = Frame(Ui.Column(12, Ui.Title("Suppression impossible"), Ui.Text(e.Message, 15, Palette.Lemon), Ui.Button("Retour à la liste", Build)), 560);
+                        return;
+                    }
+                    Build();
+                }, "red"),
+                Ui.Button("Annuler", Build))), 560);
     }
 
     private void Load(SaveEntry entry)

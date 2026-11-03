@@ -194,14 +194,60 @@ public class SaveStore
         return Path.GetFileName(free ?? slots.OrderBy(File.GetLastWriteTimeUtc).First());
     }
 
+    /// <summary>
+    /// Écrit d'abord un fichier temporaire, vidé jusqu'au disque, puis remplace l'ancien (gardé en .bak). Si l'écriture
+    /// échoue (disque plein, coupure), l'ancien fichier reste intact et le temporaire est effacé.
+    /// </summary>
     public static void WriteAtomic(string path, string content)
     {
         string temporary = path + ".tmp";
-        File.WriteAllText(temporary, content);
-        if (File.Exists(path))
-            File.Replace(temporary, path, path + ".bak", ignoreMetadataErrors: true);
-        else
-            File.Move(temporary, path);
+        try
+        {
+            using (var stream = new FileStream(temporary, FileMode.Create, FileAccess.Write, FileShare.None))
+            using (var writer = new StreamWriter(stream, new System.Text.UTF8Encoding(false)))
+            {
+                writer.Write(content);
+                writer.Flush();
+                stream.Flush(flushToDisk: true);
+            }
+            if (File.Exists(path))
+                File.Replace(temporary, path, path + ".bak", ignoreMetadataErrors: true);
+            else
+                File.Move(temporary, path);
+        }
+        catch
+        {
+            try
+            {
+                if (File.Exists(temporary))
+                    File.Delete(temporary);
+            }
+            catch (IOException)
+            {
+            }
+            throw;
+        }
+    }
+
+    /// <summary>Copie d'avant migration (« auto-1.v7.json ») : gardée telle quelle, jamais chargée à la place d'une sauvegarde.</summary>
+    private static readonly System.Text.RegularExpressions.Regex MigrationCopy = new(@"\.v\d+\.json$");
+
+    /// <summary>Dossier où vont les parties supprimées depuis le menu (récupérables à la main).</summary>
+    public string TrashFolder => Path.Combine(Path.GetDirectoryName(Path.GetFullPath(Root).TrimEnd(Path.DirectorySeparatorChar)) ?? Root, "deleted");
+
+    /// <summary>
+    /// Supprime une partie de la liste : son dossier part dans « deleted » (avec la date), rien n'est effacé du disque.
+    /// Renvoie le dossier d'arrivée, ou null si la partie n'existe pas.
+    /// </summary>
+    public string? DeleteCampaign(string campaignId)
+    {
+        string folder = CampaignFolder(campaignId);
+        if (string.IsNullOrWhiteSpace(campaignId) || !Directory.Exists(folder))
+            return null;
+        Directory.CreateDirectory(TrashFolder);
+        string target = Path.Combine(TrashFolder, $"{campaignId}-{DateTime.Now:yyyyMMdd-HHmmss}");
+        Directory.Move(folder, target);
+        return target;
     }
 
     /// <summary>Charge une sauvegarde. Si elle vient d'une ancienne version, l'original est d'abord copié en .v&lt;format&gt;.json (jamais écrasé).</summary>
@@ -227,7 +273,8 @@ public class SaveStore
             return result;
         var folders = campaignId != null ? [CampaignFolder(campaignId)] : Directory.GetDirectories(Root);
         foreach (string folder in folders.Where(Directory.Exists))
-        foreach (string path in Directory.GetFiles(folder, "*.json"))
+        // Les copies d'avant migration ne sont pas des sauvegardes à proposer (elles s'affichaient en « Automatique 7 »)
+        foreach (string path in Directory.GetFiles(folder, "*.json").Where(f => !MigrationCopy.IsMatch(Path.GetFileName(f))))
         {
             string name = Path.GetFileNameWithoutExtension(path);
             var kind = name.StartsWith("manual-") ? SaveKind.Manual : name == "exit" ? SaveKind.Quick : SaveKind.Auto;
@@ -287,11 +334,31 @@ public class SaveStore
                     var campaign = Load(backup);
                     return (campaign, $"Sauvegarde abîmée ({e.Message}). La version précédente a été chargée ; l'original est gardé en {Path.GetFileName(kept)}.");
                 }
-                catch (Exception inner) when (inner is JsonException or InvalidDataException or IOException)
+                catch (Exception inner) when (inner is JsonException or InvalidDataException or IOException or NotSupportedException)
                 {
                 }
             }
-            return (null, $"Sauvegarde illisible ({e.Message}). Elle est gardée en {Path.GetFileName(kept)} ; charge une autre sauvegarde de la campagne.");
+            // Ni le fichier ni sa copie : la sauvegarde lisible la plus récente de la même partie (automatique, de sortie ou manuelle)
+            string? folder = Path.GetDirectoryName(path);
+            if (folder != null && Directory.Exists(folder))
+            {
+                var others = Directory.GetFiles(folder, "*.json")
+                    .Where(f => !string.Equals(Path.GetFullPath(f), Path.GetFullPath(path), StringComparison.Ordinal) && !MigrationCopy.IsMatch(Path.GetFileName(f)))
+                    .OrderByDescending(File.GetLastWriteTimeUtc);
+                foreach (string other in others)
+                {
+                    try
+                    {
+                        var campaign = Load(other);
+                        return (campaign, $"Sauvegarde abîmée ({e.Message}). La sauvegarde « {Path.GetFileNameWithoutExtension(other)} » de la même partie a été chargée ; " +
+                                          $"l'original est gardé en {Path.GetFileName(kept)}.");
+                    }
+                    catch (Exception inner) when (inner is JsonException or InvalidDataException or IOException or NotSupportedException)
+                    {
+                    }
+                }
+            }
+            return (null, $"Sauvegarde illisible ({e.Message}). Elle est gardée en {Path.GetFileName(kept)} ; aucune autre sauvegarde lisible de cette partie.");
         }
     }
 

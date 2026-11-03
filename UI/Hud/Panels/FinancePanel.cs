@@ -44,8 +44,12 @@ public class FinancePanel : GamePanel
             column.Children.Add(situation);
         }
 
-        column.Children.Add(Ui.Section("Où va l'argent chaque mois", Costs()));
-        column.Children.Add(Ui.Section("D'où il vient", Incomes()));
+        column.Children.Add(Ui.HelpSection("Où va l'argent chaque mois", "Les charges fixes tombent chaque mois, que tes projets rapportent ou non : salaires " +
+            "(payés le 25), ta rémunération, le loyer et les charges du local, les serveurs et services. Si l'argent manque, les factures " +
+            "restent impayées : au bout de 20 jours vient la mise en demeure, puis la faillite si rien n'est payé avant la date limite.", Costs()));
+        column.Children.Add(Ui.HelpSection("D'où il vient", "Les revenus viennent des projets en ligne (abonnements, ventes, publicité, commissions) " +
+            "et des offres cloud. Un projet ne rapporte qu'une fois lancé, et ses utilisateurs arrivent peu à peu : garde de quoi tenir " +
+            "plusieurs mois avant qu'il paie ses charges.", Incomes()));
         if (Campaign.Sites.Count > 1 || Campaign.Ledger.SiteMonths.Values.Any(m => m.Keys.Any(k => k != Core.finance.Ledger.Common)))
             column.Children.Add(Ui.HelpSection("Résultat par site", SiteHelp, BySite()));
         column.Children.Add(Ui.Details("Détails : factures, mois par mois, financement", Ui.Column(10, Bills(), MonthTable(), Funding())));

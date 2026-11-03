@@ -42,9 +42,11 @@ public class ResearchPanel : GamePanel
             running.Children.Add(Ui.Muted("Aucune recherche en cours."));
         // Le fondateur peut préparer la recherche de son site au terminal (même budget du jour, mêmes équipements)
         var (canPrepare, prepareWhy) = Campaign.CanOpenTerminal(Campaign.ResearchTerminal);
-        running.Children.Add(Ui.Row(8,
-            Ui.Button("Préparer au terminal", () => Screen.OpenTerminal(Campaign.ResearchTerminal), canPrepare ? "gold" : "", enabled: canPrepare, icon: "icon_terminal"),
-            Ui.Muted(canPrepare ? $"Chaque mot juste fait avancer « {Campaign.ResearchFor(Campaign.SiteOf(Campaign.Founder))!.Def.Name} » ({Campaign.SiteOf(Campaign.Founder).Name})." : prepareWhy, 13)));
+        // Sans recherche en cours, la raison répétait « Aucune recherche en cours » : le bouton n'apparaît qu'avec une recherche
+        if (Campaign.Research.Count > 0)
+            running.Children.Add(Ui.Row(8,
+                Ui.Button("Préparer au terminal", () => Screen.OpenTerminal(Campaign.ResearchTerminal), canPrepare ? "gold" : "", enabled: canPrepare, icon: "icon_terminal"),
+                Ui.Muted(canPrepare ? $"Chaque mot juste fait avancer « {Campaign.ResearchFor(Campaign.SiteOf(Campaign.Founder))!.Def.Name} » ({Campaign.SiteOf(Campaign.Founder).Name})." : prepareWhy, 13)));
         column.Children.Add(Ui.Section("En cours", running));
 
         var catalog = new WrapPanel();
@@ -58,7 +60,8 @@ public class ResearchPanel : GamePanel
             body.Width = 300;
             catalog.Children.Add(new PixelPanel { Skin = "inset", Padding = new Avalonia.Thickness(10, 8), Margin = new Avalonia.Thickness(0, 0, 8, 8), Child = body });
         }
-        column.Children.Add(Ui.Section("Recherches possibles", catalog));
+        column.Children.Add(Ui.Section("Recherches possibles", catalog.Children.Count > 0 ? catalog
+            : Ui.Muted(Campaign.Research.Count > 0 ? "Les autres recherches sont en cours." : "Toutes les recherches ont été faites.", 13)));
         if (Campaign.ResearchDone.Count > 0)
             column.Children.Add(Ui.Section("Terminées", Ui.Muted(string.Join(" · ", Campaign.ResearchDone.Select(id => Campaign.ResearchDefOf(id).Name)), 13)));
         return column;

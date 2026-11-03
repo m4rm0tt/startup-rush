@@ -75,7 +75,12 @@ public static class Ui
         var panel = new StackPanel { Orientation = Orientation.Horizontal, Spacing = spacing };
         foreach (var child in children)
             if (child != null)
+            {
+                // Une étiquette à côté d'un bouton ou d'un champ plus haut se centre (elle restait collée en haut, BUG-009)
+                if (child is TextBlock && child.VerticalAlignment == VerticalAlignment.Stretch)
+                    child.VerticalAlignment = VerticalAlignment.Center;
                 panel.Children.Add(child);
+            }
         return panel;
     }
 

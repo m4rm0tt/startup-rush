@@ -126,7 +126,9 @@ public class SitesPanel : GamePanel
             foreach (var offer in places)
             {
                 string place = offer.Place;
-                card.Children.Add(Ui.Row(6, Ui.Text(place, 14, Palette.Cloud, wrap: false),
+                var placeName = Ui.Text(place, 14, Palette.Cloud, wrap: false);
+                placeName.Width = 90; // les boutons commencent au même endroit pour chaque adresse
+                card.Children.Add(Ui.Row(6, placeName,
                     Ui.Button(upfront >= refund ? $"Déménager ({upfront - refund:N0})" : $"Déménager (rend {refund - upfront:N0})", () => Screen.Confirm($"Déménager vers {offer.Name} ?",
                         $"Coût immédiat : {upfront - refund:N0} CHF (garantie {listing.Deposit:N0}, déménageurs, transport, moins la garantie de {Campaign.Premises.Name}). " +
                         $"Loyer : {listing.Rent:N0} CHF par mois, à la place de {Campaign.Premises.Rent:N0}. Tout ton matériel part dans les cartons.", "Déménager", () =>

@@ -231,3 +231,32 @@ public class Lot5Shots
         window.Close();
     }
 }
+
+[Explicit, Category("Shots")]
+public class Lot6Shots
+{
+    [AvaloniaTest]
+    public void RemainingMenus()
+    {
+        var (window, game, campaign) = Shots.Fresh(tutorial: false);
+        campaign.Ledger.Cash = 2_000_000;
+        campaign.CheatUnlockAll();
+        campaign.CheatStock();
+        var (_, product) = campaign.CreateProject("Planio", "freelances", Core.products.RevenueModel.Subscription);
+        campaign.CheatFinishWork();
+        campaign.Launch(product!.Id);
+        campaign.AdvanceDays(20);
+        foreach (var (name, panel) in new (string, UI.Hud.GamePanel)[]
+                 {
+                     ("research", new UI.Hud.Panels.ResearchPanel()), ("lab", new UI.Hud.Panels.LabPanel()),
+                     ("cloud", new UI.Hud.Panels.CloudPanel()), ("production", UI.Hud.Panels.ProjectsPanel.At("production")),
+                     ("notices", new UI.Hud.Panels.NoticesPanel()),
+                 })
+        {
+            game.OpenRoot(panel);
+            game.Tick(0.3);
+            Shots.Save(window, "lot6_" + name);
+        }
+        window.Close();
+    }
+}

@@ -48,7 +48,9 @@ public partial class Campaign
             c => c.TutorialEvents.Contains("tab:reviews")),
         new("update", "Prépare la version 2", "Dans l'onglet Composants, ajoute ou améliore un composant : il entre dans la prochaine version.", "P", "tool:Projets",
             c => c.Products.Any(p => p.IsLive && (p.Queue.Count > 0 || p.Staged.Count > 0 || p.Version >= 2))),
-        new("money", "L'argent", "L'argent est en haut à droite. Finances montre d'où il vient et où il part.", "F", "tool:Finances",
+        new("money", "L'argent", $"En haut à droite : ton argent et ce qu'il fait chaque mois. Les charges (salaires, loyer, serveurs) partent chaque mois, " +
+            $"les revenus viennent de tes utilisateurs payants. Une facture impayée {Tuning.Finance.OverdueDaysBeforeNotice} jours devient une mise en demeure : " +
+            $"sans paiement dans les {Tuning.Finance.NoticeDays} jours, c'est la faillite. Ouvre Finances pour voir le détail.", "F", "tool:Finances",
             c => c.TutorialEvents.Contains("open:finances")),
         new("build", "Chez toi", "Aménagement : une plante ou une lampe remonte le moral. Une corbeille évite les déchets par terre.", "B", "tool:Aménagement",
             c => c.TutorialEvents.Contains("open:build")),

@@ -285,6 +285,16 @@ public class SteamShots
         Shots.Save(window, "steam_load");
         window.Close();
     }
+
+    [AvaloniaTest]
+    public void TutorialMoneyStep()
+    {
+        var (window, game, campaign) = Shots.Fresh();
+        campaign.TutorialIndex = Campaign.TutorialSteps.ToList().FindIndex(s => s.Id == "money");
+        game.Tick(0.3);
+        Shots.Save(window, "steam_tutorial_money");
+        window.Close();
+    }
 }
 
 [Explicit, Category("Shots")]

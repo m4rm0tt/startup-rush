@@ -190,7 +190,9 @@ public static class ProductCatalog
         new("creators", "Créateurs", "social", 200_000, 6m, 1.3, "Veulent de l'audience."),
         new("crafts", "Artisans locaux", "marketplace", 150_000, 8m, 1.0, "Peu de vendeurs au début."),
         new("secondhand", "Occasion", "marketplace", 300_000, 5m, 1.4, "Beaucoup de demande, faibles marges."),
-        new("makers", "Makers", "board", 120_000, 65m, 1.3, "Bricoleurs et écoles : petits prix, gros volumes, achats sur un coup de cœur.") { Adoption = 1.3 },
+        // 95 CHF (65 avant le lot 4 de la version Steam) : à 65, ~31 CHF de marge × ~130 cartes par mois ne couvraient jamais le
+        // loyer de l'atelier et un opérateur (bilan docs/equilibrage/bilan_steam_v1.md) ; reste la carte la moins chère du jeu.
+        new("makers", "Makers", "board", 120_000, 95m, 1.3, "Bricoleurs et écoles : petits prix, gros volumes, achats sur un coup de cœur.") { Adoption = 1.3 },
         new("iot_industry", "Industrie", "board", 25_000, 220m, 0.7, "Veulent du robuste, paient plus."),
         new("gamers_pc", "Joueurs PC", "pc", 60_000, 1_100m, 1.0, "Veulent de la puissance et du silence."),
         new("office_pc", "Bureaux", "pc", 40_000, 750m, 0.8, "Des machines fiables, sans surprise."),

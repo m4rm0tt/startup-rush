@@ -34,7 +34,7 @@ public static class Strategies
             SelfHostAbove = 40_000,
             TreeOrder = ["advanced", "multisite", "server_room", "cloud_m", "cloud_offers", "search_ads", "optimization", "hiring", "loyalty"],
         },
-        new("materiel", "Comme plusieurs_petits, puis le matériel dès 50 000 CHF (une carte à 65 CHF met plusieurs mois à couvrir l'atelier) : un atelier, la recherche « Conception de cartes », une carte pour les makers fabriquée sur une ligne d'assemblage, vendue en ligne.")
+        new("materiel", "Comme plusieurs_petits, puis le matériel dès 50 000 CHF (une carte à 95 CHF met plusieurs mois à couvrir l'atelier) : un atelier, la recherche « Conception de cartes », une carte pour les makers fabriquée sur une ligne d'assemblage, vendue en ligne.")
         {
             Projects = [("freelances", null), ("casual", null), ("smb", null)], ProjectInterval = 75, Marketing = 200, MaxStaff = 2,
             HardwareAbove = 50_000, HardwareSegment = "makers",

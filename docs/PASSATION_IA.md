@@ -240,7 +240,7 @@ lots de `docs/V1_ETAT.md`, et le §11 ci-dessous pour ce que le lot 6 laisse en 
 - Pour cette mission, commits sous **Esteban Madrazo / esteban.madrazo-bb@proton.me** (config locale du dépôt), **sans ligne
   `Co-Authored-By`** (consigne explicite de l'utilisateur, prioritaire sur §3).
 - Suivi détaillé : `docs/DEVELOPMENT_PROGRESS.md` (chaque demande, fichiers, tests, mesures) ; état par demande :
-  `docs/BACKLOG_TESTEURS.md`. Toutes les demandes des testeurs sont faites sauf E1 (moins de texte), partiel.
+  `docs/BACKLOG_TESTEURS.md`. Toutes les demandes des testeurs sont faites.
 - Nouveaux fichiers du moteur : `Campaign.Tutorial.cs`, `Campaign.Customize.cs` (couleurs, capacité), `Campaign.Litter.cs`,
   `Campaign.Releases.cs` (versions préparées puis publiées, communauté), `MiniGames.cs` (mini-jeux de terminal) ; interface :
   `UI/Hud/MiniGames.cs`, `Ui.Help`. Format de sauvegarde 9.
@@ -249,5 +249,5 @@ lots de `docs/V1_ETAT.md`, et le §11 ci-dessous pour ce que le lot 6 laisse en 
 - Le rapport d'équilibrage prend ~15 minutes sur ce VPS (pas 2). `AnAdvancedCampaignRendersAFrameQuickly` y échoue (rendu
   processeur seul) : à juger sur un poste Windows.
 - Ouvert : BUG-010 (taille du texte, décision de direction artistique), BUG-013 (trois icônes pour quatre vitesses), BUG-009
-  (audit complet des alignements), E1 sur les autres menus, stratégie « marketing_excessif » à surveiller, et tout reste à
+  (Recherche, Laboratoire, Cloud, Production, Journal pas encore relus), stratégie « marketing_excessif » à surveiller, et tout reste à
   valider à la souris sous Windows.

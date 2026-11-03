@@ -40,7 +40,7 @@ Rien n'a encore été rejoué à la souris par un humain sous Windows (voir `BUG
 ## Gameplay et expérience
 | Demande | Statut | Ce qui a été fait |
 |---|---|---|
-| Moins de texte, moins de temps dans les menus | partiel | Explications rangées derrière des « ? » dans l'aménagement et les projets, cartes de composants plus parlantes, actions directes (publier depuis la notification). Le reste des menus n'a pas été repris un par un. |
+| Moins de texte, moins de temps dans les menus | terminé | Explications rangées derrière des « ? » dans tous les menus qui en avaient (aménagement, projets, finances, sites, fiche d'une personne, laboratoire), cartes de composants plus parlantes, actions directes (publier depuis la notification). |
 | Mini-jeux de publication moins ennuyeux | terminé | Quatre nouveaux mini-jeux de terminal (journal, pare-feu, fusion, commande) qui alternent et se corsent. |
 | Mini-jeux de terminal variés | terminé | Voir ci-dessus ; règle en une phrase, sans connaissance préalable. |
 | Expliquer l'IA | terminé | Chemin en 5 étapes avec l'étape en cours, ce que chaque choix influence, qui utilise le modèle et ce qu'il rapporte. |

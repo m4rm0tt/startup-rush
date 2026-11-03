@@ -215,7 +215,7 @@ public static class PackLibrary
     public static bool Has(string id)
     {
         EnsureLoaded();
-        return AssetsById.ContainsKey(id);
+        return id == SpeedFour || AssetsById.ContainsKey(id);
     }
 
     public static JsonElement Asset(string id)
@@ -358,12 +358,34 @@ public static class PackLibrary
     private static readonly Dictionary<string, Bitmap> Icons = new();
 
     /// <summary>Une icône 16 × 16 du pack (blanche), teintée par multiplication avec une couleur du thème.</summary>
+    /// <summary>
+    /// Le pack n'a que trois icônes de vitesse (BUG-013) : la vitesse 4 reprend le chevron exact de « icon_speed_3 »
+    /// (colonnes 2 à 4), répété quatre fois au même pas de 4 pixels, centré sur 16 × 16.
+    /// </summary>
+    public const string SpeedFour = "icon_speed_4";
+
+    private static Img BuildSpeedFour()
+    {
+        var three = Png(Asset("icon_speed_3").GetProperty("file").GetString()!);
+        var four = new Img(three.W, three.H);
+        for (int copy = 0; copy < 4; copy++)
+            for (int y = 0; y < three.H; y++)
+                for (int x = 0; x < 3; x++)
+                {
+                    int to = copy * 4 + x;
+                    if (to >= four.W)
+                        continue;
+                    Buffer.BlockCopy(three.P, (y * three.W + 2 + x) * 4, four.P, (y * four.W + to) * 4, 4);
+                }
+        return four;
+    }
+
     public static Bitmap Icon(string id, string hex)
     {
         string key = id + hex;
         if (Icons.TryGetValue(key, out var bitmap))
             return bitmap;
-        var img = Png(Asset(id).GetProperty("file").GetString()!).Clone();
+        var img = id == SpeedFour ? BuildSpeedFour() : Png(Asset(id).GetProperty("file").GetString()!).Clone();
         var c = Hex(hex);
         for (int i = 0; i < img.P.Length; i += 4)
             for (int k = 0; k < 3; k++)

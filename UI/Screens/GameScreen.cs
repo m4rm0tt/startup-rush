@@ -239,11 +239,11 @@ public class GameScreen : UserControl, IScreen
 
         var speeds = Ui.Row(4);
         speeds.Children.Add(Ui.IconButton("icon_pause", PlayerTogglePause, "Pause (Espace)", selected: Session.PausedByPlayer));
-        // Trois icônes de vitesse dans le pack pour quatre vitesses : le chiffre lève toute ambiguïté
+        // Une icône par vitesse (la 4e est composée du chevron du pack, PackLibrary.SpeedFour), plus le chiffre
         for (int i = 1; i < GameSession.Speeds.Length; i++)
         {
             int speed = i;
-            speeds.Children.Add(Ui.IconButton($"icon_speed_{Math.Min(i, 3)}", () => PlayerSetSpeed(speed),
+            speeds.Children.Add(Ui.IconButton($"icon_speed_{i}", () => PlayerSetSpeed(speed),
                 $"Vitesse {i} ({GameSession.Speeds[i]:0} min de jeu par seconde) — touche {i}", $"{i}", !Session.PausedByPlayer && Session.Speed == i));
         }
         // L'état du temps a une place fixe à droite des vitesses : l'étiquette qui apparaît (nuit accélérée, pause) ne décale

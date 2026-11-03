@@ -58,24 +58,40 @@ gardé en `.corrupt` et signalé dans la liste, migrations des formats 4 à 7 te
 | Plein écran / fenêtré, volumes | fait | Plein écran dans les réglages et F11, retenu ; volumes musique et bruitages déjà présents |
 | Écran de chargement | non nécessaire | Démarrage rapide : pas de barre ajoutée |
 
-## Lot 4 — Équilibrage
+## Lot 4 — Équilibrage (agent, fusionné)
 
 | Tâche | Statut | Détail |
 |---|---|---|
-| Logiciel, Studio/XR, matériel, IA/quantique, marketing intensif | à faire | Derniers chiffres : `BALANCE_REPORT.md` du 3 novembre (à revérifier) |
+| Parcours mesurés | fait (3 graines) | 12 parcours × 3 graines × 18 mois (`Tests/balance/SteamBalanceProbe.cs`, sur demande) : aucune faillite dans les parcours joués correctement ; marketing intensif 2 faillites sur 3, corrigé à temps 129 206 CHF ; IA en salle serveur et quantique lents mais viables. Détail : `docs/equilibrage/bilan_steam_v1.md` |
+| Impasse corrigée : carte pour makers | fait | Prix de référence du public Makers 65 → 95 CHF (seul changement) ; sur 36 mois, graines 11/23/37 : 18 545 → 107 034, 61 920 → 72 210, 73 070 → 84 561 CHF ; 11 autres parcours inchangés sur 18 mois |
+| Rapport complet 5 graines | à faire | `WriteBalanceReport` (~45 min sur le VPS) pas relancé après le changement |
 
-## Lot 5 — Prise en main et objectifs
-
-| Tâche | Statut | Détail |
-|---|---|---|
-| Tutoriel, explications, objectifs, objectif final, bilan, continuer | à faire | Tutoriel de 11 étapes déjà en place |
-
-## Lot 6 — Anglais et distribution
+## Lot 5 — Prise en main et objectifs (agent + moi, fusionné)
 
 | Tâche | Statut | Détail |
 |---|---|---|
-| Ressources de traduction, anglais, crédits, documents | à faire | |
+| Objectif final | fait | 2 000 000 CHF de valorisation (`Campaign.Valuation`, celle des investisseurs), sans impayés, un produit en ligne ; une seule fois ; `Campaign.Goals.cs`, `GoalsTest` (6) |
+| Objectifs progressifs | fait | Les 3 prochains jalons existants, dans Finances › Objectifs, sans récompense nouvelle |
+| Bilan réussite / faillite | fait | Durée, argent, revenus et dépenses, pire creux, utilisateurs, équipe, valorisation, 5 premiers produits ; « Continuer la partie » ou « Menu principal ». `GoalsUiTest`, captures regardées |
+| Charges, revenus, causes d'échec | fait | « ? » dans Finances ; étape « L'argent » du tutoriel réécrite (capture `steam_tutorial_money`) |
+| Seuil de 2 M vérifié par simulation | à faire | Lu dans le rapport 36 mois, pas simulé |
+
+## Lot 6 — Anglais et distribution (agent, fusionné)
+
+| Tâche | Statut | Détail |
+|---|---|---|
+| Traduction | partiel | `UI/Loc.cs`, `UI/Lang/fr.json` / `en.json`, langue dans les réglages (défaut français) : menus (titre, nouvelle partie, charger/supprimer, réglages, pause), barres du haut et du bas. **Pas traduits** : panneaux de jeu, terminal, tutoriel, notifications et catalogues du moteur. `LocalizationTest` (3), captures anglaises regardées |
+| Sauvegardes et langue | fait | Changer de langue ne modifie aucune sauvegarde ; textes déjà générés gardés dans leur langue (documenté dans `docs/LOT6_ANGLAIS.md`) |
+| Crédits et licences | fait | `docs/CREDITS.md` (sons et musiques Juhani Junkala CC0 vérifiés par empreinte, polices), `THIRD_PARTY_NOTICES.md` complété (Inter, SkiaSharp/HarfBuzz) |
+| Documents obsolètes | fait | `docs/DISTRIBUTION.md` : les deux PDF décrivent la version 2.1, à ne pas distribuer |
 
 ## Steam (après les six lots)
 
-Steamworks : aucun identifiant ni SDK sur ce poste. Prérequis à documenter.
+Steamworks : **bloqué**, aucun compte partenaire, App ID ni SDK sur ce poste. Prérequis listés dans `docs/DISTRIBUTION.md` ; rien n'est intégré.
+
+## Prochaine action (reprise)
+
+1. Relancer `WriteBalanceReport` (5 graines, ~45 min) après le changement de prix Makers et l'objectif final, mettre à jour `BALANCE_REPORT.md`.
+2. Traduire les panneaux de jeu (Projets, Équipe, Aménagement, Finances, Développement), puis tutoriel et notifications du moteur.
+3. Vérifier par simulation le délai pour atteindre 2 M de valorisation.
+4. Passer la liste Windows de `BUGFIX_VALIDATION.md` (section « Phase version Steam »).

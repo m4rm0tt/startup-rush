@@ -28,6 +28,15 @@ public class TerminalSession
 
     public bool Finished { get; internal set; }
 
+    /// <summary>Mots justes d'affilée : la série multiplie ce que rapporte chaque mot (une faute la remet à zéro).</summary>
+    public int Streak { get; internal set; }
+
+    /// <summary>Meilleure série de la session.</summary>
+    public int BestStreak { get; internal set; }
+
+    /// <summary>Multiplicateur de la série en cours : +5 % par mot juste d'affilée, jusqu'à +50 % (10 mots).</summary>
+    public double StreakBonus => 1 + Math.Min(Streak, Tuning.Terminal.StreakCap) * Tuning.Terminal.StreakStep;
+
     /// <summary>Pourquoi la session s'est arrêtée toute seule (plus rien à faire, session complète).</summary>
     public string EndReason { get; internal set; } = "";
 
@@ -145,8 +154,12 @@ public partial class Campaign
         if (!string.Equals(typed.Trim(), session.Word, StringComparison.Ordinal))
         {
             session.Errors++;
+            session.Streak = 0;
             return new WordResult(false, 0, session.Stage);
         }
+        // La série compte le mot juste avant d'en calculer le rendement : le premier mot vaut déjà +5 %
+        session.Streak++;
+        session.BestStreak = Math.Max(session.BestStreak, session.Streak);
 
         var founder = Founder;
         if (session.ProductId == ResearchTerminal)
@@ -186,6 +199,7 @@ public partial class Campaign
         founder.Status = $"Au terminal : {product.Name}";
         session.Points += points;
         session.WordsTyped++;
+        WordsTypedTotal++;
         session.LastYield = speed * energy;
 
         if (session.WordsLeft == 0)
@@ -209,7 +223,7 @@ public partial class Campaign
         double energy = founder.Energy >= 40 ? 1 : 0.6 + founder.Energy / 100;
         double tools = (IsUnlocked("ai_tools") ? 1.1 : 1) * (IsUnlocked("boss_speed") ? 1.15 : 1)
                        * (discipline == Discipline.Test && IsUnlocked("boss_tests") ? 1.3 : 1);
-        return (Tuning.Terminal.PointsPerWord * skill * TerminalOutput(founder) * speed * energy * tools, speed, energy);
+        return (Tuning.Terminal.PointsPerWord * skill * TerminalOutput(founder) * speed * energy * tools * session.StreakBonus, speed, energy);
     }
 
     /// <summary>
@@ -239,6 +253,7 @@ public partial class Campaign
         founder.Status = $"Au terminal : {session.Stage}";
         session.Points += points;
         session.WordsTyped++;
+        WordsTypedTotal++;
         session.LastYield = speed * energy;
         if (session.WordsLeft == 0)
             Finish(session, "Session complète.");

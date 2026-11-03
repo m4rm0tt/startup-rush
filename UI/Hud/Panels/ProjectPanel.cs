@@ -50,6 +50,8 @@ public class ProjectPanel(int productId) : GamePanel
             _highlight = null;
             Refresh();
         });
+        if (Current == Tab.Reviews)
+            Campaign.TutorialEvent("tab:reviews");
         Control body = Current switch
         {
             Tab.Components => Components(product),

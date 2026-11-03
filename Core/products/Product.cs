@@ -19,6 +19,44 @@ public class QueuedWork
     public List<int> WorkItemIds { get; set; } = new();
 }
 
+/// <summary>
+/// Une évolution terminée sur un projet en ligne, pas encore publiée : elle attend la prochaine version. Le composant ne
+/// change pour les utilisateurs qu'à la publication (Campaign.Releases.cs).
+/// </summary>
+public class StagedChange
+{
+    public string DefId { get; set; } = "";
+    public int Level { get; set; }
+    public double Quality { get; set; } = 0.6;
+
+    /// <summary>Bugs que cette évolution apportera à la publication (ce que les tests n'ont pas attrapé).</summary>
+    public double Bugs { get; set; }
+
+    public long FinishedAt { get; set; }
+
+    public ComponentDef Def => ProductCatalog.Component(DefId);
+}
+
+/// <summary>Une version publiée : ce qu'elle contenait et ce qu'elle a changé (mesuré avant, puis une semaine après).</summary>
+public class Release
+{
+    public int Version { get; set; }
+    public long Minute { get; set; }
+    public List<string> Changes { get; set; } = new();
+    public double UsersBefore { get; set; }
+    public double AppealBefore { get; set; }
+    public double AppealAfter { get; set; }
+
+    /// <summary>Utilisateurs une semaine après la sortie (null tant que la semaine n'est pas passée).</summary>
+    public double? UsersAfter { get; set; }
+
+    /// <summary>Score du mini-jeu de publication (0 sans jouer).</summary>
+    public double Score { get; set; }
+
+    /// <summary>Bugs de la version au moment de la sortie (après le mini-jeu).</summary>
+    public double Bugs { get; set; }
+}
+
 public enum Upkeep { Low, Normal, High }
 
 /// <summary>Un avis d'utilisateur, toujours tiré d'un résultat réel de la simulation.</summary>
@@ -107,6 +145,13 @@ public class Product
 
     public List<ProjectComponent> Components { get; set; } = new();
     public List<QueuedWork> Queue { get; set; } = new();
+
+    /// <summary>Évolutions terminées qui attendent la prochaine version (projet en ligne seulement).</summary>
+    public List<StagedChange> Staged { get; set; } = new();
+
+    /// <summary>Les versions publiées, de la plus ancienne à la plus récente.</summary>
+    public List<Release> Releases { get; set; } = new();
+
     public int Version { get; set; }
     public long? LaunchedAt { get; set; }
     public long? LastUpdateAt { get; set; }

@@ -137,6 +137,10 @@ public class NewCampaignScreen : MenuScreen
     private readonly Core.team.Appearance _look = new() { Base = "player_m", Hair = "hair_short_crop", HairRamp = "hair_brown", Skin = "skin_light" };
     private string _seed = "";
     private bool _touched;
+    private bool _tutorial = true;
+
+    /// <summary>Pourquoi le nom d'entreprise est refusé (affiché sous le champ après « Commencer »), ou null.</summary>
+    private string? _companyError;
 
     public NewCampaignScreen(MainWindow window) : base(window)
     {
@@ -160,8 +164,9 @@ public class NewCampaignScreen : MenuScreen
             Ui.Muted("Une nouvelle campagne ne remplace aucune autre : chacune a ses propres sauvegardes."),
             Ui.Text("Ton nom", 14, Palette.Fog),
             Ui.Input(_founder, v => { _founder = v; _touched = true; }),
-            Ui.Text("Nom de l'entreprise", 14, Palette.Fog),
+            Ui.Text("Nom de l'entreprise (obligatoire)", 14, Palette.Fog),
             Ui.Input(_company, v => { _company = v; _touched = true; }, "par ex. Studio Léman"),
+            _companyError != null ? Ui.Row(6, Ui.Icon("warning", 18), Ui.Text(_companyError, 14, Palette.Blood)) : null,
             Ui.Text("Ton profil", 14, Palette.Fog),
             Ui.Choice(profiles, _profile, p => { _profile = p; _touched = true; Build(); }),
             Ui.Muted(profileText),
@@ -179,6 +184,7 @@ public class NewCampaignScreen : MenuScreen
             Ui.Input(_campaign, v => { _campaign = v; _touched = true; }),
             Ui.Text("Graine (facultatif, pour rejouer exactement la même partie)", 14, Palette.Fog),
             Ui.Input(_seed, v => { _seed = v; _touched = true; }, "aléatoire"),
+            Ui.CheckBox("Tutoriel : quelques consignes pour démarrer (se passe à tout moment)", _tutorial, v => { _tutorial = v; Build(); }),
             Ui.Row(Ui.Button("Commencer", Start, "gold"), Ui.Button("Retour", Back)));
         Content = Frame(form, 560);
     }
@@ -210,11 +216,20 @@ public class NewCampaignScreen : MenuScreen
 
     private void Start()
     {
-        string company = string.IsNullOrWhiteSpace(_company) ? "Studio sans nom" : _company.Trim();
+        // Le nom de l'entreprise est obligatoire : il s'affiche partout (barre du haut, sauvegardes, journal)
+        _companyError = Campaign.CompanyNameError(_company);
+        if (_companyError != null)
+        {
+            Sfx.Play(Sound.Error);
+            Build();
+            return;
+        }
+        string company = _company.Trim();
         string founder = string.IsNullOrWhiteSpace(_founder) ? "Alex" : _founder.Trim();
         ulong seed = ulong.TryParse(_seed, out ulong parsed) ? parsed : (ulong)Random.Shared.NextInt64(1, long.MaxValue);
         string name = string.IsNullOrWhiteSpace(_campaign) ? company : _campaign.Trim();
         var campaign = Campaign.New(name, founder, company, _profile, seed, _look);
+        campaign.TutorialOn = _tutorial;
         Window.Store.Save(campaign, SaveKind.Manual, "Début");
         Window.StartGame(campaign, null, "Partie créée et sauvegardée (« Début »).");
     }

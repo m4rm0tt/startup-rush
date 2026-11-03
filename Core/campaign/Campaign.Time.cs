@@ -141,10 +141,11 @@ public partial class Campaign
             bool present = workday && Minute >= person.StartsAt && minuteOfDay >= ArrivalMinute(person) && minuteOfDay < EndMinute(person);
             if (!present)
             {
-                person.Activity = Activity.Away;
+                if (!StayHome(person, minuteOfDay))
+                    person.Activity = Activity.Away;
                 continue;
             }
-            if (person.Activity is Activity.Away or Activity.Training or Activity.Walking or Activity.Break)
+            if (person.Activity is Activity.Away or Activity.Training or Activity.Walking or Activity.Break or Activity.Home or Activity.Sleeping)
                 TakePlace(person);
             if (person.Activity == Activity.Working && IsWorkMinute(minuteOfDay, person))
             {
@@ -152,6 +153,42 @@ public partial class Campaign
                 DoWork(person, Math.Max(1, info.Count), info.Lead);
             }
         }
+    }
+
+    /// <summary>Heure à laquelle le fondateur se couche (il se lève à l'heure où le terminal rouvre).</summary>
+    public const int BedHour = 23;
+
+    /// <summary>Le lit du fondateur : celui du site où il a son poste (sa chambre), s'il y en a un.</summary>
+    public PlacedItem? BedOf(Person person) =>
+        person.IsFounder ? PostOf(person).Site.Floor.FirstOrDefault(i => i.Def.Kind == FurnitureKind.Bed) : null;
+
+    /// <summary>
+    /// Le fondateur vit dans sa chambre : hors des heures de travail, il ne la quitte pas. La nuit (de 23 h à 7 h) il dort dans
+    /// son lit ; le reste du temps libre, il est chez lui, à son bureau. Sans lit (bureaux loués), il rentre chez lui comme les
+    /// autres. Purement une question de présence : il ne travaille pas et ne répond pas au support.
+    /// </summary>
+    private bool StayHome(Person person, int minuteOfDay)
+    {
+        if (BedOf(person) is not { } bed)
+            return false;
+        int hour = minuteOfDay / 60;
+        bool night = hour >= BedHour || hour < Tuning.Terminal.FirstHour;
+        // Au terminal, il reste à son bureau même tard (la session ouverte se termine normalement)
+        if (night && Terminal == null)
+        {
+            person.Activity = Activity.Sleeping;
+            person.Position = new Cell(bed.X, bed.Y);
+            person.Status = "Dort dans son lit";
+            return true;
+        }
+        var (site, post) = PostOf(person);
+        if (post == null || Layout.Check(site, post) != WorkstationIssue.None)
+            return false;
+        person.Activity = Activity.Home;
+        person.Position = site.SeatCell(post);
+        person.Status = Terminal != null ? "Au terminal"
+            : Products.Any(p => p.Queue.Count > 0) ? "Temps libre, chez toi : ouvre le terminal pour travailler" : "Temps libre, chez toi";
+        return true;
     }
 
     /// <summary>S'installe à son poste s'il est complet, sinon attend près de l'entrée (personnages assis, pas de déplacements).</summary>

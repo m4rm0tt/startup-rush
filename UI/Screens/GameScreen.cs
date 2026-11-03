@@ -41,6 +41,9 @@ public class GameScreen : UserControl, IScreen
     private readonly ContentControl _modalHost = new() { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
     private readonly StackPanel _toolbar = new() { Orientation = Orientation.Horizontal, Spacing = 4 };
 
+    /// <summary>La consigne du tutoriel en cours (en haut à gauche ; en bas à gauche quand un grand menu est ouvert).</summary>
+    private readonly ContentControl _coach = new() { HorizontalAlignment = HorizontalAlignment.Left, Width = 360 };
+
     private readonly List<GamePanel> _stack = new();
     private Action? _modalClose;
 
@@ -98,6 +101,7 @@ public class GameScreen : UserControl, IScreen
         _panelFrame.Child = new Grid { Children = { _panelBody, PanelHandle() } };
         _panelFrame.IsVisible = false;
         _hud.Children.Add(_panelFrame);
+        _hud.Children.Add(_coach);
         _hud.Children.Add(_toasts);
 
         _hud.Children.Add(_terminalLayer);
@@ -181,6 +185,12 @@ public class GameScreen : UserControl, IScreen
         if (_hudTimer > 0.25)
         {
             _hudTimer = 0;
+            if (Session.Campaign.CheckTutorial())
+            {
+                Sfx.Play(Sound.Milestone);
+                BuildToolbar();
+            }
+            BuildCoach();
             BuildTopBar();
             if (Session.SelectionKind == SelectionKind.Person)
                 BuildInspector();
@@ -226,12 +236,12 @@ public class GameScreen : UserControl, IScreen
             TopSegment("icon_calendar", Ui.Row(10, Ui.Number($"{GameTime.DayName(date.DayOfWeek)} {date:dd.MM.yyyy}", 20, light), Ui.Number($"{date:HH:mm}", 20, TopAccent))));
 
         var speeds = Ui.Row(4);
-        speeds.Children.Add(Ui.IconButton("icon_pause", Session.TogglePause, "Pause (Espace)", selected: Session.PausedByPlayer));
+        speeds.Children.Add(Ui.IconButton("icon_pause", PlayerTogglePause, "Pause (Espace)", selected: Session.PausedByPlayer));
         // Trois icônes de vitesse dans le pack pour quatre vitesses : le chiffre lève toute ambiguïté
         for (int i = 1; i < GameSession.Speeds.Length; i++)
         {
             int speed = i;
-            speeds.Children.Add(Ui.IconButton($"icon_speed_{Math.Min(i, 3)}", () => Session.SetSpeed(speed),
+            speeds.Children.Add(Ui.IconButton($"icon_speed_{Math.Min(i, 3)}", () => PlayerSetSpeed(speed),
                 $"Vitesse {i} ({GameSession.Speeds[i]:0} min de jeu par seconde) — touche {i}", $"{i}", !Session.PausedByPlayer && Session.Speed == i));
         }
         // L'état du temps a une place fixe à droite des vitesses : l'étiquette qui apparaît (nuit accélérée, pause) ne décale
@@ -424,6 +434,9 @@ public class GameScreen : UserControl, IScreen
             // Le menu ouvert a le fond orange du pack : tout son texte passe à l'encre (le sarcelle et le gris n'y font que 2,5:1)
             var content = Ui.Row(6, Ui.Icon(icon, 24), Ui.Column(0, Ui.Text(label + badge, 15, active ? Palette.Ink : badge != "" ? Palette.Lemon : Palette.Snow, wrap: false),
                 Ui.Text(key.ToString(), 11, active ? Palette.Ink : Palette.Fog, wrap: false)));
+            // Le menu que demande le tutoriel porte une étoile (sans clignoter : rien ne bouge sous la souris)
+            if (CoachTool == label && !active)
+                content.Children.Insert(0, Ui.Image(UI.Iso.PackLibrary.Icon("icon_star", "#ecb841"), 16, 16));
             var button = new Button { Content = content, Padding = new Thickness(10, 4, 12, 8) };
             if (active)
                 button.Classes.Add("selected");
@@ -458,6 +471,10 @@ public class GameScreen : UserControl, IScreen
     public void PushPanel(GamePanel panel)
     {
         panel.Attach(this);
+        if (panel is FinancePanel)
+            Session.Campaign.TutorialEvent("open:finances");
+        else if (panel is BuildPanel)
+            Session.Campaign.TutorialEvent("open:build");
         _stack.Add(panel);
         Session.BuildMode = panel is BuildPanel || _stack.Any(p => p is BuildPanel);
         if (!Session.BuildMode)
@@ -619,10 +636,100 @@ public class GameScreen : UserControl, IScreen
             reason = "confirmation";
         else if (_terminal != null && Session.Settings.PauseDuringTerminal)
             reason = "saisie";
-        else if (Session.Settings.PauseInLargeMenus && _stack.LastOrDefault() is { Large: true } large)
+        else if (Session.Settings.PauseInLargeMenus && _stack.LastOrDefault() is { Large: true } large && !ReferenceEquals(large, _menuPauseLifted))
             reason = large.Title.ToLowerInvariant();
         Session.AutoPause = reason;
     }
+
+    /// <summary>Le grand menu dont le joueur a relancé le temps (Espace ou une vitesse) : il ne remet plus en pause.</summary>
+    private GamePanel? _menuPauseLifted;
+
+    /// <summary>Le temps est-il arrêté par un grand menu (réglage « pause dans les grands menus ») ?</summary>
+    private bool PausedByMenu => Session.AutoPause != null && Session.Settings.PauseInLargeMenus && _stack.LastOrDefault() is { Large: true } large
+                                 && !ReferenceEquals(large, _menuPauseLifted) && !_pauseMenu && !_modalLayer.IsVisible;
+
+    /// <summary>
+    /// Espace ou le bouton pause : met en pause ou relance. Si c'est un grand menu qui a arrêté le temps, Espace le relance
+    /// (le menu ne remet plus en pause tant qu'il reste ouvert) au lieu de poser une pause invisible par-dessus.
+    /// </summary>
+    public void PlayerTogglePause()
+    {
+        if (PausedByMenu)
+        {
+            _menuPauseLifted = _stack.LastOrDefault();
+            if (Session.PausedByPlayer)
+                Session.TogglePause();
+            UpdateAutoPause();
+            Sfx.Play(Sound.PauseOut);
+        }
+        else
+            Session.TogglePause();
+        Session.Campaign.TutorialEvent("speed");
+        BuildTopBar();
+    }
+
+    /// <summary>Une vitesse choisie par le joueur (touche ou bouton) relance aussi le temps arrêté par un grand menu.</summary>
+    public void PlayerSetSpeed(int speed)
+    {
+        if (PausedByMenu)
+            _menuPauseLifted = _stack.LastOrDefault();
+        Session.SetSpeed(speed);
+        UpdateAutoPause();
+        Session.Campaign.TutorialEvent("speed");
+        BuildTopBar();
+    }
+
+    // ------------------------------------------------------------------ Tutoriel
+
+    /// <summary>
+    /// La consigne en cours : une phrase, la touche à utiliser, l'avancée (3/11) et « Passer ». Elle ne bloque rien et ne met
+    /// jamais en pause : l'étape se valide quand le joueur fait vraiment l'action (Campaign.Tutorial.cs).
+    /// </summary>
+    private void BuildCoach()
+    {
+        var step = Session.Campaign.CurrentTutorialStep;
+        if (step == null || _terminal != null && step.Target != "work")
+        {
+            _coach.Content = null;
+            return;
+        }
+        bool large = _stack.LastOrDefault() is { Large: true };
+        _coach.VerticalAlignment = large ? VerticalAlignment.Bottom : VerticalAlignment.Top;
+        _coach.Margin = large ? new Thickness(10, 0, 0, 8) : new Thickness(10, 62, 0, 0);
+        int index = Session.Campaign.TutorialIndex + 1, total = Campaign.TutorialSteps.Count;
+        var head = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
+        head.Children.Add(Ui.Text($"Tutoriel {index}/{total} · {step.Title}", 12, Palette.Ink, wrap: false));
+        var skip = Ui.Button("Passer", () => Confirm("Passer le tutoriel ?", "Les consignes ne reviendront pas. Tout reste accessible depuis les menus.",
+            "Passer", () =>
+            {
+                Session.Campaign.SkipTutorial();
+                BuildCoach();
+                BuildToolbar();
+            }, danger: false), "tab");
+        skip.VerticalAlignment = VerticalAlignment.Center;
+        Grid.SetColumn(skip, 1);
+        head.Children.Add(skip);
+        // Une grille « Auto,* » : le texte revient à la ligne (dans une rangée horizontale, il sortait de la carte)
+        var body = new Grid { ColumnDefinitions = new ColumnDefinitions("Auto,*"), ColumnSpacing = 8 };
+        if (step.Key != null)
+        {
+            var key = Ui.Tag(step.Key, Palette.Lemon);
+            key.VerticalAlignment = VerticalAlignment.Top;
+            body.Children.Add(key);
+        }
+        var text = Ui.Text(step.Text, 12, Palette.Snow);
+        Grid.SetColumn(text, 1);
+        body.Children.Add(text);
+        var bar = Ui.Bar((index - 1) / (double)total, Palette.Gold, 6);
+        UiPatch.Apply(_coach, new PixelPanel
+        {
+            Skin = "pack:hud_notification:info", Padding = new Thickness(16, 8, 12, 12), Tag = "coach",
+            Child = Ui.Column(6, head, body, bar),
+        });
+    }
+
+    /// <summary>Le menu de la barre d'outils que la consigne en cours demande d'ouvrir (« Projets »), ou null.</summary>
+    private string? CoachTool => Session.Campaign.CurrentTutorialStep?.Target is { } target && target.StartsWith("tool:") ? target[5..] : null;
 
     // ------------------------------------------------------------------ Inspecteur de la sélection
 
@@ -971,10 +1078,10 @@ public class GameScreen : UserControl, IScreen
         switch (key)
         {
             case Key.Space:
-                Session.TogglePause();
+                PlayerTogglePause();
                 return true;
             case >= Key.D1 and <= Key.D4:
-                Session.SetSpeed(key - Key.D0);
+                PlayerSetSpeed(key - Key.D0);
                 return true;
             case Key.Left or Key.A:
                 Scene.Pan(-40, 0);

@@ -18,7 +18,11 @@ public enum AssignmentKind { None, Project, Research, Production }
 public enum WorkSchedule { Normal, Extended }
 
 /// <summary>Ce que la personne fait en ce moment dans le local (affiché et animé dans la scène).</summary>
-public enum Activity { Away, Walking, Working, Idle, Break, Training }
+/// <summary>
+/// Ce que fait la personne. « Home » : le fondateur chez lui (sa chambre est son local), assis à son bureau hors des heures de
+/// travail ; « Sleeping » : il dort dans son lit la nuit. Les autres rentrent chez eux (Away).
+/// </summary>
+public enum Activity { Away, Walking, Working, Idle, Break, Training, Home, Sleeping }
 
 public class Assignment
 {

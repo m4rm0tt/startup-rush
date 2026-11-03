@@ -186,6 +186,8 @@ public static class SelectionInspector
         Activity.Break => "En pause",
         Activity.Idle => "Attend un poste",
         Activity.Training => "En formation",
+        Activity.Home => "Temps libre, chez toi",
+        Activity.Sleeping => "Dort dans son lit",
         _ => "Absent·e"
     };
 }

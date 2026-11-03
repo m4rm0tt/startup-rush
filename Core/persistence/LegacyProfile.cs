@@ -57,8 +57,25 @@ public class Settings
     /// <summary>Échelle de l'interface (0 = automatique selon la taille de la fenêtre).</summary>
     public double UiScale { get; set; }
 
-    /// <summary>Le temps s'arrête quand un grand menu (produits, finances) est ouvert.</summary>
-    public bool PauseInLargeMenus { get; set; } = true;
+    /// <summary>
+    /// Le temps s'arrête quand un grand menu (produits, finances) est ouvert. Désactivé par défaut depuis les tests joueurs :
+    /// l'entreprise continue de tourner pendant qu'on navigue dans les menus ordinaires.
+    /// </summary>
+    public bool PauseInLargeMenus { get; set; }
+
+    /// <summary>Version des réglages : sert à changer une valeur par défaut une seule fois pour les réglages déjà écrits.</summary>
+    public int Version { get; set; }
+
+    /// <summary>Version actuelle des réglages (2 : plus de pause automatique dans les grands menus).</summary>
+    public const int CurrentVersion = 2;
+
+    /// <summary>Met à jour des réglages écrits par une version précédente du jeu (une seule fois).</summary>
+    public void Upgrade()
+    {
+        if (Version < 2)
+            PauseInLargeMenus = false;
+        Version = CurrentVersion;
+    }
 
     /// <summary>Les nuits et week-ends passent plus vite quand personne n'est au bureau.</summary>
     public bool FastNights { get; set; } = true;
@@ -88,15 +105,20 @@ public class Settings
         try
         {
             if (File.Exists(path))
-                return JsonSerializer.Deserialize<Settings>(File.ReadAllText(path)) ?? new Settings();
+            {
+                var settings = JsonSerializer.Deserialize<Settings>(File.ReadAllText(path)) ?? new Settings();
+                settings.Upgrade();
+                return settings;
+            }
         }
         catch (Exception e) when (e is IOException or JsonException)
         {
         }
         var legacy = LegacyProfile.ReadSettings(legacyPath);
         if (legacy == null)
-            return new Settings();
+            return new Settings { Version = CurrentVersion };
         legacy.MigratedFromLegacy = true;
+        legacy.Version = CurrentVersion;
         return legacy;
     }
 

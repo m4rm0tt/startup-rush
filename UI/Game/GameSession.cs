@@ -158,6 +158,8 @@ public class GameSession
     {
         SelectionKind = kind;
         SelectionId = id;
+        if (kind == SelectionKind.Person && Campaign.FindPerson(id) is { IsFounder: true })
+            Campaign.TutorialEvent("select:founder");
         SelectionChanged?.Invoke();
     }
 

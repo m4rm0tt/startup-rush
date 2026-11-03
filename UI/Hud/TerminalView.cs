@@ -260,7 +260,7 @@ public class TerminalView : UserControl
             _rest.Foreground = typed.Length == 0 || matching ? Text : Error;
         }
         _stage.Text = session.Stage;
-        _stats.Text = $"{session.WordsTyped}/{session.Length} mots · {session.Points:0.0} pts · rendement {session.LastYield * 100:0} % · fautes {session.Errors}";
+        _stats.Text = $"{session.WordsTyped}/{session.Length} mots · {session.Points:0.0} pts · série {session.Streak} (+{(session.StreakBonus - 1) * 100:0} %) · rendement {session.LastYield * 100:0} % · fautes {session.Errors}";
 
         // [####▒---] : bouts, mots faits, mot en cours à moitié, mots restants (cellules mono du pack)
         _segments.Children.Clear();

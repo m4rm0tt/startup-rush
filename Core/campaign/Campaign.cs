@@ -138,8 +138,30 @@ public partial class Campaign
 
     public const int MaxNotices = 150;
 
+    /// <summary>Longueur maximale d'un nom d'entreprise.</summary>
+    public const int CompanyNameMax = 40;
+
+    /// <summary>
+    /// Pourquoi ce nom d'entreprise est refusé, ou null s'il convient : il faut au moins deux caractères qui ne sont pas des
+    /// espaces, et pas plus de <see cref="CompanyNameMax"/>.
+    /// </summary>
+    public static string? CompanyNameError(string? name)
+    {
+        string trimmed = (name ?? "").Trim();
+        if (trimmed.Length == 0)
+            return "Donne un nom à ton entreprise.";
+        if (trimmed.Length < 2)
+            return "Le nom doit compter au moins deux caractères.";
+        if (trimmed.Length > CompanyNameMax)
+            return $"Le nom ne doit pas dépasser {CompanyNameMax} caractères.";
+        return null;
+    }
+
     public static Campaign New(string name, string founderName, string companyName, FounderProfile profile, ulong seed, Appearance? look = null)
     {
+        if (CompanyNameError(companyName) is { } error)
+            throw new ArgumentException(error, nameof(companyName));
+        companyName = companyName.Trim();
         var campaign = new Campaign
         {
             Name = name,

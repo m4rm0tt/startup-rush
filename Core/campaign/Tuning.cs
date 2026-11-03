@@ -103,6 +103,11 @@ public static class Tuning
         public const double SlowFactor = 0.85;
         public const double FastFactor = 1.2;
 
+        /// <summary>Série au terminal : bonus par mot juste d'affilée, et nombre de mots au-delà duquel il ne monte plus.</summary>
+        public const double StreakStep = 0.05;
+
+        public const int StreakCap = 10;
+
         /// <summary>Énergie dépensée par mot validé (environ 240 mots avant d'être épuisé, en partant reposé).</summary>
         public const double EnergyPerWord = 0.35;
 

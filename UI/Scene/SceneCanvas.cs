@@ -75,7 +75,8 @@ public partial class SceneCanvas : Control
     private Dictionary<int, Seated> SeatedPeople()
     {
         var seated = new Dictionary<int, Seated>();
-        foreach (var person in Campaign.People.Where(p => p.Activity == Activity.Working))
+        // Le fondateur chez lui, le soir, reste assis à son bureau (sa chambre est son local)
+        foreach (var person in Campaign.People.Where(p => p.Activity is Activity.Working or Activity.Home))
             if (Premises.SeatOf(person.Id) is { } post && Premises.ChairOf(post) is { } chair)
                 seated[chair.Id] = new Seated(person.Id, person.Appearance);
         return seated;
@@ -158,6 +159,7 @@ public partial class SceneCanvas : Control
     public void Pan(double dx, double dy)
     {
         _userMoved = true;
+        Campaign.TutorialEvent("camera");
         if (_room == null)
             return;
         _camX = Math.Clamp(_camX + dx / Scale, 0, _room.Image.W);
@@ -167,6 +169,7 @@ public partial class SceneCanvas : Control
     public void ZoomBy(int delta, Point? around = null)
     {
         _userMoved = true;
+        Campaign.TutorialEvent("camera");
         var anchor = around ?? new Point(Bounds.Width / 2, Bounds.Height / 2);
         var before = ToWorld(anchor);
         _zoom = Math.Clamp(_zoom + delta, 1, 4);
@@ -289,8 +292,16 @@ public partial class SceneCanvas : Control
         foreach (var person in Campaign.People)
         {
             // Chaque site montre les siens : les autres travaillent ailleurs, la simulation ne dépend pas de la vue
-            if (person.Activity is Activity.Away or Activity.Training || Campaign.SiteOf(person) != Premises)
+            if (person.Activity is Activity.Away or Activity.Training or Activity.Home || Campaign.SiteOf(person) != Premises)
                 continue;
+            if (person.Activity == Activity.Sleeping)
+            {
+                // Il dort dans son lit : une bulle « Zz » au-dessus du lit, qui se clique pour voir sa fiche
+                var (bx, by) = Tile(person.Position.X + 0.5, person.Position.Y + 0.5);
+                DrawSleep(context, bx, by - 40);
+                waitingHits.Add(new HitRegion(true, person.Id, [(bx - 16, by - 64), (bx + 16, by - 64), (bx + 16, by - 30), (bx - 16, by - 30)], int.MaxValue));
+                continue;
+            }
             double x, y;
             if (person.Activity == Activity.Working && _room!.Heads.TryGetValue(person.Id, out var head))
                 (x, y) = (head.X, head.Y);
@@ -353,6 +364,18 @@ public partial class SceneCanvas : Control
         }
         WatchDay(heads);
         _waitingHits = waitingHits;
+    }
+
+    /// <summary>Une bulle de sommeil (« z Z ») en pixel art, qui monte doucement au-dessus du lit.</summary>
+    private void DrawSleep(DrawingContext context, double x, double y)
+    {
+        double rise = Effects ? (_clock * 4) % 6 : 0;
+        var rect = new Rect(ToScreen(x - 12, y - 14 - rise), new Size(24 * Scale, 16 * Scale));
+        context.FillRectangle(Palette.Brush("#2b2128"), rect.Inflate(Scale));
+        context.FillRectangle(Palette.Brush("#fbf5e6"), rect);
+        var text = new FormattedText("zZ", System.Globalization.CultureInfo.InvariantCulture, FlowDirection.LeftToRight,
+            new Typeface((FontFamily)Application.Current!.FindResource("PixelFont")!), 12 * Scale, Palette.Brush("#357c82"));
+        context.DrawText(text, new Point(rect.X + (rect.Width - text.Width) / 2, rect.Y + (rect.Height - text.Height) / 2));
     }
 
     /// <summary>Les alertes des personnes qui attendent à l'entrée (zones cliquables, coordonnées de la pièce).</summary>
@@ -460,6 +483,14 @@ public partial class SceneCanvas : Control
         {
             var (hx, hy) = Feet(hovered);
             DrawEffect(context, "vfx_hover_ring", hx, hy, 1, Effects && (int)(_clock * 2) % 2 == 1 ? 1.1 : 1);
+        }
+
+        // Tutoriel « clique sur toi » : un anneau autour du fondateur montre où cliquer
+        if (Campaign.CurrentTutorialStep?.Target == "founder" && _session.SelectionKind != SelectionKind.Person
+            && _room!.Hits.FirstOrDefault(h => h.Person && h.Id == Campaign.Founder.Id) is { } founder)
+        {
+            var (tx, ty) = Feet(founder);
+            DrawEffect(context, "vfx_hover_ring", tx, ty, 1, Effects && (int)(_clock * 2) % 2 == 1 ? 1.15 : 1);
         }
 
         if (!_session.BuildMode && _hover is { } hover && Premises.InBounds(hover))

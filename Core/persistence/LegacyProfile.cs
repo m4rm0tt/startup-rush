@@ -80,6 +80,12 @@ public class Settings
     /// <summary>Les nuits et week-ends passent plus vite quand personne n'est au bureau.</summary>
     public bool FastNights { get; set; } = true;
 
+    /// <summary>Plein écran (F11 ou réglages), retenu d'un lancement à l'autre ; fenêtré par défaut.</summary>
+    public bool Fullscreen { get; set; }
+
+    /// <summary>Texte agrandi : le texte courant passe de 12 à 18 px (moins net que la grille de 12 du pack, plus lisible).</summary>
+    public bool LargeText { get; set; }
+
     /// <summary>Accessibilité : l'entreprise se met en pause pendant la saisie au terminal (le rendement par mot ne change pas).</summary>
     public bool PauseDuringTerminal { get; set; }
 

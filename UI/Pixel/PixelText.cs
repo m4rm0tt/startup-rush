@@ -15,7 +15,14 @@ public static class PixelText
 {
     public const double Grid = 12;
 
-    public static double Snap(double size) => Math.Max(Grid, Math.Round(size / Grid, MidpointRounding.AwayFromZero) * Grid);
+    /// <summary>Réglage « Texte agrandi » : le texte courant (12 px) passe à 18, les titres gardent la grille de 12.</summary>
+    public static bool Large { get; set; }
+
+    public static double Snap(double size)
+    {
+        double snapped = Math.Max(Grid, Math.Round(size / Grid, MidpointRounding.AwayFromZero) * Grid);
+        return Large && snapped < 24 ? 18 : snapped;
+    }
 
     private static bool _installed;
 
@@ -27,6 +34,8 @@ public static class PixelText
         _installed = true;
         TextBlock.FontSizeProperty.OverrideMetadata<TextBlock>(new StyledPropertyMetadata<double>(Grid, coerce: (_, v) => Snap(v)));
         Avalonia.Controls.Documents.TextElement.FontSizeProperty.OverrideMetadata<TextPresenter>(new StyledPropertyMetadata<double>(Grid, coerce: (_, v) => Snap(v)));
+        // Les libellés des boutons et onglets héritent la taille de leur contrôle : elle suit la même règle (texte agrandi compris)
+        Avalonia.Controls.Primitives.TemplatedControl.FontSizeProperty.OverrideMetadata<Avalonia.Controls.Primitives.TemplatedControl>(new StyledPropertyMetadata<double>(Grid, coerce: (_, v) => Snap(v)));
         // Les polices du pack n'existent qu'en graisse normale : un « gras » était épaissi par le moteur de texte, d'un pixel
         // irrégulier, et collait les lettres (« mise » se lisait « nise »). La hiérarchie passe par la taille et la couleur.
         TextBlock.FontWeightProperty.OverrideMetadata<TextBlock>(new StyledPropertyMetadata<FontWeight>(FontWeight.Normal, coerce: (_, _) => FontWeight.Normal));

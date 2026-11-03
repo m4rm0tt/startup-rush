@@ -25,6 +25,8 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
+        // Une erreur du fil d'interface est journalisée (et la partie gardée à part) avant que le jeu ne s'arrête
+        Avalonia.Threading.Dispatcher.UIThread.UnhandledException += (_, e) => CrashLog.Report(e.Exception, "Interface", fatal: true);
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             // Réglages communs à toutes les campagnes ; au premier lancement, les volumes de l'ancien profil sont repris

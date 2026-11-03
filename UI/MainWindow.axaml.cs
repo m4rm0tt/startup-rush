@@ -46,6 +46,11 @@ public partial class MainWindow : Window
         AddHandler(KeyDownEvent, OnKeyDown, RoutingStrategies.Tunnel);
         AddHandler(KeyUpEvent, (_, e) => _heldKeys.Remove(e.Key), RoutingStrategies.Tunnel);
 
+        if (settings.Fullscreen)
+            WindowState = WindowState.FullScreen;
+        UI.Pixel.PixelText.Large = settings.LargeText;
+        CrashLog.Window = this;
+
         ShowTitle();
         _stopWatch.Start();
         _timer.Start();
@@ -77,6 +82,31 @@ public partial class MainWindow : Window
 
     /// <summary>Une opération longue est en cours (curseur d'attente affiché).</summary>
     public bool IsBusy { get; private set; }
+
+    /// <summary>Plein écran ou fenêtré, et retenu dans les réglages.</summary>
+    public void SetFullscreen(bool on)
+    {
+        WindowState = on ? WindowState.FullScreen : WindowState.Normal;
+        Settings.Fullscreen = on;
+        SaveSettings();
+    }
+
+    /// <summary>Texte agrandi : les tailles déjà affichées sont recalculées tout de suite, sans relancer le jeu.</summary>
+    public void SetLargeText(bool on)
+    {
+        Settings.LargeText = on;
+        UI.Pixel.PixelText.Large = on;
+        SaveSettings();
+        foreach (var text in Avalonia.VisualTree.VisualExtensions.GetVisualDescendants(this))
+        {
+            if (text is TextBlock block)
+                block.CoerceValue(TextBlock.FontSizeProperty);
+            else if (text is Avalonia.Controls.Primitives.TemplatedControl control)
+                control.CoerceValue(Avalonia.Controls.Primitives.TemplatedControl.FontSizeProperty);
+            else if (text is Avalonia.Controls.Presenters.TextPresenter presenter)
+                presenter.CoerceValue(Avalonia.Controls.Documents.TextElement.FontSizeProperty);
+        }
+    }
 
     public void SaveSettings()
     {
@@ -142,7 +172,7 @@ public partial class MainWindow : Window
 
         if (e.Key == Key.F11)
         {
-            WindowState = WindowState == WindowState.FullScreen ? WindowState.Normal : WindowState.FullScreen;
+            SetFullscreen(WindowState != WindowState.FullScreen);
             e.Handled = true;
             return;
         }

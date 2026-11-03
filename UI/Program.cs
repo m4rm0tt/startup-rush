@@ -30,7 +30,16 @@ class Program
         if (CaptureFolder != null && SaveRoot == null)
             SaveRoot = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "StartupRushCapture", Guid.NewGuid().ToString("N"));
 
-        BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+        CrashLog.Install();
+        try
+        {
+            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+        }
+        catch (Exception e)
+        {
+            CrashLog.Report(e, "Main", fatal: true);
+            throw;
+        }
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.

@@ -277,10 +277,11 @@ public class SaveStore
         foreach (string path in Directory.GetFiles(folder, "*.json").Where(f => !MigrationCopy.IsMatch(Path.GetFileName(f))))
         {
             string name = Path.GetFileNameWithoutExtension(path);
-            var kind = name.StartsWith("manual-") ? SaveKind.Manual : name == "exit" ? SaveKind.Quick : SaveKind.Auto;
+            var kind = name.StartsWith("manual-") ? SaveKind.Manual : name is "exit" or "crash" ? SaveKind.Quick : SaveKind.Auto;
             string label = kind switch
             {
                 SaveKind.Manual => name["manual-".Length..],
+                SaveKind.Quick when name == "crash" => "Sauvegarde d'urgence (après une erreur)",
                 SaveKind.Quick => "Sauvegarde de sortie",
                 _ => $"Automatique {name[^1]}"
             };

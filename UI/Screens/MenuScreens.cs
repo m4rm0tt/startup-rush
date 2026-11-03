@@ -414,6 +414,8 @@ public class SettingsScreen : MenuScreen
                 Ui.Text("Bruitages", 14, Palette.Fog),
                 Ui.Slider(s.SoundVolume, 0, 1, 0.1, v => Volume(() => s.SoundVolume = v), Percent)),
             Ui.Section("Affichage",
+                Ui.Switch("Plein écran (F11)", s.Fullscreen, v => { window.SetFullscreen(v); rebuild(); }),
+                Ui.Switch("Texte agrandi (plus lisible, un peu moins net)", s.LargeText, v => { window.SetLargeText(v); rebuild(); }),
                 Ui.Text("Taille de l'interface", 14, Palette.Fog),
                 scaleRow),
             Ui.Section("Temps",
@@ -428,6 +430,9 @@ public class SettingsScreen : MenuScreen
                 Ui.CheckBox("Saisie simplifiée au terminal", s.SimplifiedTyping, v => Change(() => s.SimplifiedTyping = v)),
                 Ui.Muted("Saisie simplifiée : le mot s'écrit tout seul et Entrée le valide. Chaque mot rapporte comme une frappe lente (×0,85) : " +
                          "moins qu'une frappe rapide, assez pour mener la campagne.", 13)));
+        column.Children.Add(Ui.Section("Assistance",
+            Ui.Muted($"En cas d'erreur, un journal est écrit dans {CrashLog.Folder}, et la partie en cours est gardée à part (« Sauvegarde d'urgence »).", 13),
+            Ui.Button("Ouvrir le dossier des journaux", CrashLog.OpenFolder)));
         if (back != null)
             column.Children.Add(Ui.Button("Retour", back));
         return column;

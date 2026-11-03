@@ -286,3 +286,43 @@ public class SteamShots
         window.Close();
     }
 }
+
+[Explicit, Category("Shots")]
+public class LargeTextShots
+{
+    [AvaloniaTest]
+    public void MenusWithLargeText()
+    {
+        var (window, game, campaign) = Shots.Fresh(tutorial: false);
+        window.SetLargeText(true);
+        try
+        {
+            campaign.Ledger.Cash = 500_000;
+            campaign.CheatUnlockAll();
+            var (_, product) = campaign.CreateProject("Planio", "freelances", Core.products.RevenueModel.Subscription);
+            campaign.CheatFinishWork();
+            campaign.Launch(product!.Id);
+            campaign.CheatHire();
+            campaign.AdvanceDays(10);
+            foreach (var (name, panel) in new (string, UI.Hud.GamePanel)[]
+                     {
+                         ("projects", new UI.Hud.Panels.ProjectsPanel()), ("project", new UI.Hud.Panels.ProjectPanel(product.Id)),
+                         ("team", new UI.Hud.Panels.TeamPanel()), ("build", new UI.Hud.Panels.BuildPanel()),
+                         ("finance", new UI.Hud.Panels.FinancePanel()), ("person", new UI.Hud.Panels.PersonPanel(campaign.Founder.Id)),
+                     })
+            {
+                game.OpenRoot(panel);
+                game.Tick(0.3);
+                Shots.Save(window, "large_" + name);
+            }
+            game.ClosePanels();
+            game.Tick(0.3);
+            Shots.Save(window, "large_scene");
+        }
+        finally
+        {
+            window.SetLargeText(false);
+            window.Close();
+        }
+    }
+}

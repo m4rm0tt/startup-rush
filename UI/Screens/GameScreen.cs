@@ -239,13 +239,13 @@ public class GameScreen : UserControl, IScreen
             TopSegment("icon_calendar", Ui.Row(10, Ui.Number($"{GameTime.DayName(date.DayOfWeek)} {date:dd.MM.yyyy}", 20, light), Ui.Number($"{date:HH:mm}", 20, TopAccent))));
 
         var speeds = Ui.Row(4);
-        speeds.Children.Add(Ui.IconButton("icon_pause", PlayerTogglePause, "Pause (Espace)", selected: Session.PausedByPlayer));
+        speeds.Children.Add(Ui.IconButton("icon_pause", PlayerTogglePause, Loc.T("top.pause"), selected: Session.PausedByPlayer));
         // Une icône par vitesse (la 4e est composée du chevron du pack, PackLibrary.SpeedFour), plus le chiffre
         for (int i = 1; i < GameSession.Speeds.Length; i++)
         {
             int speed = i;
             speeds.Children.Add(Ui.IconButton($"icon_speed_{i}", () => PlayerSetSpeed(speed),
-                $"Vitesse {i} ({GameSession.Speeds[i]:0} min de jeu par seconde) — touche {i}", $"{i}", !Session.PausedByPlayer && Session.Speed == i));
+                Loc.T("top.speed", i, GameSession.Speeds[i]), $"{i}", !Session.PausedByPlayer && Session.Speed == i));
         }
         // L'état du temps a une place fixe à droite des vitesses : l'étiquette qui apparaît (nuit accélérée, pause) ne décale
         // plus les vitesses ni le reste de la barre
@@ -254,7 +254,7 @@ public class GameScreen : UserControl, IScreen
             Width = 200, Tag = "time-info",
             Child = Session.AutoPause != null
                 ? Ui.Tag($"PAUSE : {Session.AutoPause}", Palette.Lemon)
-                : Session.Settings.FastNights && !c.AnyoneInOffice && Session.Running ? Ui.Tag("Nuit accélérée", Palette.Steel, Palette.Snow) : null,
+                : Session.Settings.FastNights && !c.AnyoneInOffice && Session.Running ? Ui.Tag(Loc.T("top.fastNight"), Palette.Steel, Palette.Snow) : null,
         };
         if (((Border)timeInfo).Child is Control info)
             info.HorizontalAlignment = HorizontalAlignment.Left;
@@ -277,7 +277,7 @@ public class GameScreen : UserControl, IScreen
         }
 
         int problems = c.Notices.Count(n => n.IsProblem && !n.Resolved);
-        var bell = Ui.IconButton("icon_bell", () => OpenRoot(new NoticesPanel()), "Journal (N)", problems > 0 ? "À traiter" : "Journal",
+        var bell = Ui.IconButton("icon_bell", () => OpenRoot(new NoticesPanel()), Loc.T("top.journalTip"), problems > 0 ? Loc.T("top.toDo") : Loc.T("top.journal"),
             style: problems > 0 ? "red" : "icon");
         Control bellWithCount = bell;
         if (problems > 0)
@@ -292,7 +292,7 @@ public class GameScreen : UserControl, IScreen
             };
             bellWithCount = new Panel { Children = { bell, count } };
         }
-        var settings = Ui.IconButton("icon_settings", ShowPauseMenu, "Menu et réglages (Échap)");
+        var settings = Ui.IconButton("icon_settings", ShowPauseMenu, Loc.T("top.menu"));
 
         var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto,*"), Margin = new Thickness(8, 4, 8, 8) };
         grid.Children.Add(left);
@@ -334,6 +334,23 @@ public class GameScreen : UserControl, IScreen
     };
 
     // ------------------------------------------------------------------ Barre d'outils
+
+    /// <summary>
+    /// Le nom affiché d'un outil de la barre du bas : le libellé français sert de clé (le tutoriel le désigne ainsi,
+    /// CoachTool), la traduction n'est que l'affichage.
+    /// </summary>
+    private static string ToolName(string label) => label switch
+    {
+        "Projets" => Loc.T("toolbar.projects"),
+        "Équipe" => Loc.T("toolbar.team"),
+        "Aménagement" => Loc.T("toolbar.build"),
+        "Développement" => Loc.T("toolbar.dev"),
+        "Finances" => Loc.T("toolbar.finance"),
+        _ => label,
+    };
+
+    /// <summary>Après un changement de langue : la barre d'outils est reconstruite (la barre du haut l'est d'elle-même).</summary>
+    public void Relocalize() => BuildToolbar();
 
     private static readonly (string Label, string Icon, Key Key, Func<GamePanel> Create)[] Tools =
     [
@@ -418,7 +435,7 @@ public class GameScreen : UserControl, IScreen
         {
             // Encre sur l'orange du bouton principal (5,3:1 ; le clair n'y faisait que 2,7:1)
             Content = Ui.Row(6, Ui.Image(UI.Iso.PackLibrary.Icon("icon_terminal", target != null ? "#2b2128" : "#9c8878"), 24, 24),
-                Ui.Column(0, Ui.Text("Travailler", 15, Palette.Ink, wrap: false), Ui.Text("Entrée", 11, Palette.Ink, wrap: false))),
+                Ui.Column(0, Ui.Text(Loc.T("toolbar.work"), 15, Palette.Ink, wrap: false), Ui.Text(Loc.T("toolbar.workKey"), 11, Palette.Ink, wrap: false))),
             Padding = new Thickness(10, 4, 12, 8),
             IsEnabled = target != null && _terminal == null,
         };
@@ -428,14 +445,14 @@ public class GameScreen : UserControl, IScreen
             if (TerminalTarget() is { } product)
                 OpenTerminal(product.Id);
         });
-        ToolTip.SetTip(work, target != null ? $"Travailler au terminal sur {target.Name} (Entrée)" : "Rien à faire au terminal : crée un projet ou mets un composant en file.");
+        ToolTip.SetTip(work, target != null ? Loc.T("toolbar.workTip", target.Name) : Loc.T("toolbar.workNone"));
         toolbar.Add(work);
         foreach (var (label, icon, key, create) in Tools)
         {
             string badge = label == "Développement" && Session.Campaign.DevPoints > 0 ? $" ({Session.Campaign.DevPoints})" : "";
             bool active = _stack.Count > 0 && _stack[0].GetType() == create().GetType();
             // Le menu ouvert a le fond orange du pack : tout son texte passe à l'encre (le sarcelle et le gris n'y font que 2,5:1)
-            var content = Ui.Row(6, Ui.Icon(icon, 24), Ui.Column(0, Ui.Text(label + badge, 15, active ? Palette.Ink : badge != "" ? Palette.Lemon : Palette.Snow, wrap: false),
+            var content = Ui.Row(6, Ui.Icon(icon, 24), Ui.Column(0, Ui.Text(ToolName(label) + badge, 15, active ? Palette.Ink : badge != "" ? Palette.Lemon : Palette.Snow, wrap: false),
                 Ui.Text(key.ToString(), 11, active ? Palette.Ink : Palette.Fog, wrap: false)));
             // Le menu que demande le tutoriel porte une étoile (sans clignoter : rien ne bouge sous la souris)
             if (CoachTool == label && !active)
@@ -1002,10 +1019,10 @@ public class GameScreen : UserControl, IScreen
         string? saveName = null;
         var column = Ui.Column(10,
             Ui.Muted($"{c.Name} · {GameTime.Format(c.Minute)}"),
-            Ui.Button("Reprendre", CloseModal, "gold"),
-            Ui.Section("Sauvegarder",
-                Ui.Input("", v => saveName = v, "Nom de la sauvegarde"),
-                Ui.Button("Sauvegarder", () =>
+            Ui.Button(Loc.T("pause.resume"), CloseModal, "gold", icon: Ui.IconFor(Loc.French("pause.resume"))),
+            Ui.Section(Loc.T("pause.save"),
+                Ui.Input("", v => saveName = v, Loc.T("pause.saveName")),
+                Ui.Button(Loc.T("pause.save"), () =>
                 {
                     string name = string.IsNullOrWhiteSpace(saveName) ? GameTime.FormatDate(c.Minute) : saveName!;
                     Window.Busy(() =>
@@ -1013,12 +1030,12 @@ public class GameScreen : UserControl, IScreen
                         bool ok = Session.Save(SaveKind.Manual, name);
                         Toast(Session.LastSaveMessage + (ok ? $" : « {name} »" : ""), ok);
                     });
-                })),
-            Ui.Button("Charger une autre partie", () => Leave(() => Window.ShowLoad())),
-            Ui.Button("Réglages", () => ShowModal(SettingsScreen.SettingsForm(Window, ShowPauseSettings, ShowPauseMenu), null, 560)),
-            Ui.Button("Menu principal", () => Leave(() => Window.ShowTitle())),
-            Ui.Muted("Quitter le menu ou la partie enregistre automatiquement une sauvegarde de sortie. Rien n'est jamais effacé."));
-        ShowModal(column, null, 460, "Pause");
+                }, icon: Ui.IconFor(Loc.French("pause.save")))),
+            Ui.Button(Loc.T("pause.loadOther"), () => Leave(() => Window.ShowLoad()), "", icon: Ui.IconFor(Loc.French("pause.loadOther"))),
+            Ui.Button(Loc.T("pause.settings"), () => ShowModal(SettingsScreen.SettingsForm(Window, ShowPauseSettings, ShowPauseMenu), null, 560), "", icon: Ui.IconFor(Loc.French("pause.settings"))),
+            Ui.Button(Loc.T("pause.mainMenu"), () => Leave(() => Window.ShowTitle()), "", icon: Ui.IconFor(Loc.French("pause.mainMenu"))),
+            Ui.Muted(Loc.T("pause.note")));
+        ShowModal(column, null, 460, Loc.T("pause.title"));
         _pauseMenu = true;
         UpdateAutoPause();
     }

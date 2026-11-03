@@ -49,6 +49,7 @@ public partial class MainWindow : Window
         if (settings.Fullscreen)
             WindowState = WindowState.FullScreen;
         UI.Pixel.PixelText.Large = settings.LargeText;
+        Loc.Language = settings.Language;
         CrashLog.Window = this;
 
         ShowTitle();
@@ -89,6 +90,18 @@ public partial class MainWindow : Window
         WindowState = on ? WindowState.FullScreen : WindowState.Normal;
         Settings.Fullscreen = on;
         SaveSettings();
+    }
+
+    /// <summary>
+    /// Langue de l'interface : retenue dans les réglages ; l'écran de jeu reconstruit sa barre d'outils (la barre du haut se
+    /// reconstruit d'elle-même), les écrans de menu se reconstruisent par leur appelant.
+    /// </summary>
+    public void SetLanguage(string language)
+    {
+        Loc.Language = language;
+        Settings.Language = Loc.Language;
+        SaveSettings();
+        (Current as Screens.GameScreen)?.Relocalize();
     }
 
     /// <summary>Texte agrandi : les tailles déjà affichées sont recalculées tout de suite, sans relancer le jeu.</summary>

@@ -86,6 +86,9 @@ public class Settings
     /// <summary>Texte agrandi : le texte courant passe de 12 à 18 px (moins net que la grille de 12 du pack, plus lisible).</summary>
     public bool LargeText { get; set; }
 
+    /// <summary>Langue de l'interface (« fr » par défaut, « en ») ; un ancien fichier de réglages sans ce champ reste en français.</summary>
+    public string Language { get; set; } = "fr";
+
     /// <summary>Accessibilité : l'entreprise se met en pause pendant la saisie au terminal (le rendement par mot ne change pas).</summary>
     public bool PauseDuringTerminal { get; set; }
 

@@ -114,7 +114,7 @@ public static class Ui
         ("Retour", "icon_back"), ("−", "icon_minus"), ("+", "icon_plus"), ("◀", "icon_chevron_left"), ("▶", "icon_chevron_right"), ("▲", "icon_chevron_up"),
     ];
 
-    private static string? IconFor(string label)
+    internal static string? IconFor(string label)
     {
         foreach (var (start, icon) in ButtonIcons)
             if (label == start || label.StartsWith(start + " ") || label.StartsWith(start + "(") || start.Length > 2 && label.StartsWith(start))

@@ -34,5 +34,7 @@
         <EmbeddedResource Include="..\assets\StartupRushOriginalAssets\masks\**\*.png" LogicalName="pack/masks/%(RecursiveDir)%(Filename)%(Extension)" />
         <!-- Polices originales du pack (StartupRush Pixel et Mono) -->
         <AvaloniaResource Include="..\assets\StartupRushOriginalAssets\assets\fonts\*.ttf" Link="Assets\Fonts\%(Filename)%(Extension)" />
+        <!-- Textes de l'interface par langue (UI/Loc.cs) -->
+        <EmbeddedResource Include="Lang\*.json" LogicalName="UI.Lang.%(Filename).json" />
     </ItemGroup>
 </Project>

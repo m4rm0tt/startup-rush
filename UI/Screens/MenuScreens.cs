@@ -45,7 +45,7 @@ public abstract class MenuScreen : UserControl, IScreen
         var panel = new PixelPanel { Padding = new Thickness(24, 18), Child = content, Width = width };
         var column = Ui.Column(18,
             title,
-            Ui.Text("Simulation d'entreprise tech — de ta chambre à tes propres bureaux", 18, Palette.Cloud),
+            Ui.Text(Loc.T("title.subtitle"), 18, Palette.Cloud),
             people,
             panel);
         column.HorizontalAlignment = HorizontalAlignment.Center;
@@ -84,26 +84,26 @@ public class TitleScreen : MenuScreen
         var buttons = Ui.Column(10);
         if (latest?.Summary is { } summary)
         {
-            var resume = Ui.Button($"Continuer — {summary.Company}, {GameTime.FormatDate(summary.Minute)}", () => Continue(latest), "gold big");
+            var resume = Ui.Button(Loc.T("title.continue", summary.Company, GameTime.FormatDate(summary.Minute)), () => Continue(latest), "gold big", icon: Ui.IconFor("Continuer"));
             resume.HorizontalAlignment = HorizontalAlignment.Stretch;
             buttons.Children.Add(resume);
         }
-        foreach (var (label, action) in new (string, Action)[]
+        foreach (var (key, action) in new (string, Action)[]
                  {
-                     ("Charger une partie", window.ShowLoad),
-                     ("Nouvelle partie", window.ShowNewCampaign),
-                     ("Réglages", () => window.ShowSettings(() => window.ShowTitle())),
-                     ("Quitter", window.Close),
+                     ("title.load", window.ShowLoad),
+                     ("title.new", window.ShowNewCampaign),
+                     ("title.settings", () => window.ShowSettings(() => window.ShowTitle())),
+                     ("title.quit", window.Close),
                  })
         {
-            var button = Ui.Button(label, action, "big");
+            var button = Ui.Button(Loc.T(key), action, "big", icon: Ui.IconFor(Loc.French(key)));
             button.HorizontalAlignment = HorizontalAlignment.Stretch;
             buttons.Children.Add(button);
         }
         if (message != null)
             buttons.Children.Insert(0, Ui.Card(Ui.Text(message, 15, Palette.Lemon)));
         if (LegacyProfile.Exists(LegacyProfile.DefaultPath))
-            buttons.Children.Add(Ui.Muted("Ton ancien profil du roguelike (profile.json) est conservé tel quel ; ses lingots et son Héritage n'existent pas dans cette simulation."));
+            buttons.Children.Add(Ui.Muted(Loc.T("title.legacy")));
         Content = Frame(buttons, 520);
     }
 
@@ -152,41 +152,41 @@ public class NewCampaignScreen : MenuScreen
     {
         var profiles = new (FounderProfile, string)[]
         {
-            (FounderProfile.Developer, "Développeur·se"), (FounderProfile.Designer, "Designer"), (FounderProfile.Generalist, "Polyvalent·e"),
+            (FounderProfile.Developer, Loc.T("new.profile.developer")), (FounderProfile.Designer, Loc.T("new.profile.designer")), (FounderProfile.Generalist, Loc.T("new.profile.generalist")),
         };
         string profileText = _profile switch
         {
-            FounderProfile.Developer => "Code 62, design 30, tests 40, support 35. Rapide sur les intégrations et les outils.",
-            FounderProfile.Designer => "Design 64, code 38, tests 34, support 40. Brille sur les sites vitrines et les refontes.",
-            _ => "Tout autour de 45. Personne n'est bloqué, rien n'est excellent.",
+            FounderProfile.Developer => Loc.T("new.profileText.developer"),
+            FounderProfile.Designer => Loc.T("new.profileText.designer"),
+            _ => Loc.T("new.profileText.generalist"),
         };
         var form = Ui.Column(10,
-            Ui.Title("Nouvelle campagne"),
-            Ui.Muted("Une nouvelle campagne ne remplace aucune autre : chacune a ses propres sauvegardes."),
-            Ui.Text("Ton nom", 14, Palette.Fog),
+            Ui.Title(Loc.T("new.title")),
+            Ui.Muted(Loc.T("new.intro")),
+            Ui.Text(Loc.T("new.founderName"), 14, Palette.Fog),
             Ui.Input(_founder, v => { _founder = v; _touched = true; }),
-            Ui.Text("Nom de l'entreprise (obligatoire)", 14, Palette.Fog),
-            Ui.Input(_company, v => { _company = v; _touched = true; }, "par ex. Studio Léman"),
+            Ui.Text(Loc.T("new.company"), 14, Palette.Fog),
+            Ui.Input(_company, v => { _company = v; _touched = true; }, Loc.T("new.companyPlaceholder")),
             _companyError != null ? Ui.Row(6, Ui.Icon("warning", 18), Ui.Text(_companyError, 14, Palette.Blood)) : null,
-            Ui.Text("Ton profil", 14, Palette.Fog),
+            Ui.Text(Loc.T("new.profile"), 14, Palette.Fog),
             Ui.Choice(profiles, _profile, p => { _profile = p; _touched = true; Build(); }),
             Ui.Muted(profileText),
-            Ui.Text("Ton apparence (sans effet sur le jeu)", 14, Palette.Fog),
+            Ui.Text(Loc.T("new.look"), 14, Palette.Fog),
             Ui.Row(12, Ui.Portrait(UI.Iso.Portraits.Of(_look)), Ui.Column(4,
-                Ui.Choice(new[] { ("player_m", "Présentation masculine"), ("player_f", "Présentation féminine") }, _look.Base, b => { _look.Base = b; Build(); }),
+                Ui.Choice(new[] { ("player_m", Loc.T("new.look.male")), ("player_f", Loc.T("new.look.female")) }, _look.Base, b => { _look.Base = b; Build(); }),
                 Ui.Choice(Core.team.Appearance.Hairs.Select(h => (h, HairName(h))), _look.Hair, h => { _look.Hair = h; Build(); }),
                 // Couleurs des cheveux et de la peau : cases de couleur du pack, nommées en infobulle
                 Swatches(Core.team.Appearance.HairRamps, _look.HairRamp, RampName, r => { _look.HairRamp = r; Build(); }),
-                Swatches(Core.team.Appearance.Skins, _look.Skin, k => $"Peau {Array.IndexOf(Core.team.Appearance.Skins, k) + 1}", k => { _look.Skin = k; Build(); }),
+                Swatches(Core.team.Appearance.Skins, _look.Skin, k => Loc.T("new.skin", Array.IndexOf(Core.team.Appearance.Skins, k) + 1), k => { _look.Skin = k; Build(); }),
                 // Tenue : teintes du pack pour les canaux de la tenue (recoloration par masque, sans nouvelle image)
-                Swatches(Core.team.Appearance.Outfits, _look.Outfit ?? "", r => $"Tenue : {OutfitName(r)}", r => { _look.Outfit = r; Build(); }),
-                Swatches(Core.team.Appearance.Trims, _look.OutfitTrim ?? "", r => $"Détails : {OutfitName(r)}", r => { _look.OutfitTrim = r; Build(); }))),
-            Ui.Text("Nom de la campagne (facultatif)", 14, Palette.Fog),
+                Swatches(Core.team.Appearance.Outfits, _look.Outfit ?? "", r => Loc.T("new.outfit", OutfitName(r)), r => { _look.Outfit = r; Build(); }),
+                Swatches(Core.team.Appearance.Trims, _look.OutfitTrim ?? "", r => Loc.T("new.trim", OutfitName(r)), r => { _look.OutfitTrim = r; Build(); }))),
+            Ui.Text(Loc.T("new.campaignName"), 14, Palette.Fog),
             Ui.Input(_campaign, v => { _campaign = v; _touched = true; }),
-            Ui.Text("Graine (facultatif, pour rejouer exactement la même partie)", 14, Palette.Fog),
-            Ui.Input(_seed, v => { _seed = v; _touched = true; }, "aléatoire"),
-            Ui.CheckBox("Tutoriel : quelques consignes pour démarrer (se passe à tout moment)", _tutorial, v => { _tutorial = v; Build(); }),
-            Ui.Row(Ui.Button("Commencer", Start, "gold"), Ui.Button("Retour", Back)));
+            Ui.Text(Loc.T("new.seed"), 14, Palette.Fog),
+            Ui.Input(_seed, v => { _seed = v; _touched = true; }, Loc.T("new.seedPlaceholder")),
+            Ui.CheckBox(Loc.T("new.tutorial"), _tutorial, v => { _tutorial = v; Build(); }),
+            Ui.Row(Ui.Button(Loc.T("new.start"), Start, "gold", icon: Ui.IconFor(Loc.French("new.start"))), Ui.Button(Loc.T("new.back"), Back, "", icon: Ui.IconFor(Loc.French("new.back")))));
         Content = Frame(form, 560);
     }
 
@@ -200,8 +200,8 @@ public class NewCampaignScreen : MenuScreen
 
     private static string HairName(string id) => id switch
     {
-        "hair_short_crop" => "Court", "hair_side_part" => "Raie", "hair_curly_top" => "Bouclé", "hair_long_straight" => "Long",
-        "hair_bun" => "Chignon", _ => "Carré"
+        "hair_short_crop" => Loc.T("new.hair.short"), "hair_side_part" => Loc.T("new.hair.side"), "hair_curly_top" => Loc.T("new.hair.curly"),
+        "hair_long_straight" => Loc.T("new.hair.long"), "hair_bun" => Loc.T("new.hair.bun"), _ => Loc.T("new.hair.bob")
     };
 
     public static string OutfitName(string id) => id switch
@@ -214,13 +214,14 @@ public class NewCampaignScreen : MenuScreen
 
     private static string RampName(string id) => id switch
     {
-        "hair_black" => "Noirs", "hair_brown" => "Bruns", "hair_auburn" => "Auburn", "hair_blond" => "Blonds", _ => "Gris"
+        "hair_black" => Loc.T("new.ramp.black"), "hair_brown" => Loc.T("new.ramp.brown"), "hair_auburn" => Loc.T("new.ramp.auburn"),
+        "hair_blond" => Loc.T("new.ramp.blond"), _ => Loc.T("new.ramp.gray")
     };
 
     private void Start()
     {
         // Le nom de l'entreprise est obligatoire : il s'affiche partout (barre du haut, sauvegardes, journal)
-        _companyError = Campaign.CompanyNameError(_company);
+        _companyError = Loc.CompanyNameError(_company);
         if (_companyError != null)
         {
             Sfx.Play(Sound.Error);
@@ -234,7 +235,7 @@ public class NewCampaignScreen : MenuScreen
         var campaign = Campaign.New(name, founder, company, _profile, seed, _look);
         campaign.TutorialOn = _tutorial;
         Window.Store.Save(campaign, SaveKind.Manual, "Début");
-        Window.StartGame(campaign, null, "Partie créée et sauvegardée (« Début »).");
+        Window.StartGame(campaign, null, Loc.T("new.created"));
     }
 
     private void Back()
@@ -242,8 +243,8 @@ public class NewCampaignScreen : MenuScreen
         if (_touched && !_confirming)
         {
             _confirming = true;
-            Content = Frame(Ui.Column(12, Ui.Title("Abandonner la saisie ?"), Ui.Muted("Les informations tapées seront perdues."),
-                Ui.Row(Ui.Button("Abandonner", () => Window.ShowTitle(), "red"), Ui.Button("Continuer la saisie", () => { _confirming = false; Build(); }))), 480);
+            Content = Frame(Ui.Column(12, Ui.Title(Loc.T("new.abandon.title")), Ui.Muted(Loc.T("new.abandon.text")),
+                Ui.Row(Ui.Button(Loc.T("new.abandon.confirm"), () => Window.ShowTitle(), "red", icon: Ui.IconFor(Loc.French("new.abandon.confirm"))), Ui.Button(Loc.T("new.abandon.keep"), () => { _confirming = false; Build(); }, "", icon: Ui.IconFor(Loc.French("new.abandon.keep"))))), 480);
             return;
         }
         Window.ShowTitle();
@@ -274,17 +275,17 @@ public class LoadScreen : MenuScreen
         var list = Ui.Column(8);
         var entries = Window.Store.List();
         if (entries.Count == 0)
-            list.Children.Add(Ui.Muted("Aucune sauvegarde pour l'instant."));
+            list.Children.Add(Ui.Muted(Loc.T("load.none")));
         foreach (var group in entries.GroupBy(e => e.Summary?.CampaignId ?? System.IO.Path.GetFileName(System.IO.Path.GetDirectoryName(e.Path))))
         {
             var first = group.FirstOrDefault(e => e.Summary != null)?.Summary;
-            string title = first != null ? $"{first.CampaignName} — {first.Company}" : "Campagne illisible";
+            string title = first != null ? $"{first.CampaignName} — {first.Company}" : Loc.T("load.unreadableCampaign");
             string campaignId = group.Key;
             var header = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
             var name = Ui.Text(title, 17, Palette.Gold, bold: true);
             name.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
             header.Children.Add(name);
-            var delete = Ui.Button("Supprimer la partie", () => ConfirmDelete(campaignId, title, group.Count()));
+            var delete = Ui.Button(Loc.T("load.delete"), () => ConfirmDelete(campaignId, title, group.Count()), "", icon: Ui.IconFor(Loc.French("load.delete")));
             Grid.SetColumn(delete, 1);
             header.Children.Add(delete);
             list.Children.Add(header);
@@ -293,18 +294,18 @@ public class LoadScreen : MenuScreen
                 Control line;
                 if (entry.Corrupt || entry.Summary == null)
                 {
-                    line = Ui.Column(2, Ui.Text($"{entry.Label} : fichier abîmé", 15, Palette.Blood), Ui.Muted(entry.Error ?? ""),
-                        Ui.Button("Essayer de récupérer", () => Load(entry)));
+                    line = Ui.Column(2, Ui.Text(Loc.T("load.damaged", Label(entry)), 15, Palette.Blood), Ui.Muted(entry.Error ?? ""),
+                        Ui.Button(Loc.T("load.recover"), () => Load(entry), "", icon: Ui.IconFor(Loc.French("load.recover"))));
                 }
                 else
                 {
                     var s = entry.Summary;
                     var info = Ui.Column(2,
-                        Ui.Text($"{entry.Label} · {GameTime.Format(s.Minute)}", 15, Palette.Snow),
-                        Ui.Muted($"{s.Company} · {s.Situation} · {s.Cash:N0} CHF · {s.People} pers. · écrite le {s.WrittenUtc.ToLocalTime():dd.MM.yyyy HH:mm}"));
+                        Ui.Text($"{Label(entry)} · {GameTime.Format(s.Minute)}", 15, Palette.Snow),
+                        Ui.Muted(Loc.T("load.summary", s.Company, s.Situation, s.Cash, s.People, s.WrittenUtc.ToLocalTime())));
                     var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto") };
                     grid.Children.Add(info);
-                    var button = Ui.Button("Charger", () => Load(entry), "gold");
+                    var button = Ui.Button(Loc.T("load.load"), () => Load(entry), "gold", icon: Ui.IconFor(Loc.French("load.load")));
                     Grid.SetColumn(button, 1);
                     grid.Children.Add(button);
                     line = grid;
@@ -314,18 +315,33 @@ public class LoadScreen : MenuScreen
         }
         var scroll = Ui.Scroll(list);
         scroll.MaxHeight = 460;
-        Content = Frame(Ui.Column(12, Ui.Title("Charger une partie"), scroll, Ui.Button("Retour", () => Window.ShowTitle())), 680);
+        Content = Frame(Ui.Column(12, Ui.Title(Loc.T("load.title")), scroll, Ui.Button(Loc.T("load.back"), () => Window.ShowTitle(), "", icon: Ui.IconFor(Loc.French("load.back")))), 680);
+    }
+
+    /// <summary>
+    /// Le nom d'une sauvegarde dans la langue choisie : manuelle = le nom donné par le joueur ; automatique, de sortie et
+    /// d'urgence = d'après le nom du fichier (SaveStore donne ces libellés en français).
+    /// </summary>
+    private static string Label(SaveEntry entry)
+    {
+        string name = System.IO.Path.GetFileNameWithoutExtension(entry.Path);
+        return entry.Kind switch
+        {
+            SaveKind.Manual => entry.Label,
+            SaveKind.Quick => Loc.T(name == "crash" ? "load.crash" : "load.exit"),
+            _ => Loc.T("load.auto", name.Length > 0 ? name[^1].ToString() : ""),
+        };
     }
 
     /// <summary>Confirmation avant de retirer une partie : son dossier part dans « deleted », rien n'est effacé du disque.</summary>
     private void ConfirmDelete(string campaignId, string title, int saves)
     {
         Content = Frame(Ui.Column(12,
-            Ui.Title("Supprimer cette partie ?"),
-            Ui.Text($"« {title} » et ses {saves} sauvegarde(s) disparaîtront de la liste.", 15, Palette.Snow),
-            Ui.Muted($"Les fichiers sont déplacés dans {Window.Store.TrashFolder} : on peut encore les récupérer à la main."),
+            Ui.Title(Loc.T("load.deleteTitle")),
+            Ui.Text(Loc.T("load.deleteText", title, saves), 15, Palette.Snow),
+            Ui.Muted(Loc.T("load.deleteWhere", Window.Store.TrashFolder)),
             Ui.Row(10,
-                Ui.Button("Supprimer", () =>
+                Ui.Button(Loc.T("load.deleteConfirm"), () =>
                 {
                     try
                     {
@@ -335,12 +351,12 @@ public class LoadScreen : MenuScreen
                     catch (Exception e) when (e is System.IO.IOException or UnauthorizedAccessException)
                     {
                         Sfx.Play(Sound.Error);
-                        Content = Frame(Ui.Column(12, Ui.Title("Suppression impossible"), Ui.Text(e.Message, 15, Palette.Lemon), Ui.Button("Retour à la liste", Build)), 560);
+                        Content = Frame(Ui.Column(12, Ui.Title(Loc.T("load.deleteFailed")), Ui.Text(e.Message, 15, Palette.Lemon), Ui.Button(Loc.T("load.backToList"), Build, "", icon: Ui.IconFor(Loc.French("load.backToList")))), 560);
                         return;
                     }
                     Build();
-                }, "red"),
-                Ui.Button("Annuler", Build))), 560);
+                }, "red", icon: Ui.IconFor(Loc.French("load.deleteConfirm"))),
+                Ui.Button(Loc.T("load.cancel"), Build, "", icon: Ui.IconFor(Loc.French("load.cancel"))))), 560);
     }
 
     private void Load(SaveEntry entry)
@@ -349,7 +365,7 @@ public class LoadScreen : MenuScreen
         if (campaign == null)
         {
             Sfx.Play(Sound.Error);
-            Content = Frame(Ui.Column(12, Ui.Title("Chargement impossible"), Ui.Text(message, 15, Palette.Lemon), Ui.Button("Retour à la liste", Build)), 560);
+            Content = Frame(Ui.Column(12, Ui.Title(Loc.T("load.failed")), Ui.Text(message, 15, Palette.Lemon), Ui.Button(Loc.T("load.backToList"), Build, "", icon: Ui.IconFor(Loc.French("load.backToList")))), 560);
             return;
         }
         Window.StartGame(campaign, entry.Path, string.IsNullOrEmpty(message) ? "Partie chargée." : message);
@@ -386,7 +402,7 @@ public class SettingsScreen : MenuScreen
     {
         var s = window.Settings;
         // Auto et les tailles entières gardent la police et les sprites nets ; 150 % est proposé pour les grands écrans (moins net)
-        (double, string)[] scales = [(0, "Auto (net)"), (1, "100 %"), (1.5, "150 %"), (2, "200 %")];
+        (double, string)[] scales = [(0, Loc.T("settings.scaleAuto")), (1, "100 %"), (1.5, "150 %"), (2, "200 %")];
         void Change(Action apply)
         {
             apply();
@@ -399,7 +415,7 @@ public class SettingsScreen : MenuScreen
             apply();
             window.SaveSettings();
         }
-        static string Percent(double v) => v <= 0 ? "Coupé" : $"{v:P0}";
+        static string Percent(double v) => v <= 0 ? Loc.T("settings.muted") : $"{v:P0}";
         var scaleRow = new WrapPanel();
         foreach (var (value, label) in scales)
         {
@@ -408,34 +424,36 @@ public class SettingsScreen : MenuScreen
             scaleRow.Children.Add(radio);
         }
         var column = Ui.Column(8,
-            Ui.Title("Réglages"),
-            Ui.Section("Son",
-                Ui.Text("Musique", 14, Palette.Fog),
+            Ui.Title(Loc.T("settings.title")),
+            Ui.Section(Loc.T("settings.language"),
+                Ui.Choice(Loc.Languages.Select(l => (l, Loc.Table(l).TryGetValue("language.name", out var n) ? n : l)), Loc.Language,
+                    l => { window.SetLanguage(l); rebuild(); })),
+            Ui.Section(Loc.T("settings.sound"),
+                Ui.Text(Loc.T("settings.music"), 14, Palette.Fog),
                 Ui.Slider(s.MusicVolume, 0, 1, 0.1, v => Volume(() => s.MusicVolume = v), Percent),
-                Ui.Text("Bruitages", 14, Palette.Fog),
+                Ui.Text(Loc.T("settings.sfx"), 14, Palette.Fog),
                 Ui.Slider(s.SoundVolume, 0, 1, 0.1, v => Volume(() => s.SoundVolume = v), Percent)),
-            Ui.Section("Affichage",
-                Ui.Switch("Plein écran (F11)", s.Fullscreen, v => { window.SetFullscreen(v); rebuild(); }),
-                Ui.Switch("Texte agrandi (plus lisible, un peu moins net)", s.LargeText, v => { window.SetLargeText(v); rebuild(); }),
-                Ui.Text("Taille de l'interface", 14, Palette.Fog),
+            Ui.Section(Loc.T("settings.display"),
+                Ui.Switch(Loc.T("settings.fullscreen"), s.Fullscreen, v => { window.SetFullscreen(v); rebuild(); }),
+                Ui.Switch(Loc.T("settings.largeText"), s.LargeText, v => { window.SetLargeText(v); rebuild(); }),
+                Ui.Text(Loc.T("settings.uiScale"), 14, Palette.Fog),
                 scaleRow),
-            Ui.Section("Temps",
-                Ui.Switch("Les grands menus (produits, finances) mettent le temps en pause", s.PauseInLargeMenus, v => Change(() => s.PauseInLargeMenus = v)),
-                Ui.Switch("Nuits et week-ends sans personne au bureau accélérés ×8", s.FastNights, v => Change(() => s.FastNights = v))),
-            Ui.Section("Accessibilité",
-                Ui.CheckBox("L'entreprise attend pendant la saisie au terminal", s.PauseDuringTerminal, v => Change(() => s.PauseDuringTerminal = v)),
-                Ui.Muted("Le rendement d'un mot ne dépend jamais du temps qui passe : ce réglage change seulement ce qui arrive pendant que tu tapes.", 13),
-                Ui.CheckBox("Réduire les effets (curseur fixe, moins d'animations)", s.ReduceEffects, v => Change(() => s.ReduceEffects = v)),
-                Ui.Text("Curseur du terminal", 14, Palette.Fog),
+            Ui.Section(Loc.T("settings.time"),
+                Ui.Switch(Loc.T("settings.pauseMenus"), s.PauseInLargeMenus, v => Change(() => s.PauseInLargeMenus = v)),
+                Ui.Switch(Loc.T("settings.fastNights"), s.FastNights, v => Change(() => s.FastNights = v))),
+            Ui.Section(Loc.T("settings.accessibility"),
+                Ui.CheckBox(Loc.T("settings.pauseTerminal"), s.PauseDuringTerminal, v => Change(() => s.PauseDuringTerminal = v)),
+                Ui.Muted(Loc.T("settings.pauseTerminalNote"), 13),
+                Ui.CheckBox(Loc.T("settings.reduceEffects"), s.ReduceEffects, v => Change(() => s.ReduceEffects = v)),
+                Ui.Text(Loc.T("settings.cursor"), 14, Palette.Fog),
                 CursorChoice(s.TerminalCursor, v => Change(() => s.TerminalCursor = v)),
-                Ui.CheckBox("Saisie simplifiée au terminal", s.SimplifiedTyping, v => Change(() => s.SimplifiedTyping = v)),
-                Ui.Muted("Saisie simplifiée : le mot s'écrit tout seul et Entrée le valide. Chaque mot rapporte comme une frappe lente (×0,85) : " +
-                         "moins qu'une frappe rapide, assez pour mener la campagne.", 13)));
-        column.Children.Add(Ui.Section("Assistance",
-            Ui.Muted($"En cas d'erreur, un journal est écrit dans {CrashLog.Folder}, et la partie en cours est gardée à part (« Sauvegarde d'urgence »).", 13),
-            Ui.Button("Ouvrir le dossier des journaux", CrashLog.OpenFolder)));
+                Ui.CheckBox(Loc.T("settings.simplified"), s.SimplifiedTyping, v => Change(() => s.SimplifiedTyping = v)),
+                Ui.Muted(Loc.T("settings.simplifiedNote"), 13)));
+        column.Children.Add(Ui.Section(Loc.T("settings.help"),
+            Ui.Muted(Loc.T("settings.logsNote", CrashLog.Folder), 13),
+            Ui.Button(Loc.T("settings.openLogs"), CrashLog.OpenFolder, "", icon: Ui.IconFor(Loc.French("settings.openLogs")))));
         if (back != null)
-            column.Children.Add(Ui.Button("Retour", back));
+            column.Children.Add(Ui.Button(Loc.T("settings.back"), back, "", icon: Ui.IconFor(Loc.French("settings.back"))));
         return column;
     }
 
@@ -443,7 +461,7 @@ public class SettingsScreen : MenuScreen
     private static Control CursorChoice(string current, Action<string> pick)
     {
         var row = new WrapPanel();
-        foreach (var (id, label) in new[] { ("block", "Bloc"), ("bar", "Barre"), ("underline", "Souligné") })
+        foreach (var (id, label) in new[] { ("block", Loc.T("settings.cursor.block")), ("bar", Loc.T("settings.cursor.bar")), ("underline", Loc.T("settings.cursor.underline")) })
         {
             var sample = Ui.Image(PackSkins.Sprite($"term_cursor_{id}"), 12, 24);
             var radio = Ui.Radio(label, current == id, () => pick(id));

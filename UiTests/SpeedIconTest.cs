@@ -26,3 +26,19 @@ public class SpeedIconTest
         window.Close();
     }
 }
+
+/// <summary>Lot 3 : échelle automatique selon la résolution.</summary>
+public class AutoScaleTest
+{
+    [TestCase(1280, 720, 1.0, 1.0)]
+    [TestCase(1366, 768, 1.0, 1.0)]
+    [TestCase(1920, 1080, 1.0, 1.0)]
+    [TestCase(2560, 1080, 1.0, 1.0)]
+    [TestCase(3840, 2160, 1.0, 2.0)]
+    [TestCase(1920, 1080, 2.0, 1.0)] // 4K avec la mise à l'échelle Windows à 200 %
+    [TestCase(1000, 600, 1.0, 0.6667)] // petite fenêtre : l'interface rétrécit pour tout montrer
+    public void TheAutomaticScaleFitsCommonScreens(double w, double h, double renderScaling, double expected)
+    {
+        Assert.That(UI.Pixel.PixelText.AutoScale(w, h, renderScaling), Is.EqualTo(expected).Within(0.001));
+    }
+}

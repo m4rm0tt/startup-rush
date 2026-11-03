@@ -61,7 +61,8 @@ public abstract class MenuScreen : UserControl, IScreen
     private double MenuScale()
     {
         double h = Window.Bounds.Height > 0 ? Window.Bounds.Height : Window.Height;
-        return Window.Settings.UiScale > 0 ? Window.Settings.UiScale : UI.Pixel.PixelText.CrispScale(Math.Clamp(h / 900, 0.7, 1.4), Window.RenderScaling);
+        // Les menus ne défilent pas : ils rétrécissent dans une petite fenêtre, et grandissent sur un écran 4K (2 au lieu de 1,4)
+        return Window.Settings.UiScale > 0 ? Window.Settings.UiScale : UI.Pixel.PixelText.CrispScale(Math.Clamp(h / 900, 0.7, 2.5), Window.RenderScaling);
     }
 
     public virtual void Tick(double deltaTime)

@@ -326,3 +326,30 @@ public class LargeTextShots
         }
     }
 }
+
+[Explicit, Category("Shots")]
+public class ResolutionShots
+{
+    [AvaloniaTest]
+    public void CommonResolutions([Values("1280x720", "1366x768", "1920x1080", "2560x1080", "3840x2160")] string size)
+    {
+        var (window, game, campaign) = Shots.Fresh(tutorial: false);
+        var parts = size.Split('x');
+        window.Width = int.Parse(parts[0]);
+        window.Height = int.Parse(parts[1]);
+        campaign.Ledger.Cash = 500_000;
+        campaign.CheatUnlockAll();
+        var (_, product) = campaign.CreateProject("Planio", "freelances", Core.products.RevenueModel.Subscription);
+        campaign.CheatFinishWork();
+        campaign.Launch(product!.Id);
+        game.Tick(0.3);
+        Shots.Save(window, $"res_{size}_scene");
+        game.OpenRoot(new UI.Hud.Panels.ProjectPanel(product.Id));
+        game.Tick(0.3);
+        Shots.Save(window, $"res_{size}_project");
+        game.OpenRoot(new UI.Hud.Panels.BuildPanel());
+        game.Tick(0.3);
+        Shots.Save(window, $"res_{size}_build");
+        window.Close();
+    }
+}

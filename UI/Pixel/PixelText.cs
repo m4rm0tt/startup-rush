@@ -56,6 +56,21 @@ public static class PixelText
         return Math.Max(1, Math.Floor(physical + 0.25)) / renderScaling;
     }
 
+    /// <summary>
+    /// Échelle automatique de l'écran de jeu pour une fenêtre de w × h (pixels logiques), conçue pour 1500 × 860 :
+    /// nette (nombre entier de pixels physiques par pixel du pack) et jamais sous 1 dès que la fenêtre fait au moins
+    /// 1240 × 700 pixels physiques (1280 × 720 passait à 0,84 : texte minuscule et flou, alors que les menus défilent).
+    /// Plus de plafond à 1,5 : un écran 4K à 100 % passe à 2 au lieu de 1.
+    /// </summary>
+    public static double AutoScale(double w, double h, double renderScaling, double designW = 1500, double designH = 860)
+    {
+        double fit = Math.Min(w / designW, h / designH);
+        bool roomy = w * renderScaling >= 1240 && h * renderScaling >= 700;
+        if (roomy)
+            fit = Math.Max(fit, 1 / renderScaling);
+        return CrispScale(Math.Clamp(fit, 0.6, 4), renderScaling);
+    }
+
     /// <summary>Texte dessiné à la main (graphiques) : même règle.</summary>
     public static FormattedText Format(string text, Typeface typeface, double size, IBrush brush) =>
         new(text, System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight, typeface, Snap(size), brush);

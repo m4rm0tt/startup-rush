@@ -93,6 +93,7 @@ public class GameScreen : UserControl, IScreen
         _topBar.VerticalAlignment = VerticalAlignment.Top;
 
         var toolbarFrame = new PixelPanel { Padding = new Thickness(8, 6, 8, 8), Child = _toolbar, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Bottom, Margin = new Thickness(0, 0, 0, 8) };
+        _toolbarFrame = toolbarFrame;
         _hud.Children.Add(toolbarFrame);
         BuildToolbar();
 
@@ -138,7 +139,7 @@ public class GameScreen : UserControl, IScreen
                 return Window.Settings.UiScale;
             double w = Bounds.Width > 0 ? Bounds.Width : Window.Width;
             double h = Bounds.Height > 0 ? Bounds.Height : Window.Height;
-            return UI.Pixel.PixelText.CrispScale(Math.Clamp(Math.Min(w / 1500, h / 860), 0.72, 1.5), Window.RenderScaling);
+            return UI.Pixel.PixelText.AutoScale(w, h, Window.RenderScaling);
         }
     }
 
@@ -815,13 +816,18 @@ public class GameScreen : UserControl, IScreen
     }
 
     private double _inspectorHeight;
+    private PixelPanel? _toolbarFrame;
 
     /// <summary>Un grand menu couvre l'écran : une seule bulle, sous lui à gauche de la barre d'outils (elles cachaient son bas).</summary>
     private int MaxToasts => TopPanel is { Large: true } ? 1 : _stack.Count > 0 ? 2 : 4;
 
     private void UpdateToasts(double deltaTime)
     {
-        _toasts.Margin = TopPanel is { Large: true } ? new Thickness(10, 0, 0, 6) : new Thickness(10, 0, 0, Math.Max(84, _inspectorHeight + 20));
+        // Sous un grand menu, la bulle se loge à gauche de la barre d'outils ; si la place manque (1280 × 720), au-dessus
+        double room = (_toolbarFrame?.Bounds.X ?? 400) - 20;
+        bool beside = TopPanel is { Large: true } && room >= 260;
+        _toasts.Width = beside ? Math.Min(380, room) : 380;
+        _toasts.Margin = beside ? new Thickness(10, 0, 0, 6) : new Thickness(10, 0, 0, Math.Max(84, _inspectorHeight + 20));
         while (_toasts.Children.Count > MaxToasts)
             _toasts.Children.RemoveAt(0);
         for (int i = _toastAges.Count - 1; i >= 0; i--)

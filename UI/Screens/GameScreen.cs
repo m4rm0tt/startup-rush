@@ -472,7 +472,7 @@ public class GameScreen : UserControl, IScreen
                 Sfx.Play(Sound.Select);
                 Toggle(create);
             });
-            ToolTip.SetTip(button, $"{label} ({key})");
+            ToolTip.SetTip(button, $"{ToolName(label)} ({key})");
             toolbar.Add(button);
         }
     }

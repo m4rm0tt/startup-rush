@@ -248,7 +248,7 @@ public static class Ui
     {
         var column = Column(6, children);
         string? icon = SectionIcons.FirstOrDefault(s => title.StartsWith(s.Title)).Icon;
-        Control label = Text(title.ToUpperInvariant(), 13, Palette.Ink, bold: true, wrap: false);
+        Control label = Text(Loc.Translate(title).ToUpperInvariant(), 13, Palette.Ink, bold: true, wrap: false);
         if (icon != null && UI.Iso.PackLibrary.Has(icon))
             label = Row(4, Image(Icons.Get(icon, "#2b2128"), 16, 16), label);
         column.Children.Insert(0, new PixelPanel

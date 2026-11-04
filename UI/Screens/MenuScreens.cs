@@ -204,7 +204,9 @@ public class NewCampaignScreen : MenuScreen
         "hair_long_straight" => Loc.T("new.hair.long"), "hair_bun" => Loc.T("new.hair.bun"), _ => Loc.T("new.hair.bob")
     };
 
-    public static string OutfitName(string id) => id switch
+    public static string OutfitName(string id) => Loc.Translate(OutfitNameFrench(id));
+
+    private static string OutfitNameFrench(string id) => id switch
     {
         "teal" => "sarcelle", "coral" => "corail", "sun" => "soleil", "sky" => "ciel", "sage" => "sauge", "navy" => "marine",
         "rose" => "rose", "graphite" => "graphite", "plastic" => "blanc cassé", "steel" => "acier",

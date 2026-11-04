@@ -141,7 +141,7 @@ public class BuildPanel : GamePanel
             wrap.Children.Clear();
             string query = _search.Trim();
             var shown = query.Length >= 2
-                ? FurnitureCatalog.Buyable.Where(d => d.Name.Contains(query, System.StringComparison.CurrentCultureIgnoreCase)).ToList()
+                ? FurnitureCatalog.Buyable.Where(d => Loc.Translate(d.Name).Contains(query, System.StringComparison.CurrentCultureIgnoreCase) || d.Name.Contains(query, System.StringComparison.CurrentCultureIgnoreCase)).ToList()
                 : groups.First(g => g.Key == _group).ToList();
             foreach (var def in shown)
                 wrap.Children.Add(CatalogButton(def));
@@ -327,12 +327,15 @@ public class BuildPanel : GamePanel
                      .Where(d => d.Kind is not (FurnitureKind.Decor or FurnitureKind.Desk or FurnitureKind.Laptop or FurnitureKind.Tower
                          or FurnitureKind.Monitor or FurnitureKind.Keyboard or FurnitureKind.Chair or FurnitureKind.Kitchen))
                      .GroupBy(GroupOf).OrderBy(g => g.Key))
-            contributors.Children.Add(Ui.Muted($"{group.Key} : " + string.Join(", ", group.GroupBy(d => d.Name).Select(d => d.Count() > 1 ? $"{d.Key} ×{d.Count()}" : d.Key)), 13));
+            contributors.Children.Add(Ui.Muted($"{Loc.Translate(group.Key)}{Colon} " + string.Join(", ", group.GroupBy(d => d.Name).Select(d => d.Count() > 1 ? $"{Loc.Translate(d.Key)} ×{d.Count()}" : Loc.Translate(d.Key))), 13));
         if (contributors.Children.Count == 0)
             contributors.Children.Add(Ui.Muted("Rien pour l'instant.", 13));
         string title = $"Confort du local ({c.People} personne{(c.People > 1 ? "s" : "")})";
         return Ui.Section(title, grid, Ui.Details("Ce qui y contribue", contributors));
     }
+
+    /// <summary>Les deux-points d'une liste assemblée par le code : « Pauses : … » en français, « Breaks: … » en anglais.</summary>
+    private static string Colon => Loc.Language == Loc.Reference ? " :" : ":";
 
     /// <summary>Finitions : sol ou murs (gardé le temps de la session).</summary>
     private static FinishKind _finishKind = FinishKind.Floor;
@@ -480,7 +483,7 @@ public class BuildPanel : GamePanel
         {
             decimal cost = Core.campaign.Campaign.ModuleCost(module);
             string? locked = Campaign.ModuleLock(module);
-            var kinds = module.Objects.Select(o => FurnitureCatalog.Get(o.Asset)).GroupBy(d => d.Name).Select(g => g.Count() > 1 ? $"{g.Count()} × {g.Key}" : g.Key);
+            var kinds = module.Objects.Select(o => FurnitureCatalog.Get(o.Asset)).GroupBy(d => d.Name).Select(g => g.Count() > 1 ? $"{g.Count()} × {Loc.Translate(g.Key)}" : Loc.Translate(g.Key));
             string content = string.Join(", ", kinds);
             // Le titre est sur la bande sarcelle de la carte du pack : en blanc (4,8:1), l'encre n'y faisait que 3,2:1
             // Le titre occupe toute la bande sarcelle de la carte (16 px du pack, soit 32) : la description commence sous la
@@ -530,7 +533,7 @@ public class BuildPanel : GamePanel
         button.Classes.Add("plain");
         string unit = floor ? $"{finish.Price:N0} CHF la case" : $"{finish.Price:N0} CHF le segment de mur";
         ToolTip.SetTip(button, locked ? $"{finish.Name} — à débloquer : {Core.campaign.Campaign.UnlockName(finish.UnlockNode!)}."
-            : $"{finish.Name} — {finish.Effect} {unit}. Clic : aperçu dans la scène.");
+            : $"{finish.Name} — {Loc.Translate(finish.Effect)} {Loc.Translate(unit)}. Clic : aperçu dans la scène.");
         Ui.OnClick(button, () =>
         {
             if (previewing)

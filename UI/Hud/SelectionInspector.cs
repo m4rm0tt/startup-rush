@@ -31,7 +31,7 @@ public static class SelectionInspector
     private static Control Cartons(GameScreen screen, Campaign campaign)
     {
         var thumb = PackLibrary.Thumbnail("moving_box");
-        var content = campaign.Storage.GroupBy(s => FurnitureCatalog.Get(s.DefId).Name).Select(g => g.Count() > 1 ? $"{g.Count()} × {g.Key}" : g.Key).ToList();
+        var content = campaign.Storage.GroupBy(s => FurnitureCatalog.Get(s.DefId).Name).Select(g => g.Count() > 1 ? $"{g.Count()} × {Loc.Translate(g.Key)}" : Loc.Translate(g.Key)).ToList();
         return Ui.Column(6,
             Ui.Row(Ui.Image(thumb, thumb.PixelSize.Width, thumb.PixelSize.Height),
                 Ui.Column(2, Ui.Title("Cartons de déménagement", 18), Ui.Muted($"{campaign.Storage.Count} objet(s) à déballer.", 13))),

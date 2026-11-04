@@ -15,13 +15,26 @@ public static class PixelText
 {
     public const double Grid = 12;
 
-    /// <summary>Réglage « Texte agrandi » : le texte courant (12 px) passe à 18, les titres gardent la grille de 12.</summary>
+    /// <summary>
+    /// Taille du texte courant : 18 px (la police du pack reste nette en multiples de 12, mais 12 px était trop petit à lire :
+    /// BUG-010). Les petites étiquettes demandées à 11 px ou moins gardent 12 px.
+    /// </summary>
+    public const double Body = 18;
+
+    /// <summary>Taille du texte courant avec « Texte agrandi » : 24 px, deux fois la grille.</summary>
+    public const double BodyLarge = 24;
+
+    /// <summary>Réglage « Texte agrandi » : le texte courant passe de 18 à 24 px, les titres d'un cran de plus.</summary>
     public static bool Large { get; set; }
 
     public static double Snap(double size)
     {
+        if (size < 12.5)
+            return Grid;                                  // étiquettes minuscules (touches, indices)
+        if (size < 21)
+            return Large ? BodyLarge : Body;              // texte courant (demandé de 13 à 20 px)
         double snapped = Math.Max(Grid, Math.Round(size / Grid, MidpointRounding.AwayFromZero) * Grid);
-        return Large && snapped < 24 ? 18 : snapped;
+        return Large && snapped < 36 ? snapped + Grid : snapped;
     }
 
     private static bool _installed;
@@ -32,10 +45,12 @@ public static class PixelText
         if (_installed)
             return;
         _installed = true;
-        TextBlock.FontSizeProperty.OverrideMetadata<TextBlock>(new StyledPropertyMetadata<double>(Grid, coerce: (_, v) => Snap(v)));
-        Avalonia.Controls.Documents.TextElement.FontSizeProperty.OverrideMetadata<TextPresenter>(new StyledPropertyMetadata<double>(Grid, coerce: (_, v) => Snap(v)));
+        TextBlock.FontSizeProperty.OverrideMetadata<TextBlock>(new StyledPropertyMetadata<double>(Body, coerce: (_, v) => Snap(v)));
+        // Langue : tout texte affiché passe par la traduction des phrases (français : rien ne change)
+        TextBlock.TextProperty.OverrideMetadata<TextBlock>(new StyledPropertyMetadata<string?>(null, coerce: (_, v) => v == null ? null : Loc.Translate(v)));
+        Avalonia.Controls.Documents.TextElement.FontSizeProperty.OverrideMetadata<TextPresenter>(new StyledPropertyMetadata<double>(Body, coerce: (_, v) => Snap(v)));
         // Les libellés des boutons et onglets héritent la taille de leur contrôle : elle suit la même règle (texte agrandi compris)
-        Avalonia.Controls.Primitives.TemplatedControl.FontSizeProperty.OverrideMetadata<Avalonia.Controls.Primitives.TemplatedControl>(new StyledPropertyMetadata<double>(Grid, coerce: (_, v) => Snap(v)));
+        Avalonia.Controls.Primitives.TemplatedControl.FontSizeProperty.OverrideMetadata<Avalonia.Controls.Primitives.TemplatedControl>(new StyledPropertyMetadata<double>(Body, coerce: (_, v) => Snap(v)));
         // Les polices du pack n'existent qu'en graisse normale : un « gras » était épaissi par le moteur de texte, d'un pixel
         // irrégulier, et collait les lettres (« mise » se lisait « nise »). La hiérarchie passe par la taille et la couleur.
         TextBlock.FontWeightProperty.OverrideMetadata<TextBlock>(new StyledPropertyMetadata<FontWeight>(FontWeight.Normal, coerce: (_, _) => FontWeight.Normal));
@@ -73,5 +88,5 @@ public static class PixelText
 
     /// <summary>Texte dessiné à la main (graphiques) : même règle.</summary>
     public static FormattedText Format(string text, Typeface typeface, double size, IBrush brush) =>
-        new(text, System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight, typeface, Snap(size), brush);
+        new(Loc.Translate(text), System.Globalization.CultureInfo.CurrentCulture, FlowDirection.LeftToRight, typeface, Snap(size), brush);
 }

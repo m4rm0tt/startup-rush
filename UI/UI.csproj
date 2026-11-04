@@ -36,5 +36,6 @@
         <AvaloniaResource Include="..\assets\StartupRushOriginalAssets\assets\fonts\*.ttf" Link="Assets\Fonts\%(Filename)%(Extension)" />
         <!-- Textes de l'interface par langue (UI/Loc.cs) -->
         <EmbeddedResource Include="Lang\*.json" LogicalName="UI.Lang.%(Filename).json" />
+        <EmbeddedResource Include="Lang\phrases\**\*.json" LogicalName="UI.Lang.phrases.%(RecursiveDir)%(Filename).json" />
     </ItemGroup>
 </Project>

@@ -363,3 +363,71 @@ public class ResolutionShots
         window.Close();
     }
 }
+
+/// <summary>
+/// Vérification finale de l'affichage (texte courant à 18 px, anglais, texte agrandi) : une série d'écrans du jeu à une taille
+/// de fenêtre donnée. Langue et texte agrandi par l'environnement :
+///   STARTUPRUSH_LANG=en STARTUPRUSH_LARGE=1 STARTUPRUSH_SHOTS=dir dotnet test UiTests --filter "FullyQualifiedName~FinalShots"
+/// </summary>
+[Explicit, Category("Shots")]
+public class FinalShots
+{
+    [AvaloniaTest]
+    public void Screens([Values("1280x720", "1600x900", "1920x1080")] string size)
+    {
+        string lang = Environment.GetEnvironmentVariable("STARTUPRUSH_LANG") ?? "fr";
+        bool large = Environment.GetEnvironmentVariable("STARTUPRUSH_LARGE") == "1";
+        string tag = $"{lang}{(large ? "L" : "")}_{size}";
+        Loc.Language = lang;
+        UI.Pixel.PixelText.Large = large;
+        var (window, game, campaign) = Shots.Fresh(tutorial: true);
+        var parts = size.Split('x');
+        window.Width = int.Parse(parts[0]);
+        window.Height = int.Parse(parts[1]);
+        try
+        {
+            game.Tick(0.3);
+            Shots.Save(window, $"final_{tag}_tutorial");
+            campaign.TutorialOn = false;
+            campaign.Ledger.Cash = 800_000;
+            campaign.CheatUnlockAll();
+            Assert.That(campaign.RentSite("hw_workshop").Ok, Is.True);
+            campaign.InstallLayout("assembly");
+            var (_, product) = campaign.CreateProject("Planio", "freelances", Core.products.RevenueModel.Subscription);
+            campaign.CreateProject("Jeu", "casual", Core.products.RevenueModel.Purchase);
+            campaign.CheatFinishWork();
+            foreach (var p in campaign.Products.ToList())
+                campaign.Launch(p.Id);
+            campaign.CheatHire();
+            campaign.AdvanceDays(20);
+            var panels = new (string, UI.Hud.GamePanel)[]
+            {
+                ("projects", new UI.Hud.Panels.ProjectsPanel()), ("newproject", new UI.Hud.Panels.NewProjectPanel()),
+                ("project", new UI.Hud.Panels.ProjectPanel(product!.Id)), ("team", new UI.Hud.Panels.TeamPanel()),
+                ("person", new UI.Hud.Panels.PersonPanel(campaign.Founder.Id)), ("build", new UI.Hud.Panels.BuildPanel()),
+                ("tree", new UI.Hud.Panels.TreePanel()), ("finance", new UI.Hud.Panels.FinancePanel()),
+                ("sites", new UI.Hud.Panels.SitesPanel()), ("cloud", new UI.Hud.Panels.CloudPanel()),
+                ("industry", new UI.Hud.Panels.IndustryPanel()), ("research", new UI.Hud.Panels.ResearchPanel()),
+                ("ai", new UI.Hud.Panels.AiPanel()), ("lab", new UI.Hud.Panels.LabPanel()), ("notices", new UI.Hud.Panels.NoticesPanel()),
+            };
+            foreach (var (name, panel) in panels)
+            {
+                game.OpenRoot(panel);
+                game.Tick(0.3);
+                Shots.Save(window, $"final_{tag}_{name}");
+            }
+            game.ClosePanels();
+            game.Tick(0.3);
+            Shots.Save(window, $"final_{tag}_scene");
+            game.OpenTerminal(product.Id);
+            game.Tick(0.3);
+            Shots.Save(window, $"final_{tag}_terminal");
+        }
+        finally
+        {
+            Loc.Language = "fr";
+            UI.Pixel.PixelText.Large = false;
+            window.Close();
+        }
+    }
+}

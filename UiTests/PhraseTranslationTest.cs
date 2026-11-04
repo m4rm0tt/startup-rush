@@ -51,7 +51,7 @@ public class PhraseTranslationTest
         try
         {
             UI.Pixel.PixelText.Large = false;
-            Assert.That(new[] { 11d, 12, 13, 15, 16, 20 }.Select(UI.Pixel.PixelText.Snap), Is.EqualTo(new[] { 12d, 12, 18, 18, 18, 18 }));
+            Assert.That(new[] { 10d, 11, 12, 13, 15, 16, 20 }.Select(UI.Pixel.PixelText.Snap), Is.EqualTo(new[] { 12d, 12, 18, 18, 18, 18, 18 }));
             Assert.That(UI.Pixel.PixelText.Snap(22), Is.EqualTo(24));
             UI.Pixel.PixelText.Large = true;
             Assert.That(UI.Pixel.PixelText.Snap(14), Is.EqualTo(24));

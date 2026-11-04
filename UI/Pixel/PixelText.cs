@@ -17,7 +17,7 @@ public static class PixelText
 
     /// <summary>
     /// Taille du texte courant : 18 px (la police du pack reste nette en multiples de 12, mais 12 px était trop petit à lire :
-    /// BUG-010). Les petites étiquettes demandées à 11 px ou moins gardent 12 px.
+    /// BUG-010). Seules les minuscules étiquettes demandées à 11 px ou moins (touches, indices) gardent 12 px.
     /// </summary>
     public const double Body = 18;
 
@@ -29,7 +29,7 @@ public static class PixelText
 
     public static double Snap(double size)
     {
-        if (size < 12.5)
+        if (size < 11.5)
             return Grid;                                  // étiquettes minuscules (touches, indices)
         if (size < 21)
             return Large ? BodyLarge : Body;              // texte courant (demandé de 13 à 20 px)
@@ -47,7 +47,15 @@ public static class PixelText
         _installed = true;
         TextBlock.FontSizeProperty.OverrideMetadata<TextBlock>(new StyledPropertyMetadata<double>(Body, coerce: (_, v) => Snap(v)));
         // Langue : tout texte affiché passe par la traduction des phrases (français : rien ne change)
-        TextBlock.TextProperty.OverrideMetadata<TextBlock>(new StyledPropertyMetadata<string?>(null, coerce: (_, v) => v == null ? null : Loc.Translate(v)));
+        TextBlock.TextProperty.Changed.AddClassHandler<TextBlock>((block, e) =>
+        {
+            if (e.NewValue is string text && Loc.Language != Loc.Reference)
+            {
+                string translated = Loc.Translate(text);
+                if (translated != text)
+                    block.SetCurrentValue(TextBlock.TextProperty, translated);
+            }
+        });
         Avalonia.Controls.Documents.TextElement.FontSizeProperty.OverrideMetadata<TextPresenter>(new StyledPropertyMetadata<double>(Body, coerce: (_, v) => Snap(v)));
         // Les libellés des boutons et onglets héritent la taille de leur contrôle : elle suit la même règle (texte agrandi compris)
         Avalonia.Controls.Primitives.TemplatedControl.FontSizeProperty.OverrideMetadata<Avalonia.Controls.Primitives.TemplatedControl>(new StyledPropertyMetadata<double>(Body, coerce: (_, v) => Snap(v)));

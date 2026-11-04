@@ -89,42 +89,32 @@ gardé en `.corrupt` et signalé dans la liste, migrations des formats 4 à 7 te
 
 Steamworks : **bloqué**, aucun compte partenaire, App ID ni SDK sur ce poste. Prérequis listés dans `docs/DISTRIBUTION.md` ; rien n'est intégré.
 
-## Points en suspens (état au 4 novembre 2026, pour reprendre dans une autre conversation)
+## État de la reprise du 4 novembre 2026 (session interrompue par la limite d'usage)
 
-### À faire côté code, dans l'ordre conseillé
-1. **Traduire les panneaux de jeu** (Projets, Équipe, Aménagement, Finances, Développement, terminal), puis le tutoriel et les
-   notifications/catalogues du moteur (`Core`, aujourd'hui en français seulement). Méthode : `UI/Loc.cs` + `UI/Lang/*.json`,
-   voir `docs/LOT6_ANGLAIS.md` et `docs/DISTRIBUTION.md` (liste du non-traduit). Le lot 6 est donc **partiel**.
-2. **Relancer `WriteBalanceReport`** (5 graines, ~45 min sur le VPS) après le prix Makers 65 → 95 et l'objectif final, puis
-   mettre à jour `BALANCE_REPORT.md`.
-3. **Vérifier par simulation le délai pour atteindre 2 M de valorisation** (lu dans le rapport 36 mois, jamais simulé :
-   `docs/LOT5_OBJECTIFS.md`). Ajuster le seuil si c'est trop long ou trop court.
-4. **Relancer la suite de tests UI complète** : non refaite après la dernière fusion (moteur 255/255 ; interface : seul
-   `AnAdvancedCampaignRendersAFrameQuickly` échoue, à cause du VPS sans carte graphique, pas du code).
-5. Débordements de texte anglais sur les panneaux traduits (vérification de capture à refaire après l'étape 1).
+### Terminé et vérifié (tests automatiques ou captures regardées)
+- **Texte courant à 18 px** (12 px seulement pour les touches minuscules) ; **texte agrandi à 24 px**, barres du haut et du bas laissées à 18 px (`PixelText.Hud`) ; arbre de développement en colonnes qui passent à la ligne ; état du terminal sur plusieurs lignes ; nom du local tronqué dans la barre du haut. Captures FR et EN regardées en 1280 × 720 et 1600 × 900 (`FinalShots`, catégorie Shots).
+- **Localisation anglaise complète des panneaux, du terminal, du tutoriel et des messages du moteur** : moteur de phrases (`Loc.Translate`, `docs/LOT6_PHRASES.md`), ~4 500 entrées (`UI/Lang/phrases/en/`), 3 zones faites par agents puis fusionnées, conflits résolus (test `PhraseFilesDoNotContradictEachOther…`). Couverture : tests par zone + `EnglishCoverage_NoticesTest` (journal de 8 parties de bots) + `EnglishCoverage_AllPanelsTest` (tous les panneaux, tutoriel, pause, bilans, menus). Reste volontairement en français : noms propres, adresses, mots à taper du terminal.
+- **Rapport d'équilibrage complet, 5 graines** (`docs/equilibrage/bilan_steam_v1_final.md` + CSV, révision e4a20d1) : identique à l'ancien rapport sauf `materiel` (prix Makers 95 CHF : médiane 14 589 → 19 829 CHF à 18 mois ; 36 mois 37 380 → 107 034). **À relancer** après la correction ci-dessous (la valorisation sert aux offres d'investisseurs).
+- **Bug corrigé** : le résultat d'un produit matériel ne comptait ni les matières vendues ni les garanties (le coût du jour était écrasé dans `Campaign.Daily.cs`) : la valorisation du matériel était gonflée de 3 à 4 fois (PC : 3,6 M à 24 mois, 1,8 M corrigé). Test `HardwareResultTest`. Moteur 259/259.
+- **Objectif final ajusté à 2,5 M de valorisation tenus 30 jours de suite** (avant : 2 M, un seul jour). Mesures : `docs/equilibrage/objectif_*.md` (sonde `GoalTimeProbe`). Médianes des bots : plusieurs_petits 44 mois (2 M) / 50 mois (2,5 M) ; quantique 52 / 61 ; un_projet 30 / 57 (2 graines sur 3) ; IA, XR, matériel : jamais en 72 mois (pic 1,1 à 1,8 M) parce que les bots n'embauchent ni ne s'agrandissent. Durée de jeu réelle : **estimation seulement** (modèle : jours simulés × 24 à 36 s selon la vitesse × 0,7 pour les nuits accélérées + mots tapés × 1,5 s + décisions × 45 s) ≈ 12 à 18 h pour 2 M, ≈ 17 à 22 h pour 2,5 M sur la voie « plusieurs projets ». Non démontré par une partie humaine : **procédure de validation** ci-dessous.
+- **Tests** : moteur 259/259 ; interface 473/474 avant les derniers changements (puis ciblés : 35/35 couverture et objectifs). Seul échec connu : `AnAdvancedCampaignRendersAFrameQuickly`.
+- **Succès Steam préparés** (13, `Campaign.AchievementDefs`, déduits de l'état) + Cloud, dépôt SteamPipe, boutique : `docs/steam/` (aucun identifiant inventé).
+- **Build Windows** : `dotnet publish UI/UI.csproj -c Release -r win-x64 --self-contained` réussit sur le VPS (UI.exe PE32+, 219 Mo, avant la traduction) ; **non lancé sous Windows**. À refaire avec la commande monofichier du README.
 
-### Décisions qui reviennent à toi
-- **Taille du texte courant par défaut (BUG-010)** : presque tout le texte fait 12 px (grille de la police). Choisir : texte
-  courant en 24 px, ou accepter une police moins nette. Le réglage « Texte agrandi » (18 px) existe déjà. Reporté à ta demande.
-- **Lignes `Co-Authored-By` / `Claude-Session`** dans les commits de cette phase : gardées parce que la session les demandait ;
-  ta consigne d'avant les interdisait. À trancher pour la suite.
-- Faut-il garder le 2 M de valorisation comme objectif final (voir étape 3) ?
+### Performance : conclusion corrigée
+Mesures du 4 novembre (`PerfProbe`) : Skia seul remplit 1600 × 900 en 0,5 ms ; une fenêtre Avalonia vide ou la vraie `MainWindow` vide coûte 46 à 49 ms par image capturée ; dans l'écran de jeu, dès que `SceneCanvas` dessine quoi que ce soit (même 50 × 50 px) l'image coûte 500 à 700 ms, et 8 à 20 ms si elle ne dessine rien. **L'échec n'est donc pas expliqué par la seule absence de GPU** (conclusion du 3 novembre à retirer) ; cause non trouvée sans profileur. À mesurer sur Windows avec carte graphique puis profiler.
 
-### À valider par toi sous Windows (jamais coché ici)
-- Toute la section « Phase version Steam » de `docs/BUGFIX_VALIDATION.md` (vitesses, charger/supprimer, disque plein, fichier
-  abîmé, nombres avec Windows en anglais, plein écran/F11, mise à l'échelle 125/150 %, journaux, vitesse avec carte graphique).
-- Le reste de `BUGFIX_VALIDATION.md` (curseur, double-clic, déménagement, personnages assis, etc.).
-- `dotnet publish -r win-x64 --self-contained` à lancer et tester sous Windows (sons NAudio, polices, `%AppData%\StartupRush`).
+### Reste à faire
+1. Relancer `WriteBalanceReport` (5 graines, ~70 min) sur le dernier commit, mettre à jour `BALANCE_REPORT.md`, relancer `GoalTimeProbe` (étiquette `apres2`, 2,5 M) et écrire `docs/equilibrage/objectif_final.md` (tableau avant/après, hypothèses ; fichiers bruts dans le scratchpad de la session précédente, à regénérer).
+2. Mettre à jour `docs/LOT5_OBJECTIFS.md` (« Pourquoi 2 millions ») et `docs/PASSATION_IA.md` pour 2,5 M / 30 jours.
+3. Vérification visuelle : texte agrandi + anglais en 1920 × 1080 et 4K ; stat « Bureaux en place » coupée dans BuildPanel en texte agrandi ; relire les captures `FinalShots` des autres panneaux.
+4. Relancer la suite UI complète ; profiler le rendu de la scène (voir ci-dessus).
+5. Mettre à jour `docs/BUGFIX_VALIDATION.md` (section Windows : 18 px, texte agrandi, anglais, objectif 30 jours) et `docs/DISTRIBUTION.md` (traduction terminée, PDF : voir `docs/GUIDE_JOUEUR.md`).
+6. Les PDF : `tools/build_dossier.py` demande Python, reportlab, Pillow et les polices Windows (absents ici) ; aucun script pour le guide illustré.
+7. Les 100 idées « vraiment intéressantes » demandées : **non faites** (l'ancienne liste est dans `docs/IDEES_100_AMELIORATIONS.md`).
 
-### Bloqué (dépend de toi)
-- **Steamworks** : pas de compte partenaire, d'App ID ni de SDK. Prérequis dans `docs/DISTRIBUTION.md`. Rien n'est intégré.
-  Après les six lots : succès Steam (à dériver des objectifs du lot 5) et Steam Cloud (`campaigns` + `settings.json`, exclure
-  `logs` et `deleted`).
-- Page boutique (textes fr/en, captures 1920 × 1080, capsules, bande-annonce, questionnaire contenu IA).
-- Les deux PDF (`Startup_Rush_Dossier.pdf`, `Startup_Rush_Guide.pdf`) décrivent la version 2.1 : à refaire ou à ne pas distribuer.
+### À valider par toi (Windows) et à fournir
+- Liste Windows de `docs/BUGFIX_VALIDATION.md` (curseur, double-clic, déménagement, personnages assis, sauvegardes, mise à l'échelle 125/150 %, plein écran).
+- Une partie réelle chronométrée pour valider l'objectif : noter l'heure de début, la vitesse habituelle, et l'heure où le bilan « Objectif atteint » s'affiche (cible 15 à 25 h) ; la sauvegarde et la durée aident à recaler `FinalGoalValuation`.
+- Steamworks : compte partenaire, App ID, SDK (`docs/steam/README.md`).
 
-### Réserve
-- `docs/IDEES_100_AMELIORATIONS.md` : 100 idées (beaucoup hors périmètre). `docs/BACKLOG_TESTEURS.md` : demandes des testeurs.
-- Hors périmètre de la consigne (ne pas développer) : nouveaux mini-jeux, concurrents/rachats/bourse, relations entre employés,
-  mods/Workshop/classements, héritage entre parties, météo/animaux/visites animées, rotation de caméra/cloisons/éditeur de
-  bureau, manette/Steam Deck, villes/scénarios/branches exclusives.

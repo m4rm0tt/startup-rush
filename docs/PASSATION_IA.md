@@ -273,3 +273,4 @@ lots de `docs/V1_ETAT.md`, et le §11 ci-dessous pour ce que le lot 6 laisse en 
   lot 5 fait (délai du 2 M non simulé) ; lot 6 **partiel** (menus en anglais, panneaux de jeu/tutoriel/notifications non).
   Steamworks bloqué. **Liste complète des points en suspens, décisions et validations Windows : fin de
   `docs/CHECKLIST_STEAM_V1.md`** (section « Points en suspens »). Idées en réserve : `docs/IDEES_100_AMELIORATIONS.md`.
+- **Reprise du 4 novembre 2026** : voir `docs/CHECKLIST_STEAM_V1.md` (section « État de la reprise »). Traduction anglaise complète, texte à 18 px, correction du résultat du matériel, objectif final à 2,5 M tenus 30 jours, succès Steam préparés. Limite d'usage atteinte : reste le rapport d'équilibrage final, la doc de l'objectif, les vérifications visuelles 1080p/4K et les 100 idées.

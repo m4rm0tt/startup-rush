@@ -11,7 +11,7 @@ public record GameSummary(long Days, decimal Cash, decimal Revenue30, decimal Mo
 
 /// <summary>
 /// Objectifs (lot 5 de la version Steam) :
-/// - objectif final explicite : une entreprise valorisée 2 millions de CHF, avec la valorisation déjà utilisée par les
+/// - objectif final explicite : une entreprise valorisée 2,5 millions de CHF, 30 jours de suite, avec la valorisation déjà utilisée par les
 ///   investisseurs (Campaign.Valuation : actif net + 36 mois du bénéfice récurrent des produits), une entreprise saine (pas
 ///   d'impayés) et au moins un produit en ligne. Pas de bourse. D'après BALANCE_REPORT.md (36 mois) : plusieurs_petits
 ///   ≈ 39 000 CHF de revenus par mois et 450 000 CHF de trésorerie → ≈ 1,7 à 1,9 M à 3 ans ; materiel_pc (80 000 CHF/mois)
@@ -22,7 +22,13 @@ public record GameSummary(long Days, decimal Cash, decimal Revenue30, decimal Mo
 /// </summary>
 public partial class Campaign
 {
-    public const decimal FinalGoalValuation = 2_000_000m;
+    public const decimal FinalGoalValuation = 2_500_000m;
+
+    /// <summary>Nombre de jours de suite pendant lesquels l'objectif doit tenir : un pic de ventes d'un jour ne suffit pas.</summary>
+    public const int FinalGoalHoldDays = 30;
+
+    /// <summary>Jours de suite où les conditions de l'objectif final sont réunies (retombe à 0 dès qu'une condition manque). Sauvegardé.</summary>
+    public int FinalGoalStreak { get; set; }
 
     /// <summary>Minute où l'objectif final a été atteint (null : pas encore). Sauvegardé.</summary>
     public long? FinalGoalReachedAt { get; set; }
@@ -44,10 +50,13 @@ public partial class Campaign
     private void CheckGoals()
     {
         LowestCash = LowestCash is { } low ? Math.Min(low, Ledger.Cash) : Ledger.Cash;
-        if (FinalGoalReachedAt != null || !FinalGoalMet)
+        if (FinalGoalReachedAt != null)
+            return;
+        FinalGoalStreak = FinalGoalMet ? FinalGoalStreak + 1 : 0;
+        if (FinalGoalStreak < FinalGoalHoldDays)
             return;
         FinalGoalReachedAt = Minute;
-        Notify(Severity.Good, "entreprise", "Objectif atteint : 2 millions de valorisation",
+        Notify(Severity.Good, "entreprise", "Objectif atteint : 2,5 millions de valorisation",
             $"{MainCompany.Name} vaut {Valuation():N0} CHF. Tu peux continuer la partie aussi longtemps que tu veux.", "finances");
     }
 

@@ -21,7 +21,7 @@ public class GoalsUiTest
         campaign.Launch(product!.Id);
         campaign.AdvanceDays(20);
         campaign.Ledger.Cash = Core.campaign.Campaign.FinalGoalValuation + 250_000;
-        campaign.AdvanceDays(1);
+        campaign.AdvanceDays(Core.campaign.Campaign.FinalGoalHoldDays + 1);
         return (window, game, campaign);
     }
 

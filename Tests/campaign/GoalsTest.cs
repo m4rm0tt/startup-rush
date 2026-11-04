@@ -4,7 +4,7 @@ using static Tests.campaign.CampaignTestKit;
 
 namespace Tests.campaign;
 
-/// <summary>Lot 5 : objectif final (2 M de valorisation), objectifs progressifs (prochains jalons), bilan de partie.</summary>
+/// <summary>Lot 5 : objectif final (2,5 M de valorisation, tenu 30 jours), objectifs progressifs (prochains jalons), bilan de partie.</summary>
 public class GoalsTest
 {
     private static (Campaign Campaign, Core.products.Product Product) Live()
@@ -40,7 +40,7 @@ public class GoalsTest
     {
         var (campaign, _) = Live();
         campaign.Ledger.Cash = Campaign.FinalGoalValuation + 100_000;
-        campaign.AdvanceDays(2);
+        campaign.AdvanceDays(Campaign.FinalGoalHoldDays + 2);
         Assert.That(campaign.FinalGoalReachedAt, Is.Not.Null);
         long reached = campaign.FinalGoalReachedAt!.Value;
         Assert.That(campaign.Notices.Any(n => n.Title.StartsWith("Objectif atteint")), Is.True);
@@ -56,7 +56,7 @@ public class GoalsTest
     {
         var (campaign, _) = Live();
         campaign.Ledger.Cash = Campaign.FinalGoalValuation + 100_000;
-        campaign.AdvanceDays(2);
+        campaign.AdvanceDays(Campaign.FinalGoalHoldDays + 2);
         campaign.FinalGoalAcknowledged = true;
         var loaded = SaveStore.Deserialize(SaveStore.Serialize(campaign));
         Assert.That(loaded.FinalGoalReachedAt, Is.EqualTo(campaign.FinalGoalReachedAt));

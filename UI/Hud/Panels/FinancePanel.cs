@@ -63,11 +63,13 @@ public class FinancePanel : GamePanel
         double progress = (double)Math.Clamp(valuation / Campaign.FinalGoalValuation, 0, 1);
         string final = Campaign.FinalGoalReachedAt is { } at
             ? $"Atteint le {GameTime.FormatDate(at)} : la partie continue."
-            : $"Valorisation estimée {Ui.Chf(valuation)} sur {Ui.Chf(Campaign.FinalGoalValuation)}.";
+            : Campaign.FinalGoalStreak > 0
+                ? $"Valorisation estimée {Ui.Chf(valuation)} sur {Ui.Chf(Campaign.FinalGoalValuation)} : tiens encore {Campaign.FinalGoalHoldDays - Campaign.FinalGoalStreak} jour(s)."
+                : $"Valorisation estimée {Ui.Chf(valuation)} sur {Ui.Chf(Campaign.FinalGoalValuation)}.";
         var bar = Ui.Bar(progress, Campaign.FinalGoalReachedAt != null ? Palette.Leaf : Palette.Gold, 8, 360);
         bar.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
         var column = Ui.Column(6,
-            Ui.Text("Objectif final : une entreprise valorisée 2 millions de CHF", 15, Palette.Snow, bold: true),
+            Ui.Text("Objectif final : une entreprise valorisée 2,5 millions de CHF, 30 jours de suite", 15, Palette.Snow, bold: true),
             bar,
             Ui.Muted(final, 13));
         foreach (var (_, name, description) in Campaign.NextGoals())

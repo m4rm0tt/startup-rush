@@ -238,7 +238,7 @@ public class GameScreen : UserControl, IScreen
         // Barre du haut du pack (maquette « HUD compact ») : fond marine, groupes, puce de trésorerie, textes clairs
         var light = Palette.Paper;
         var left = Ui.Row(0,
-            TopSegment("icon_company", Ui.Column(0, Ui.Text(c.MainCompany.Name, 16, light, bold: true, wrap: false), Ui.Text(c.Premises.Name, 12, TopMuted, wrap: false))),
+            TopSegment("icon_company", Ui.Column(0, Trimmed(Ui.Text(c.MainCompany.Name, 16, light, bold: true, wrap: false)), Trimmed(Ui.Text(c.Premises.Name, 12, TopMuted, wrap: false)))),
             TopDivider(),
             TopSegment("icon_calendar", Ui.Row(10, Ui.Number($"{GameTime.DayName(date.DayOfWeek)} {date:dd.MM.yyyy}", 20, light), Ui.Number($"{date:HH:mm}", 20, TopAccent))));
 
@@ -315,6 +315,14 @@ public class GameScreen : UserControl, IScreen
         UiPatch.Apply(_topBar, new PixelPanel { Skin = "pack:hud_topbar_bg", Child = grid });
     }
 
+    /// <summary>Nom d'entreprise ou de local dans la barre du haut : tronqué avec « … » au lieu de pousser les vitesses (anglais, noms longs).</summary>
+    private static TextBlock Trimmed(TextBlock text)
+    {
+        text.MaxWidth = 230;
+        text.TextTrimming = TextTrimming.CharacterEllipsis;
+        return text;
+    }
+
     // Couleurs lisibles sur le fond marine de la barre du haut (jetons du thème « Papier »)
     // Sur la barre sombre : sable et rouge éclaircis pour dépasser 4,5:1
     private static readonly IBrush TopMuted = Palette.Brush("#d6c6aa");
@@ -354,7 +362,12 @@ public class GameScreen : UserControl, IScreen
     };
 
     /// <summary>Après un changement de langue : la barre d'outils est reconstruite (la barre du haut l'est d'elle-même).</summary>
-    public void Relocalize() => BuildToolbar();
+    public void Relocalize()
+    {
+        BuildToolbar();
+        BuildCoach();
+        RefreshPanel();
+    }
 
     private static readonly (string Label, string Icon, Key Key, Func<GamePanel> Create)[] Tools =
     [

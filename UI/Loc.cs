@@ -32,6 +32,14 @@ public static class Loc
     /// <summary>Textes français affichés sans traduction depuis <see cref="RecordMisses"/> (texte → nombre d'affichages).</summary>
     public static readonly ConcurrentDictionary<string, int> Misses = new();
 
+    /// <summary>Relève aussi tout texte à lettres que la traduction a laissé tel quel (noms propres, mots sans accent) : revue manuelle des oublis.</summary>
+    public static bool RecordUnchanged { get; set; }
+
+    /// <summary>Textes laissés tels quels depuis <see cref="RecordUnchanged"/>.</summary>
+    public static readonly ConcurrentDictionary<string, int> Unchanged = new();
+
+    private static readonly HashSet<string> Produced = new();
+
     /// <summary>Langue affichée (« fr » ou « en ») ; une valeur inconnue revient au français.</summary>
     public static string Language
     {
@@ -177,8 +185,18 @@ public static class Loc
                 return cached;
             LoadPhrases(_language);
             string result = TranslateCore(text, 0);
-            if (result == text && RecordMisses && LooksFrench(text))
-                Misses.AddOrUpdate(text, 1, (_, n) => n + 1);
+            if (RecordMisses || RecordUnchanged)
+            {
+                if (result != text)
+                    Produced.Add(result);   // la zone de texte re-traduit ce résultat : ce n'est pas un oubli
+                else if (!Produced.Contains(text))
+                {
+                    if (RecordMisses && LooksFrench(text))
+                        Misses.AddOrUpdate(text, 1, (_, n) => n + 1);
+                    if (RecordUnchanged && text.Count(char.IsLetter) >= 3)
+                        Unchanged.AddOrUpdate(text, 1, (_, n) => n + 1);
+                }
+            }
             if (TranslationCache.Count > 20_000)
                 TranslationCache.Clear();
             TranslationCache[text] = result;

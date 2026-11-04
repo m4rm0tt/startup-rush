@@ -102,7 +102,7 @@ public partial class Campaign
             decimal marketing = product.MarketingBudget / 30;
             Ledger.Accrue(Category.Hosting, hosting);
             Ledger.Accrue(Category.Marketing, marketing);
-            result.Costs = Math.Round(hosting + marketing, 2);
+            result.Costs = Math.Round(result.Costs + hosting + marketing, 2);   // + matières et garanties du matériel (SettleHardware)
 
             // Entretien : la maintenance faite corrige les bugs puis réduit la dette ; sans entretien, des bugs apparaissent
             product.MaintenanceDebt = Math.Max(0, product.MaintenanceDebt + Design.MaintenancePerWeek(product) / 7);

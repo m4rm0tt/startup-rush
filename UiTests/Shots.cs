@@ -378,8 +378,8 @@ public class FinalShots
         string lang = Environment.GetEnvironmentVariable("STARTUPRUSH_LANG") ?? "fr";
         bool large = Environment.GetEnvironmentVariable("STARTUPRUSH_LARGE") == "1";
         string tag = $"{lang}{(large ? "L" : "")}_{size}";
-        Loc.Language = lang;
         var (window, game, campaign) = Shots.Fresh(tutorial: true);
+        window.SetLanguage(lang);   // la fenêtre remet la langue des réglages en s'ouvrant : on la choisit après
         if (large)
             window.SetLargeText(true);
         var parts = size.Split('x');

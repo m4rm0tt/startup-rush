@@ -759,7 +759,10 @@ public partial class Campaign
         decimal warranty = Math.Round((decimal)(day.Sold * product.DefectRate) * IndustryCatalog.UnitCost(product), 2);
         if (warranty > 0)
             Post(-warranty, Category.Warranty, $"{product.Name} : retours et garanties", split: shipped);
-        day.Costs += warranty;
+        // Résultat et valorisation : une unité vendue coûte ses matières (avant, seule la garantie comptait, et un PC vendu 1 100 CHF
+        // comptait comme un bénéfice presque entier : la valorisation du matériel était gonflée de 3 à 4 fois, voir docs/equilibrage/objectif_final.md)
+        decimal materials = Math.Round((decimal)day.Sold * IndustryCatalog.UnitCost(product), 2);
+        day.Costs += warranty + materials;
         if (day.Lost >= 1)
             Notify(Severity.Warning, "production", $"{product.Name} en rupture", "Des clients repartent sans rien : fabrique plus, ou ouvre un canal plus grand.", $"product:{product.Id}", key: $"stockout:{product.Id}");
         else if (day.Sold > 0)

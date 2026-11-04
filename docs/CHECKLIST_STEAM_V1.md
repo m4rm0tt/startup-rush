@@ -89,9 +89,42 @@ gardé en `.corrupt` et signalé dans la liste, migrations des formats 4 à 7 te
 
 Steamworks : **bloqué**, aucun compte partenaire, App ID ni SDK sur ce poste. Prérequis listés dans `docs/DISTRIBUTION.md` ; rien n'est intégré.
 
-## Prochaine action (reprise)
+## Points en suspens (état au 4 novembre 2026, pour reprendre dans une autre conversation)
 
-1. Relancer `WriteBalanceReport` (5 graines, ~45 min) après le changement de prix Makers et l'objectif final, mettre à jour `BALANCE_REPORT.md`.
-2. Traduire les panneaux de jeu (Projets, Équipe, Aménagement, Finances, Développement), puis tutoriel et notifications du moteur.
-3. Vérifier par simulation le délai pour atteindre 2 M de valorisation.
-4. Passer la liste Windows de `BUGFIX_VALIDATION.md` (section « Phase version Steam »).
+### À faire côté code, dans l'ordre conseillé
+1. **Traduire les panneaux de jeu** (Projets, Équipe, Aménagement, Finances, Développement, terminal), puis le tutoriel et les
+   notifications/catalogues du moteur (`Core`, aujourd'hui en français seulement). Méthode : `UI/Loc.cs` + `UI/Lang/*.json`,
+   voir `docs/LOT6_ANGLAIS.md` et `docs/DISTRIBUTION.md` (liste du non-traduit). Le lot 6 est donc **partiel**.
+2. **Relancer `WriteBalanceReport`** (5 graines, ~45 min sur le VPS) après le prix Makers 65 → 95 et l'objectif final, puis
+   mettre à jour `BALANCE_REPORT.md`.
+3. **Vérifier par simulation le délai pour atteindre 2 M de valorisation** (lu dans le rapport 36 mois, jamais simulé :
+   `docs/LOT5_OBJECTIFS.md`). Ajuster le seuil si c'est trop long ou trop court.
+4. **Relancer la suite de tests UI complète** : non refaite après la dernière fusion (moteur 255/255 ; interface : seul
+   `AnAdvancedCampaignRendersAFrameQuickly` échoue, à cause du VPS sans carte graphique, pas du code).
+5. Débordements de texte anglais sur les panneaux traduits (vérification de capture à refaire après l'étape 1).
+
+### Décisions qui reviennent à toi
+- **Taille du texte courant par défaut (BUG-010)** : presque tout le texte fait 12 px (grille de la police). Choisir : texte
+  courant en 24 px, ou accepter une police moins nette. Le réglage « Texte agrandi » (18 px) existe déjà. Reporté à ta demande.
+- **Lignes `Co-Authored-By` / `Claude-Session`** dans les commits de cette phase : gardées parce que la session les demandait ;
+  ta consigne d'avant les interdisait. À trancher pour la suite.
+- Faut-il garder le 2 M de valorisation comme objectif final (voir étape 3) ?
+
+### À valider par toi sous Windows (jamais coché ici)
+- Toute la section « Phase version Steam » de `docs/BUGFIX_VALIDATION.md` (vitesses, charger/supprimer, disque plein, fichier
+  abîmé, nombres avec Windows en anglais, plein écran/F11, mise à l'échelle 125/150 %, journaux, vitesse avec carte graphique).
+- Le reste de `BUGFIX_VALIDATION.md` (curseur, double-clic, déménagement, personnages assis, etc.).
+- `dotnet publish -r win-x64 --self-contained` à lancer et tester sous Windows (sons NAudio, polices, `%AppData%\StartupRush`).
+
+### Bloqué (dépend de toi)
+- **Steamworks** : pas de compte partenaire, d'App ID ni de SDK. Prérequis dans `docs/DISTRIBUTION.md`. Rien n'est intégré.
+  Après les six lots : succès Steam (à dériver des objectifs du lot 5) et Steam Cloud (`campaigns` + `settings.json`, exclure
+  `logs` et `deleted`).
+- Page boutique (textes fr/en, captures 1920 × 1080, capsules, bande-annonce, questionnaire contenu IA).
+- Les deux PDF (`Startup_Rush_Dossier.pdf`, `Startup_Rush_Guide.pdf`) décrivent la version 2.1 : à refaire ou à ne pas distribuer.
+
+### Réserve
+- `docs/IDEES_100_AMELIORATIONS.md` : 100 idées (beaucoup hors périmètre). `docs/BACKLOG_TESTEURS.md` : demandes des testeurs.
+- Hors périmètre de la consigne (ne pas développer) : nouveaux mini-jeux, concurrents/rachats/bourse, relations entre employés,
+  mods/Workshop/classements, héritage entre parties, météo/animaux/visites animées, rotation de caméra/cloisons/éditeur de
+  bureau, manette/Steam Deck, villes/scénarios/branches exclusives.

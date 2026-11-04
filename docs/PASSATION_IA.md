@@ -269,4 +269,7 @@ lots de `docs/V1_ETAT.md`, et le §11 ci-dessous pour ce que le lot 6 laisse en 
 - Lots 4 à 6 menés en parallèle par des agents dans des worktrees, fusionnés dans `new-assets` : voir leurs comptes rendus
   (`docs/equilibrage/bilan_steam_v1.md`, `docs/LOT5_OBJECTIFS.md`, `docs/LOT6_ANGLAIS.md`) et la checklist pour ce qui est
   réellement fait.
-
+- **État de fin de session (4 novembre 2026)** : lots 1, 2, 3 faits ; lot 4 fait sur 3 graines (rapport 5 graines à relancer) ;
+  lot 5 fait (délai du 2 M non simulé) ; lot 6 **partiel** (menus en anglais, panneaux de jeu/tutoriel/notifications non).
+  Steamworks bloqué. **Liste complète des points en suspens, décisions et validations Windows : fin de
+  `docs/CHECKLIST_STEAM_V1.md`** (section « Points en suspens »). Idées en réserve : `docs/IDEES_100_AMELIORATIONS.md`.

@@ -22,15 +22,16 @@ public class TreePanel : GamePanel
 
     public override Control Build()
     {
-        var columns = new Grid { ColumnDefinitions = new ColumnDefinitions(string.Join(",", DevTree.Branches.Select(_ => "*"))) };
+        // Texte courant à 18 px : six colonnes serrées coupaient les noms ; les branches passent à la ligne selon la largeur
+        var columns = new WrapPanel();
         for (int i = 0; i < DevTree.Branches.Length; i++)
         {
             string branch = DevTree.Branches[i];
             var column = Ui.Column(6, Ui.Text(branch.ToUpperInvariant(), 13, Palette.Gold, bold: true));
             foreach (var node in DevTree.Nodes.Where(n => n.Branch == branch))
                 column.Children.Add(NodeButton(node));
-            column.Margin = new Thickness(0, 0, 8, 0);
-            Grid.SetColumn(column, i);
+            column.Margin = new Thickness(0, 0, 12, 12);
+            column.Width = 268;
             columns.Children.Add(column);
         }
 

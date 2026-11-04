@@ -102,6 +102,8 @@ public class TerminalView : UserControl
         _stage.FontSize = 18;
         _stage.Foreground = Dim;
         _stats.FontSize = 18;
+        _stats.TextWrapping = TextWrapping.Wrap;
+        _stats.MaxWidth = 500;
         _status.FontSize = 16;
         _status.Foreground = Dim;
         _status.TextWrapping = TextWrapping.Wrap;

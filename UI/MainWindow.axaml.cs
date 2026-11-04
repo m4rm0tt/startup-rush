@@ -112,6 +112,9 @@ public partial class MainWindow : Window
         SaveSettings();
         foreach (var text in Avalonia.VisualTree.VisualExtensions.GetVisualDescendants(this))
         {
+            // Les barres du haut et du bas gardent le texte normal (PixelText.Hud)
+            if (text is Avalonia.Controls.Control candidate && System.Linq.Enumerable.Any(System.Linq.Enumerable.OfType<Avalonia.Controls.Control>(Avalonia.VisualTree.VisualExtensions.GetVisualAncestors(candidate)), a => a.GetValue(UI.Pixel.PixelText.HudProperty)))
+                continue;
             if (text is TextBlock block)
                 block.CoerceValue(TextBlock.FontSizeProperty);
             else if (text is Avalonia.Controls.Primitives.TemplatedControl control)

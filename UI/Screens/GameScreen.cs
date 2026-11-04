@@ -228,6 +228,8 @@ public class GameScreen : UserControl, IScreen
 
     private void BuildTopBar()
     {
+        using var hud = PixelText.Hud();
+        _topBar.SetValue(PixelText.HudProperty, true);
         var c = Session.Campaign;
         var date = GameTime.ToDate(c.Minute);
         var (runway, assumptions) = c.Runway();
@@ -415,6 +417,8 @@ public class GameScreen : UserControl, IScreen
 
     private void BuildToolbar()
     {
+        using var hud = PixelText.Hud();
+        _toolbarFrame.SetValue(PixelText.HudProperty, true);
         var fresh = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 4 };
         BuildToolbar(fresh.Children);
         // Fusion des boutons dans la barre affichée (le bouton cliqué n'est jamais détruit sous la souris)

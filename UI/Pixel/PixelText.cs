@@ -27,14 +27,43 @@ public static class PixelText
     /// <summary>Réglage « Texte agrandi » : le texte courant passe de 18 à 24 px, les titres d'un cran de plus.</summary>
     public static bool Large { get; set; }
 
+    private static int _hudDepth;
+
+    /// <summary>
+    /// Pendant sa durée de vie, le texte créé garde sa taille normale même si « Texte agrandi » est actif : barre du haut et
+    /// barre d'outils, qui n'ont pas la place d'un texte de 24 px en 1280 × 720 (elles restent à 18 px, lisibles).
+    /// </summary>
+    public static IDisposable Hud()
+    {
+        _hudDepth++;
+        return new HudScope();
+    }
+
+    private sealed class HudScope : IDisposable
+    {
+        private bool _done;
+
+        public void Dispose()
+        {
+            if (_done)
+                return;
+            _done = true;
+            _hudDepth--;
+        }
+    }
+
+    /// <summary>Marque la racine d'une barre qui garde le texte normal (voir <see cref="Hud"/>) : elle est ignorée quand on agrandit le texte en jeu.</summary>
+    public static readonly AttachedProperty<bool> HudProperty = AvaloniaProperty.RegisterAttached<Control, Control, bool>("Hud");
+
     public static double Snap(double size)
     {
+        bool large = Large && _hudDepth == 0;
         if (size < 11.5)
             return Grid;                                  // étiquettes minuscules (touches, indices)
         if (size < 21)
-            return Large ? BodyLarge : Body;              // texte courant (demandé de 13 à 20 px)
+            return large ? BodyLarge : Body;              // texte courant (demandé de 13 à 20 px)
         double snapped = Math.Max(Grid, Math.Round(size / Grid, MidpointRounding.AwayFromZero) * Grid);
-        return Large && snapped < 36 ? snapped + Grid : snapped;
+        return large && snapped < 36 ? snapped + Grid : snapped;
     }
 
     private static bool _installed;

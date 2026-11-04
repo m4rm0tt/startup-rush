@@ -379,8 +379,9 @@ public class FinalShots
         bool large = Environment.GetEnvironmentVariable("STARTUPRUSH_LARGE") == "1";
         string tag = $"{lang}{(large ? "L" : "")}_{size}";
         Loc.Language = lang;
-        UI.Pixel.PixelText.Large = large;
         var (window, game, campaign) = Shots.Fresh(tutorial: true);
+        if (large)
+            window.SetLargeText(true);
         var parts = size.Split('x');
         window.Width = int.Parse(parts[0]);
         window.Height = int.Parse(parts[1]);
@@ -426,7 +427,7 @@ public class FinalShots
         finally
         {
             Loc.Language = "fr";
-            UI.Pixel.PixelText.Large = false;
+            window.SetLargeText(false);
             window.Close();
         }
     }

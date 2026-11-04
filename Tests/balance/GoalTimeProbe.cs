@@ -1,5 +1,6 @@
 using Core.bots;
 using Core.campaign;
+using Core.finance;
 
 namespace Tests.balance;
 
@@ -19,8 +20,11 @@ public class GoalTimeProbe
         "quantique", "exces_puis_correction",
     ];
 
+    /// <summary>Seuils de valorisation dont on relève le premier jour (pour choisir l'objectif d'après les mesures).</summary>
+    public static readonly decimal[] Thresholds = [1_000_000m, 1_500_000m, 2_000_000m, 2_500_000m, 3_000_000m, 4_000_000m, 5_000_000m];
+
     public record Run(string Strategy, ulong Seed, int GoalDay, bool Liquidated, int Days, decimal FinalCash, decimal FinalValuation,
-        int Actions, long Words, double Seconds, decimal[] ValuationByHalfYear);
+        int Actions, long Words, double Seconds, decimal[] ValuationByHalfYear, int[] ThresholdDays);
 
     [Test, Explicit("Long : mesure le délai de l'objectif final")]
     public void GoalTime()
@@ -45,13 +49,31 @@ public class GoalTimeProbe
             md.AppendLine($"| {g.Key} | {l.Count(r => r.GoalDay >= 0)}/{l.Count} | {per} | {median} | {l.Count(r => r.Liquidated)}/{l.Count} | {val} | " +
                           $"{l.OrderBy(r => r.Actions).ElementAt(l.Count / 2).Actions} | {l.OrderBy(r => r.Seconds).ElementAt(l.Count / 2).Seconds:0} |");
         }
+        md.AppendLine();
+        md.AppendLine("Premier jour de jeu où la valorisation atteint chaque seuil (médiane des graines atteintes ; entre parenthèses, nombre de graines qui l'atteignent) :");
+        md.AppendLine();
+        md.AppendLine("| Parcours | " + string.Join(" | ", Thresholds.Select(t => $"{t / 1_000_000m:0.0} M")) + " |");
+        md.AppendLine("|---|" + string.Concat(Thresholds.Select(_ => "---|")));
+        foreach (var g in runs.GroupBy(r => r.Strategy))
+        {
+            var l = g.ToList();
+            var cells = Thresholds.Select((t, i) =>
+            {
+                var days = l.Select(r => r.ThresholdDays[i]).Where(d => d >= 0).OrderBy(d => d).ToList();
+                return days.Count == 0 ? $"— (0/{l.Count})" : $"{days[days.Count / 2] / 30.0:0.0} mois ({days.Count}/{l.Count})";
+            });
+            md.AppendLine($"| {g.Key} | {string.Join(" | ", cells)} |");
+        }
         string folder = Environment.GetEnvironmentVariable("GOAL_PROBE_OUT") ?? Path.GetTempPath();
         Directory.CreateDirectory(folder);
         string tag = Environment.GetEnvironmentVariable("GOAL_PROBE_TAG") ?? "run";
         File.WriteAllText(Path.Combine(folder, $"objectif_{tag}.md"), md.ToString());
         var csv = new System.Text.StringBuilder("strategie,graine,jour_objectif,faillite,jours,argent_final,valorisation_finale,decisions,mots,secondes_calcul\n");
         foreach (var r in runs)
-            csv.AppendLine(string.Join(",", r.Strategy, r.Seed, r.GoalDay, r.Liquidated ? 1 : 0, r.Days, r.FinalCash, r.FinalValuation, r.Actions, r.Words, r.Seconds.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)));
+        {
+            var inv = System.Globalization.CultureInfo.InvariantCulture;
+            csv.AppendLine(string.Join(",", r.Strategy, r.Seed, r.GoalDay, r.Liquidated ? 1 : 0, r.Days, r.FinalCash.ToString("0", inv), r.FinalValuation.ToString("0", inv), r.Actions, r.Words, r.Seconds.ToString("0.0", inv)));
+        }
         File.WriteAllText(Path.Combine(folder, $"objectif_{tag}.csv"), csv.ToString());
         TestContext.Out.WriteLine(md.ToString());
     }
@@ -63,16 +85,24 @@ public class GoalTimeProbe
         var pilot = new Autopilot(strategy);
         int goalDay = -1, day = 0;
         var halves = new List<decimal>();
+        var crossed = Thresholds.Select(_ => -1).ToArray();
         for (; day < months * 30 && campaign.Status == CampaignStatus.Running; day++)
         {
             pilot.Play(campaign, 1);
             if (goalDay < 0 && campaign.FinalGoalMet)
                 goalDay = (int)campaign.Day;
-            if ((day + 1) % 180 == 0)
-                halves.Add(campaign.Valuation());
+            if (day % 5 == 0 || (day + 1) % 180 == 0)
+            {
+                decimal valuation = campaign.Valuation();
+                for (int i = 0; i < Thresholds.Length; i++)
+                    if (crossed[i] < 0 && valuation >= Thresholds[i] && campaign.Solvency.State == SolvencyState.Healthy)
+                        crossed[i] = (int)campaign.Day;
+                if ((day + 1) % 180 == 0)
+                    halves.Add(valuation);
+            }
         }
         return new Run(strategy.Name, seed, goalDay, campaign.Status == CampaignStatus.Liquidated, day, campaign.Ledger.Cash, campaign.Valuation(),
-            pilot.Actions, pilot.Words, watch.Elapsed.TotalSeconds, halves.ToArray());
+            pilot.Actions, pilot.Words, watch.Elapsed.TotalSeconds, halves.ToArray(), crossed);
     }
 
     private static string Med(IEnumerable<decimal?> values)

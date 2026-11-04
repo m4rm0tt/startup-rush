@@ -91,7 +91,7 @@ public static class Loc
     // écrits dans une sauvegarde (journal, notifications) sont donc traduits eux aussi à l'affichage. La traduction se fait
     // à un seul endroit (PixelText : toute zone de texte, toute infobulle, tout texte dessiné).
 
-    private sealed record Pattern(Regex Regex, string Target, int Holes, int Literal);
+    private sealed record Pattern(Regex Regex, string Target, int Holes, int Literal, string Anchor);
 
     private static readonly object Phrases = new();
     private static readonly Dictionary<string, Dictionary<string, string>> Exact = new();
@@ -126,20 +126,25 @@ public static class Loc
                     continue;
                 }
                 int last = 0, literal = 0;
+                string anchor = "";
                 var pattern = new System.Text.StringBuilder("^");
                 var seen = new HashSet<int>();
                 foreach (Match m in Hole.Matches(french))
                 {
                     string between = french[last..m.Index];
                     literal += between.Length;
+                    if (between.Length > anchor.Length)
+                        anchor = between;
                     pattern.Append(Regex.Escape(between));
                     int n = int.Parse(m.Groups[1].Value);
                     pattern.Append(seen.Add(n) ? $"(?<h{n}>.+?)" : $"\\k<h{n}>");
                     last = m.Index + m.Length;
                 }
                 literal += french.Length - last;
+                if (french.Length - last > anchor.Length)
+                    anchor = french[last..];
                 pattern.Append(Regex.Escape(french[last..])).Append('$');
-                patterns.Add(new Pattern(new Regex(pattern.ToString(), RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.Singleline), target, seen.Count, literal));
+                patterns.Add(new Pattern(new Regex(pattern.ToString(), RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.Singleline), target, seen.Count, literal, anchor));
             }
         }
         // Les gabarits les plus précis (le plus de texte fixe) passent en premier
@@ -191,6 +196,9 @@ public static class Loc
             return exact;
         foreach (var pattern in Patterns[_language])
         {
+            // Préfiltre : le plus long morceau fixe du gabarit doit figurer dans le texte (évite la plupart des expressions régulières)
+            if (pattern.Anchor.Length > 0 && !text.Contains(pattern.Anchor, StringComparison.Ordinal))
+                continue;
             var match = pattern.Regex.Match(text);
             if (!match.Success)
                 continue;

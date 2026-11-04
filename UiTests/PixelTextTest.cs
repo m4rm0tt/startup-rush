@@ -7,15 +7,21 @@ namespace UiTests;
 /// <summary>La police pixel n'est nette qu'en multiples de 12 px, à une échelle entière de pixels physiques (guide du pack).</summary>
 public class PixelTextTest
 {
+    /// <summary>Décision du 4 novembre 2026 (BUG-010) : le texte courant fait 18 px ; 12 px reste pour les minuscules étiquettes, puis la grille de 12.</summary>
     [AvaloniaTest]
-    public void EveryTextSizeLandsOnTheTwelvePixelGrid()
+    public void BodyTextIs18PixelsAndLargerSizesLandOnTheTwelvePixelGrid()
     {
-        Assert.That(new TextBlock { FontSize = 15 }.FontSize, Is.EqualTo(12));
-        Assert.That(new TextBlock { FontSize = 18 }.FontSize, Is.EqualTo(24));
+        Assert.That(new TextBlock { FontSize = 15 }.FontSize, Is.EqualTo(18));
+        Assert.That(new TextBlock { FontSize = 12 }.FontSize, Is.EqualTo(18), "le texte demandé à 12 px est du texte courant");
+        Assert.That(new TextBlock { FontSize = 18 }.FontSize, Is.EqualTo(18));
+        Assert.That(new TextBlock { FontSize = 22 }.FontSize, Is.EqualTo(24));
         Assert.That(new TextBlock { FontSize = 44 }.FontSize, Is.EqualTo(48));
         Assert.That(new TextBlock { FontSize = 8 }.FontSize, Is.EqualTo(12), "jamais sous la taille de dessin");
-        foreach (double size in new[] { 11.0, 13, 14, 16, 20, 22, 30, 40, 64 })
+        Assert.That(new TextBlock { FontSize = 11 }.FontSize, Is.EqualTo(12), "touches et indices minuscules");
+        foreach (double size in new[] { 11.0, 22, 30, 40, 64 })
             Assert.That(PixelText.Snap(size) % 12, Is.EqualTo(0), $"{size}");
+        foreach (double size in new[] { 13.0, 14, 16, 20 })
+            Assert.That(PixelText.Snap(size), Is.EqualTo(18), $"{size}");
     }
 
     [Test]

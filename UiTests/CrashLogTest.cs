@@ -54,13 +54,13 @@ public class CrashLogTest
             var loaded = Settings.Load(window.SettingsPath, Path.Combine(Path.GetTempPath(), "none.json"));
             Assert.That(loaded.LargeText, Is.True);
             Assert.That(loaded.Fullscreen, Is.False);
-            Assert.That(new Avalonia.Controls.TextBlock { FontSize = 13 }.FontSize, Is.EqualTo(18));
+            Assert.That(new Avalonia.Controls.TextBlock { FontSize = 13 }.FontSize, Is.EqualTo(24));
         }
         finally
         {
             window.SetLargeText(false);
             window.Close();
         }
-        Assert.That(new Avalonia.Controls.TextBlock { FontSize = 13 }.FontSize, Is.EqualTo(12));
+        Assert.That(new Avalonia.Controls.TextBlock { FontSize = 13 }.FontSize, Is.EqualTo(18));
     }
 }

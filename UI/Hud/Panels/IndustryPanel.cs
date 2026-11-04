@@ -102,7 +102,7 @@ public class IndustryPanel : GamePanel
             };
             column.Children.Add(Ui.Card(Ui.Column(3,
                 Ui.Row(Ui.Text(route.Name, 15, Palette.Snow, bold: true), Ui.Muted(mode, 13), order.Paused ? Ui.Tag("PAUSE", Palette.Lemon) : null),
-                Ui.Muted($"Étapes : {string.Join(" → ", route.Steps.Select(IndustryCatalog.StepName))}. Par unité : {string.Join(", ", route.Inputs.Select(kv => $"{kv.Value} × {IndustryCatalog.Material(kv.Key).Name}"))}.", 12),
+                Ui.Muted($"Étapes : {string.Join(" → ", route.Steps.Select(s => Loc.Translate(IndustryCatalog.StepName(s))))}. Par unité : {string.Join(", ", route.Inputs.Select(kv => $"{kv.Value} × {Loc.Translate(IndustryCatalog.Material(kv.Key).Name)}"))}.", 12),
                 ok ? null : Ui.Text("Ligne incomplète : " + why, 13, Palette.Ember),
                 Ui.Row(6, Ui.Button(order.Paused ? "Reprendre" : "Pause", () => Run(Campaign.SetOrder(order.Id, !order.Paused))),
                     Ui.Button("Réserves pour cet ordre", () => Run(Campaign.SupplyOrder(order.Id)), "", tip: "Réserve automatique de chaque matière pour 25 unités, sous le plafond mensuel."),

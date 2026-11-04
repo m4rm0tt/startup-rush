@@ -57,7 +57,7 @@ public class LabPanel : GamePanel
             Campaign.StaffFor(site, Discipline.Design) is { } designer
                 ? Ui.Pair("Tenu par", $"{designer.Name} (Design {designer.Skill(Discipline.Design):0})")
                 : Ui.Text($"Aucun·e designer (Design {Campaign.StudioSkill:0}+) ne travaille sur ce site : le studio ne rend qu'à moitié.", 13, Palette.Ember),
-            studio.Missing.Count > 0 ? Ui.Muted($"Il manque : {string.Join(", ", studio.Missing)}.", 13) : Ui.Text("Studio complet.", 13, Palette.Leaf));
+            studio.Missing.Count > 0 ? Ui.Muted($"Il manque : {string.Join(", ", studio.Missing.Select(Loc.Translate))}.", 13) : Ui.Text("Studio complet.", 13, Palette.Leaf));
         return Ui.HelpSection("Studio audiovisuel", "Plafonné à +30 % sur le contenu. Les studios de plusieurs sites ne s'additionnent pas.", Ui.Card(body));
     }
 
@@ -70,7 +70,7 @@ public class LabPanel : GamePanel
             Meter("Capacité de test", zone.Capacity, $"{zone.Capacity:P0}"),
             Ui.Pair("Effet", $"−{zone.DefectCut:P0} de défauts sur chaque amélioration d'une application XR, −{zone.DefectCut * 0.67:P0} sur la série d'un kit XR"),
             Campaign.StaffFor(site, Discipline.Test) is { } tester ? Ui.Pair("Tenue par", $"{tester.Name} (Tests {tester.Skill(Discipline.Test):0})") : null,
-            zone.Missing.Count > 0 ? Ui.Muted($"Il manque : {string.Join(", ", zone.Missing)}. Un casque seul sert au prototype (40 %).", 13) : Ui.Text("Zone complète : casque, balises, tapis et un·e testeur·se sur place.", 13, Palette.Leaf));
+            zone.Missing.Count > 0 ? Ui.Muted($"Il manque : {string.Join(", ", zone.Missing.Select(Loc.Translate))}. Un casque seul sert au prototype (40 %).", 13) : Ui.Text("Zone complète : casque, balises, tapis et un·e testeur·se sur place.", 13, Palette.Leaf));
         return Ui.Section("Zone de test XR", Ui.Card(body));
     }
 

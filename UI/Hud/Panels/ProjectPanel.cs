@@ -75,7 +75,7 @@ public class ProjectPanel(int productId) : GamePanel
         decimal net = product.Price * (decimal)(1 - sales.Commission) - cost;
         var week = product.History.TakeLast(7).ToList();
         var column = Ui.Column(4,
-            Ui.Pair("Coût des matières par unité", $"{cost:N0} CHF ({string.Join(", ", Core.industry.IndustryCatalog.Bom(product).Select(kv => $"{kv.Value} × {Core.industry.IndustryCatalog.Material(kv.Key).Name}"))})"),
+            Ui.Pair("Coût des matières par unité", $"{cost:N0} CHF ({string.Join(", ", Core.industry.IndustryCatalog.Bom(product).Select(kv => $"{kv.Value} × {Loc.Translate(Core.industry.IndustryCatalog.Material(kv.Key).Name)}"))})"),
             Ui.Pair("Marge par unité", $"{net:N0} CHF (prix {product.Price:N0}, commission {sales.Commission:P0})", net > 0 ? Palette.Leaf : Palette.Ember),
             Ui.Pair("Stock vendable", $"{sales.Stock} unité(s)", sales.Stock == 0 ? Palette.Ember : null),
             Ui.Pair("Ventes 7 jours", $"{week.Sum(d => d.Sold):0} vendues, {week.Sum(d => d.Lost):0} perdues", week.Sum(d => d.Lost) > 0 ? Palette.Ember : null),
@@ -159,7 +159,7 @@ public class ProjectPanel(int productId) : GamePanel
         {
             var zone = Campaign.BestXr();
             column.Children.Add(Ui.Section("Zone de test XR", Ui.Muted(zone.Capacity > 0
-                ? $"Capacité {zone.Capacity:P0} : {zone.DefectCut:P0} de défauts en moins à chaque amélioration." + (zone.Missing.Count > 0 ? $" Il manque : {string.Join(", ", zone.Missing)}." : "")
+                ? $"Capacité {zone.Capacity:P0} : {zone.DefectCut:P0} de défauts en moins à chaque amélioration." + (zone.Missing.Count > 0 ? $" Il manque : {string.Join(", ", zone.Missing.Select(Loc.Translate))}." : "")
                 : "Sans casque, balises ni tapis, aucun test immersif : les défauts restent.", 13),
                 Ui.Button("Studio, XR et quantique", () => Open(new LabPanel()), "tab")));
         }
@@ -273,7 +273,7 @@ public class ProjectPanel(int productId) : GamePanel
                 : release.Version == 1 ? "lancement" : "bilan dans quelques jours";
             history.Children.Add(Ui.Column(1,
                 Ui.Text($"Version {release.Version} · {Core.campaign.GameTime.FormatDate(release.Minute)} · {effect}", 13, Palette.Cloud),
-                Ui.Muted(string.Join(", ", release.Changes), 12)));
+                Ui.Muted(string.Join(", ", release.Changes.Select(Loc.Translate)), 12)));
         }
         if (history.Children.Count > 0)
             column.Children.Add(Ui.Details("Versions publiées", history));
@@ -423,7 +423,7 @@ public class ProjectPanel(int productId) : GamePanel
         // L'effet en clair : ce que le public y gagne vraiment (points d'attrait), puis les besoins touchés
         string effect = def.IsPerformance ? "Serveurs moins chargés (−25 % de charge)"
             : def.Tickets < 0 && gain <= 0.004 ? "Moins de questions au support"
-            : (gain > 0.0005 ? $"+{gain * 100:0.0} pts d'attrait · " : "") + string.Join(", ", def.Needs.OrderByDescending(n => n.Value).Select(n => ProductCatalog.NeedName(n.Key)));
+            : (gain > 0.0005 ? $"+{gain * 100:0.0} pts d'attrait · " : "") + string.Join(", ", def.Needs.OrderByDescending(n => n.Value).Select(n => Loc.Translate(ProductCatalog.NeedName(n.Key))));
 
         string action = planned > level ? "En file" : level == 0 ? "Ajouter" : "Améliorer";
         // Sans équipe, c'est le fondateur qui tape au terminal : on dit le travail en mots plutôt qu'un délai à zéro

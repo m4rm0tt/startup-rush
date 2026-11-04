@@ -127,7 +127,7 @@ public static class MiniGames
     /// <summary>La commande à recopier, et le champ où la taper (Entrée n'est pas nécessaire : « Valider » la note).</summary>
     private static Control Command(LaunchChallenge challenge, out Func<double> score)
     {
-        var input = new TextBox { FontFamily = Mono, FontSize = 18, Watermark = "tape la commande ici", MinWidth = 420 };
+        var input = new TextBox { FontFamily = Mono, FontSize = 18, Watermark = Loc.Translate("tape la commande ici"), MinWidth = 420 };
         var column = new StackPanel
         {
             Spacing = 8,

@@ -243,12 +243,25 @@ public static class Ui
         return section;
     }
 
+    /// <summary>Titre de section en majuscules : traduit d'abord tel quel, puis sous sa forme en majuscules (anciennes entrées des tables).</summary>
+    private static string SectionTitle(string title)
+    {
+        string translated = Loc.Translate(title);
+        if (translated == title)
+        {
+            string shout = Loc.Translate(title.ToUpperInvariant());
+            if (shout != title.ToUpperInvariant())
+                return shout;
+        }
+        return translated.ToUpperInvariant();
+    }
+
     /// <summary>Section titrée : en-tête du pack (hud_section_header) avec son icône, puis son contenu.</summary>
     public static Control Section(string title, params Control?[] children)
     {
         var column = Column(6, children);
         string? icon = SectionIcons.FirstOrDefault(s => title.StartsWith(s.Title)).Icon;
-        Control label = Text(Loc.Translate(title).ToUpperInvariant(), 13, Palette.Ink, bold: true, wrap: false);
+        Control label = Text(SectionTitle(title), 13, Palette.Ink, bold: true, wrap: false);
         if (icon != null && UI.Iso.PackLibrary.Has(icon))
             label = Row(4, Image(Icons.Get(icon, "#2b2128"), 16, 16), label);
         column.Children.Insert(0, new PixelPanel

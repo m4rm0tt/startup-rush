@@ -1,5 +1,5 @@
 {
-  "__essai exact": "__test exact",
-  "__essai {0} puis {1}.": "__test {1} then {0}.",
-  "__essai nombre {0} CHF": "__test number {0} CHF"
+ "__essai exact": "__test exact",
+ "__essai {0} puis {1}.": "__test {1} then {0}.",
+ "__essai nombre {0} CHF": "__test number {0} CHF"
 }

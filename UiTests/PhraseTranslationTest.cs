@@ -59,4 +59,38 @@ public class PhraseTranslationTest
         }
         finally { UI.Pixel.PixelText.Large = large; }
     }
+
+    private static string PhrasesFolder()
+    {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        while (dir != null && !File.Exists(Path.Combine(dir.FullName, "StartupRush.sln")))
+            dir = dir.Parent;
+        return Path.Combine(dir!.FullName, "UI", "Lang", "phrases", "en");
+    }
+
+    /// <summary>Un même texte français a une seule traduction (pas deux fichiers qui se contredisent), avec les mêmes trous, et rien n'est vide.</summary>
+    [Test]
+    public void PhraseFilesDoNotContradictEachOtherAndKeepTheirHoles()
+    {
+        var holes = new System.Text.RegularExpressions.Regex(@"\{(\d+)\}");
+        var seen = new Dictionary<string, (string File, string Value)>();
+        var problems = new List<string>();
+        foreach (string file in Directory.GetFiles(PhrasesFolder(), "*.json"))
+        {
+            var table = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(file))!;
+            foreach (var (french, english) in table)
+            {
+                if (string.IsNullOrWhiteSpace(english))
+                    problems.Add($"{Path.GetFileName(file)} : « {french} » n'a pas de traduction");
+                var a = holes.Matches(french).Select(m => m.Value).Distinct().OrderBy(x => x);
+                var b = holes.Matches(english).Select(m => m.Value).Distinct().OrderBy(x => x);
+                if (!a.SequenceEqual(b))
+                    problems.Add($"{Path.GetFileName(file)} : trous différents dans « {french} »");
+                if (seen.TryGetValue(french, out var other) && other.Value != english)
+                    problems.Add($"« {french} » traduit deux fois : {other.File} « {other.Value} » et {Path.GetFileName(file)} « {english} »");
+                seen[french] = (Path.GetFileName(file), english);
+            }
+        }
+        Assert.That(problems, Is.Empty, string.Join("\n", problems.Take(20)));
+    }
 }

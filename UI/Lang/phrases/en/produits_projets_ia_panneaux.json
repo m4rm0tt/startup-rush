@@ -85,7 +85,7 @@
  "Unités GPU : l'inférence passe d'abord, puis l'entraînement, puis les offres cloud.": "GPU units: inference comes first, then training, then cloud offers.",
  "Calcul (CPU)": "Compute (CPU)",
  "Sert à l'entraînement, très peu à l'inférence.": "Used for training, very little for inference.",
- "Pris cette nuit": "Used last night",
+ "Pris cette nuit": "Taken overnight",
  "{0} GPU": "{0} GPU",
  "L'inférence et l'entraînement de la dernière nuit ne sont pas revendus.": "Last night's inference and training are not resold.",
  "Part du calcul libre pour l'entraînement :": "Share of free compute for training:",

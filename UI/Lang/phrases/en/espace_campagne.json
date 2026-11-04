@@ -63,7 +63,7 @@
  "Le projet passe sur tes serveurs.": "The project now runs on your servers.",
  "Le projet repasse chez un hébergeur.": "The project is back with an external host.",
  "Site inconnu.": "Unknown site.",
- "À débloquer dans Développement : {0}.": "Not unlocked yet, in Development: {0}.",
+ "À débloquer dans Développement : {0}.": "Unlock it in Development: {0}.",
  "Pour garder ce local et en louer un autre : Développement, « Plusieurs sites ».": "To keep this site and rent another one: Development, “Multiple sites”.",
  "Ta chambre ne se loue pas en plus.": "Your bedroom cannot be rented as an extra.",
  "Une salle technique n'accueille pas de bureaux : loue-la comme site de plus.": "A technical room does not hold desks: rent it as an additional site.",

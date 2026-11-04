@@ -1,0 +1,18 @@
+{
+  "_note": "Préparation des succès Steam (aucun identifiant inventé). ApiName = Campaign.AchievementDefs ; à saisir dans Steamworks › Statistiques et succès quand le compte et l'App ID existeront. Les icônes (256 × 256, gagnée / non gagnée) restent à produire.",
+  "achievements": [
+    { "apiName": "ACH_FIRST_LAUNCH", "fr": ["Premier lancement", "Sortir un premier projet."], "en": ["First launch", "Ship your first project."] },
+    { "apiName": "ACH_FIRST_HIRE", "fr": ["On est deux", "Embaucher une première personne."], "en": ["Two of us", "Hire your first employee."] },
+    { "apiName": "ACH_REAL_OFFICE", "fr": ["De vrais locaux", "Quitter l'appartement."], "en": ["Real offices", "Move out of the apartment."] },
+    { "apiName": "ACH_USERS_1K", "fr": ["Mille utilisateurs", "1 000 utilisateurs actifs sur un projet."], "en": ["A thousand users", "Reach 1,000 active users on one project."] },
+    { "apiName": "ACH_MRR_10K", "fr": ["10 000 CHF par mois", "10 000 CHF de revenus des projets sur 30 jours."], "en": ["CHF 10,000 a month", "Earn CHF 10,000 from your projects over 30 days."] },
+    { "apiName": "ACH_PORTFOLIO_3", "fr": ["Un vrai portefeuille", "Trois projets en ligne qui ont trouvé leur public."], "en": ["A real portfolio", "Have three live projects that found their audience."] },
+    { "apiName": "ACH_TEAM_10", "fr": ["Une vraie équipe", "Être 10 dans l'entreprise."], "en": ["A real team", "Reach 10 people in the company."] },
+    { "apiName": "ACH_USERS_50K", "fr": ["Cinquante mille", "50 000 utilisateurs actifs au total."], "en": ["Fifty thousand", "Reach 50,000 active users in total."] },
+    { "apiName": "ACH_AI_PUBLISHED", "fr": ["Le modèle est en ligne", "Publier un premier modèle d'IA."], "en": ["The model is live", "Publish your first AI model."] },
+    { "apiName": "ACH_HARDWARE_ONLINE", "fr": ["Fabriqué chez nous", "Mettre en vente un premier produit matériel."], "en": ["Made in-house", "Put your first hardware product on sale."] },
+    { "apiName": "ACH_QUANTUM_ONLINE", "fr": ["Superposition", "Mettre en service une première unité quantique."], "en": ["Superposition", "Bring a first quantum unit online."] },
+    { "apiName": "ACH_COMEBACK", "fr": ["Retour du bord du gouffre", "Descendre sous 1 000 CHF en caisse, puis dépasser 50 000 CHF."], "en": ["Back from the brink", "Fall below CHF 1,000 in cash, then rise above CHF 50,000."] },
+    { "apiName": "ACH_FINAL_GOAL", "fr": ["Objectif atteint", "Atteindre l'objectif final de valorisation."], "en": ["Goal reached", "Reach the final valuation goal."] }
+  ]
+}
